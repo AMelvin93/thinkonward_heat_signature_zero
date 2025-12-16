@@ -1,0 +1,1 @@
+# thinkonward_heat_signature_zero
