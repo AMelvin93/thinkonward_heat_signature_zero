@@ -1,0 +1,14 @@
+# Experiment: jax_gradient
+# JAX-based optimizer with automatic differentiation
+# Created: 2024-12-20
+
+optimizer:
+  method: "adam"  # JAX uses Adam optimizer
+  n_restarts: 4
+  max_iter: 100
+
+# JAX-specific settings
+jax:
+  learning_rate: 0.01
+  n_iterations: 100
+  n_restarts: 4

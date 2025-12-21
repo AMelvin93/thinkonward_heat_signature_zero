@@ -1,0 +1,37 @@
+# Experiment: tabu_search
+# Tabu Search metaheuristic for heat source identification
+# Created: 2024-12-20
+
+optimizer:
+  method: "tabu"
+  n_restarts: 5
+  q_range: [0.5, 2.0]
+
+# Tabu Search specific settings
+tabu:
+  # Maximum iterations per search restart
+  max_iterations: 15  # Reduced for faster testing, increase to 50+ for production
+
+  # How long a solution stays in the tabu list
+  # Higher = more exploration, lower = more exploitation
+  tabu_tenure: 7
+
+  # Minimum normalized distance for tabu proximity check
+  # Higher = larger "forbidden zone" around visited solutions
+  tabu_radius: 0.05
+
+  # Number of neighbor candidates to generate per iteration
+  # More neighbors = better exploration but slower
+  n_neighbors: 12  # Reduced for faster testing, increase to 20+ for production
+
+  # Initial perturbation magnitude (fraction of parameter range)
+  initial_step: 0.15
+
+  # Step size decay per iteration
+  step_decay: 0.95
+
+  # Number of independent search restarts
+  n_restarts: 3  # Reduced for faster testing, increase to 5+ for production
+
+  # Use sensor data for smart initialization on first restart
+  use_smart_init: true

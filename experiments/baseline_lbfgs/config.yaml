@@ -1,0 +1,10 @@
+# Experiment: baseline_lbfgs
+# Baseline L-BFGS-B optimizer with finite difference gradients
+# Created: 2024-12-20
+
+optimizer:
+  method: "L-BFGS-B"
+  n_restarts: 4
+  max_iter: 50
+  parallel: true
+  n_jobs: -1

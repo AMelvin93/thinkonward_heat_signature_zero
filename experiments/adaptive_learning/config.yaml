@@ -1,0 +1,70 @@
+# Experiment: adaptive_learning
+# Adaptive Learning Tabu Search for heat source identification
+# Created: 2024-12-20
+#
+# This optimizer combines 5 learning mechanisms:
+# 1. Observational learning: Smart init from sensor patterns
+# 2. Gradient learning: Descent direction from evaluations
+# 3. Landscape learning: Adaptive step size
+# 4. Curvature learning: L-BFGS-B polishing
+# 5. Search dynamics learning: Adaptive tabu tenure
+
+optimizer:
+  method: "adaptive_learning"
+  n_restarts: 3
+  q_range: [0.5, 2.0]
+
+# Base Tabu Search settings
+tabu:
+  # Maximum iterations per restart (Tabu exploration phase)
+  max_iterations: 25
+
+  # Base tabu tenure (will adapt during search)
+  base_tabu_tenure: 8
+
+  # Proximity radius for tabu check (normalized)
+  tabu_radius: 0.05
+
+  # Neighbors per iteration (mix of gradient + exploratory)
+  n_neighbors: 16
+
+  # Initial step size (fraction of parameter range)
+  initial_step: 0.15
+
+  # Minimum step size to prevent over-refinement
+  min_step: 0.02
+
+  # Number of restarts (first uses smart init, rest random)
+  n_restarts: 3
+
+  # Use smart initialization from sensor observations
+  use_smart_init: true
+
+# Gradient learning settings
+gradient:
+  # Number of recent evaluations for gradient estimation
+  buffer_size: 20
+
+  # Fraction of neighbors using gradient (vs exploratory)
+  # Higher = more exploitation, Lower = more exploration
+  exploitation_ratio: 0.5
+
+  # Minimum evaluations before gradient estimation kicks in
+  min_samples: 4
+
+# Adaptive learning settings
+adaptive:
+  # Enable adaptive step size (learns from landscape roughness)
+  enable_step: true
+
+  # Enable adaptive tabu tenure (learns from search dynamics)
+  enable_tenure: true
+
+  # Enable L-BFGS-B polishing (learns local curvature)
+  enable_polish: true
+
+  # Maximum iterations for L-BFGS-B polish phase
+  polish_max_iter: 15
+
+  # Minimum separation between sources for multi-source smart init
+  min_source_separation: 0.25

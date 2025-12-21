@@ -27,3 +27,24 @@ uv.lock
 
 # Claude
 .claude/
+
+# MLflow
+mlruns/
+mlartifacts/
+*.mlflow
+
+# Experiment outputs (large files)
+results/predictions/*.yaml
+results/metrics/*.yaml
+results/figures/*.png
+results/figures/*.html
+
+# Submissions (keep sample, ignore generated)
+submissions/*.npz
+!submissions/sample_submission.npz
+
+# Model artifacts
+model/*.pkl
+model/*.joblib
+model/*.pt
+model/*.h5

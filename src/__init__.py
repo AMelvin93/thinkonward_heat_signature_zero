@@ -7,6 +7,8 @@ from .visualize import (
     plot_source_search_space,
     plot_dataset_summary,
 )
+from .tabu_optimizer import TabuSearchOptimizer
+from .tabu_gradient_optimizer import GradientInformedTabuOptimizer
 
 # JAX-based components (optional, requires JAX)
 try:
