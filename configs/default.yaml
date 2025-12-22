@@ -1,0 +1,29 @@
+# Default configuration for Heat Signature Zero experiments
+# Override these values in experiment-specific configs
+
+# Domain parameters (fixed for this challenge)
+domain:
+  Lx: 2.0
+  Ly: 1.0
+  nx: 100
+  ny: 50
+  dt: 0.004
+
+# Optimization parameters
+optimizer:
+  method: "L-BFGS-B"
+  n_restarts: 4
+  max_iter: 50
+  q_range: [0.5, 2.0]
+  parallel: true
+  n_jobs: -1  # Use all CPU cores
+
+# Data parameters
+data:
+  train_path: "data/Heat_Signature_zero-starter_notebook/testdataset_80samples.pkl"
+  test_path: "data/heat-signature-zero-test-data.pkl"
+
+# MLflow settings
+mlflow:
+  experiment_name: "heat-signature-zero"
+  tracking_uri: "mlruns"  # Local folder for tracking

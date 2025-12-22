@@ -1,0 +1,31 @@
+# Experiment: tabu_gradient
+# Gradient-Informed Tabu Search for heat source identification
+# Created: 2024-12-20
+
+optimizer:
+  method: "tabu_gradient"
+  n_restarts: 3
+  q_range: [0.5, 2.0]
+
+# Base Tabu Search settings
+tabu:
+  max_iterations: 15
+  tabu_tenure: 7
+  tabu_radius: 0.05
+  n_neighbors: 12
+  initial_step: 0.15
+  step_decay: 0.95
+  n_restarts: 3
+  use_smart_init: true
+
+# Gradient learning settings
+gradient:
+  # Number of recent evaluations to use for gradient estimation
+  buffer_size: 15
+
+  # Fraction of neighbors that use gradient information (vs exploratory)
+  # Higher = more exploitation, Lower = more exploration
+  exploitation_ratio: 0.6
+
+  # Minimum evaluations before gradient estimation kicks in
+  min_samples: 5

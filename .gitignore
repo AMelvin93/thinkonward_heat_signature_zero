@@ -1,0 +1,51 @@
+# Virtual environment
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# uv
+uv.lock
+
+# Claude
+.claude/
+claude.md
+
+# MLflow
+mlruns/
+mlartifacts/
+*.mlflow
+
+# Experiment outputs (large files)
+results/predictions/*.yaml
+results/metrics/*.yaml
+results/figures/*.png
+results/figures/*.html
+
+# Submissions (keep sample, ignore generated)
+submissions/*.npz
+!submissions/sample_submission.npz
+
+# Model artifacts
+model/*.pkl
+model/*.joblib
+model/*.pt
+model/*.h5
