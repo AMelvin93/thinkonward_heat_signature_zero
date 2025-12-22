@@ -17,6 +17,16 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional, List
 
+# Import scoring utilities
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from src.scoring import (
+    compute_simple_score,
+    score_from_rmse_and_candidates,
+    DEFAULT_LAMBDA,
+    DEFAULT_N_MAX,
+)
+
 
 def load_config(config_path: str = "configs/default.yaml") -> Dict[str, Any]:
     """Load configuration from YAML file."""
@@ -123,12 +133,14 @@ class ExperimentTracker:
         estimates: List[tuple],
         rmse: float,
         true_sources: Optional[List[Dict]] = None,
+        n_candidates: int = 1,
     ):
         """Log source estimation results for a single sample."""
         result = {
             "sample_id": sample_id,
             "estimates": [{"x": e[0], "y": e[1], "q": e[2]} for e in estimates],
             "rmse": rmse,
+            "n_candidates": n_candidates,
         }
         if true_sources:
             result["true_sources"] = true_sources
@@ -137,8 +149,45 @@ class ExperimentTracker:
                 pos_error = ((est[0] - true['x'])**2 + (est[1] - true['y'])**2)**0.5
                 self.log_metric(f"pos_error_{sample_id}_src{i}", pos_error)
 
+        # Calculate sample score
+        sample_score = compute_simple_score(rmse, n_candidates, DEFAULT_LAMBDA, DEFAULT_N_MAX)
+        result["score"] = sample_score
+
         self.log_metric(f"rmse_{sample_id}", rmse)
         return result
+
+    def log_final_score(
+        self,
+        rmse_mean: float,
+        avg_candidates: float = 1.0,
+        lambda_: float = DEFAULT_LAMBDA,
+        n_max: int = DEFAULT_N_MAX,
+    ):
+        """
+        Log the final competition score.
+
+        Score formula: P = (1/(1+L_avg)) + λ * (N_valid/N_max)
+
+        Args:
+            rmse_mean: Average RMSE across all samples
+            avg_candidates: Average number of candidates per sample
+            lambda_: Trade-off weight (default: 0.3)
+            n_max: Maximum candidates per sample (default: 3)
+        """
+        score = score_from_rmse_and_candidates(rmse_mean, avg_candidates, lambda_, n_max)
+
+        # Log score components
+        self.log_metric("competition_score", score)
+        self.log_metric("score_accuracy_component", 1 / (1 + rmse_mean))
+        self.log_metric("score_diversity_component", lambda_ * (min(avg_candidates, n_max) / n_max))
+
+        # Log scoring parameters for reference
+        self.log_params({
+            "scoring.lambda": lambda_,
+            "scoring.n_max": n_max,
+        })
+
+        return score
 
     @property
     def run_id(self) -> str:

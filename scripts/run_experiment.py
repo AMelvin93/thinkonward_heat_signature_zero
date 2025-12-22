@@ -96,6 +96,16 @@ def main():
             if "rmse_std" in results:
                 tracker.log_metric("rmse_std", results["rmse_std"])
 
+            # Calculate and log competition score
+            rmse_mean = results.get("rmse_mean", 0)
+            avg_candidates = results.get("avg_candidates", 1.0)
+            score = tracker.log_final_score(rmse_mean, avg_candidates)
+            print(f"\n{'='*50}")
+            print(f"COMPETITION SCORE: {score:.4f}")
+            print(f"  Accuracy (1/(1+L)): {1/(1+rmse_mean):.4f}")
+            print(f"  Diversity bonus:    {0.3 * min(avg_candidates, 3) / 3:.4f}")
+            print(f"{'='*50}")
+
         print(f"\nRun completed! Run ID: {tracker.run_id}")
         print(f"View results: mlflow ui --port 5000")
 

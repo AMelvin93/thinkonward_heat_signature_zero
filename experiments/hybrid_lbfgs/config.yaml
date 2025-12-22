@@ -1,0 +1,40 @@
+# Experiment: hybrid_lbfgs
+# Hybrid Multi-Start L-BFGS-B Optimizer
+# Created: 2024-12-21
+#
+# Combines:
+# - Smart initialization from sensor temperature patterns
+# - Multi-start L-BFGS-B for high accuracy
+# - Diversity-enforced candidate generation (N_max=3)
+#
+# Goal: Achieve RMSE ~0.10 with 3 distinct candidates
+# Expected score: ~1.21 (vs current best 1.16)
+
+optimizer:
+  method: "hybrid_lbfgs"
+  n_restarts: 12  # Total initial points (smart + random)
+  q_range: [0.5, 2.0]
+
+# Hybrid-specific settings (FAST config with sample-level parallelism)
+hybrid:
+  # Smart initializations from sensor analysis
+  n_smart_inits: 2
+
+  # Diverse random initializations
+  n_random_inits: 3
+
+  # Minimum normalized distance between candidates (lower = more candidates)
+  min_candidate_distance: 0.06
+
+  # Maximum candidates to return (competition N_max)
+  n_max_candidates: 3
+
+  # L-BFGS-B iterations per run (reduced for speed)
+  max_iter: 40
+
+  # Per-sample parallel L-BFGS-B runs (disabled to allow sample-level parallel)
+  parallel: false
+
+  # Process multiple samples in parallel (uses all CPU cores)
+  parallel_samples: true
+  n_parallel_samples: 12  # Use 12 of your 16 cores

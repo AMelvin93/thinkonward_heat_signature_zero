@@ -27,6 +27,7 @@ uv.lock
 
 # Claude
 .claude/
+claude.md
 
 # MLflow
 mlruns/

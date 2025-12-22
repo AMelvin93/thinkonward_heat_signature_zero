@@ -47,9 +47,11 @@ def run(config: dict, tracker) -> dict:
         raise ImportError(f"JAX not available: {JAX_ERROR}")
 
     # Check GPU
-    gpu_available = check_gpu()
+    gpu_info = check_gpu()
+    gpu_available = gpu_info.get('gpu_available', False)
     tracker.log_metric("gpu_available", int(gpu_available))
     print(f"GPU available: {gpu_available}")
+    print(f"Backend: {gpu_info.get('default_backend', 'unknown')}")
 
     # Load test data
     data_path = project_root / config["data"]["test_path"]
@@ -102,7 +104,7 @@ def run(config: dict, tracker) -> dict:
             sample, meta,
             q_range=tuple(config["optimizer"]["q_range"]),
             learning_rate=learning_rate,
-            n_iterations=n_iterations,
+            max_iter=n_iterations,
             n_restarts=n_restarts,
         )
 

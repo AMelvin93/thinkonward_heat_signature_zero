@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(uv sync)",
-      "Bash(uv run:*)"
+      "Bash(uv run:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(head:*)",
+      "Bash(PYTHONUNBUFFERED=1 uv run python:*)",
+      "Bash(tasklist:*)"
     ]
   }
 }
