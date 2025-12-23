@@ -16,7 +16,18 @@ optimizer:
   max_iter: 50
   q_range: [0.5, 2.0]
   parallel: true
-  n_jobs: -1  # Use all CPU cores
+  n_jobs: null  # null = cpu_count - 1 (leaves one core free)
+
+# Hybrid optimizer settings (for hybrid_lbfgs experiment)
+hybrid:
+  n_smart_inits: 4
+  n_random_inits: 8
+  min_candidate_distance: 0.15
+  n_max_candidates: 3
+  max_iter: 100
+  parallel: true
+  parallel_samples: true
+  n_parallel_samples: null  # null = cpu_count - 1
 
 # Data parameters
 data:

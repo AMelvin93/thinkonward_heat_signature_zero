@@ -9,6 +9,7 @@ Run with:
 """
 
 import sys
+import os
 from pathlib import Path
 
 # Add project root to path
@@ -20,6 +21,9 @@ import pickle
 import numpy as np
 from joblib import Parallel, delayed
 from src.hybrid_optimizer import HybridOptimizer
+
+# Default to n-1 workers to leave one core free for system
+DEFAULT_N_WORKERS = max(1, os.cpu_count() - 1)
 
 
 def process_single_sample(sample, meta, optimizer_params, q_range, max_iter):
@@ -116,7 +120,9 @@ def run(config: dict, tracker) -> dict:
 
     # Check if sample-level parallelization is enabled
     parallel_samples = hybrid_config.get("parallel_samples", True)
-    n_parallel_samples = hybrid_config.get("n_parallel_samples", 8)
+    n_parallel_samples = hybrid_config.get("n_parallel_samples")
+    if n_parallel_samples is None:
+        n_parallel_samples = DEFAULT_N_WORKERS
 
     tracker.log_params({
         "hybrid.parallel_samples": parallel_samples,
@@ -129,7 +135,7 @@ def run(config: dict, tracker) -> dict:
     rmse_by_nsources = {}
 
     if parallel_samples:
-        print(f"  Running {n_parallel_samples} samples in parallel...")
+        print(f"  Running with {n_parallel_samples} parallel workers (CPU count: {os.cpu_count()})...")
 
         # Process samples in parallel batches
         results = Parallel(n_jobs=n_parallel_samples, verbose=10)(

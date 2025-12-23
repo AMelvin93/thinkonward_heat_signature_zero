@@ -1,0 +1,31 @@
+# Experiment: jax_hybrid
+# JAX forward simulation + scipy L-BFGS-B optimizer
+# Created: 2024-12-22
+#
+# Strategy:
+# - Use JAX JIT-compiled GPU-accelerated PDE solver for fast forward passes
+# - Use scipy L-BFGS-B for optimization (numerical gradients, but fast forward calls)
+# - Avoid expensive autodiff through time-stepping
+#
+# Expected: 10-50x faster than numpy, good accuracy from L-BFGS-B
+
+optimizer:
+  method: "jax_hybrid"
+  q_range: [0.5, 2.0]
+
+# JAX Hybrid settings
+jax_hybrid:
+  # Smart initializations from sensor analysis
+  n_smart_inits: 2
+
+  # Random initializations
+  n_random_inits: 4
+
+  # Minimum distance between candidates
+  min_candidate_distance: 0.10
+
+  # Max candidates to return
+  n_max_candidates: 3
+
+  # L-BFGS-B iterations per initialization
+  max_iter: 50

@@ -35,6 +35,6 @@ hybrid:
   # Per-sample parallel L-BFGS-B runs (disabled to allow sample-level parallel)
   parallel: false
 
-  # Process multiple samples in parallel (uses all CPU cores)
+  # Process multiple samples in parallel (uses cpu_count - 1 workers)
   parallel_samples: true
-  n_parallel_samples: 12  # Use 12 of your 16 cores
+  n_parallel_samples: null  # null = cpu_count - 1

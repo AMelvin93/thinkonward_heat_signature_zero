@@ -10,13 +10,17 @@ Goal: Achieve low RMSE (like baseline_lbfgs) while generating 3+ distinct
 candidates to maximize the competition score.
 """
 
+import os
+import sys
+from dataclasses import dataclass
+from typing import Dict, List, Tuple, Optional
+
 import numpy as np
 from scipy.optimize import minimize
-from typing import Dict, List, Tuple, Optional
-from dataclasses import dataclass
 from joblib import Parallel, delayed
-import sys
-import os
+
+# Default to n-1 workers to leave one core free for system
+DEFAULT_N_JOBS = max(1, os.cpu_count() - 1)
 
 # Add the starter notebook path to import the simulator
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'data', 'Heat_Signature_zero-starter_notebook'))
@@ -338,7 +342,7 @@ class HybridOptimizer:
         q_range: Tuple[float, float] = (0.5, 2.0),
         max_iter: int = 100,
         parallel: bool = True,
-        n_jobs: int = -1,
+        n_jobs: int = None,
         verbose: bool = False,
     ) -> Tuple[List[Tuple[float, float, float]], float, List[CandidateResult]]:
         """
@@ -350,12 +354,15 @@ class HybridOptimizer:
             q_range: Valid range for source intensity
             max_iter: Maximum L-BFGS-B iterations
             parallel: Use parallel processing
-            n_jobs: Number of parallel jobs (-1 = all cores)
+            n_jobs: Number of parallel jobs (None = cpu_count - 1)
             verbose: Print progress
 
         Returns:
             (best_sources, best_rmse, all_candidates)
         """
+        if n_jobs is None:
+            n_jobs = DEFAULT_N_JOBS
+
         n_sources = sample['n_sources']
         sensors_xy = sample['sensors_xy']
         Y_observed = sample['Y_noisy']
@@ -456,10 +463,13 @@ class HybridOptimizer:
         q_range: Tuple[float, float] = (0.5, 2.0),
         max_iter: int = 100,
         parallel: bool = True,
-        n_jobs: int = -1,
+        n_jobs: int = None,
     ) -> Tuple[List[Tuple[float, float, float]], float]:
         """
         Simple interface returning just best sources and RMSE.
+
+        Args:
+            n_jobs: Number of parallel jobs (None = cpu_count - 1)
         """
         sources, rmse, _ = self.estimate_sources(
             sample, meta, q_range, max_iter, parallel, n_jobs
