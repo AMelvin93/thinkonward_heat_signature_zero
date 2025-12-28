@@ -33,7 +33,8 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 ### Currently Used
 | File | Status | Description |
 |------|--------|-------------|
-| `hybrid_optimizer.py` | **PRODUCTION** | NumPy + L-BFGS-B with smart init and joblib parallelism |
+| `hybrid_optimizer.py` | **PRODUCTION** | NumPy + L-BFGS-B with triangulation init and joblib parallelism |
+| `triangulation.py` | **PRODUCTION** | Physics-based initialization from sensor onset times |
 | `optimizer.py` | Baseline | Original L-BFGS-B implementation |
 | `scoring.py` | Utility | Competition scoring functions |
 
@@ -50,6 +51,14 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 | `jax_coarse_to_fine_optimizer.py` | Tested | Two-phase: coarse (50x25) then fine | Promising but NumPy still faster |
 | `jax_aggressive_optimizer.py` | Tested | Ultra-coarse (25x12) + minimal iters | Sacrificed too much accuracy |
 | `jax_pure_optimizer.py` | Tested | Pure JAX Adam (no scipy) | Eliminates callback overhead but still slower |
+
+### Adjoint Method Implementations
+| File | Status | Description | Why Not Used |
+|------|--------|-------------|--------------|
+| `adjoint_optimizer.py` | Tested | Full-storage adjoint for exact gradients | Memory: O(nt*nx*ny), too slow (~100-300s/sample) |
+| `adjoint_optimizer_fast.py` | Tested | Checkpointed adjoint O(sqrt(nt)) memory | 2x faster gradients, but 157s/sample overall |
+
+**Adjoint Method Finding**: The adjoint method provides exact gradients (validated: max error 0.01%) with cost independent of parameter count. However, it doesn't reduce the number of L-BFGS-B iterations needed, so overall time is still dominated by the number of forward/backward passes. The HybridOptimizer wins through sample-level parallelism (7 workers), not through faster gradients.
 
 ### Other Approaches
 | File | Status | Description | Why Not Used |
@@ -82,9 +91,10 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 
 ### What Works
 1. **Sample-level parallelism** with joblib (7 workers) beats GPU parallelism
-2. **Smart initialization** from hottest sensors dramatically improves convergence
+2. **Triangulation initialization** from sensor onset times (+13.4% RMSE improvement over hottest-sensor)
 3. **L-BFGS-B** is effective for this smooth optimization landscape
 4. **Fewer iterations** (2-3) with good init beats many iterations with random init
+5. **Physics-based init** using heat diffusion scaling: r ~ sqrt(4*kappa*t)
 
 ### What Doesn't Work
 1. **JAX/GPU acceleration** - overhead exceeds benefit for small grids
@@ -92,6 +102,7 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 3. **Pure gradient descent** - L-BFGS-B's Hessian approximation is crucial
 4. **Tabu search** - too many simulator calls, doesn't scale to 400 samples
 5. **Multiple candidates** - diversity bonus (0.3 * N/3) doesn't offset time cost
+6. **Adjoint method** - exact gradients but doesn't reduce L-BFGS iterations; sample parallelism is more effective
 
 ### Key Constraints
 - **Time limit**: 60 minutes for 400 samples on G4dn.2xlarge (8 vCPUs)
@@ -102,6 +113,14 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 
 ## Future Directions to Explore
 
+### Fully Tested (Not Viable for Production)
+1. **Adjoint Method** (`adjoint_optimizer_fast.py`) - Exact gradients with O(sqrt(nt)) memory checkpointing
+   - Gradients validated: max relative error 0.01%
+   - Per-gradient speedup: 2x for 1-source, 4x for 2-source vs finite differences
+   - Overall time: 157.4s per sample (still too slow)
+   - **Why not faster**: Adjoint reduces gradient cost but not iteration count; sample-level parallelism (7 workers) in HybridOptimizer is more effective
+   - Conclusion: Not viable for production under 60-minute constraint
+
 ### Not Yet Tried
 1. **Surrogate modeling** - Train a fast neural network to approximate the simulator
 2. **Bayesian optimization** - Gaussian process for smart exploration
@@ -109,11 +128,17 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 4. **Dimension reduction** - PCA on sensor readings to guide initialization
 5. **Transfer learning** - Use solutions from similar samples as starting points
 
+### Recently Implemented
+1. **Triangulation initialization** (`triangulation.py`) - Uses heat diffusion physics to estimate source positions
+   - Detects characteristic times (when sensors reach fraction of max temp)
+   - Estimates distances using r ~ sqrt(4*kappa*t)
+   - Trilaterates position from multiple distance estimates
+   - **Results**: +13.4% RMSE improvement, +3.1% competition score improvement, no time penalty
+
 ### Potential Improvements
-1. **Better initialization** - Triangulation from sensor readings
-2. **Early stopping** - Stop when RMSE improvement plateaus
-3. **Adaptive iterations** - More iterations for hard samples, fewer for easy ones
-4. **Caching** - Reuse solver setup across samples with same (nt, bc)
+1. **Early stopping** - Stop when RMSE improvement plateaus
+2. **Adaptive iterations** - More iterations for hard samples, fewer for easy ones
+3. **Caching** - Reuse solver setup across samples with same (nt, bc)
 
 ---
 
@@ -121,14 +146,25 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 
 ```
 src/
-├── OPTIMIZER_HISTORY.md      # This file
-├── hybrid_optimizer.py       # PRODUCTION - NumPy + L-BFGS-B
-├── optimizer.py              # Baseline L-BFGS-B
-├── scoring.py                # Competition scoring
-├── visualize.py              # Plotting utilities
-├── jax_*.py                  # JAX experiments (not used in production)
-├── adaptive_learning_optimizer.py  # Abandoned
-└── tabu_*.py                 # Tabu search experiments (too slow)
+├── OPTIMIZER_HISTORY.md           # This file
+├── hybrid_optimizer.py            # PRODUCTION - NumPy + L-BFGS-B + triangulation
+├── triangulation.py               # PRODUCTION - Physics-based initialization
+├── optimizer.py                   # Baseline L-BFGS-B
+├── scoring.py                     # Competition scoring
+├── visualize.py                   # Plotting utilities
+├── jax_*.py                       # JAX experiments (not used in production)
+├── adjoint_optimizer.py           # Adjoint method (full storage - too slow)
+├── adjoint_optimizer_fast.py      # Checkpointed adjoint (still too slow)
+├── adaptive_learning_optimizer.py # Abandoned
+└── tabu_*.py                      # Tabu search experiments (too slow)
+
+scripts/
+├── compare_initializations.py     # Compare init methods (RMSE without optimization)
+├── compare_optimization.py        # Compare full optimization with different inits
+└── ...
+
+experiments/
+└── adjoint_optimizer/train.py     # Experiment runner for adjoint optimizer
 ```
 
 ---

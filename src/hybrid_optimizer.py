@@ -19,6 +19,8 @@ import numpy as np
 from scipy.optimize import minimize
 from joblib import Parallel, delayed
 
+from src.triangulation import triangulation_init
+
 # Default to n-1 workers to leave one core free for system
 DEFAULT_N_JOBS = max(1, os.cpu_count() - 1)
 
@@ -97,6 +99,7 @@ class HybridOptimizer:
         n_random_inits: int = 8,
         min_candidate_distance: float = 0.15,
         n_max_candidates: int = 3,
+        use_triangulation: bool = True,
     ):
         """
         Initialize the hybrid optimizer.
@@ -117,6 +120,7 @@ class HybridOptimizer:
         self.n_random_inits = n_random_inits
         self.min_candidate_distance = min_candidate_distance
         self.n_max_candidates = n_max_candidates
+        self.use_triangulation = use_triangulation
 
     def _create_solver(self, kappa: float, bc: str) -> Heat2D:
         """Create a Heat2D solver instance."""
@@ -195,6 +199,43 @@ class HybridOptimizer:
             sources.append((loc[0], loc[1], q))
 
         return sources
+
+    def _triangulation_init(
+        self,
+        sample: Dict,
+        meta: Dict,
+        n_sources: int,
+        q_range: Tuple[float, float],
+        perturbation: float = 0.0,
+    ) -> np.ndarray:
+        """
+        Generate initial point using triangulation from sensor onset times.
+
+        Uses heat diffusion physics to estimate source positions more accurately
+        than simply using hottest sensor locations.
+        """
+        try:
+            params = triangulation_init(
+                sample, meta, n_sources, q_range, self.Lx, self.Ly
+            )
+
+            if perturbation > 0:
+                bounds = self._get_bounds(n_sources, q_range)
+                for i in range(n_sources):
+                    params[i*3] += np.random.uniform(-perturbation, perturbation) * self.Lx
+                    params[i*3+1] += np.random.uniform(-perturbation, perturbation) * self.Ly
+                    params[i*3+2] += np.random.uniform(-0.2, 0.2)
+
+                    # Clip to bounds
+                    params[i*3] = np.clip(params[i*3], bounds[i*3][0], bounds[i*3][1])
+                    params[i*3+1] = np.clip(params[i*3+1], bounds[i*3+1][0], bounds[i*3+1][1])
+                    params[i*3+2] = np.clip(params[i*3+2], q_range[0], q_range[1])
+
+            return params
+
+        except Exception:
+            # Fall back to smart init if triangulation fails
+            return self._smart_init(sample, n_sources, q_range, perturbation)
 
     def _smart_init(
         self,
@@ -379,11 +420,15 @@ class HybridOptimizer:
         # Generate initial points
         initial_points = []
 
-        # Smart initializations
+        # Smart initializations (use triangulation if enabled)
         for i in range(self.n_smart_inits):
             perturbation = 0.05 + i * 0.03  # Increasing perturbation
-            x0 = self._smart_init(sample, n_sources, q_range, perturbation)
-            initial_points.append(('smart', x0))
+            if self.use_triangulation:
+                x0 = self._triangulation_init(sample, meta, n_sources, q_range, perturbation)
+                initial_points.append(('triang', x0))
+            else:
+                x0 = self._smart_init(sample, n_sources, q_range, perturbation)
+                initial_points.append(('smart', x0))
 
         # Diverse random initializations
         random_inits = self._diverse_random_inits(
