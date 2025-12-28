@@ -1,0 +1,50 @@
+# Final Competition Submission Configuration
+# Target: 400 samples in <60 min on G4dn.2xlarge (8 vCPUs, 7 workers)
+#
+# Key constraints:
+# - Max time per sample: ~63s (400/7 workers, 60 min total)
+# - Score formula: (1/N) * sum(1/(1+RMSE)) + 0.3 * (N/3)
+#
+# Test results (80 samples, 7 workers on Windows 32-core):
+# - max_iter=2: 54.7 min projected, score 0.52 [SAFE - guaranteed to fit]
+# - max_iter=3: 68.7 min projected, score 0.57 [slightly over, may work on G4dn]
+# - max_iter=4: 79.3 min projected, score 0.77 [risky, best score]
+#
+# Note: G4dn.2xlarge (Linux, 8 cores) may be 10-20% faster than Windows test.
+# RECOMMENDED: Start with max_iter=2, test on G4dn, increase if time allows.
+
+experiment_name: "final_submission"
+
+# Optimizer settings
+optimizer:
+  type: "hybrid"
+  n_smart_inits: 1
+  n_random_inits: 0
+  min_candidate_distance: 0.15  # tau for filtering distinct candidates
+  n_max_candidates: 1           # Only 1 candidate (diversity bonus = 0.1)
+  max_iter: 2                   # L-BFGS-B iterations (safe for 60 min target)
+  parallel: false               # Don't parallelize within sample (use sample-level)
+
+# Grid settings
+grid:
+  nx: 100
+  ny: 50
+  Lx: 2.0
+  Ly: 1.0
+
+# Optimization bounds
+bounds:
+  q_range: [0.5, 2.0]
+  margin: 0.05  # Edge margin for source positions
+
+# Parallelization (for G4dn.2xlarge with 8 vCPUs)
+parallelization:
+  n_workers: 7  # Leave 1 CPU for system
+  backend: "joblib"
+
+# Scoring (from competition rules)
+scoring:
+  lambda_: 0.3
+  tau: 0.2
+  n_max: 3
+  max_rmse_threshold: 1.0  # Discard candidates with RMSE > threshold
