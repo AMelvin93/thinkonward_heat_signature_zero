@@ -32,4 +32,5 @@ dependencies = [
     "ipywidgets>=8.1.8",
     "mlflow>=2.9.0",
     "pyyaml>=6.0",
+    "cma>=3.3.0",
 ]

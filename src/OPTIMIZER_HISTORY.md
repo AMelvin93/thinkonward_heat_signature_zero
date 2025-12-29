@@ -34,9 +34,22 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 | File | Status | Description |
 |------|--------|-------------|
 | `hybrid_optimizer.py` | **PRODUCTION** | NumPy + L-BFGS-B with triangulation init and joblib parallelism |
+| `cmaes_optimizer.py` | **TESTING** | CMA-ES + L-BFGS-B polish, better for 2-source multi-modal problems |
 | `triangulation.py` | **PRODUCTION** | Physics-based initialization from sensor onset times |
 | `optimizer.py` | Baseline | Original L-BFGS-B implementation |
 | `scoring.py` | Utility | Competition scoring functions |
+
+### CMA-ES Results (Preliminary Testing)
+CMA-ES shows **4x better RMSE** on 2-source problems compared to L-BFGS-B:
+
+| Sample Type | HybridOptimizer RMSE | CMA-ES+Polish RMSE | Improvement |
+|-------------|---------------------|--------------------| ------------|
+| 1-source | ~0.44 | ~0.26 | 1.7x better |
+| 2-source | ~1.16 | ~0.27 | **4.3x better** |
+
+**Why CMA-ES helps for 2-source**: Permutation symmetry creates multiple local minima. CMA-ES finds global optima where L-BFGS-B gets stuck.
+
+**Trade-off**: CMA-ES is ~10% slower but produces much better results on hard problems.
 
 ### JAX Implementations (Experimental)
 | File | Status | Description | Why Not Used |

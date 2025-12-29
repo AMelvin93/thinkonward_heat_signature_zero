@@ -11,6 +11,7 @@ import os
 import time
 import pickle
 import yaml
+import platform
 from pathlib import Path
 from datetime import datetime
 
@@ -25,6 +26,25 @@ from src.hybrid_optimizer import HybridOptimizer
 # G4dn.2xlarge simulation settings
 G4DN_WORKERS = 7
 COMPETITION_SAMPLES = 400
+
+
+def detect_platform():
+    """Detect if running on WSL, Linux, or Windows."""
+    system = platform.system().lower()
+    if system == "linux":
+        # Check if WSL
+        try:
+            with open("/proc/version", "r") as f:
+                version_info = f.read().lower()
+                if "microsoft" in version_info or "wsl" in version_info:
+                    return "wsl"
+        except FileNotFoundError:
+            pass
+        return "linux"
+    elif system == "windows":
+        return "windows"
+    else:
+        return system
 
 
 def load_config():
@@ -102,9 +122,14 @@ def main():
     # Determine if this is a G4dn simulation run (should log to MLflow)
     is_g4dn_simulation = (n_workers == G4DN_WORKERS)
 
+    # Detect platform
+    current_platform = detect_platform()
+    is_valid_platform = current_platform in ("wsl", "linux")
+
     print("=" * 70)
     print("FINAL SUBMISSION WITH TRIANGULATION")
     print("=" * 70)
+    print(f"Platform: {current_platform.upper()}")
     print(f"Samples: {n_samples}")
     print(f"Workers: {actual_workers}" + (" (G4dn simulation)" if is_g4dn_simulation else " (prototype mode)"))
     print(f"Config: max_iter={config['optimizer']['max_iter']}, "
@@ -113,6 +138,13 @@ def main():
         print("MLflow logging: ENABLED (G4dn simulation)")
     else:
         print("MLflow logging: DISABLED (use n_workers=7 for submission logging)")
+
+    if not is_valid_platform:
+        print("")
+        print("[WARNING] Running on Windows - timing will be ~35% slower than Linux!")
+        print("[WARNING] For accurate submission timing, run on WSL:")
+        print("          cd /mnt/c/Users/amelv/Repo/thinkonward_heat_signature_zero")
+        print("          uv run python scripts/run_final_submission.py")
     print("=" * 70)
 
     # Process samples in parallel
@@ -179,6 +211,7 @@ def main():
             mlflow.log_param("max_iter", config['optimizer']['max_iter'])
             mlflow.log_param("n_workers", G4DN_WORKERS)
             mlflow.log_param("n_samples_tested", n_samples)
+            mlflow.log_param("platform", current_platform)
 
             # Save predictions
             output_path = project_root / "results" / f"{run_name}_results.pkl"

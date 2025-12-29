@@ -8,14 +8,15 @@
       "Bash(head:*)",
       "Bash(PYTHONUNBUFFERED=1 uv run python:*)",
       "Bash(tasklist:*)",
-      "Bash(dir /O-D \"C:\\\\Users\\\\amelv\\\\Repo\\\\thinkonward_heat_signature_zero\\\\src\"\")",
-      "Bash(dir \"C:\\\\Users\\\\amelv\\\\Repo\\\\thinkonward_heat_signature_zero\\\\mlruns\"\")",
+      "Bash(dir /O-D \"C:\\\\Users\\\\amelv\\\\Repo\\\\thinkonward_heat_signature_zero\\\\src\")",
+      "Bash(dir \"C:\\\\Users\\\\amelv\\\\Repo\\\\thinkonward_heat_signature_zero\\\\mlruns\")",
       "Bash(dir:*)",
       "Bash(ls:*)",
       "WebSearch",
       "WebFetch(domain:math.mit.edu)",
       "WebFetch(domain:aalexan3.math.ncsu.edu)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(uv run python:*)"
     ]
   }
 }
