@@ -22,8 +22,9 @@ optimizer:
   n_random_inits: 0
   min_candidate_distance: 0.15  # tau for filtering distinct candidates
   n_max_candidates: 1           # Only 1 candidate (diversity bonus = 0.1)
-  max_iter: 2                   # L-BFGS-B iterations (safe for 60 min target)
+  max_iter: 3                   # L-BFGS-B iterations (3 = best within 60 min budget)
   parallel: false               # Don't parallelize within sample (use sample-level)
+  use_triangulation: true       # Use triangulation init for 1-source (23% better RMSE)
 
 # Grid settings
 grid:
@@ -39,7 +40,7 @@ bounds:
 
 # Parallelization (for G4dn.2xlarge with 8 vCPUs)
 parallelization:
-  n_workers: 7  # Leave 1 CPU for system
+  n_workers: 7  # Simulates G4dn.2xlarge (8 vCPUs - 1 for system)
   backend: "joblib"
 
 # Scoring (from competition rules)

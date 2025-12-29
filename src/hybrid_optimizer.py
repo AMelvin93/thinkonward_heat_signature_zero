@@ -420,10 +420,11 @@ class HybridOptimizer:
         # Generate initial points
         initial_points = []
 
-        # Smart initializations (use triangulation if enabled)
+        # Smart initializations (use triangulation for 1-source only)
         for i in range(self.n_smart_inits):
             perturbation = 0.05 + i * 0.03  # Increasing perturbation
-            if self.use_triangulation:
+            # Triangulation works well for 1-source but worse for 2-source
+            if self.use_triangulation and n_sources == 1:
                 x0 = self._triangulation_init(sample, meta, n_sources, q_range, perturbation)
                 initial_points.append(('triang', x0))
             else:
