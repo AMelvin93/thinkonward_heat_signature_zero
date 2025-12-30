@@ -13,18 +13,25 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 
 ## Models in MLflow
 
-### Production Model (Recommended)
-| Run Name | Optimizer | Score | RMSE | Time | Config |
-|----------|-----------|-------|------|------|--------|
-| `jax_hybrid_max_iter_3_fixed` | HybridOptimizer | **0.5710** | 0.900 | 13.7 min/80 samples | max_iter=3, 1 smart init |
+### SELECTED FOR SUBMISSION (2024-12-29)
+| Run Name | Optimizer | Score | RMSE | Projected Time | Config |
+|----------|-----------|-------|------|----------------|--------|
+| `cmaes_20251229_124607` | CMAESOptimizer | **0.7501** | 0.515 | **57.2 min** | polish_iter=1, triangulation=True |
 
-### Other Logged Runs
+### CMA-ES Testing Results (2024-12-29)
+| Run Name | Score | RMSE | Projected | Config |
+|----------|-------|------|-----------|--------|
+| `cmaes_20251229_112401` | 0.8419 | 0.360 | 75.5 min | polish=5 (over budget) |
+| `cmaes_20251229_122106` | 0.7677 | 0.442 | 59.7 min | polish=2 (borderline) |
+| `cmaes_20251229_124607` | **0.7501** | 0.515 | **57.2 min** | **polish=1 (SELECTED)** |
+| `cmaes_20251229_123251` | 0.6505 | 0.623 | 42.8 min | no polish (bad accuracy) |
+
+### Previous Models
 | Run Name | Optimizer | Score | RMSE | Notes |
 |----------|-----------|-------|------|-------|
+| `jax_hybrid_max_iter_3_fixed` | HybridOptimizer | 0.5710 | 0.900 | Previous best |
 | `baseline_lbfgs_20251220_214520` | BaselineLBFGS | 1.009 | 0.100 | Good RMSE but slow |
 | `tabu_search_20251220_221852` | TabuSearch | 1.162 | 0.160 | High score but time-intensive |
-| `tabu_gradient_20251220_225447` | TabuGradient | 1.145 | 0.183 | Combined approach |
-| `jax_gradient_20251221_202717` | JAXGradient | 0.886 | 0.272 | JAX-accelerated |
 
 ---
 
@@ -33,9 +40,9 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 ### Currently Used
 | File | Status | Description |
 |------|--------|-------------|
-| `hybrid_optimizer.py` | **PRODUCTION** | NumPy + L-BFGS-B with triangulation init and joblib parallelism |
-| `cmaes_optimizer.py` | **TESTING** | CMA-ES + L-BFGS-B polish, better for 2-source multi-modal problems |
+| `experiments/cmaes/optimizer.py` | **SELECTED** | CMA-ES + L-BFGS-B polish with triangulation init |
 | `triangulation.py` | **PRODUCTION** | Physics-based initialization from sensor onset times |
+| `hybrid_optimizer.py` | Previous | NumPy + L-BFGS-B with triangulation init and joblib parallelism |
 | `optimizer.py` | Baseline | Original L-BFGS-B implementation |
 | `scoring.py` | Utility | Competition scoring functions |
 

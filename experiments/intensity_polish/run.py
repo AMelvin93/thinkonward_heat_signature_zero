@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 """
-Run CMA-ES optimizer experiment and log to MLflow.
+Run Intensity-Only Polish optimizer experiment.
 
-CMA-ES is particularly effective for multi-modal problems like 2-source
-heat identification where L-BFGS-B can get stuck in local minima.
+This experiment tests the hypothesis that after CMA-ES optimization,
+we can fix the (x, y) positions and only optimize the intensity (q),
+reducing polish from 3-6 parameters to 1-2 parameters.
 
 Usage:
     # Prototype mode (all CPUs, no MLflow logging)
-    uv run python experiments/cmaes/run.py --workers -1
+    uv run python experiments/intensity_polish/run.py --workers -1
 
     # G4dn simulation mode (7 workers, MLflow logging)
-    uv run python experiments/cmaes/run.py --workers 7
+    uv run python experiments/intensity_polish/run.py --workers 7
 
 Must be run on WSL for accurate timing (per CLAUDE.md).
 """
@@ -24,15 +25,13 @@ import platform
 from pathlib import Path
 from datetime import datetime
 
-# experiments/cmaes/run.py -> project root is two levels up
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 import numpy as np
 from joblib import Parallel, delayed
 
-# Import from local experiment folder
-from experiments.cmaes.optimizer import CMAESOptimizer
+from experiments.intensity_polish.optimizer import IntensityPolishOptimizer
 
 # G4dn.2xlarge simulation settings
 G4DN_WORKERS = 7
@@ -67,17 +66,15 @@ def calculate_sample_score(rmse, lambda_=0.3, n_max=3, max_rmse=1.0):
 
 
 def process_sample(sample, meta, config):
-    """Process a single sample with CMA-ES."""
-    optimizer = CMAESOptimizer(
+    """Process a single sample with intensity-only polish optimizer."""
+    optimizer = IntensityPolishOptimizer(
         max_fevals_1src=config['max_fevals_1src'],
         max_fevals_2src=config['max_fevals_2src'],
         sigma0_1src=config['sigma0_1src'],
         sigma0_2src=config['sigma0_2src'],
         use_triangulation=config['use_triangulation'],
-        use_lbfgsb_polish=config['use_polish'],
-        polish_max_iter=config['polish_max_iter'],
-        polish_max_iter_1src=config.get('polish_max_iter_1src'),
-        polish_max_iter_2src=config.get('polish_max_iter_2src'),
+        intensity_polish_method=config['polish_method'],
+        intensity_polish_maxiter=config['polish_maxiter'],
     )
 
     q_range = tuple(meta['q_range'])
@@ -102,27 +99,22 @@ def process_sample(sample, meta, config):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Run CMA-ES optimizer')
+    parser = argparse.ArgumentParser(description='Run Intensity-Only Polish optimizer')
     parser.add_argument('--workers', type=int, default=7,
                         help='Number of workers (7 for G4dn, -1 for all CPUs)')
     parser.add_argument('--max-fevals-1src', type=int, default=15,
-                        help='Max evaluations for 1-source')
+                        help='Max CMA-ES evaluations for 1-source')
     parser.add_argument('--max-fevals-2src', type=int, default=25,
-                        help='Max evaluations for 2-source')
+                        help='Max CMA-ES evaluations for 2-source')
     parser.add_argument('--sigma0-1src', type=float, default=0.10,
                         help='Initial step size for 1-source')
     parser.add_argument('--sigma0-2src', type=float, default=0.20,
                         help='Initial step size for 2-source')
-    parser.add_argument('--polish', action='store_true', default=True,
-                        help='Add L-BFGS-B polish step (default: True)')
-    parser.add_argument('--no-polish', action='store_true',
-                        help='Disable L-BFGS-B polish step')
-    parser.add_argument('--polish-iter', type=int, default=5,
-                        help='Max iterations for polish (default for both)')
-    parser.add_argument('--polish-iter-1src', type=int, default=None,
-                        help='Max polish iterations for 1-source (overrides --polish-iter)')
-    parser.add_argument('--polish-iter-2src', type=int, default=None,
-                        help='Max polish iterations for 2-source (overrides --polish-iter)')
+    parser.add_argument('--polish-method', type=str, default='bounded',
+                        choices=['bounded', 'brent', 'nelder-mead'],
+                        help='Method for intensity optimization')
+    parser.add_argument('--polish-maxiter', type=int, default=10,
+                        help='Max iterations for intensity polish')
     parser.add_argument('--no-triangulation', action='store_true',
                         help='Disable triangulation init')
     args = parser.parse_args()
@@ -134,10 +126,8 @@ def main():
         'sigma0_1src': args.sigma0_1src,
         'sigma0_2src': args.sigma0_2src,
         'use_triangulation': not args.no_triangulation,
-        'use_polish': args.polish and not args.no_polish,
-        'polish_max_iter': args.polish_iter,
-        'polish_max_iter_1src': args.polish_iter_1src,
-        'polish_max_iter_2src': args.polish_iter_2src,
+        'polish_method': args.polish_method,
+        'polish_maxiter': args.polish_maxiter,
     }
 
     n_workers = args.workers
@@ -159,24 +149,16 @@ def main():
 
     # Print header
     print("=" * 70)
-    print("CMA-ES OPTIMIZER")
+    print("INTENSITY-ONLY POLISH OPTIMIZER")
     print("=" * 70)
     print(f"Platform: {current_platform.upper()}")
     print(f"Samples: {n_samples}")
     print(f"Workers: {actual_workers}" + (" (G4dn simulation)" if is_g4dn_simulation else " (prototype)"))
-    # Compute effective polish iterations for display
-    polish_1src = config['polish_max_iter_1src'] if config['polish_max_iter_1src'] is not None else config['polish_max_iter']
-    polish_2src = config['polish_max_iter_2src'] if config['polish_max_iter_2src'] is not None else config['polish_max_iter']
-    is_adaptive = config['polish_max_iter_1src'] is not None or config['polish_max_iter_2src'] is not None
-
     print(f"Config:")
     print(f"  max_fevals: 1-src={config['max_fevals_1src']}, 2-src={config['max_fevals_2src']}")
     print(f"  sigma0: 1-src={config['sigma0_1src']}, 2-src={config['sigma0_2src']}")
     print(f"  triangulation: {config['use_triangulation']}")
-    if is_adaptive:
-        print(f"  polish: {config['use_polish']} (ADAPTIVE: 1-src={polish_1src}, 2-src={polish_2src})")
-    else:
-        print(f"  polish: {config['use_polish']} (iter={config['polish_max_iter']})")
+    print(f"  intensity_polish: method={config['polish_method']}, maxiter={config['polish_maxiter']}")
     print(f"MLflow logging: {'ENABLED' if is_g4dn_simulation else 'DISABLED'}")
 
     if not is_valid_platform:
@@ -184,7 +166,7 @@ def main():
         print("[WARNING] Running on Windows - timing will be ~35% slower than Linux!")
         print("[WARNING] For accurate submission timing, run on WSL:")
         print("          cd /mnt/c/Users/amelv/Repo/thinkonward_heat_signature_zero")
-        print("          uv run python scripts/run_cmaes.py --workers 7")
+        print("          uv run python experiments/intensity_polish/run.py --workers 7")
     print("=" * 70)
 
     # Process samples
@@ -227,7 +209,7 @@ def main():
         mlflow.set_tracking_uri("mlruns")
         mlflow.set_experiment("heat-signature-zero")
 
-        run_name = f"cmaes_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        run_name = f"intensity_polish_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         with mlflow.start_run(run_name=run_name):
             # Key metrics
@@ -240,19 +222,19 @@ def main():
             mlflow.log_metric("rmse_1src", np.mean(rmse_by_nsources.get(1, [0])))
             mlflow.log_metric("rmse_2src", np.mean(rmse_by_nsources.get(2, [0])))
             mlflow.log_metric("avg_evals", avg_evals)
+            mlflow.log_metric("avg_evals_1src", np.mean(evals_by_nsources.get(1, [0])))
+            mlflow.log_metric("avg_evals_2src", np.mean(evals_by_nsources.get(2, [0])))
             mlflow.log_metric("total_time_sec", total_time)
 
             # Parameters
-            mlflow.log_param("optimizer", "CMAESOptimizer")
+            mlflow.log_param("optimizer", "IntensityPolishOptimizer")
             mlflow.log_param("max_fevals_1src", config['max_fevals_1src'])
             mlflow.log_param("max_fevals_2src", config['max_fevals_2src'])
             mlflow.log_param("sigma0_1src", config['sigma0_1src'])
             mlflow.log_param("sigma0_2src", config['sigma0_2src'])
             mlflow.log_param("use_triangulation", config['use_triangulation'])
-            mlflow.log_param("use_polish", config['use_polish'])
-            mlflow.log_param("polish_iter_1src", polish_1src)
-            mlflow.log_param("polish_iter_2src", polish_2src)
-            mlflow.log_param("adaptive_polish", is_adaptive)
+            mlflow.log_param("polish_method", config['polish_method'])
+            mlflow.log_param("polish_maxiter", config['polish_maxiter'])
             mlflow.log_param("n_workers", G4DN_WORKERS)
             mlflow.log_param("platform", current_platform)
 

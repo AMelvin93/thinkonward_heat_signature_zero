@@ -1,16 +1,21 @@
 #!/usr/bin/env python
 """
-Run CMA-ES optimizer experiment and log to MLflow.
+Run Direct Solution optimizer experiment.
 
-CMA-ES is particularly effective for multi-modal problems like 2-source
-heat identification where L-BFGS-B can get stuck in local minima.
+This experiment tests a paradigm shift: instead of iterative optimization,
+use direct solution methods:
+
+1-source: Geometric trilateration from sensor onset times
+2-source: ICA signal decomposition + trilateration
+
+Then minimal CMA-ES polish to refine.
 
 Usage:
     # Prototype mode (all CPUs, no MLflow logging)
-    uv run python experiments/cmaes/run.py --workers -1
+    uv run python experiments/direct_solution/run.py --workers -1
 
     # G4dn simulation mode (7 workers, MLflow logging)
-    uv run python experiments/cmaes/run.py --workers 7
+    uv run python experiments/direct_solution/run.py --workers 7
 
 Must be run on WSL for accurate timing (per CLAUDE.md).
 """
@@ -24,15 +29,13 @@ import platform
 from pathlib import Path
 from datetime import datetime
 
-# experiments/cmaes/run.py -> project root is two levels up
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 import numpy as np
 from joblib import Parallel, delayed
 
-# Import from local experiment folder
-from experiments.cmaes.optimizer import CMAESOptimizer
+from experiments.direct_solution.optimizer import DirectSolutionOptimizer
 
 # G4dn.2xlarge simulation settings
 G4DN_WORKERS = 7
@@ -67,77 +70,60 @@ def calculate_sample_score(rmse, lambda_=0.3, n_max=3, max_rmse=1.0):
 
 
 def process_sample(sample, meta, config):
-    """Process a single sample with CMA-ES."""
-    optimizer = CMAESOptimizer(
-        max_fevals_1src=config['max_fevals_1src'],
-        max_fevals_2src=config['max_fevals_2src'],
-        sigma0_1src=config['sigma0_1src'],
-        sigma0_2src=config['sigma0_2src'],
-        use_triangulation=config['use_triangulation'],
-        use_lbfgsb_polish=config['use_polish'],
-        polish_max_iter=config['polish_max_iter'],
-        polish_max_iter_1src=config.get('polish_max_iter_1src'),
-        polish_max_iter_2src=config.get('polish_max_iter_2src'),
+    """Process a single sample with direct solution optimizer."""
+    optimizer = DirectSolutionOptimizer(
+        use_cmaes_polish=config['use_cmaes_polish'],
+        cmaes_polish_fevals=config['cmaes_polish_fevals'],
+        onset_threshold_fraction=config['onset_threshold'],
+        n_candidates=config['n_candidates'],
     )
 
     q_range = tuple(meta['q_range'])
 
     start = time.time()
-    sources, rmse, candidates = optimizer.estimate_sources(
+    candidates, best_rmse, results = optimizer.estimate_sources(
         sample, meta, q_range=q_range, verbose=False
     )
     elapsed = time.time() - start
 
-    n_evals = candidates[0].n_evals if candidates else 0
+    n_evals = sum(r.n_evals for r in results)
+    init_type = results[0].init_type if results else 'unknown'
 
     return {
         'sample_id': sample['sample_id'],
         'n_sources': sample['n_sources'],
-        'estimates': [{'x': x, 'y': y, 'q': q} for x, y, q in sources],
-        'rmse': rmse,
-        'score': calculate_sample_score(rmse),
+        'estimates': [
+            [{'x': x, 'y': y, 'q': q} for x, y, q in cand]
+            for cand in candidates
+        ],
+        'rmse': best_rmse,
+        'score': calculate_sample_score(best_rmse),
         'time': elapsed,
         'n_evals': n_evals,
+        'init_type': init_type,
     }
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Run CMA-ES optimizer')
+    parser = argparse.ArgumentParser(description='Run Direct Solution optimizer')
     parser.add_argument('--workers', type=int, default=7,
                         help='Number of workers (7 for G4dn, -1 for all CPUs)')
-    parser.add_argument('--max-fevals-1src', type=int, default=15,
-                        help='Max evaluations for 1-source')
-    parser.add_argument('--max-fevals-2src', type=int, default=25,
-                        help='Max evaluations for 2-source')
-    parser.add_argument('--sigma0-1src', type=float, default=0.10,
-                        help='Initial step size for 1-source')
-    parser.add_argument('--sigma0-2src', type=float, default=0.20,
-                        help='Initial step size for 2-source')
-    parser.add_argument('--polish', action='store_true', default=True,
-                        help='Add L-BFGS-B polish step (default: True)')
     parser.add_argument('--no-polish', action='store_true',
-                        help='Disable L-BFGS-B polish step')
-    parser.add_argument('--polish-iter', type=int, default=5,
-                        help='Max iterations for polish (default for both)')
-    parser.add_argument('--polish-iter-1src', type=int, default=None,
-                        help='Max polish iterations for 1-source (overrides --polish-iter)')
-    parser.add_argument('--polish-iter-2src', type=int, default=None,
-                        help='Max polish iterations for 2-source (overrides --polish-iter)')
-    parser.add_argument('--no-triangulation', action='store_true',
-                        help='Disable triangulation init')
+                        help='Disable CMA-ES polish (direct solution only)')
+    parser.add_argument('--polish-fevals', type=int, default=15,
+                        help='Max CMA-ES evaluations for polish')
+    parser.add_argument('--onset-threshold', type=float, default=0.05,
+                        help='Threshold fraction for onset detection')
+    parser.add_argument('--n-candidates', type=int, default=1,
+                        help='Number of candidates to generate')
     args = parser.parse_args()
 
     # Build config
     config = {
-        'max_fevals_1src': args.max_fevals_1src,
-        'max_fevals_2src': args.max_fevals_2src,
-        'sigma0_1src': args.sigma0_1src,
-        'sigma0_2src': args.sigma0_2src,
-        'use_triangulation': not args.no_triangulation,
-        'use_polish': args.polish and not args.no_polish,
-        'polish_max_iter': args.polish_iter,
-        'polish_max_iter_1src': args.polish_iter_1src,
-        'polish_max_iter_2src': args.polish_iter_2src,
+        'use_cmaes_polish': not args.no_polish,
+        'cmaes_polish_fevals': args.polish_fevals,
+        'onset_threshold': args.onset_threshold,
+        'n_candidates': args.n_candidates,
     }
 
     n_workers = args.workers
@@ -159,24 +145,15 @@ def main():
 
     # Print header
     print("=" * 70)
-    print("CMA-ES OPTIMIZER")
+    print("DIRECT SOLUTION OPTIMIZER")
     print("=" * 70)
     print(f"Platform: {current_platform.upper()}")
     print(f"Samples: {n_samples}")
     print(f"Workers: {actual_workers}" + (" (G4dn simulation)" if is_g4dn_simulation else " (prototype)"))
-    # Compute effective polish iterations for display
-    polish_1src = config['polish_max_iter_1src'] if config['polish_max_iter_1src'] is not None else config['polish_max_iter']
-    polish_2src = config['polish_max_iter_2src'] if config['polish_max_iter_2src'] is not None else config['polish_max_iter']
-    is_adaptive = config['polish_max_iter_1src'] is not None or config['polish_max_iter_2src'] is not None
-
     print(f"Config:")
-    print(f"  max_fevals: 1-src={config['max_fevals_1src']}, 2-src={config['max_fevals_2src']}")
-    print(f"  sigma0: 1-src={config['sigma0_1src']}, 2-src={config['sigma0_2src']}")
-    print(f"  triangulation: {config['use_triangulation']}")
-    if is_adaptive:
-        print(f"  polish: {config['use_polish']} (ADAPTIVE: 1-src={polish_1src}, 2-src={polish_2src})")
-    else:
-        print(f"  polish: {config['use_polish']} (iter={config['polish_max_iter']})")
+    print(f"  cmaes_polish: {config['use_cmaes_polish']} (fevals={config['cmaes_polish_fevals']})")
+    print(f"  onset_threshold: {config['onset_threshold']}")
+    print(f"  n_candidates: {config['n_candidates']}")
     print(f"MLflow logging: {'ENABLED' if is_g4dn_simulation else 'DISABLED'}")
 
     if not is_valid_platform:
@@ -184,7 +161,7 @@ def main():
         print("[WARNING] Running on Windows - timing will be ~35% slower than Linux!")
         print("[WARNING] For accurate submission timing, run on WSL:")
         print("          cd /mnt/c/Users/amelv/Repo/thinkonward_heat_signature_zero")
-        print("          uv run python scripts/run_cmaes.py --workers 7")
+        print("          uv run python experiments/direct_solution/run.py --workers 7")
     print("=" * 70)
 
     # Process samples
@@ -202,21 +179,31 @@ def main():
     all_rmses = [r['rmse'] for r in results]
     all_scores = [r['score'] for r in results]
     all_evals = [r['n_evals'] for r in results]
+    all_times = [r['time'] for r in results]
 
     rmse_by_nsources = {}
     evals_by_nsources = {}
+    times_by_nsources = {}
+    init_types = {}
+
     for r in results:
         n_src = r['n_sources']
         if n_src not in rmse_by_nsources:
             rmse_by_nsources[n_src] = []
             evals_by_nsources[n_src] = []
+            times_by_nsources[n_src] = []
         rmse_by_nsources[n_src].append(r['rmse'])
         evals_by_nsources[n_src].append(r['n_evals'])
+        times_by_nsources[n_src].append(r['time'])
+
+        init_type = r.get('init_type', 'unknown')
+        init_types[init_type] = init_types.get(init_type, 0) + 1
 
     rmse_mean = np.mean(all_rmses)
     rmse_std = np.std(all_rmses)
     final_score = np.mean(all_scores)
     avg_evals = np.mean(all_evals)
+    avg_time = np.mean(all_times)
 
     # Project time for 400 samples
     projected_400 = (total_time / n_samples) * COMPETITION_SAMPLES / 60
@@ -227,7 +214,7 @@ def main():
         mlflow.set_tracking_uri("mlruns")
         mlflow.set_experiment("heat-signature-zero")
 
-        run_name = f"cmaes_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        run_name = f"direct_solution_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         with mlflow.start_run(run_name=run_name):
             # Key metrics
@@ -240,19 +227,17 @@ def main():
             mlflow.log_metric("rmse_1src", np.mean(rmse_by_nsources.get(1, [0])))
             mlflow.log_metric("rmse_2src", np.mean(rmse_by_nsources.get(2, [0])))
             mlflow.log_metric("avg_evals", avg_evals)
+            mlflow.log_metric("avg_evals_1src", np.mean(evals_by_nsources.get(1, [0])))
+            mlflow.log_metric("avg_evals_2src", np.mean(evals_by_nsources.get(2, [0])))
+            mlflow.log_metric("avg_time_per_sample", avg_time)
             mlflow.log_metric("total_time_sec", total_time)
 
             # Parameters
-            mlflow.log_param("optimizer", "CMAESOptimizer")
-            mlflow.log_param("max_fevals_1src", config['max_fevals_1src'])
-            mlflow.log_param("max_fevals_2src", config['max_fevals_2src'])
-            mlflow.log_param("sigma0_1src", config['sigma0_1src'])
-            mlflow.log_param("sigma0_2src", config['sigma0_2src'])
-            mlflow.log_param("use_triangulation", config['use_triangulation'])
-            mlflow.log_param("use_polish", config['use_polish'])
-            mlflow.log_param("polish_iter_1src", polish_1src)
-            mlflow.log_param("polish_iter_2src", polish_2src)
-            mlflow.log_param("adaptive_polish", is_adaptive)
+            mlflow.log_param("optimizer", "DirectSolutionOptimizer")
+            mlflow.log_param("use_cmaes_polish", config['use_cmaes_polish'])
+            mlflow.log_param("cmaes_polish_fevals", config['cmaes_polish_fevals'])
+            mlflow.log_param("onset_threshold", config['onset_threshold'])
+            mlflow.log_param("n_candidates", config['n_candidates'])
             mlflow.log_param("n_workers", G4DN_WORKERS)
             mlflow.log_param("platform", current_platform)
 
@@ -281,6 +266,7 @@ def main():
     print(f"RMSE:             {rmse_mean:.6f} +/- {rmse_std:.6f}")
     print(f"Submission Score: {final_score:.4f}")
     print(f"Avg Evaluations:  {avg_evals:.1f}")
+    print(f"Avg Time/Sample:  {avg_time:.3f}s")
     print(f"Total Time:       {total_time:.1f}s")
     print(f"Projected (400):  {projected_400:.1f} min")
     print()
@@ -288,8 +274,13 @@ def main():
     for n_src in sorted(rmse_by_nsources.keys()):
         rmses = rmse_by_nsources[n_src]
         evals = evals_by_nsources[n_src]
+        times = times_by_nsources[n_src]
         print(f"  {n_src}-source: RMSE={np.mean(rmses):.6f} +/- {np.std(rmses):.6f}, "
-              f"evals={np.mean(evals):.1f} (n={len(rmses)})")
+              f"evals={np.mean(evals):.1f}, time={np.mean(times):.3f}s (n={len(rmses)})")
+    print()
+    print("Initialization methods used:")
+    for init_type, count in sorted(init_types.items()):
+        print(f"  {init_type}: {count} samples")
     print("=" * 70)
 
     # Status message

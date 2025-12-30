@@ -71,6 +71,8 @@ class CMAESOptimizer:
         use_triangulation: bool = True,
         use_lbfgsb_polish: bool = True,
         polish_max_iter: int = 5,
+        polish_max_iter_1src: Optional[int] = None,
+        polish_max_iter_2src: Optional[int] = None,
     ):
         """
         Initialize the CMA-ES optimizer.
@@ -84,7 +86,9 @@ class CMAESOptimizer:
             sigma0_2src: Initial step size for 2-source (larger = explore more)
             use_triangulation: Use triangulation for initialization
             use_lbfgsb_polish: Add L-BFGS-B polishing step after CMA-ES
-            polish_max_iter: Max iterations for L-BFGS-B polish
+            polish_max_iter: Max iterations for L-BFGS-B polish (default for both)
+            polish_max_iter_1src: Override polish iterations for 1-source (None = use polish_max_iter)
+            polish_max_iter_2src: Override polish iterations for 2-source (None = use polish_max_iter)
         """
         self.Lx = Lx
         self.Ly = Ly
@@ -97,6 +101,9 @@ class CMAESOptimizer:
         self.use_triangulation = use_triangulation
         self.use_lbfgsb_polish = use_lbfgsb_polish
         self.polish_max_iter = polish_max_iter
+        # Per-source-type polish settings (None means use default)
+        self.polish_max_iter_1src = polish_max_iter_1src
+        self.polish_max_iter_2src = polish_max_iter_2src
 
     def _create_solver(self, kappa: float, bc: str) -> Heat2D:
         """Create a Heat2D solver instance."""
@@ -270,8 +277,14 @@ class CMAESOptimizer:
         if verbose:
             print(f"  CMA-ES complete: RMSE={best_rmse:.4f}, evals={n_evals}")
 
-        # Optional L-BFGS-B polish
-        if self.use_lbfgsb_polish:
+        # Optional L-BFGS-B polish (with per-source-type settings)
+        # Determine polish iterations for this problem type
+        if n_sources == 1:
+            polish_iter = self.polish_max_iter_1src if self.polish_max_iter_1src is not None else self.polish_max_iter
+        else:
+            polish_iter = self.polish_max_iter_2src if self.polish_max_iter_2src is not None else self.polish_max_iter
+
+        if self.use_lbfgsb_polish and polish_iter > 0:
             from scipy.optimize import minimize
 
             scipy_bounds = self._get_scipy_bounds(n_sources, q_range)
@@ -282,7 +295,7 @@ class CMAESOptimizer:
                     x0=best_params,
                     method='L-BFGS-B',
                     bounds=scipy_bounds,
-                    options={'maxiter': self.polish_max_iter}
+                    options={'maxiter': polish_iter}
                 )
                 if result.fun < best_rmse:
                     best_params = result.x
@@ -290,9 +303,11 @@ class CMAESOptimizer:
                     n_evals += result.nfev
 
                     if verbose:
-                        print(f"  L-BFGS-B polish: RMSE={best_rmse:.4f}")
+                        print(f"  L-BFGS-B polish (iter={polish_iter}): RMSE={best_rmse:.4f}")
             except Exception:
                 pass
+        elif verbose and self.use_lbfgsb_polish:
+            print(f"  L-BFGS-B polish: SKIPPED (iter=0 for {n_sources}-source)")
 
         # Build result
         sources = []

@@ -16,7 +16,8 @@
       "WebFetch(domain:math.mit.edu)",
       "WebFetch(domain:aalexan3.math.ncsu.edu)",
       "Bash(python:*)",
-      "Bash(uv run python:*)"
+      "Bash(uv run python:*)",
+      "Bash(rm:*)"
     ]
   }
 }
