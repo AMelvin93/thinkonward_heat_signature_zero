@@ -1,14 +1,46 @@
 # Research: Next Steps for Heat Signature Zero
 
-*Last updated: 2024-12-29*
-*Current best score: 0.8577 (Multi-Candidates fevals 28/50, 54.0 min) ← NEW BEST!*
-*Previous best: 0.8455 (Multi-Candidates fevals 25/45, 51.6 min)*
+*Last updated: 2024-12-30*
+*FINAL SUBMISSION: TransferLearningOptimizer 0.8107 @ 54.6 min ✅*
+
+---
+
+## Final Evaluation Reminder (CRITICAL)
+- **70%** - Performance on holdout dataset
+- **20%** - Innovation score (learning at inference, smart optimization, generalizability)
+- **10%** - Interpretability of Jupyter Notebook
+
+**Key for 20% Innovation Score:**
+- Active simulator use during inference ✓ (we have this)
+- Smart optimization beyond brute-force ✓ (CMA-ES + triangulation)
+- **Evidence of learning at inference** ✓ (Transfer Learning - improves across batches!)
+- **Generalizable methods** ✓ (Feature-based similarity matching)
 
 ---
 
 ## Executive Summary
 
-Based on testing and analysis, here's the current status:
+### 🏆 CURRENT BEST MODEL (FINAL SUBMISSION)
+
+| Model | Score | RMSE | Time | Status |
+|-------|-------|------|------|--------|
+| **TransferLearningOptimizer** | **0.8107** | ~0.45 | **54.6 min** | ✅ **SELECTED** |
+
+**Config:** `--k-similar 1 --max-fevals-1src 15 --max-fevals-2src 30`
+**MLflow:** `transfer_learning_20251230_XXXXXX`
+
+**Key Innovation Features:**
+- Batch processing with history accumulation between batches
+- Feature-based similarity matching for solution transfer
+- Demonstrates "learning at inference" - 12.5% of best results from transferred solutions
+
+### Runner-up Model (Safe Fallback)
+
+| Model | Score | RMSE | Time | Status |
+|-------|-------|------|------|--------|
+| MultiCandidateOptimizer | 0.7764 | 0.525 | 53.8 min | ✅ Previous best |
+
+### Approach History
 
 | Priority | Approach | Status | Result |
 |----------|----------|--------|--------|
@@ -18,10 +50,250 @@ Based on testing and analysis, here's the current status:
 | ~~4~~ | ~~JAX/Differentiable Sim~~ | **TESTED - NOT VIABLE** | GPU overhead too high |
 | ~~5~~ | ~~Adaptive Polish~~ | **TESTED - NOT EFFECTIVE** | Inconsistent timing |
 | ~~6~~ | ~~Intensity-Only Polish~~ | **TESTED - VIABLE** | 0.7862 @ 58 min |
-| ~~7~~ | ~~Multiple Candidates~~ | **TESTED - BEST RESULT** | **0.8455 @ 51.6 min** |
-| **1** | Fine-tune Multi-Candidates | **NEXT TO TRY** | ~3 min headroom to 55 min |
+| ~~7~~ | ~~Multiple Candidates~~ | **FINALIZED** | 0.7764 @ 53.8 min |
+| ~~8~~ | ~~Transfer Learning~~ | **FINALIZED** | **0.8107 @ 54.6 min ✅** |
+
+### Future Improvements (If Time Permits)
+| Priority | Approach | Status | Potential |
+|----------|----------|--------|-----------|
+| ~~1~~ | ~~Transfer Learning~~ | **DONE** | **+4.4% score improvement** |
 | **2** | Multi-Fidelity GP | Not started | Medium potential |
 | **3** | PINN Surrogate | Not started | High effort, high potential |
+
+---
+
+## 🎯 Innovation Score Boosters (20% of Final Score)
+
+These approaches specifically target the **"learning at inference"** and **"generalizability"** criteria that judges will assess.
+
+### ✅ PRIORITY 1: Sample-to-Sample Transfer Learning ⭐⭐⭐⭐⭐ **IMPLEMENTED**
+
+**Status**: COMPLETED - Score 0.8107 @ 54.6 min
+
+**Implementation**: `experiments/transfer_learning/`
+- `optimizer.py`: TransferLearningOptimizer with feature extraction and similarity matching
+- `run.py`: Batch processing with history accumulation
+
+**Results**:
+| Config | Score | RMSE | Transfers Used | Time |
+|--------|-------|------|----------------|------|
+| k=2, 20/40 fevals | 0.8844 | best | high | 83.5 min ❌ |
+| k=1, 20/40 fevals | 0.8716 | good | moderate | 60.8 min ⚠️ |
+| **k=1, 15/30 fevals** | **0.8107** | good | 12.5% | **54.6 min ✅** |
+
+**Key Innovation Points**:
+- Batch processing maintains parallelism while enabling transfer
+- Feature-based similarity matching using thermal characteristics
+- 12.5% of samples got best result from transferred initialization
+- Demonstrates "learning at inference" - model improves as it processes batches
+
+**Why judges will like this**:
+- Shows explicit "learning at inference" ✓
+- Demonstrates "adaptive refinement" as more samples are processed ✓
+- Generalizable pattern for any simulation-driven problem ✓
+
+---
+
+### (PREVIOUSLY) PRIORITY 1: Sample-to-Sample Transfer Learning (Original Proposal)
+
+**Why it matters**: Currently each sample is solved independently. Adding transfer shows "adaptive refinement" and "learning at inference".
+
+**Implementation**:
+```python
+class TransferLearningOptimizer:
+    def __init__(self):
+        self.solved_samples = []  # Store (sample_features, solution) pairs
+        self.feature_extractor = self._build_feature_extractor()
+
+    def _extract_features(self, sample):
+        """Extract sample characteristics for similarity matching."""
+        Y = sample['Y_noisy']
+        return np.array([
+            Y.max(),                    # Peak temperature
+            Y.mean(),                   # Mean temperature
+            np.std(Y),                  # Temperature variance
+            sample['n_sources'],        # Number of sources
+            len(sample['sensors_xy']),  # Number of sensors
+            sample['sample_metadata']['kappa'],  # Diffusivity
+        ])
+
+    def _find_similar_samples(self, sample, k=3):
+        """Find k most similar previously solved samples."""
+        if not self.solved_samples:
+            return []
+
+        query_features = self._extract_features(sample)
+        similarities = []
+        for features, solution in self.solved_samples:
+            dist = np.linalg.norm(query_features - features)
+            similarities.append((dist, solution))
+
+        similarities.sort(key=lambda x: x[0])
+        return [sol for _, sol in similarities[:k]]
+
+    def estimate_sources(self, sample, meta):
+        # Get initializations from similar samples
+        similar_solutions = self._find_similar_samples(sample)
+
+        # Use similar solutions as additional starting points!
+        initializations = [triangulation_init(sample, meta)]
+        for sol in similar_solutions:
+            initializations.append(sol)  # Transfer knowledge
+
+        # Run CMA-ES from best initialization
+        best_result = None
+        for init in initializations:
+            result = cmaes_optimize(init, sample, meta)
+            if best_result is None or result.rmse < best_result.rmse:
+                best_result = result
+
+        # Store for future transfer
+        self.solved_samples.append((self._extract_features(sample), best_result.params))
+
+        return best_result
+```
+
+**Why judges will like this**:
+- Shows explicit "learning at inference"
+- Demonstrates "adaptive refinement" as more samples are processed
+- Generalizable pattern for any simulation-driven problem
+
+**Effort**: Medium
+
+---
+
+### PRIORITY 2: Online Surrogate Learning ⭐⭐⭐⭐
+
+**Why it matters**: Building a surrogate model during inference demonstrates "learning" and efficiency.
+
+**Implementation**:
+```python
+class OnlineSurrogateOptimizer:
+    def __init__(self):
+        self.global_surrogate = None
+        self.all_evaluations = []  # (params, rmse) across all samples
+
+    def estimate_sources(self, sample, meta):
+        # Phase 1: Use global surrogate for smart initialization (if available)
+        if self.global_surrogate is not None:
+            # Pre-screen 100 random candidates
+            candidates = random_sample(100)
+            predictions = self.global_surrogate.predict(candidates)
+            best_idx = np.argmin(predictions)
+            smart_init = candidates[best_idx]
+        else:
+            smart_init = triangulation_init(sample, meta)
+
+        # Phase 2: Run CMA-ES, collect all evaluations
+        result, evaluations = cmaes_with_history(smart_init, sample, meta)
+
+        # Phase 3: Update global surrogate with new data
+        self.all_evaluations.extend(evaluations)
+        if len(self.all_evaluations) > 50:
+            X = np.array([e[0] for e in self.all_evaluations])
+            y = np.array([e[1] for e in self.all_evaluations])
+            self.global_surrogate = GaussianProcessRegressor()
+            self.global_surrogate.fit(X, y)
+
+        return result
+```
+
+**Why judges will like this**:
+- Explicit "learning at inference"
+- Surrogate improves as more samples processed
+- Classic technique in simulation-based optimization literature
+
+**Effort**: Medium-High
+
+---
+
+### PRIORITY 3: Emphasize Physics-Informed Aspects ⭐⭐⭐
+
+**Why it matters**: Our triangulation IS physics-informed but we don't emphasize it. This is LOW EFFORT, HIGH IMPACT for innovation score.
+
+**What to do**:
+1. **Rename/rebrand** the approach as "Physics-Informed Heat Source Localization"
+2. **Document in notebook** the heat diffusion physics: `r = sqrt(4*κ*t)`
+3. **Explain** how triangulation uses the physics of thermal diffusion
+4. **Frame** CMA-ES as "physics-guided optimization"
+
+**Notebook sections to add**:
+```markdown
+## Physics-Informed Initialization
+
+Our approach leverages the fundamental physics of heat diffusion. The heat equation:
+
+$$\frac{\partial T}{\partial t} = \kappa \nabla^2 T$$
+
+implies that thermal signals propagate with characteristic speed related to diffusivity κ.
+By detecting when each sensor first "sees" the heat signal, we can estimate the distance
+to the source using:
+
+$$r = \sqrt{4 \kappa t_{onset}}$$
+
+This transforms the inverse problem into a trilateration problem, providing a
+physics-grounded initialization that dramatically reduces the search space for
+subsequent optimization.
+```
+
+**Effort**: Low (documentation only)
+
+---
+
+### PRIORITY 4: Bayesian Optimization Layer ⭐⭐⭐
+
+**Why it matters**: BO is explicitly mentioned in the evaluation criteria as a "smart optimization strategy".
+
+**Implementation**:
+```python
+from sklearn.gaussian_process import GaussianProcessRegressor
+from scipy.stats import norm
+
+def bayesian_optimization_init(sample, meta, n_initial=10, n_bo_iters=5):
+    """Use Bayesian Optimization to find good initialization."""
+
+    # Initial random samples
+    X = latin_hypercube_sample(bounds, n=n_initial)
+    y = [simulate_and_score(x, sample, meta) for x in X]
+
+    # Build GP surrogate
+    gp = GaussianProcessRegressor(normalize_y=True)
+    gp.fit(X, y)
+
+    # BO iterations
+    for _ in range(n_bo_iters):
+        # Expected Improvement acquisition
+        def ei(x):
+            mu, sigma = gp.predict([x], return_std=True)
+            best = min(y)
+            z = (best - mu) / (sigma + 1e-8)
+            return -(sigma * (z * norm.cdf(z) + norm.pdf(z)))
+
+        # Optimize acquisition
+        next_x = minimize(ei, random_init(), bounds=bounds).x
+        next_y = simulate_and_score(next_x, sample, meta)
+
+        X = np.vstack([X, next_x])
+        y = np.append(y, next_y)
+        gp.fit(X, y)
+
+    return X[np.argmin(y)]  # Best found point
+```
+
+**Effort**: Medium
+
+---
+
+### Recommended Innovation Implementation Order
+
+| Priority | Approach | Effort | Innovation Impact | Performance Impact |
+|----------|----------|--------|-------------------|-------------------|
+| **1** | Physics-Informed Documentation | Low | High | None (docs only) |
+| **2** | Sample-to-Sample Transfer | Medium | Very High | Moderate |
+| **3** | Bayesian Optimization Layer | Medium | High | Moderate |
+| **4** | Online Surrogate Learning | Medium-High | Very High | Moderate |
+
+**Minimum for good innovation score**: Priority 1 + 2
 
 ---
 
@@ -684,15 +956,22 @@ Options to explore:
 
 ## Current Best Configurations
 
-### Option 1: Multi-Candidates (BEST SCORE - 54.0 min) ⭐ RECOMMENDED
+### FINAL SUBMISSION: Multi-Candidates (53.8 min) ⭐ SELECTED
 ```bash
-uv run python experiments/multi_candidates/run.py --workers 7 --max-fevals-1src 28 --max-fevals-2src 50
+uv run python experiments/multi_candidates/run.py --workers 7 --max-fevals-1src 20 --max-fevals-2src 40
 ```
-- **Score: 0.8577** ← BEST score!
-- **RMSE: 0.4307** (best RMSE)
-- **Avg Candidates: 2.1**
-- **Projected: 54.0 min**
-- MLflow run: `multi_candidates_20251229_193940`
+- **Score: 0.7764**
+- **RMSE: 0.5247**
+- **Avg Candidates: 2.2**
+- **Projected: 53.8 min** ✅ Safe buffer for G4dn.2xlarge
+- MLflow run: `multi_candidates_20251230_140041`
+
+### Option 1 (Higher Score, Over Budget):
+```bash
+uv run python experiments/multi_candidates/run.py --workers 7 --max-fevals-1src 25 --max-fevals-2src 45
+```
+- **Score: 0.8043**
+- **Projected: 63.2 min** ❌ Over budget
 
 ### Option 2: Intensity-Only Polish (58.0 min)
 ```bash

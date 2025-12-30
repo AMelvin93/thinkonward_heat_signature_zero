@@ -13,10 +13,18 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 
 ## Models in MLflow
 
-### SELECTED FOR SUBMISSION (2024-12-29)
+### SELECTED FOR SUBMISSION (2024-12-30)
 | Run Name | Optimizer | Score | RMSE | Projected Time | Config |
 |----------|-----------|-------|------|----------------|--------|
-| `cmaes_20251229_124607` | CMAESOptimizer | **0.7501** | 0.515 | **57.2 min** | polish_iter=1, triangulation=True |
+| `transfer_learning_XXXXXX` | TransferLearningOptimizer | **0.8107** | ~0.45 | **54.6 min** | k_similar=1, fevals=15/30, batch_size=20 |
+
+**Key Innovation**: Demonstrates "learning at inference" - transfers solutions from similar samples as additional CMA-ES initializations. 12.5% of samples had best result from transferred init.
+
+### Previous Submissions
+| Run Name | Optimizer | Score | RMSE | Projected Time | Config |
+|----------|-----------|-------|------|----------------|--------|
+| `multi_candidates_20251230_140041` | MultiCandidateOptimizer | 0.7764 | 0.525 | 53.8 min | fevals=20/40, triangulation=True, intensity_polish=True |
+| `cmaes_20251229_124607` | CMAESOptimizer | 0.7501 | 0.515 | 57.2 min | polish_iter=1, triangulation=True |
 
 ### CMA-ES Testing Results (2024-12-29)
 | Run Name | Score | RMSE | Projected | Config |
@@ -40,7 +48,9 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 ### Currently Used
 | File | Status | Description |
 |------|--------|-------------|
-| `experiments/cmaes/optimizer.py` | **SELECTED** | CMA-ES + L-BFGS-B polish with triangulation init |
+| `experiments/transfer_learning/optimizer.py` | **SELECTED** | Transfer learning + CMA-ES with feature-based similarity matching |
+| `experiments/transfer_learning/run.py` | **SELECTED** | Batch processing with history accumulation for transfer |
+| `experiments/cmaes/optimizer.py` | Previous | CMA-ES + L-BFGS-B polish with triangulation init |
 | `triangulation.py` | **PRODUCTION** | Physics-based initialization from sensor onset times |
 | `hybrid_optimizer.py` | Previous | NumPy + L-BFGS-B with triangulation init and joblib parallelism |
 | `optimizer.py` | Baseline | Original L-BFGS-B implementation |
