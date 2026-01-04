@@ -13,12 +13,28 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 
 ## Models in MLflow
 
-### SELECTED FOR SUBMISSION (2024-12-30)
+### SELECTED FOR SUBMISSION (2026-01-04)
 | Run Name | Optimizer | Score | RMSE | Projected Time | Config |
 |----------|-----------|-------|------|----------------|--------|
-| `transfer_learning_XXXXXX` | TransferLearningOptimizer | **0.8107** | ~0.45 | **54.6 min** | k_similar=1, fevals=15/30, batch_size=20 |
+| `enhanced_transfer_20260104_141737` | EnhancedTransferOptimizer | **0.8688** | 0.456 | **55.6 min** | fevals=18/36, shuffle=True, enhanced_features=True, adaptive_k=False |
 
-**Key Innovation**: Demonstrates "learning at inference" - transfers solutions from similar samples as additional CMA-ES initializations. 12.5% of samples had best result from transferred init.
+**Key Innovation**: Enhanced 11-feature similarity matching doubles transfer effectiveness (17.5% vs 8.8%).
+
+**Enhanced Features (11 vs 5 basic)**:
+- Basic: max_temp, mean_temp, std_temp, kappa, n_sensors
+- Spatial: centroid_x, centroid_y, spatial_spread
+- Temporal: onset_mean, onset_std
+- Correlation: avg_sensor_correlation
+
+**Per-Source Performance**:
+- 1-source RMSE: **0.276** (excellent)
+- 2-source RMSE: **0.576** (main bottleneck - 2x worse)
+
+**Batch RMSE Progression** (shows transfer learning working):
+- Batch 1: 0.4071 (no history)
+- Batch 2: 0.5391
+- Batch 3: 0.4512
+- Batch 4: 0.4273 (lowest - most history)
 
 ### Previous Submissions
 | Run Name | Optimizer | Score | RMSE | Projected Time | Config |

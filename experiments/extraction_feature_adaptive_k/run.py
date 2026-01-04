@@ -1,26 +1,25 @@
 #!/usr/bin/env python
 """
-Run Transfer Learning Optimizer experiment.
+Run Enhanced Transfer Learning Optimizer with Improved Features and Adaptive k.
 
-Key Innovation: Processes samples in batches, with each batch benefiting
-from solutions found in previous batches. This demonstrates "learning at
-inference" - the optimizer improves as it processes more samples.
+Key Improvements:
+1. Enhanced Feature Extraction (11 features vs 5):
+   - Basic: max_temp, mean_temp, std_temp, kappa, n_sensors
+   - Spatial: centroid_x, centroid_y, spatial_spread
+   - Temporal: onset_mean, onset_std
+   - Correlation: avg_sensor_correlation
 
-Batch Processing Strategy:
-- Batch 1 (samples 0-19): No history, normal processing
-- Batch 2 (samples 20-39): Uses 20 samples in history
-- Batch 3 (samples 40-59): Uses 40 samples in history
-- Batch 4 (samples 60-79): Uses 60 samples in history
-
-This maintains parallelism within batches while enabling transfer learning
-between batches.
+2. Adaptive k Selection:
+   - Hard samples (2-source, low SNR) get k=2
+   - Easy samples (1-source, high SNR) get k=1
 
 Usage:
     # G4dn simulation (7 workers, MLflow logging)
-    uv run python experiments/transfer_learning/run.py --workers 7
+    uv run python experiments/extraction_feature_adaptive_k/run.py --workers 7 --shuffle
 
-    # Prototype mode (all CPUs)
-    uv run python experiments/transfer_learning/run.py --workers -1
+    # Compare with/without enhancements
+    uv run python experiments/extraction_feature_adaptive_k/run.py --workers 7 --shuffle --no-enhanced-features
+    uv run python experiments/extraction_feature_adaptive_k/run.py --workers 7 --shuffle --no-adaptive-k
 """
 
 import sys
@@ -39,9 +38,10 @@ sys.path.insert(0, str(project_root))
 import numpy as np
 from joblib import Parallel, delayed
 
-from experiments.transfer_learning.optimizer import (
-    TransferLearningOptimizer,
-    extract_features,
+from experiments.extraction_feature_adaptive_k.optimizer import (
+    EnhancedTransferOptimizer,
+    extract_enhanced_features,
+    extract_basic_features,
     N_MAX,
 )
 
@@ -85,8 +85,8 @@ def calculate_sample_score(rmses, lambda_=LAMBDA, n_max=N_MAX, max_rmse=1.0):
 
 
 def process_sample_with_transfer(sample, meta, config, history_1src, history_2src):
-    """Process a single sample with transfer learning from history."""
-    optimizer = TransferLearningOptimizer(
+    """Process a single sample with enhanced transfer learning."""
+    optimizer = EnhancedTransferOptimizer(
         max_fevals_1src=config['max_fevals_1src'],
         max_fevals_2src=config['max_fevals_2src'],
         sigma0_1src=config['sigma0_1src'],
@@ -96,13 +96,16 @@ def process_sample_with_transfer(sample, meta, config, history_1src, history_2sr
         intensity_polish=config['intensity_polish'],
         intensity_polish_maxiter=config['intensity_polish_maxiter'],
         candidate_pool_size=config['candidate_pool_size'],
-        k_similar=config['k_similar'],
+        k_easy=config['k_easy'],
+        k_hard=config['k_hard'],
+        use_adaptive_k=config['use_adaptive_k'],
+        use_enhanced_features=config['use_enhanced_features'],
     )
 
     q_range = tuple(meta['q_range'])
 
     start = time.time()
-    candidates, best_rmse, results, features, best_params, n_transferred = optimizer.estimate_sources(
+    candidates, best_rmse, results, features, best_params, n_transferred, difficulty = optimizer.estimate_sources(
         sample, meta, q_range=q_range,
         history_1src=history_1src,
         history_2src=history_2src,
@@ -132,6 +135,7 @@ def process_sample_with_transfer(sample, meta, config, history_1src, history_2sr
         'n_evals': n_evals,
         'n_transferred': n_transferred,
         'best_init_type': best_init_type,
+        'difficulty': difficulty,
         # For history update
         'features': features,
         'best_params': best_params,
@@ -141,7 +145,6 @@ def process_sample_with_transfer(sample, meta, config, history_1src, history_2sr
 def process_batch(samples, meta, config, history_1src, history_2src, n_workers):
     """Process a batch of samples in parallel with shared history."""
     # Make copies of history for parallel processing
-    # (each worker gets the same history snapshot)
     h1_copy = deepcopy(history_1src)
     h2_copy = deepcopy(history_2src)
 
@@ -154,14 +157,14 @@ def process_batch(samples, meta, config, history_1src, history_2src, n_workers):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Run Transfer Learning Optimizer')
+    parser = argparse.ArgumentParser(description='Run Enhanced Transfer Learning Optimizer')
     parser.add_argument('--workers', type=int, default=7,
                         help='Number of workers (7 for G4dn, -1 for all CPUs)')
     parser.add_argument('--batch-size', type=int, default=20,
                         help='Samples per batch for transfer learning')
-    parser.add_argument('--max-fevals-1src', type=int, default=20,
+    parser.add_argument('--max-fevals-1src', type=int, default=18,
                         help='Max CMA-ES evaluations for 1-source')
-    parser.add_argument('--max-fevals-2src', type=int, default=40,
+    parser.add_argument('--max-fevals-2src', type=int, default=36,
                         help='Max CMA-ES evaluations for 2-source')
     parser.add_argument('--sigma0-1src', type=float, default=0.10,
                         help='Initial step size for 1-source')
@@ -177,10 +180,19 @@ def main():
                         help='Max iterations for intensity polish')
     parser.add_argument('--pool-size', type=int, default=10,
                         help='Number of top solutions to consider')
-    parser.add_argument('--k-similar', type=int, default=2,
-                        help='Number of similar samples to transfer from')
+    # Adaptive k options
+    parser.add_argument('--k-easy', type=int, default=1,
+                        help='k for easy samples (default: 1)')
+    parser.add_argument('--k-hard', type=int, default=2,
+                        help='k for hard samples (default: 2)')
+    parser.add_argument('--no-adaptive-k', action='store_true',
+                        help='Disable adaptive k (use fixed k=k_easy)')
+    # Enhanced features option
+    parser.add_argument('--no-enhanced-features', action='store_true',
+                        help='Use basic features instead of enhanced')
+    # Shuffle option
     parser.add_argument('--shuffle', action='store_true',
-                        help='Shuffle samples before batching (improves transfer diversity)')
+                        help='Shuffle samples before batching')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed for shuffle (default: 42)')
     args = parser.parse_args()
@@ -196,7 +208,10 @@ def main():
         'intensity_polish': not args.no_polish,
         'intensity_polish_maxiter': args.polish_maxiter,
         'candidate_pool_size': args.pool_size,
-        'k_similar': args.k_similar,
+        'k_easy': args.k_easy,
+        'k_hard': args.k_hard,
+        'use_adaptive_k': not args.no_adaptive_k,
+        'use_enhanced_features': not args.no_enhanced_features,
     }
 
     n_workers = args.workers
@@ -213,11 +228,11 @@ def main():
     with open(data_path, 'rb') as f:
         data = pickle.load(f)
 
-    samples = list(data['samples'])  # Make a copy for potential shuffling
+    samples = list(data['samples'])
     meta = data['meta']
     n_samples = len(samples)
 
-    # Shuffle samples if requested (improves transfer learning diversity)
+    # Shuffle samples if requested
     shuffle_enabled = args.shuffle
     shuffle_seed = args.seed
     if shuffle_enabled:
@@ -228,7 +243,7 @@ def main():
 
     # Print header
     print("=" * 70)
-    print("TRANSFER LEARNING OPTIMIZER")
+    print("ENHANCED TRANSFER LEARNING OPTIMIZER")
     print("=" * 70)
     print(f"Platform: {current_platform.upper()}")
     print(f"Samples: {n_samples}")
@@ -238,9 +253,11 @@ def main():
     print(f"  max_fevals: 1-src={config['max_fevals_1src']}, 2-src={config['max_fevals_2src']}")
     print(f"  triangulation: {config['use_triangulation']}")
     print(f"  n_candidates: {config['n_candidates']}")
-    print(f"  k_similar: {config['k_similar']} (transfer learning)")
     print(f"  intensity_polish: {config['intensity_polish']}")
     print(f"  shuffle: {shuffle_enabled}" + (f" (seed={shuffle_seed})" if shuffle_enabled else ""))
+    print(f"ENHANCEMENTS:")
+    print(f"  enhanced_features: {config['use_enhanced_features']} (11 features vs 5)")
+    print(f"  adaptive_k: {config['use_adaptive_k']} (k_easy={config['k_easy']}, k_hard={config['k_hard']})")
     print(f"MLflow logging: {'ENABLED' if is_g4dn_simulation else 'DISABLED'}")
 
     if not is_valid_platform:
@@ -251,7 +268,7 @@ def main():
     # === BATCH PROCESSING WITH TRANSFER LEARNING ===
     start_total = time.time()
 
-    history_1src = []  # [(features, best_params), ...]
+    history_1src = []
     history_2src = []
     all_results = []
 
@@ -281,8 +298,10 @@ def main():
         # Print batch summary
         batch_rmses = [r['best_rmse'] for r in batch_results]
         batch_transfers = [r['n_transferred'] for r in batch_results]
+        batch_difficulties = [r['difficulty'] for r in batch_results]
         print(f"  -> Batch RMSE: {np.mean(batch_rmses):.4f}, "
-              f"Avg transfers used: {np.mean(batch_transfers):.1f}")
+              f"Avg transfers: {np.mean(batch_transfers):.1f}, "
+              f"Avg difficulty: {np.mean(batch_difficulties):.2f}")
 
     total_time = time.time() - start_total
 
@@ -292,6 +311,7 @@ def main():
     all_n_candidates = [r['n_candidates'] for r in all_results]
     all_evals = [r['n_evals'] for r in all_results]
     all_transfers = [r['n_transferred'] for r in all_results]
+    all_difficulties = [r['difficulty'] for r in all_results]
 
     # Track init types
     init_type_counts = {}
@@ -302,15 +322,18 @@ def main():
     rmse_by_nsources = {}
     evals_by_nsources = {}
     transfers_by_nsources = {}
+    difficulty_by_nsources = {}
     for r in all_results:
         n_src = r['n_sources']
         if n_src not in rmse_by_nsources:
             rmse_by_nsources[n_src] = []
             evals_by_nsources[n_src] = []
             transfers_by_nsources[n_src] = []
+            difficulty_by_nsources[n_src] = []
         rmse_by_nsources[n_src].append(r['best_rmse'])
         evals_by_nsources[n_src].append(r['n_evals'])
         transfers_by_nsources[n_src].append(r['n_transferred'])
+        difficulty_by_nsources[n_src].append(r['difficulty'])
 
     rmse_mean = np.mean(all_best_rmses)
     rmse_std = np.std(all_best_rmses)
@@ -318,8 +341,13 @@ def main():
     avg_candidates = np.mean(all_n_candidates)
     avg_evals = np.mean(all_evals)
     avg_transfers = np.mean(all_transfers)
+    avg_difficulty = np.mean(all_difficulties)
 
     projected_400 = (total_time / n_samples) * COMPETITION_SAMPLES / 60
+
+    # Count how many samples benefited from transfer
+    transfer_benefit_count = sum(1 for r in all_results if 'transfer' in r['best_init_type'])
+    transfer_benefit_pct = transfer_benefit_count / len(all_results) * 100
 
     # === MLFLOW LOGGING ===
     if is_g4dn_simulation:
@@ -327,7 +355,7 @@ def main():
         mlflow.set_tracking_uri("mlruns")
         mlflow.set_experiment("heat-signature-zero")
 
-        run_name = f"transfer_learning_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        run_name = f"enhanced_transfer_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         with mlflow.start_run(run_name=run_name):
             # Key metrics
@@ -337,8 +365,8 @@ def main():
 
             # Transfer learning metrics
             mlflow.log_metric("avg_transfers_used", avg_transfers)
-            mlflow.log_metric("transfer_pct_from_history",
-                             sum(1 for r in all_results if r['n_transferred'] > 0) / len(all_results) * 100)
+            mlflow.log_metric("transfer_benefit_pct", transfer_benefit_pct)
+            mlflow.log_metric("avg_difficulty", avg_difficulty)
 
             # Additional metrics
             mlflow.log_metric("rmse_std", rmse_std)
@@ -349,12 +377,15 @@ def main():
             mlflow.log_metric("total_time_sec", total_time)
 
             # Parameters
-            mlflow.log_param("optimizer", "TransferLearningOptimizer")
+            mlflow.log_param("optimizer", "EnhancedTransferOptimizer")
             mlflow.log_param("max_fevals_1src", config['max_fevals_1src'])
             mlflow.log_param("max_fevals_2src", config['max_fevals_2src'])
             mlflow.log_param("use_triangulation", config['use_triangulation'])
             mlflow.log_param("n_candidates", config['n_candidates'])
-            mlflow.log_param("k_similar", config['k_similar'])
+            mlflow.log_param("k_easy", config['k_easy'])
+            mlflow.log_param("k_hard", config['k_hard'])
+            mlflow.log_param("use_adaptive_k", config['use_adaptive_k'])
+            mlflow.log_param("use_enhanced_features", config['use_enhanced_features'])
             mlflow.log_param("batch_size", batch_size)
             mlflow.log_param("n_workers", G4DN_WORKERS)
             mlflow.log_param("platform", current_platform)
@@ -375,6 +406,7 @@ def main():
                     'history_sizes': (len(history_1src), len(history_2src)),
                     'shuffle': shuffle_enabled,
                     'shuffle_seed': shuffle_seed if shuffle_enabled else None,
+                    'transfer_benefit_pct': transfer_benefit_pct,
                 }, f)
             try:
                 mlflow.log_artifact(str(output_path))
@@ -392,6 +424,8 @@ def main():
     print(f"Submission Score: {final_score:.4f}")
     print(f"Avg Evaluations:  {avg_evals:.1f}")
     print(f"Avg Transfers:    {avg_transfers:.1f}")
+    print(f"Avg Difficulty:   {avg_difficulty:.2f}")
+    print(f"Transfer Benefit: {transfer_benefit_pct:.1f}% of samples")
     print(f"Total Time:       {total_time:.1f}s")
     print(f"Projected (400):  {projected_400:.1f} min")
     print()
@@ -400,8 +434,10 @@ def main():
         rmses = rmse_by_nsources[n_src]
         evals = evals_by_nsources[n_src]
         transfers = transfers_by_nsources[n_src]
+        difficulties = difficulty_by_nsources[n_src]
         print(f"  {n_src}-source: RMSE={np.mean(rmses):.6f} +/- {np.std(rmses):.6f}, "
-              f"evals={np.mean(evals):.1f}, transfers={np.mean(transfers):.1f} (n={len(rmses)})")
+              f"evals={np.mean(evals):.1f}, transfers={np.mean(transfers):.1f}, "
+              f"difficulty={np.mean(difficulties):.2f} (n={len(rmses)})")
     print()
     print("Best init types (which initialization produced best result):")
     for init_type, count in sorted(init_type_counts.items(), key=lambda x: -x[1]):
