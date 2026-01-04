@@ -13,28 +13,41 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 
 ## Models in MLflow
 
-### SELECTED FOR SUBMISSION (2026-01-04)
+### CURRENT BEST (2026-01-04)
 | Run Name | Optimizer | Score | RMSE | Projected Time | Config |
 |----------|-----------|-------|------|----------------|--------|
-| `enhanced_transfer_20260104_141737` | EnhancedTransferOptimizer | **0.8688** | 0.456 | **55.6 min** | fevals=18/36, shuffle=True, enhanced_features=True, adaptive_k=False |
+| `analytical_intensity_20260104_154517` | AnalyticalIntensityOptimizer | **0.9973** | 0.283 | **56.6 min** | fevals=15/20, shuffle=True, analytical_intensity=True, transfer=True |
 
-**Key Innovation**: Enhanced 11-feature similarity matching doubles transfer effectiveness (17.5% vs 8.8%).
+**Key Innovation**: Exploits linearity of heat equation for closed-form intensity solution.
 
-**Enhanced Features (11 vs 5 basic)**:
-- Basic: max_temp, mean_temp, std_temp, kappa, n_sensors
-- Spatial: centroid_x, centroid_y, spatial_spread
-- Temporal: onset_mean, onset_std
-- Correlation: avg_sensor_correlation
+**How It Works**:
+- Heat equation is LINEAR in q: `T(x,t) = q × T_unit(x,t)`
+- Optimal intensity: `q = (Y_unit · Y_obs) / (Y_unit · Y_unit)` (least squares)
+- Reduces parameter space: 1-source (2 params), 2-source (4 params)
 
 **Per-Source Performance**:
-- 1-source RMSE: **0.276** (excellent)
-- 2-source RMSE: **0.576** (main bottleneck - 2x worse)
+- 1-source RMSE: **0.186** (33% better than Enhanced Transfer's 0.276)
+- 2-source RMSE: **0.348** (40% better than Enhanced Transfer's 0.576!)
 
-**Batch RMSE Progression** (shows transfer learning working):
-- Batch 1: 0.4071 (no history)
-- Batch 2: 0.5391
-- Batch 3: 0.4512
-- Batch 4: 0.4273 (lowest - most history)
+**Additional Metrics**:
+- Avg Candidates: 2.9
+- Transfer Benefit: 13.8% of samples
+- Best Init: smart (51.2%), triangulation (35.0%), transfer (13.8%)
+
+**Comparison with Previous Best**:
+| Metric | Enhanced Transfer | Analytical 15/20 | Improvement |
+|--------|-------------------|------------------|-------------|
+| Score | 0.8688 | **0.9973** | **+14.8%** |
+| RMSE | 0.456 | **0.283** | **-38%** |
+| 1-src RMSE | 0.276 | **0.186** | **-33%** |
+| 2-src RMSE | 0.576 | **0.348** | **-40%** |
+
+### Previous Best: Enhanced Transfer Learning (2026-01-04)
+| Run Name | Optimizer | Score | RMSE | Projected Time | Config |
+|----------|-----------|-------|------|----------------|--------|
+| `enhanced_transfer_20260104_141737` | EnhancedTransferOptimizer | 0.8688 | 0.456 | 55.6 min | fevals=18/36, shuffle=True, enhanced_features=True, adaptive_k=False |
+
+**Key Innovation**: Enhanced 11-feature similarity matching doubles transfer effectiveness (17.5% vs 8.8%).
 
 ### Previous Submissions
 | Run Name | Optimizer | Score | RMSE | Projected Time | Config |
@@ -64,8 +77,10 @@ This document tracks all optimization approaches attempted for the Heat Signatur
 ### Currently Used
 | File | Status | Description |
 |------|--------|-------------|
-| `experiments/transfer_learning/optimizer.py` | **SELECTED** | Transfer learning + CMA-ES with feature-based similarity matching |
-| `experiments/transfer_learning/run.py` | **SELECTED** | Batch processing with history accumulation for transfer |
+| `experiments/analytical_intensity/optimizer.py` | **CURRENT BEST** | Analytical intensity + position-only CMA-ES |
+| `experiments/analytical_intensity/run.py` | **CURRENT BEST** | Run script with analytical intensity |
+| `experiments/extraction_feature_adaptive_k/optimizer.py` | Previous | Enhanced transfer learning + CMA-ES |
+| `experiments/transfer_learning/optimizer.py` | Previous | Transfer learning + CMA-ES with feature-based similarity |
 | `experiments/cmaes/optimizer.py` | Previous | CMA-ES + L-BFGS-B polish with triangulation init |
 | `triangulation.py` | **PRODUCTION** | Physics-based initialization from sensor onset times |
 | `hybrid_optimizer.py` | Previous | NumPy + L-BFGS-B with triangulation init and joblib parallelism |
@@ -155,6 +170,14 @@ CMA-ES shows **4x better RMSE** on 2-source problems compared to L-BFGS-B:
 - **Per-sample budget**: ~9 seconds average (with 7 parallel workers: ~63s wall time)
 - **Score formula**: `P = (1/N) * Σ(1/(1+RMSE)) + 0.3 * (N_valid/3)`
 
+### Theoretical Maximum Score: 1.3 🎯
+The score formula has two components:
+- **Accuracy term**: max 1.0 (when RMSE = 0)
+- **Diversity term**: max 0.3 (when N_valid = 3)
+- **Total maximum**: **1.3**
+
+Current best (0.9973) = **76.7%** of theoretical max
+
 ---
 
 ## Future Directions to Explore
@@ -215,5 +238,5 @@ experiments/
 
 ---
 
-*Last updated: 2024-12-28*
-*Production model: HybridOptimizer with max_iter=3, score=0.5710*
+*Last updated: 2026-01-04*
+*Current best: AnalyticalIntensityOptimizer with fevals=15/20, score=0.9973*
