@@ -54,6 +54,34 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 2. **Maintain 3 candidates** - Keep diversity term at 0.3
 3. **Find optimal feval balance** - Between accuracy and time budget
 
+### Current Bottleneck Analysis
+
+| Metric | Current | Status |
+|--------|---------|--------|
+| **Diversity** | 2.9/3.0 (97%) | ✅ Nearly maxed |
+| **1-source RMSE** | 0.186 | ✅ Excellent |
+| **2-source RMSE** | 0.348 | 🔴 **Main bottleneck** (87% worse than 1-src) |
+| **Time** | 56.6/60 min | ⚠️ Tight (3.4 min buffer) |
+
+**Key Insight:** 60% of samples are 2-source, and 2-source RMSE is 87% worse than 1-source. Improving 2-source has the highest leverage for score improvement.
+
+### Recommended Next Steps (Prioritized)
+
+| Priority | Approach | Potential | Risk | Effort |
+|----------|----------|-----------|------|--------|
+| **1** | **ICA Decomposition** | High (+0.05-0.10 score) | Medium | Medium |
+| 2 | Feval Tuning (17/22, 18/24) | Low (+0.01-0.03) | Low | Low |
+| 3 | Coarse-to-Fine Grid | Medium | Medium | Medium |
+| 4 | Asymmetric Budget (12/25) | Low | Low | Low |
+
+### Why ICA Decomposition is Priority 1
+
+1. **Targets main bottleneck** - 2-source is 60% of samples with 87% worse RMSE
+2. **Fundamentally different approach** - Signal processing vs optimization
+3. **Millisecond execution** - Provides better init without using feval budget
+4. **Proven headroom** - Over-budget run achieved 0.264 2-source RMSE (vs 0.348 now)
+5. **Innovation score boost** - Novel approach for 20% of final evaluation
+
 ---
 
 ## Executive Summary
@@ -109,9 +137,11 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 |----------|----------|--------|-----------|
 | ~~1~~ | ~~Transfer Learning~~ | **DONE** | +4.4% score |
 | ~~2~~ | ~~Enhanced Features~~ | **DONE** | +3.3% score |
-| ~~3~~ | ~~Analytical Intensity~~ | **DONE** | **+11.5% score** (0.8688→0.9687) |
-| **4** | ICA Decomposition (2-src) | Not started | High potential for 2-source |
-| **5** | Multi-Fidelity GP | Not started | Medium potential |
+| ~~3~~ | ~~Analytical Intensity~~ | **DONE** | **+14.8% score** (0.8688→0.9973) |
+| **4** | **ICA Decomposition (2-src)** | **IN PROGRESS** | High potential - targets main bottleneck |
+| 5 | Feval Tuning (17/22, 18/24) | Not started | Low potential (+0.01-0.03) |
+| 6 | Coarse-to-Fine Grid | Not started | Medium potential |
+| 7 | Multi-Fidelity GP | Not started | Medium potential |
 
 ---
 
