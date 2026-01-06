@@ -204,6 +204,15 @@ Current best (0.9973) = **76.7%** of theoretical max
    - Trilaterates position from multiple distance estimates
    - **Results**: +13.4% RMSE improvement, +3.1% competition score improvement, no time penalty
 
+### Tested But Not Viable (2026-01-05)
+1. **ICA Decomposition** (`experiments/ica_decomposition/`) - Signal decomposition for 2-source
+   - Uses FastICA to decompose mixed sensor signals into individual source contributions
+   - Exploits linearity of heat equation: T_total = T_source1 + T_source2
+   - **Results at 18/25 fevals**: Score 1.0422 (BEST EVER!), 2-src RMSE 0.266 (24% better than baseline)
+   - **Problem**: Time 87.2 min (27 min OVER budget)
+   - **Within-budget configs**: Score 0.9549-0.9802 (worse than baseline 0.9973)
+   - **Conclusion**: Proves headroom exists (80.2% of theoretical max) but not practical within 60-min budget
+
 ### Potential Improvements
 1. **Early stopping** - Stop when RMSE improvement plateaus
 2. **Adaptive iterations** - More iterations for hard samples, fewer for easy ones
@@ -233,10 +242,18 @@ scripts/
 └── ...
 
 experiments/
-└── adjoint_optimizer/train.py     # Experiment runner for adjoint optimizer
+├── analytical_intensity/          # CURRENT BEST - Analytical intensity + CMA-ES
+├── ica_decomposition/             # ICA signal decomposition (tested, over budget)
+├── extraction_feature_adaptive_k/ # Enhanced transfer learning
+├── transfer_learning/             # Base transfer learning
+├── multi_candidates/              # Multiple candidate generation
+├── cmaes/                         # CMA-ES + L-BFGS-B polish
+├── intensity_polish/              # Intensity-only polish
+└── adjoint_optimizer/             # Adjoint method experiment
 ```
 
 ---
 
-*Last updated: 2026-01-04*
+*Last updated: 2026-01-05*
 *Current best: AnalyticalIntensityOptimizer with fevals=15/20, score=0.9973*
+*ICA tested: Best-ever 1.0422 score at 18/25 fevals, but 87 min (over budget)*

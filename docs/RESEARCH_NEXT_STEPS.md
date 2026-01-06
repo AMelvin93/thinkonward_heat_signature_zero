@@ -1,7 +1,31 @@
 # Research: Next Steps for Heat Signature Zero
 
-*Last updated: 2026-01-04*
-*CURRENT BEST: AnalyticalIntensityOptimizer 0.9973 @ 56.6 min ✅*
+*Last updated: 2026-01-05 (Evening)*
+*CURRENT BEST: SmartInitOptimizer 1.0116 @ 58.6 min ✅ **BROKE 1.0 BARRIER!***
+
+---
+
+## Complete Experiment History (All Approaches Tested)
+
+| # | Approach | Score | Time | Status | Key Learning |
+|---|----------|-------|------|--------|--------------|
+| 1 | CMA-ES baseline | 0.7501 | 57.2 min | ✅ Done | Baseline reference |
+| 2 | Intensity-Only Polish | 0.7862 | 58.0 min | ✅ Done | Faster but less accurate |
+| 3 | Multi-Candidates | 0.7764 | 53.8 min | ✅ Done | Diversity bonus helps |
+| 4 | Transfer Learning | 0.8410 | 56.2 min | ✅ Done | Learning at inference works |
+| 5 | Enhanced Features | 0.8688 | 55.6 min | ✅ Done | Better similarity matching |
+| 6 | Analytical Intensity | 0.9973 | 56.6 min | ✅ Done | Physics-based q estimation |
+| 7 | ICA Decomposition | 1.0422 | 87.2 min | ❌ Over budget | Best score but too slow |
+| 8 | Asymmetric Budget | 1.0278 | 81.2 min | ❌ Over budget | Proves headroom exists |
+| 9 | **Smart Init Selection** | **1.0116** | **58.6 min** | ✅ **BEST** | Eliminates wasted compute |
+| 10 | Coarse-to-Fine (eval_only) | 0.9973 | 42.2 min | ❌ Accuracy loss | Grid size not bottleneck |
+| 11 | Coarse-to-Fine (light_cmaes) | 0.9959 | 67.8 min | ❌ Over budget | Polish phase expensive |
+
+### Key Insight from Coarse-to-Fine Failure
+
+**Why coarse-to-fine didn't work**: The Heat2D simulator's time is dominated by **timesteps (nt)**, not grid size. A 50×25 grid is only ~2x faster than 100×50, not 4x as expected. The accuracy loss from coarse exploration couldn't be recovered efficiently within the time budget.
+
+**Implication**: Future speedup attempts should target **timestep reduction**, not grid reduction.
 
 ---
 
@@ -40,8 +64,9 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 |-------|-------|----------------|------------|
 | CMA-ES baseline | 0.7501 | 57.7% | 0.5499 |
 | Enhanced Transfer | 0.8688 | 66.8% | 0.4312 |
-| **Analytical Intensity** | **0.9973** | **76.7%** | **0.3027** |
-| Over-budget (25/50) | 1.0568 | 81.3% | 0.2432 |
+| Analytical Intensity | 0.9973 | 76.7% | 0.3027 |
+| **Smart Init (12/22)** | **1.0116** | **77.8%** | **0.2884** | ✅ **NEW BEST!**
+| Smart Init (12/24) | 1.0427 | 80.2% | 0.2573 | (over budget)
 | *Theoretical Max* | *1.3* | *100%* | *0* |
 
 ### Key Insight
@@ -54,33 +79,268 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 2. **Maintain 3 candidates** - Keep diversity term at 0.3
 3. **Find optimal feval balance** - Between accuracy and time budget
 
-### Current Bottleneck Analysis
+### Current Bottleneck Analysis (Updated with Smart Init 12/22)
 
-| Metric | Current | Status |
-|--------|---------|--------|
-| **Diversity** | 2.9/3.0 (97%) | ✅ Nearly maxed |
-| **1-source RMSE** | 0.186 | ✅ Excellent |
-| **2-source RMSE** | 0.348 | 🔴 **Main bottleneck** (87% worse than 1-src) |
-| **Time** | 56.6/60 min | ⚠️ Tight (3.4 min buffer) |
+| Metric | Baseline (15/20) | Smart Init (12/22) | Status |
+|--------|------------------|--------------------| -------|
+| **Score** | 0.9973 | **1.0116** | ✅ **Broke 1.0!** |
+| **Diversity** | 2.9/3.0 | 2.6/3.0 | ✅ Good |
+| **1-source RMSE** | 0.186 | 0.190 | ✅ Excellent |
+| **2-source RMSE** | 0.348 | 0.316 | 🟡 Improved but still main bottleneck |
+| **Time** | 56.6 min | 58.6 min | ✅ Within budget (1.4 min buffer) |
 
-**Key Insight:** 60% of samples are 2-source, and 2-source RMSE is 87% worse than 1-source. Improving 2-source has the highest leverage for score improvement.
+**Key Insight:** Smart Init Selection saved enough time to enable higher fevals, breaking the 1.0 barrier. The 2-source RMSE (0.316) is still the main bottleneck - further improvement requires either more fevals or faster simulations.
 
-### Recommended Next Steps (Prioritized)
+### Recommended Next Steps (Prioritized) - Updated 2026-01-05 Evening
 
-| Priority | Approach | Potential | Risk | Effort |
-|----------|----------|-----------|------|--------|
-| **1** | **ICA Decomposition** | High (+0.05-0.10 score) | Medium | Medium |
-| 2 | Feval Tuning (17/22, 18/24) | Low (+0.01-0.03) | Low | Low |
-| 3 | Coarse-to-Fine Grid | Medium | Medium | Medium |
-| 4 | Asymmetric Budget (12/25) | Low | Low | Low |
+| Priority | Approach | Potential | Risk | Effort | Status |
+|----------|----------|-----------|------|--------|--------|
+| ~~1~~ | ~~ICA Decomposition~~ | ~~High~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - exceeds time budget** |
+| ~~2~~ | ~~Asymmetric Budget~~ | ~~Medium~~ | ~~Low~~ | ~~Low~~ | **TESTED - no improvement within budget** |
+| ~~3~~ | ~~Smart Init Selection~~ | ~~High~~ | ~~Low~~ | ~~Low~~ | **✅ SUCCESS - Score 1.0116 @ 58.6 min** |
+| ~~4~~ | ~~Coarse-to-Fine Grid~~ | ~~Very High~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - Grid size not bottleneck** |
+| **5** | **Timestep Subsampling** | **High** | **Medium** | **Medium** | **NEW - Untested** |
+| **6** | **Early CMA-ES Termination** | **Medium** | **Low** | **Low** | **NEW - Untested** |
+| **7** | **Bayesian Optimization** | **Medium** | **Medium** | **Medium** | **NEW - Untested** |
+| 8 | Feval Tuning (12/23, 12/21) | Low | Low | Low | Quick test possible |
 
-### Why ICA Decomposition is Priority 1
+---
 
-1. **Targets main bottleneck** - 2-source is 60% of samples with 87% worse RMSE
-2. **Fundamentally different approach** - Signal processing vs optimization
-3. **Millisecond execution** - Provides better init without using feval budget
-4. **Proven headroom** - Over-budget run achieved 0.264 2-source RMSE (vs 0.348 now)
-5. **Innovation score boost** - Novel approach for 20% of final evaluation
+### Coarse-to-Fine Grid Approach (Priority 4) - TESTED ❌
+
+**Core Insight**: The 100×50 simulation grid is expensive. A 50×25 grid should be **4× faster** while capturing the essential physics.
+
+**What We Tested**:
+1. **eval_only mode**: CMA-ES on coarse grid, just evaluate top solutions on fine grid
+2. **light_cmaes mode**: CMA-ES on coarse grid, CMA-ES polish on fine grid
+
+**Results**:
+| Config | Score | RMSE | Time | Status |
+|--------|-------|------|------|--------|
+| eval_only (12/30) | 0.9973 | 0.236 | 42.2 min | Fast but accuracy loss |
+| light_cmaes (12/30+3) | 0.9959 | 0.176 | 67.8 min | Over budget by 7.8 min |
+
+**Why It Failed**:
+- **Heat2D time is dominated by timesteps (nt), not grid size**
+- 50×25 grid is only ~2× faster than 100×50, not 4× as expected
+- The polish phase on fine grid is expensive
+- Accuracy loss from coarse exploration couldn't be recovered efficiently
+
+**Key Learning**: Grid size reduction is NOT the bottleneck. Future speedup attempts should target **timestep subsampling** instead.
+
+**Implementation**: `experiments/coarse_to_fine/`
+
+---
+
+### NEW: Timestep Subsampling Approach (Priority 5) - Untested
+
+**Core Insight**: Since Heat2D time is dominated by timesteps, not grid size, we should **subsample timesteps** during exploration instead.
+
+**Strategy**:
+1. **Exploration phase**: Simulate every 2nd or 4th timestep (2-4× faster)
+2. **Comparison**: Compare at subsampled resolution (still captures dynamics)
+3. **Polish phase**: Use full timesteps for final accuracy
+
+**Why This Could Work**:
+- Heat diffusion is smooth - subsampling captures essential dynamics
+- 2× timestep = 2× faster (unlike grid where relationship is weaker)
+- Final polish at full resolution recovers accuracy
+
+**Expected Benefits**:
+- 2-4× speedup on exploration phase
+- Enable 25-30 2-source fevals within budget
+- Less accuracy loss than grid coarsening
+
+**Risks**:
+- May miss fast transients
+- Onset detection could be affected
+- Interpolation needed for comparison
+
+**Implementation Plan**:
+```python
+# Phase 1: Subsampled exploration (every 4th timestep)
+subsample_factor = 4
+times, Us = solver.solve(dt=dt, nt=nt, T0=T0, sources=sources)
+Y_subsampled = Y_full[::subsample_factor]  # Every 4th timestep
+Y_obs_subsampled = Y_observed[::subsample_factor]
+rmse = compute_rmse(Y_subsampled, Y_obs_subsampled)
+
+# Phase 2: Full-resolution polish
+Y_full = solver.solve(...)
+rmse_final = compute_rmse(Y_full, Y_observed)
+```
+
+---
+
+### NEW: Early CMA-ES Termination (Priority 6) - Untested
+
+**Core Insight**: CMA-ES runs fixed fevals even when converged. Stop early on easy samples to save time for hard ones.
+
+**Strategy**:
+1. Monitor improvement rate during CMA-ES
+2. If improvement < threshold for N iterations, stop early
+3. Use saved time for harder samples
+
+**Why This Could Work**:
+- Some samples converge in 10 fevals, others need 25
+- Early termination could save 20-30% on easy samples
+- Reallocate compute to harder 2-source samples
+
+**Implementation**:
+```python
+# In CMA-ES loop
+prev_best = float('inf')
+stagnation_count = 0
+
+while not es.stop():
+    # ... evaluation ...
+    if abs(prev_best - es.result.fbest) < 1e-4:
+        stagnation_count += 1
+        if stagnation_count >= 3:
+            break  # Early termination
+    else:
+        stagnation_count = 0
+    prev_best = es.result.fbest
+```
+
+---
+
+### NEW: Bayesian Optimization (Priority 7) - Untested
+
+**Core Insight**: CMA-ES is population-based and may not be the most sample-efficient. BO could find good solutions with fewer fevals.
+
+**Strategy**:
+1. Use Gaussian Process surrogate
+2. Expected Improvement acquisition function
+3. More sample-efficient than CMA-ES for expensive simulations
+
+**Why This Could Work**:
+- BO is designed for expensive black-box optimization
+- Could match CMA-ES accuracy with 30-50% fewer fevals
+- Better exploration-exploitation balance
+
+**Risks**:
+- GP overhead may offset savings
+- Scaling to 4D (2-source) may be challenging
+- Need to tune GP hyperparameters
+
+**Implementation**:
+```python
+from sklearn.gaussian_process import GaussianProcessRegressor
+from scipy.stats import norm
+
+def bayesian_optimize(objective, bounds, n_initial=5, n_iter=15):
+    # Initial sampling
+    X = latin_hypercube_sample(bounds, n=n_initial)
+    y = [objective(x) for x in X]
+
+    gp = GaussianProcessRegressor(normalize_y=True)
+
+    for _ in range(n_iter):
+        gp.fit(X, y)
+
+        # Expected Improvement acquisition
+        def ei(x):
+            mu, sigma = gp.predict([x], return_std=True)
+            best = min(y)
+            z = (best - mu) / (sigma + 1e-8)
+            return -(sigma * (z * norm.cdf(z) + norm.pdf(z)))
+
+        next_x = minimize(ei, random_init(), bounds=bounds).x
+        next_y = objective(next_x)
+
+        X = np.vstack([X, next_x])
+        y = np.append(y, next_y)
+
+    return X[np.argmin(y)]
+```
+
+---
+
+### Key Insight: Initialization Overhead Inefficiency (2026-01-05)
+
+**Problem Identified**: The current optimizer splits fevals across multiple initializations:
+- With 3 inits (triangulation, smart, transfer) and 24 fevals → each init gets only 8 fevals
+- But one init usually wins: smart (55%), triangulation (35%), transfer (10%)
+- **We waste ~65% of compute on inits that don't win!**
+
+**Evidence from Asymmetric 12/24 test**:
+- Expected sims: 24 fevals × 2 sims/feval = 48 sims
+- Actual sims: 88.4 sims per 2-source sample
+- **Extra 40 sims = initialization overhead**
+
+### Smart Init Selection Approach (Priority 3)
+
+**Strategy**: Instead of splitting fevals across all inits:
+1. **Quick evaluation**: Evaluate ALL inits with 1 simulation each (get initial RMSE)
+2. **Select best**: Pick the init with lowest RMSE
+3. **Focus optimization**: Give ALL remaining fevals to that winning init
+
+**Expected Benefits**:
+- ~40% time reduction on 2-source samples
+- Better CMA-ES convergence (more fevals per run)
+- Could enable 12/24 config within 60-min budget → **score 1.0+**
+
+**Implementation**: `experiments/smart_init_selection/`
+
+### Smart Init Selection Results (TESTED 2026-01-05) ✅ SUCCESS!
+
+**Result**: Smart Init Selection **BROKE THE 1.0 BARRIER** within budget!
+
+**Test Results**:
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| Baseline (15/20) | 0.9973 | 0.186 | 0.348 | 56.6 min | Previous best |
+| Smart Init (12/24) | **1.0427** | 0.175 | **0.250** | 68.4 min | ❌ Over budget |
+| **Smart Init (12/22)** | **1.0116** | 0.190 | 0.316 | **58.6 min** | ✅ **NEW BEST!** |
+
+**Key Achievements**:
+1. **Score > 1.0** - First time breaking the 1.0 barrier within budget!
+2. **+1.4% improvement** over baseline (1.0116 vs 0.9973)
+3. **22.6 min time savings** vs asymmetric 12/24 (58.6 vs 81.2 min)
+4. **Better init efficiency** - 16.2% samples benefit from transfer (vs 10% before)
+
+**Why It Worked**:
+- Eliminated wasted compute on losing initializations
+- Focused ALL fevals on the best init instead of splitting
+- Better CMA-ES convergence with more fevals per run
+
+**Command**:
+```bash
+uv run python experiments/smart_init_selection/run.py --max-fevals-1src 12 --max-fevals-2src 22 --workers 7 --shuffle
+```
+
+### Asymmetric Budget Results (TESTED 2026-01-05)
+
+**Result**: Asymmetric budget shows **potential** (1.0278 score at 12/24) but **exceeds time budget** or **no improvement within budget**.
+
+**Test Results**:
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| Baseline (15/20) | **0.9973** | **0.186** | 0.348 | 56.6 min | ✅ Best within budget |
+| Mild (13/22) | 0.9685 | 0.215 | 0.390 | 56.3 min | ❌ Worse |
+| Custom (15/22) | 0.9938 | 0.198 | 0.347 | 56.8 min | ❌ Same |
+| Moderate (12/24) | **1.0278** | 0.269 | **0.261** | 81.2 min | ❌ Over budget |
+
+**Key Findings**:
+1. **Moderate (12/24) proves headroom exists** - Score 1.0278, 2-src RMSE 0.261 (25% better!)
+2. **Time bottleneck is 2-source simulations** - Analytical intensity requires 2 sims per feval
+3. **Asymmetric reallocation alone doesn't work** - Reducing 1-src hurts without enough 2-src gain
+4. **High run-to-run variance** - Makes fine-tuning difficult
+
+**Conclusion**: Asymmetric budget alone cannot beat baseline within 60-min budget. Need different approach (early termination, better init) to save time for more fevals.
+
+### ICA Decomposition Results (TESTED 2026-01-05)
+
+**Result**: ICA shows **theoretical potential** (1.0422 score, 80.2% of max) but **exceeds time budget** (87 min vs 60 min limit).
+
+**What we learned**:
+1. **ICA works technically** - 100% decomposition success rate, provides better 2-source init
+2. **Best-ever 2-source RMSE** - 0.266 at 18/25 fevals (24% better than baseline 0.348)
+3. **Time kills it** - ICA adds simulation overhead that cannot be recovered within budget
+4. **Within-budget configs underperform** - All within-budget ICA configs score worse than baseline
+
+**Conclusion**: Analytical Intensity (0.9973 @ 56.6 min) remains the best within-budget option. ICA proves headroom exists but is not practically achievable within competition constraints.
 
 ---
 
@@ -90,24 +350,25 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 
 | Model | Score | RMSE | Time | Status |
 |-------|-------|------|------|--------|
-| **AnalyticalIntensityOptimizer** | **0.9973** | 0.283 | **56.6 min** | ✅ **NEW BEST** |
-| EnhancedTransferOptimizer | 0.8688 | 0.456 | 55.6 min | Previous best |
+| **SmartInitOptimizer (12/22)** | **1.0116** | 0.266 | **58.6 min** | ✅ **NEW BEST - BROKE 1.0!** |
+| AnalyticalIntensityOptimizer | 0.9973 | 0.283 | 56.6 min | Previous best |
+| EnhancedTransferOptimizer | 0.8688 | 0.456 | 55.6 min | Earlier best |
 
-**Config:** `experiments/analytical_intensity/run.py --workers 7 --shuffle --max-fevals-1src 15 --max-fevals-2src 20`
-**MLflow:** `analytical_intensity_20260104_154517`
+**Config:** `experiments/smart_init_selection/run.py --max-fevals-1src 12 --max-fevals-2src 22 --workers 7 --shuffle`
+**MLflow:** `smart_init_12_22_20260105_212108`
 
-**Key Innovation Features:**
-- **Analytical intensity computation** - Closed-form solution exploiting heat equation linearity
-- **Reduced parameter space** - 1-source: 2 params (x,y) instead of 3; 2-source: 4 params instead of 6
-- **Exact intensity solution** via least squares: q = (Y_unit · Y_obs) / (Y_unit · Y_unit)
-- **Transfer learning enabled** - 13.8% of samples benefit from transferred solutions
-- Avg 2.9 candidates per sample
+**Key Innovations (Stacked)**:
+1. **Analytical intensity** - Closed-form q solution exploiting heat equation linearity
+2. **Smart init selection** - Evaluate all inits quickly, focus ALL fevals on the best one
+3. **Transfer learning** - 16.2% of samples benefit from transferred solutions
 
-**Per-Source Breakdown:**
-- 1-source RMSE: **0.186** (excellent - 33% better than Enhanced Transfer's 0.276!)
-- 2-source RMSE: **0.348** (40% better than Enhanced Transfer's 0.576!)
+**Per-Source Breakdown (Smart Init 12/22)**:
+- 1-source RMSE: **0.190** (excellent)
+- 2-source RMSE: **0.316** (improved from 0.348, still main bottleneck)
+- Avg 2.6 candidates per sample
 
-**Key Improvement:** Score improved from 0.8688 to **0.9973** (+14.8%)
+**Score Journey**:
+- CMA-ES baseline: 0.7501 → Enhanced Transfer: 0.8688 → Analytical: 0.9973 → **Smart Init: 1.0116**
 
 ### Runner-up Models
 
@@ -130,7 +391,8 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 | ~~8~~ | ~~Transfer Learning (base)~~ | **FINALIZED** | 0.8410 @ 56.2 min |
 | ~~9~~ | ~~Enhanced Features + Adaptive k~~ | **TESTED - PARTIAL** | Adaptive k hurts, features help |
 | ~~10~~ | ~~Enhanced Features + k=1~~ | **FINALIZED** | 0.8688 @ 55.6 min |
-| **11** | **Analytical Intensity** | **FINALIZED** | **0.9687 @ 56.6 min ✅ NEW BEST** |
+| ~~11~~ | ~~Analytical Intensity~~ | **FINALIZED** | **0.9973 @ 56.6 min ✅ BEST** |
+| ~~12~~ | ~~ICA Decomposition~~ | **TESTED - NOT VIABLE** | 1.0422 @ 87 min (over budget) |
 
 ### Future Improvements (If Time Permits)
 | Priority | Approach | Status | Potential |
@@ -138,7 +400,7 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 | ~~1~~ | ~~Transfer Learning~~ | **DONE** | +4.4% score |
 | ~~2~~ | ~~Enhanced Features~~ | **DONE** | +3.3% score |
 | ~~3~~ | ~~Analytical Intensity~~ | **DONE** | **+14.8% score** (0.8688→0.9973) |
-| **4** | **ICA Decomposition (2-src)** | **IN PROGRESS** | High potential - targets main bottleneck |
+| ~~4~~ | ~~ICA Decomposition (2-src)~~ | **TESTED - NOT VIABLE** | Exceeds budget; best within-budget: 0.9973 |
 | 5 | Feval Tuning (17/22, 18/24) | Not started | Low potential (+0.01-0.03) |
 | 6 | Coarse-to-Fine Grid | Not started | Medium potential |
 | 7 | Multi-Fidelity GP | Not started | Medium potential |
@@ -425,7 +687,7 @@ uv run python experiments/analytical_intensity/run.py --workers 7 --shuffle
 
 ### PRIORITY 4: ICA Signal Decomposition for 2-Source ⭐⭐⭐⭐
 
-**Status**: NOT STARTED - Alternative high-impact approach for 2-source bottleneck
+**Status**: TESTED - NOT VIABLE within time budget (promising if budget allows)
 
 **Key Insight**: Heat equation is LINEAR, so sensor signals from multiple sources ADD:
 ```
@@ -466,6 +728,28 @@ def ica_decompose_2source(Y_obs, sensors_xy):
 **Effort**: Medium
 
 **Risk**: Medium (ICA may not separate well if sources are close)
+
+**Implementation**: `experiments/ica_decomposition/`
+
+**Test Results** (2026-01-05):
+| Config | Score | RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------|------------|------|--------|
+| Baseline (no ICA) 15/20 | **0.9973** | **0.283** | **0.348** | 56.6 min | ✅ BEST within budget |
+| ICA adds to tri 15/20 | 0.9893 | 0.302 | 0.312 | 64.3 min | ❌ Over budget |
+| ICA replaces tri 15/20 | 0.9802 | 0.313 | 0.343 | 57.7 min | ✅ Within budget, worse score |
+| **ICA replaces tri 18/25** | **1.0422** | **0.233** | **0.266** | 87.2 min | ❌ WAY over budget (+27 min) |
+| ICA replaces tri 16/22 | 0.9549 | 0.328 | 0.371 | 58.3 min | ✅ Within budget, worse score |
+
+**Key Findings**:
+1. **ICA works** - 100% success rate, 25% of samples use ICA as best init
+2. **Highest score ever achieved** - 1.0422 (80.2% of theoretical max 1.3) at 18/25 fevals
+3. **Best 2-source RMSE ever** - 0.266 (24% better than baseline 0.348) at 18/25 fevals
+4. **Time is the killer** - Every ICA config that improves score goes over budget
+5. **Within budget, baseline wins** - ICA replaces triangulation at 15/20 and 16/22 both underperform baseline
+
+**Conclusion**: ICA decomposition shows the **potential headroom** exists (1.0422 score is achievable), but **cannot beat baseline within the 60-min time budget**. The extra simulation overhead of ICA (replacing triangulation's zero-cost heuristic) cannot be recovered even with fewer fevals.
+
+**Recommendation**: Keep baseline Analytical Intensity (0.9973) as best submission. ICA is useful for understanding the performance ceiling but not practical for competition.
 
 ---
 
@@ -1432,24 +1716,47 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 
 ---
 
-*Document updated 2026-01-04 - Analytical Intensity is now BEST MODEL*
-*Current BEST: 0.9973 @ 56.6 min (Analytical Intensity 15/20)*
+*Document updated 2026-01-05 (Evening) - Coarse-to-Fine tested, Smart Init Selection remains BEST MODEL*
+*Current BEST: 1.0116 @ 58.6 min (Smart Init Selection 12/22) ✅ BROKE 1.0 BARRIER!*
 
-**Key learnings from all experiments:**
-1. **Analytical intensity is a game-changer** - +14.8% score improvement by exploiting heat equation linearity
-2. **2-source improvement is massive** - 0.348 vs 0.576 RMSE (40% better!)
-3. **Transfer learning helps** - 13.8% of samples benefit from transferred solutions
-4. **High candidate count** - Avg 2.9 candidates per sample
-5. **Shuffle is essential** - Ensures balanced history building
-6. **Enhanced features help** - Better similarity matching for transfer
+## Summary of All Key Learnings
 
-**Analytical Intensity Key Insight:**
+**What Worked:**
+1. **Smart Init Selection** (+1.4%) - Eliminates wasted compute on losing initializations
+2. **Analytical Intensity** (+14.8%) - Exploits heat equation linearity for closed-form q estimation
+3. **Enhanced Features** (+3.3%) - Better similarity matching for transfer learning
+4. **Transfer Learning** (+12.1%) - Learning at inference across samples
+5. **Shuffle** - Ensures balanced history building for both 1-source and 2-source
+
+**What Didn't Work:**
+1. **Coarse-to-Fine Grid** - Grid size isn't the bottleneck; timesteps dominate Heat2D runtime
+2. **ICA Decomposition** - Best score (1.0422) but 27 min over budget
+3. **Asymmetric Budget** - Over budget without Smart Init Selection
+4. **Adaptive k in Transfer** - Dilutes fevals across too many inits
+
+**Key Technical Insights:**
 - Heat equation is LINEAR in q: `T(x,t) = q × T_unit(x,t)`
 - Optimal intensity has CLOSED-FORM solution: `q = (Y_unit · Y_obs) / (Y_unit · Y_unit)`
-- Reduces 2-source from 6 params to 4 params
-- 2-source evaluates 2 sims per feval (one per unit source), but the accuracy gain is worth it
+- Heat2D time ∝ nx × ny × nt, but **nt dominates** (not grid size)
+- 2-source RMSE (0.316) is still 66% worse than 1-source (0.190) - main bottleneck
 
-**Potential next steps (if more improvement needed):**
-1. **Tune fevals** - Try 18/25 or 16/22 for potentially better score/time balance
-2. **ICA Decomposition** - For even better 2-source initialization
-3. **Combine with Enhanced Transfer** - Deeper integration of analytical intensity + transfer learning
+**Score Progression:**
+- CMA-ES baseline: 0.7501
+- + Multi-Candidates: 0.7764 (+3.5%)
+- + Transfer Learning: 0.8410 (+8.3%)
+- + Enhanced Features: 0.8688 (+3.3%)
+- + Analytical Intensity: 0.9973 (+14.8%)
+- + **Smart Init Selection: 1.0116 (+1.4%)** ✅ CURRENT BEST
+
+**Remaining Untested Approaches (Prioritized):**
+1. **Timestep Subsampling** - High potential, addresses actual bottleneck
+2. **Early CMA-ES Termination** - Medium potential, low effort
+3. **Bayesian Optimization** - Medium potential, more sample-efficient
+4. **Feval Tuning (12/21, 12/23)** - Low potential, quick test
+
+**Final Competition Readiness:**
+- ✅ Score > 1.0 achieved (1.0116)
+- ✅ Within 60-min budget (58.6 min, 1.4 min buffer)
+- ✅ Demonstrates "learning at inference" (transfer learning)
+- ✅ Physics-informed approach (triangulation, analytical intensity)
+- ⚠️ 2-source accuracy is main remaining bottleneck
