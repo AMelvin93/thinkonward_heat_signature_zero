@@ -90,8 +90,20 @@ Projected (400):  XX.X min
 - `rmse_2src` - Main bottleneck (currently 0.316)
 - `projected_400_samples_min` - Must be < 60
 
-### Phase 5: Update Documentation
+### Phase 5: Commit & Document
 ```bash
+# Commit experiment results to git
+git add experiments/<approach_name>/ docs/RESEARCH_NEXT_STEPS.md
+git commit -m "[SCORE: X.XXXX @ XX.X min] <approach>: <brief result>"
+
+# Commit message examples:
+# [SCORE: 1.0234 @ 54.2 min] timestep_subsampling: 2x factor beats baseline
+# [SCORE: 0.9812 @ 48.1 min] early_termination: faster but accuracy loss
+# [FAIL: 72.3 min] bayesian_opt: over budget, needs optimization
+
+# Push after significant milestones (new best, or every 3-5 experiments)
+# git push origin main
+
 # Update RESEARCH_NEXT_STEPS.md with:
 # 1. Add result to "Complete Experiment History" table
 # 2. Mark approach as tested in priority queue
