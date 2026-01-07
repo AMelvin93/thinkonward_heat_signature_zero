@@ -1,0 +1,58 @@
+# Heat Signature Zero - Lightweight Development Container
+# Uses volume mounts for live code editing
+# Designed to match G4dn.2xlarge environment
+
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    ca-certificates \
+    gnupg \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update && apt-get install -y \
+    python3.11 \
+    python3.11-venv \
+    python3.11-dev \
+    git \
+    curl \
+    wget \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 20.x (required for Claude Code)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Python 3.11 as default
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python
+
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+# Install Claude Code
+RUN npm install -g @anthropic-ai/claude-code
+
+# Install Ralph orchestrator (use uv for psutil since pip isn't available)
+RUN git clone https://github.com/mikeyobrien/ralph-orchestrator.git /opt/ralph \
+    && uv pip install --system psutil
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1
+ENV JAX_PLATFORM_NAME=cuda
+ENV XLA_PYTHON_CLIENT_PREALLOCATE=false
+ENV N_WORKERS=7
+
+WORKDIR /workspace
+
+# Dependencies will be installed via volume mount + uv sync
+# Run: docker exec heat-signature-dev uv sync
+
+EXPOSE 5000
+
+CMD ["/bin/bash"]

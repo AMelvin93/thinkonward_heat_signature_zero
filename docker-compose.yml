@@ -1,0 +1,75 @@
+# Heat Signature Zero - Docker Development Environment
+# Matches G4dn.2xlarge (8 vCPUs, 32GB RAM, Linux) for competition timing
+#
+# Usage:
+#   docker-compose up -d              # Start container
+#   docker exec -it heat-signature-dev bash  # Enter shell
+#   docker exec heat-signature-dev uv sync   # Install deps (first time)
+#
+# Run experiments:
+#   docker exec heat-signature-dev uv run python experiments/timestep_subsampling/run.py --workers 7 --shuffle
+#
+# With Ralph + Claude Code:
+#   docker exec -it heat-signature-dev claude
+
+services:
+  heat-signature:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev  # Use lightweight dev image
+    image: heat-signature-zero:latest
+    container_name: heat-signature-dev
+
+    # GPU access (requires nvidia-docker2)
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    # Match G4dn.2xlarge constraints
+    # 8 vCPUs, 32GB RAM
+    cpus: '8'
+    mem_limit: 32g
+
+    volumes:
+      # Mount project for live editing
+      - .:/workspace
+      # Persist MLflow runs
+      - ./mlruns:/workspace/mlruns
+      # Persist results
+      - ./results:/workspace/results
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - N_WORKERS=7
+      - JAX_PLATFORM_NAME=cuda
+      - XLA_PYTHON_CLIENT_PREALLOCATE=false
+      # For Claude Code (set your API key)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+
+    ports:
+      # MLflow UI (using 5050 to avoid conflicts)
+      - "5050:5000"
+
+    # Keep container running
+    stdin_open: true
+    tty: true
+
+    working_dir: /workspace
+    command: /bin/bash
+
+  # Optional: MLflow tracking server
+  mlflow:
+    image: python:3.11-slim
+    container_name: heat-signature-mlflow
+    volumes:
+      - ./mlruns:/mlruns
+    ports:
+      - "5001:5000"
+    command: >
+      sh -c "pip install mlflow && mlflow ui --host 0.0.0.0 --backend-store-uri /mlruns"
+    profiles:
+      - mlflow
