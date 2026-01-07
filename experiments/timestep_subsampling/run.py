@@ -190,6 +190,8 @@ def main():
                         help='Shuffle samples before batching')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed for shuffle (default: 42)')
+    parser.add_argument('--max-samples', type=int, default=None,
+                        help='Limit number of samples for quick validation (e.g., 10 for fast test)')
     args = parser.parse_args()
 
     # Build config
@@ -224,18 +226,24 @@ def main():
 
     samples = list(data['samples'])
     meta = data['meta']
-    n_samples = len(samples)
 
-    # Count sample types
-    n_1src = sum(1 for s in samples if s['n_sources'] == 1)
-    n_2src = n_samples - n_1src
-
-    # Shuffle samples if requested
+    # Shuffle samples if requested (before limiting for representative sample)
     shuffle_enabled = args.shuffle
     shuffle_seed = args.seed
     if shuffle_enabled:
         np.random.seed(shuffle_seed)
         np.random.shuffle(samples)
+
+    # Limit samples for quick validation
+    if args.max_samples is not None and args.max_samples < len(samples):
+        samples = samples[:args.max_samples]
+        print(f"[QUICK VALIDATION MODE] Limited to {args.max_samples} samples")
+
+    n_samples = len(samples)
+
+    # Count sample types
+    n_1src = sum(1 for s in samples if s['n_sources'] == 1)
+    n_2src = n_samples - n_1src
 
     n_batches = (n_samples + batch_size - 1) // batch_size
 

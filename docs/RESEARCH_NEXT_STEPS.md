@@ -1,6 +1,6 @@
 # Research: Next Steps for Heat Signature Zero
 
-*Last updated: 2026-01-05 (Evening)*
+*Last updated: 2026-01-07*
 *CURRENT BEST: SmartInitOptimizer 1.0116 @ 58.6 min ✅ **BROKE 1.0 BARRIER!***
 
 ---
@@ -20,6 +20,7 @@
 | 9 | **Smart Init Selection** | **1.0116** | **58.6 min** | ✅ **BEST** | Eliminates wasted compute |
 | 10 | Coarse-to-Fine (eval_only) | 0.9973 | 42.2 min | ❌ Accuracy loss | Grid size not bottleneck |
 | 11 | Coarse-to-Fine (light_cmaes) | 0.9959 | 67.8 min | ❌ Over budget | Polish phase expensive |
+| 12 | Timestep Subsampling (2x) | 1.0727 | 162.9 min | ❌ Over budget | Great score but sim count too high |
 
 ### Key Insight from Coarse-to-Fine Failure
 
@@ -99,8 +100,8 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 | ~~2~~ | ~~Asymmetric Budget~~ | ~~Medium~~ | ~~Low~~ | ~~Low~~ | **TESTED - no improvement within budget** |
 | ~~3~~ | ~~Smart Init Selection~~ | ~~High~~ | ~~Low~~ | ~~Low~~ | **✅ SUCCESS - Score 1.0116 @ 58.6 min** |
 | ~~4~~ | ~~Coarse-to-Fine Grid~~ | ~~Very High~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - Grid size not bottleneck** |
-| **5** | **Timestep Subsampling** | **High** | **Medium** | **Medium** | **NEW - Untested** |
-| **6** | **Early CMA-ES Termination** | **Medium** | **Low** | **Low** | **NEW - Untested** |
+| ~~5~~ | ~~Timestep Subsampling~~ | ~~High~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - 103 min over budget** |
+| **6** | **Early CMA-ES Termination** | **Medium** | **Low** | **Low** | **Untested - NEXT** |
 | **7** | **Bayesian Optimization** | **Medium** | **Medium** | **Medium** | **NEW - Untested** |
 | 8 | Feval Tuning (12/23, 12/21) | Low | Low | Low | Quick test possible |
 
@@ -132,43 +133,30 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 
 ---
 
-### NEW: Timestep Subsampling Approach (Priority 5) - Untested
+### Timestep Subsampling Approach (Priority 5) - TESTED ❌
 
 **Core Insight**: Since Heat2D time is dominated by timesteps, not grid size, we should **subsample timesteps** during exploration instead.
 
 **Strategy**:
-1. **Exploration phase**: Simulate every 2nd or 4th timestep (2-4× faster)
-2. **Comparison**: Compare at subsampled resolution (still captures dynamics)
-3. **Polish phase**: Use full timesteps for final accuracy
+1. **Exploration phase**: Simulate with dt*2, nt/2 (2× faster per sim)
+2. **Comparison**: Compare at subsampled resolution
+3. **Polish phase**: Full timesteps for final accuracy
 
-**Why This Could Work**:
-- Heat diffusion is smooth - subsampling captures essential dynamics
-- 2× timestep = 2× faster (unlike grid where relationship is weaker)
-- Final polish at full resolution recovers accuracy
+**Test Results (2026-01-07)**:
+| Config | Score | RMSE | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------|------------|------------|------|--------|
+| 2x subsample (12/28+3/5) | **1.0727** | **0.174** | **0.146** | **0.193** | 162.9 min | ❌ **103 min over budget** |
 
-**Expected Benefits**:
-- 2-4× speedup on exploration phase
-- Enable 25-30 2-source fevals within budget
-- Less accuracy loss than grid coarsening
+**Why It Failed**:
+- **Excellent scores but WAY too slow** - 162.9 min vs 60 min budget
+- **Problem**: Subsampling speeds up individual sims but doesn't reduce the NUMBER of simulations
+- Each CMA-ES feval still requires full simulations for analytical intensity computation
+- 28 fevals for 2-src + 5 polish fevals = ~228 simulations per 2-source sample
+- **Root cause**: Time bottleneck is simulation COUNT, not individual simulation speed
 
-**Risks**:
-- May miss fast transients
-- Onset detection could be affected
-- Interpolation needed for comparison
+**Key Learning**: Timestep subsampling is the wrong approach. To save time, we need to reduce the NUMBER of simulations (fewer fevals, early termination) rather than speeding up each simulation.
 
-**Implementation Plan**:
-```python
-# Phase 1: Subsampled exploration (every 4th timestep)
-subsample_factor = 4
-times, Us = solver.solve(dt=dt, nt=nt, T0=T0, sources=sources)
-Y_subsampled = Y_full[::subsample_factor]  # Every 4th timestep
-Y_obs_subsampled = Y_observed[::subsample_factor]
-rmse = compute_rmse(Y_subsampled, Y_obs_subsampled)
-
-# Phase 2: Full-resolution polish
-Y_full = solver.solve(...)
-rmse_final = compute_rmse(Y_full, Y_observed)
-```
+**Implementation**: `experiments/timestep_subsampling/`
 
 ---
 
@@ -1749,8 +1737,8 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 - + **Smart Init Selection: 1.0116 (+1.4%)** ✅ CURRENT BEST
 
 **Remaining Untested Approaches (Prioritized):**
-1. **Timestep Subsampling** - High potential, addresses actual bottleneck
-2. **Early CMA-ES Termination** - Medium potential, low effort
+1. ~~**Timestep Subsampling**~~ - TESTED: Great score (1.0727) but 103 min over budget
+2. **Early CMA-ES Termination** - Medium potential, low effort - **NEXT**
 3. **Bayesian Optimization** - Medium potential, more sample-efficient
 4. **Feval Tuning (12/21, 12/23)** - Low potential, quick test
 

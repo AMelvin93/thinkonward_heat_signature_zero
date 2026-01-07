@@ -17,7 +17,8 @@
       "WebFetch(domain:aalexan3.math.ncsu.edu)",
       "Bash(python:*)",
       "Bash(uv run python:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git pull:*)"
     ]
   }
 }
