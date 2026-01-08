@@ -21,6 +21,7 @@
 | 10 | Coarse-to-Fine (eval_only) | 0.9973 | 42.2 min | ❌ Accuracy loss | Grid size not bottleneck |
 | 11 | Coarse-to-Fine (light_cmaes) | 0.9959 | 67.8 min | ❌ Over budget | Polish phase expensive |
 | 12 | Timestep Subsampling (2x) | 1.0727 | 162.9 min | ❌ Over budget | Great score but sim count too high |
+| 13 | Early CMA-ES Termination | 1.0115 | 57.3 min | ❌ Marginal | ~Same score, 1 min faster, not worth it |
 
 ### Key Insight from Coarse-to-Fine Failure
 
@@ -101,8 +102,8 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 | ~~3~~ | ~~Smart Init Selection~~ | ~~High~~ | ~~Low~~ | ~~Low~~ | **✅ SUCCESS - Score 1.0116 @ 58.6 min** |
 | ~~4~~ | ~~Coarse-to-Fine Grid~~ | ~~Very High~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - Grid size not bottleneck** |
 | ~~5~~ | ~~Timestep Subsampling~~ | ~~High~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - 103 min over budget** |
-| **6** | **Early CMA-ES Termination** | **Medium** | **Low** | **Low** | **Untested - NEXT** |
-| **7** | **Bayesian Optimization** | **Medium** | **Medium** | **Medium** | **NEW - Untested** |
+| ~~6~~ | ~~Early CMA-ES Termination~~ | ~~Medium~~ | ~~Low~~ | ~~Low~~ | **TESTED - marginal savings, not effective** |
+| **7** | **Bayesian Optimization** | **Medium** | **Medium** | **Medium** | **Untested - NEXT** |
 | 8 | Feval Tuning (12/23, 12/21) | Low | Low | Low | Quick test possible |
 
 ---
@@ -160,36 +161,27 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 
 ---
 
-### NEW: Early CMA-ES Termination (Priority 6) - Untested
+### Early CMA-ES Termination (Priority 6) - TESTED ❌
 
 **Core Insight**: CMA-ES runs fixed fevals even when converged. Stop early on easy samples to save time for hard ones.
 
-**Strategy**:
-1. Monitor improvement rate during CMA-ES
-2. If improvement < threshold for N iterations, stop early
-3. Use saved time for harder samples
+**Test Results (2026-01-08)**:
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Early Stop % | Status |
+|--------|-------|------------|------------|------|--------------|--------|
+| 12/22, thresh=1e-4, pat=3 | **1.0218** | 0.183 | 0.295 | 57.4 min | 0% | ✅ Best but no early stops |
+| 12/22, thresh=0.01, pat=2 | 1.0115 | 0.215 | 0.307 | 57.3 min | 25% | ~Same score |
+| 15/28, thresh=0.005, pat=2 | 1.0156 | 0.205 | 0.289 | 65.9 min | 36% | ❌ Over budget |
 
-**Why This Could Work**:
-- Some samples converge in 10 fevals, others need 25
-- Early termination could save 20-30% on easy samples
-- Reallocate compute to harder 2-source samples
+**Why It Failed**:
+- **Conservative threshold (1e-4) never triggers** - CMA-ES with small populations (4-6) makes large improvement jumps per generation. With only 2-5 generations total, improvement is always > 1e-4.
+- **Aggressive threshold (0.01) gives marginal savings** - ~1.3 min faster but same score. Not significant.
+- **Higher fevals with early termination = over budget** - Even 36% early termination can't offset the extra feval cost.
 
-**Implementation**:
-```python
-# In CMA-ES loop
-prev_best = float('inf')
-stagnation_count = 0
+**Key Learning**: Easy samples finish quickly anyway (~30s for 1-source). Hard 2-source samples don't stagnate - they genuinely need all fevals to converge. Early termination saves minimal time on the samples that are already fast.
 
-while not es.stop():
-    # ... evaluation ...
-    if abs(prev_best - es.result.fbest) < 1e-4:
-        stagnation_count += 1
-        if stagnation_count >= 3:
-            break  # Early termination
-    else:
-        stagnation_count = 0
-    prev_best = es.result.fbest
-```
+**Recommendation**: NOT a viable improvement path. Keep SmartInitOptimizer (12/22) as best model.
+
+**Implementation**: `experiments/early_termination/`
 
 ---
 
@@ -1704,7 +1696,7 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 
 ---
 
-*Document updated 2026-01-05 (Evening) - Coarse-to-Fine tested, Smart Init Selection remains BEST MODEL*
+*Document updated 2026-01-08 - Early CMA-ES Termination tested (Priority 6), not effective*
 *Current BEST: 1.0116 @ 58.6 min (Smart Init Selection 12/22) ✅ BROKE 1.0 BARRIER!*
 
 ## Summary of All Key Learnings
@@ -1721,6 +1713,7 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 2. **ICA Decomposition** - Best score (1.0422) but 27 min over budget
 3. **Asymmetric Budget** - Over budget without Smart Init Selection
 4. **Adaptive k in Transfer** - Dilutes fevals across too many inits
+5. **Early CMA-ES Termination** - Marginal savings (~1 min), CMA-ES improvements too large for stagnation detection
 
 **Key Technical Insights:**
 - Heat equation is LINEAR in q: `T(x,t) = q × T_unit(x,t)`
@@ -1738,8 +1731,8 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 
 **Remaining Untested Approaches (Prioritized):**
 1. ~~**Timestep Subsampling**~~ - TESTED: Great score (1.0727) but 103 min over budget
-2. **Early CMA-ES Termination** - Medium potential, low effort - **NEXT**
-3. **Bayesian Optimization** - Medium potential, more sample-efficient
+2. ~~**Early CMA-ES Termination**~~ - TESTED: Marginal savings (~1 min), not effective
+3. **Bayesian Optimization** - Medium potential, more sample-efficient - **NEXT**
 4. **Feval Tuning (12/21, 12/23)** - Low potential, quick test
 
 **Final Competition Readiness:**
