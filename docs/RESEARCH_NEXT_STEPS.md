@@ -23,6 +23,7 @@
 | 12 | Timestep Subsampling (2x) | 1.0727 | 162.9 min | ❌ Over budget | Great score but sim count too high |
 | 13 | Early CMA-ES Termination | 1.0115 | 57.3 min | ❌ Marginal | ~Same score, 1 min faster, not worth it |
 | 14 | Bayesian Optimization | 0.9844 | 50.1 min | ❌ Score drop | Faster but -2.7% score, CMA-ES is better |
+| 15 | **Feval Tuning (12/23)** | **1.0224** | **56.5 min** | ✅ **NEW BEST** | +1.1% score, 2.1 min faster |
 
 ### Key Insight from Coarse-to-Fine Failure
 
@@ -105,7 +106,7 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 | ~~5~~ | ~~Timestep Subsampling~~ | ~~High~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - 103 min over budget** |
 | ~~6~~ | ~~Early CMA-ES Termination~~ | ~~Medium~~ | ~~Low~~ | ~~Low~~ | **TESTED - marginal savings, not effective** |
 | ~~7~~ | ~~Bayesian Optimization~~ | ~~Medium~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - faster but -2.7% score** |
-| **8** | **Feval Tuning (12/23, 12/21)** | **Low** | **Low** | **Low** | **Quick test - NEXT** |
+| ~~8~~ | ~~Feval Tuning~~ | ~~Low~~ | ~~Low~~ | ~~Low~~ | **✅ NEW BEST: 12/23 @ 1.0224, 56.5 min** |
 
 ---
 
@@ -1670,8 +1671,8 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 
 ---
 
-*Document updated 2026-01-08 - Early CMA-ES Termination (P6) and Bayesian Optimization (P7) tested*
-*Current BEST: 1.0116 @ 58.6 min (Smart Init Selection 12/22) ✅ BROKE 1.0 BARRIER!*
+*Document updated 2026-01-08 - P6-P8 tested: NEW BEST found with 12/23 fevals!*
+*Current BEST: 1.0224 @ 56.5 min (Smart Init Selection 12/23) ✅ NEW BEST!*
 
 ## Summary of All Key Learnings
 
@@ -1702,17 +1703,18 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 - + Transfer Learning: 0.8410 (+8.3%)
 - + Enhanced Features: 0.8688 (+3.3%)
 - + Analytical Intensity: 0.9973 (+14.8%)
-- + **Smart Init Selection: 1.0116 (+1.4%)** ✅ CURRENT BEST
+- + Smart Init Selection 12/22: 1.0116 (+1.4%)
+- + **Feval Tuning 12/23: 1.0224 (+1.1%)** ✅ CURRENT BEST
 
 **Remaining Untested Approaches (Prioritized):**
 1. ~~**Timestep Subsampling**~~ - TESTED: Great score (1.0727) but 103 min over budget
 2. ~~**Early CMA-ES Termination**~~ - TESTED: Marginal savings (~1 min), not effective
 3. ~~**Bayesian Optimization**~~ - TESTED: Faster but -2.7% score drop
-4. **Feval Tuning (12/21, 12/23)** - Low potential, quick test - **NEXT**
+4. ~~**Feval Tuning**~~ - TESTED: **12/23 is NEW BEST** (Score 1.0224 @ 56.5 min)
 
 **Final Competition Readiness:**
-- ✅ Score > 1.0 achieved (1.0116)
-- ✅ Within 60-min budget (58.6 min, 1.4 min buffer)
+- ✅ Score > 1.0 achieved (**1.0224** with 12/23 fevals)
+- ✅ Within 60-min budget (**56.5 min**, 3.5 min buffer)
 - ✅ Demonstrates "learning at inference" (transfer learning)
 - ✅ Physics-informed approach (triangulation, analytical intensity)
 - ⚠️ 2-source accuracy is main remaining bottleneck

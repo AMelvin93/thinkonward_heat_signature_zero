@@ -2,7 +2,7 @@
 
 **Session Start**: 2026-01-08 04:05:01
 **Max Iterations**: 10
-**Current Best**: 1.0116 @ 58.6 min (SmartInitOptimizer)
+**Current Best**: 1.0224 @ 56.5 min (SmartInitOptimizer 12/23) ✅ NEW BEST!
 
 ---
 
@@ -13,6 +13,7 @@
 | 1b | Early CMA-ES Termination | 12/22, thresh=0.01 | 1.0115 | 57.3 min | ~Same score, 25% early stops |
 | 1c | Early CMA-ES Termination | 15/28, thresh=0.005 | 1.0156 | 65.9 min | ❌ Over budget |
 | 2 | Bayesian Optimization | 12/22 fevals | 0.9844 | 50.1 min | ❌ Faster but -2.7% score |
+| 3 | Feval Tuning | 12/23 | **1.0224** | **56.5 min** | ✅ **NEW BEST!** |
 
 ---
 
@@ -82,6 +83,42 @@ Early termination provides **marginal time savings** (~1-2 min) but **no signifi
 Bayesian Optimization is **faster but lower accuracy**. The trade-off is NOT favorable. CMA-ES remains the better approach for this problem.
 
 **Recommendation**: Mark Priority 7 as TESTED - NOT EFFECTIVE. Move to feval tuning.
+
+---
+
+## Iteration 3 - 2026-01-08 05:20
+- **Approach**: Feval Tuning (Priority 8)
+- **Hypothesis**: Fine-tuning feval allocation might find a better sweet spot
+- **Implementation**: Same SmartInitOptimizer with different feval configs
+
+### Test Results
+
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 12/21 | 1.0090 | 0.242 | 0.267 | 56.6 min | ✅ But lower score |
+| **12/22** (baseline) | **1.0116** | **0.183** | **0.295** | **58.6 min** | ✅ Previous best |
+| **12/23** | **1.0224** | **0.186** | **0.273** | **56.5 min** | ✅ **NEW BEST!** |
+| 13/23 | 1.0177 | 0.172 | 0.283 | 56.4 min | ✅ Good but not best |
+| 12/24 | 1.0352 | 0.191 | 0.253 | 67.1 min | ❌ Over budget |
+
+### Key Findings
+
+1. **12/23 is the new best configuration!**
+   - Score: 1.0224 (+1.1% over 12/22)
+   - Time: 56.5 min (2.1 min faster, 3.5 min buffer)
+   - Both score AND time improved!
+
+2. **One extra 2-source feval makes a difference** - 12/23 vs 12/22
+
+3. **12/24 shows potential but over budget** - If we could make it faster, score would be 1.0352
+
+4. **Score variance exists** - Different runs give slightly different scores due to shuffle
+
+### Conclusion
+
+**12/23 is the new recommended configuration.** It achieves higher score with more time buffer.
+
+**Recommendation**: Update production model to use 12/23 fevals.
 
 ---
 
