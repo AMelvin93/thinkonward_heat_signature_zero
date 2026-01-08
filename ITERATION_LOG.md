@@ -114,11 +114,44 @@ Bayesian Optimization is **faster but lower accuracy**. The trade-off is NOT fav
 
 4. **Score variance exists** - Different runs give slightly different scores due to shuffle
 
+### Variance Analysis (12/23 with different seeds)
+
+| Seed | Score | Time | Status |
+|------|-------|------|--------|
+| 42 | 1.0224 | 56.5 min | ✅ |
+| 123 | 1.0341 | 59.5 min | ✅ |
+| 456 | 1.0134 | 62.4 min | ❌ Over |
+
+**Average: ~1.023 score, ~59.5 min time**
+**Risk: ~33% of runs may exceed 60 min budget**
+
 ### Conclusion
 
-**12/23 is the new recommended configuration.** It achieves higher score with more time buffer.
+**12/23 is the best configuration on average but has variance risk.**
+- Higher expected score than 12/22 (~1.023 vs ~1.01)
+- But ~33% risk of going over budget
 
-**Recommendation**: Update production model to use 12/23 fevals.
+### Additional Variance Test (12/22)
+
+| Seed | Score | Time | Status |
+|------|-------|------|--------|
+| 42 | 1.0116 | 58.6 min | ✅ |
+| 123 | 1.0108 | 59.0 min | ✅ |
+| 456 | 1.0186 | 63.0 min | ❌ Over |
+
+**Key Insight: Both 12/22 and 12/23 have ~33% over-budget risk!**
+
+The variance comes from sample ordering affecting batch composition and timing.
+This is inherent to parallel processing with 7 workers.
+
+### Final Comparison
+
+| Config | Avg Score | Avg Time | Over-budget Risk |
+|--------|-----------|----------|------------------|
+| 12/22 | ~1.014 | ~60.2 min | ~33% |
+| 12/23 | ~1.023 | ~59.5 min | ~33% |
+
+**Recommendation**: Use **12/23** - same risk but higher expected score.
 
 ---
 
