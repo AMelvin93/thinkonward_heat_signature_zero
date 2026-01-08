@@ -22,6 +22,7 @@
 | 11 | Coarse-to-Fine (light_cmaes) | 0.9959 | 67.8 min | ❌ Over budget | Polish phase expensive |
 | 12 | Timestep Subsampling (2x) | 1.0727 | 162.9 min | ❌ Over budget | Great score but sim count too high |
 | 13 | Early CMA-ES Termination | 1.0115 | 57.3 min | ❌ Marginal | ~Same score, 1 min faster, not worth it |
+| 14 | Bayesian Optimization | 0.9844 | 50.1 min | ❌ Score drop | Faster but -2.7% score, CMA-ES is better |
 
 ### Key Insight from Coarse-to-Fine Failure
 
@@ -103,8 +104,8 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 | ~~4~~ | ~~Coarse-to-Fine Grid~~ | ~~Very High~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - Grid size not bottleneck** |
 | ~~5~~ | ~~Timestep Subsampling~~ | ~~High~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - 103 min over budget** |
 | ~~6~~ | ~~Early CMA-ES Termination~~ | ~~Medium~~ | ~~Low~~ | ~~Low~~ | **TESTED - marginal savings, not effective** |
-| **7** | **Bayesian Optimization** | **Medium** | **Medium** | **Medium** | **Untested - NEXT** |
-| 8 | Feval Tuning (12/23, 12/21) | Low | Low | Low | Quick test possible |
+| ~~7~~ | ~~Bayesian Optimization~~ | ~~Medium~~ | ~~Medium~~ | ~~Medium~~ | **TESTED - faster but -2.7% score** |
+| **8** | **Feval Tuning (12/23, 12/21)** | **Low** | **Low** | **Low** | **Quick test - NEXT** |
 
 ---
 
@@ -185,55 +186,28 @@ P = (1/N_valid) * Σ(1/(1 + L_i)) + λ * (N_valid/N_max)
 
 ---
 
-### NEW: Bayesian Optimization (Priority 7) - Untested
+### Bayesian Optimization (Priority 7) - TESTED ❌
 
 **Core Insight**: CMA-ES is population-based and may not be the most sample-efficient. BO could find good solutions with fewer fevals.
 
-**Strategy**:
-1. Use Gaussian Process surrogate
-2. Expected Improvement acquisition function
-3. More sample-efficient than CMA-ES for expensive simulations
+**Test Results (2026-01-08)**:
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 12/22 fevals (5+7/8+14) | 0.9844 | 0.235 | 0.302 | 50.1 min | ❌ -2.7% score |
 
-**Why This Could Work**:
-- BO is designed for expensive black-box optimization
-- Could match CMA-ES accuracy with 30-50% fewer fevals
-- Better exploration-exploitation balance
+**Why It Failed**:
+- **GP overhead doesn't pay off** - Fitting GP multiple times per sample adds ~10s overhead without proportional accuracy improvement
+- **Sample efficiency not needed** - Heat simulation is "cheap enough" (~3s) that BO's sample efficiency advantage doesn't materialize
+- **1-source accuracy dropped** - RMSE 0.235 vs 0.190 (23% worse)
+- **Best init type: 86% from BO iterations** - BO finds solutions, just worse than CMA-ES
 
-**Risks**:
-- GP overhead may offset savings
-- Scaling to 4D (2-source) may be challenging
-- Need to tune GP hyperparameters
+**Key Learning**: CMA-ES is well-suited for this smooth, low-dimensional problem. Population-based search explores more effectively than BO's GP-guided search. The simulation is fast enough that sample efficiency isn't the bottleneck.
 
-**Implementation**:
-```python
-from sklearn.gaussian_process import GaussianProcessRegressor
-from scipy.stats import norm
+**Trade-off**: 8.5 min faster but -2.7% score drop - NOT favorable.
 
-def bayesian_optimize(objective, bounds, n_initial=5, n_iter=15):
-    # Initial sampling
-    X = latin_hypercube_sample(bounds, n=n_initial)
-    y = [objective(x) for x in X]
+**Recommendation**: NOT a viable improvement path. CMA-ES remains superior.
 
-    gp = GaussianProcessRegressor(normalize_y=True)
-
-    for _ in range(n_iter):
-        gp.fit(X, y)
-
-        # Expected Improvement acquisition
-        def ei(x):
-            mu, sigma = gp.predict([x], return_std=True)
-            best = min(y)
-            z = (best - mu) / (sigma + 1e-8)
-            return -(sigma * (z * norm.cdf(z) + norm.pdf(z)))
-
-        next_x = minimize(ei, random_init(), bounds=bounds).x
-        next_y = objective(next_x)
-
-        X = np.vstack([X, next_x])
-        y = np.append(y, next_y)
-
-    return X[np.argmin(y)]
-```
+**Implementation**: `experiments/bayesian_optimization/`
 
 ---
 
@@ -1696,7 +1670,7 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 
 ---
 
-*Document updated 2026-01-08 - Early CMA-ES Termination tested (Priority 6), not effective*
+*Document updated 2026-01-08 - Early CMA-ES Termination (P6) and Bayesian Optimization (P7) tested*
 *Current BEST: 1.0116 @ 58.6 min (Smart Init Selection 12/22) ✅ BROKE 1.0 BARRIER!*
 
 ## Summary of All Key Learnings
@@ -1714,6 +1688,7 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 3. **Asymmetric Budget** - Over budget without Smart Init Selection
 4. **Adaptive k in Transfer** - Dilutes fevals across too many inits
 5. **Early CMA-ES Termination** - Marginal savings (~1 min), CMA-ES improvements too large for stagnation detection
+6. **Bayesian Optimization** - Faster but -2.7% score drop; CMA-ES is better suited for this smooth, low-D problem
 
 **Key Technical Insights:**
 - Heat equation is LINEAR in q: `T(x,t) = q × T_unit(x,t)`
@@ -1732,8 +1707,8 @@ uv run python experiments/cmaes/run.py --workers 7 --polish-iter 1
 **Remaining Untested Approaches (Prioritized):**
 1. ~~**Timestep Subsampling**~~ - TESTED: Great score (1.0727) but 103 min over budget
 2. ~~**Early CMA-ES Termination**~~ - TESTED: Marginal savings (~1 min), not effective
-3. **Bayesian Optimization** - Medium potential, more sample-efficient - **NEXT**
-4. **Feval Tuning (12/21, 12/23)** - Low potential, quick test
+3. ~~**Bayesian Optimization**~~ - TESTED: Faster but -2.7% score drop
+4. **Feval Tuning (12/21, 12/23)** - Low potential, quick test - **NEXT**
 
 **Final Competition Readiness:**
 - ✅ Score > 1.0 achieved (1.0116)

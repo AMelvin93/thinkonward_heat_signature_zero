@@ -12,6 +12,7 @@
 | 1 | Early CMA-ES Termination | 12/22, thresh=1e-4 | 1.0218 | 57.4 min | ✅ Best but no early stops |
 | 1b | Early CMA-ES Termination | 12/22, thresh=0.01 | 1.0115 | 57.3 min | ~Same score, 25% early stops |
 | 1c | Early CMA-ES Termination | 15/28, thresh=0.005 | 1.0156 | 65.9 min | ❌ Over budget |
+| 2 | Bayesian Optimization | 12/22 fevals | 0.9844 | 50.1 min | ❌ Faster but -2.7% score |
 
 ---
 
@@ -48,6 +49,39 @@
 Early termination provides **marginal time savings** (~1-2 min) but **no significant score improvement**. The baseline SmartInitOptimizer (12/22) remains the best approach.
 
 **Recommendation**: Mark Priority 6 as TESTED - NOT EFFECTIVE. Move to next priority.
+
+---
+
+## Iteration 2 - 2026-01-08 05:00
+- **Approach**: Bayesian Optimization (Priority 7)
+- **Hypothesis**: GP surrogate could find solutions with fewer fevals than CMA-ES
+- **Implementation**: `experiments/bayesian_optimization/`
+
+### Test Results
+
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 12/22 fevals (5+7/8+14) | 0.9844 | 0.235 | 0.302 | 50.1 min | ❌ -2.7% score |
+
+### Key Findings
+
+1. **Score dropped by 2.7%** - 0.9844 vs 1.0116 baseline
+2. **Time saved: 8.5 min** - 50.1 min vs 58.6 min
+3. **1-source accuracy worse** - RMSE 0.235 vs 0.190 (23% worse)
+4. **2-source slightly better** - RMSE 0.302 vs 0.316
+5. **86% of solutions from BO iterations** - BO is finding solutions, just worse ones
+
+### Root Cause Analysis
+
+- **GP overhead doesn't pay off** - Fitting GP multiple times per sample adds overhead without proportional accuracy improvement
+- **Sample efficiency not needed** - Heat simulation is "cheap enough" (~3s) that BO's advantage doesn't materialize
+- **CMA-ES is well-suited** - Population-based search explores more effectively for this smooth, low-D problem
+
+### Conclusion
+
+Bayesian Optimization is **faster but lower accuracy**. The trade-off is NOT favorable. CMA-ES remains the better approach for this problem.
+
+**Recommendation**: Mark Priority 7 as TESTED - NOT EFFECTIVE. Move to feval tuning.
 
 ---
 
