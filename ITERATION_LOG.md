@@ -691,5 +691,58 @@ The SmartInitOptimizer is already well-designed:
 3. **Competition analysis** - Study what makes top teams succeed
 4. **Hardware/implementation efficiency** - Allow more fevals within time budget
 
+### Verified Baseline Structure
+The multi-candidate optimizers (SmartInit, AdaptiveBudget) achieve ~1.0 score by:
+1. Running CMA-ES from best init (triangulation or smart)
+2. Collecting diverse solutions from CMA-ES exploration
+3. Filtering with TAU=0.2 for dissimilarity
+4. Returning up to 3 diverse candidates
+
+Single-candidate CMA-ES achieves only ~0.82 score (missing diversity bonus).
+
+---
+
+## Summary - All Sessions (2026-01-08 to 2026-01-09)
+
+### Experiments Conducted
+| Session | Experiment | Approach | Result |
+|---------|------------|----------|--------|
+| 1-3 | Early Termination, BO, Feval Tuning | Optimizer tweaks | 12/23 best config |
+| A1 | Hybrid Direct, Smart ICA, ICA Decomp | Direct solutions | NOT effective |
+| A2 | Multi-Fidelity GP | Coarse-to-fine | Over budget |
+| A3 | Adaptive Budget | Dynamic fevals | Marginal +1% |
+| A4 | Multi-Start CMA-ES | Multiple restarts | Dilutes fevals |
+| A5 | Better 2-Source Init | NMF, K-means | Over budget |
+| A6 | Ensemble V2 | Source-type specific | Slower than baseline |
+| A7 | lq-CMA-ES Surrogate | Linear-quadratic | Marginal, over budget |
+| A8 | Popsize Tuning | Population size | Default optimal |
+| A9 | L-BFGS-B/Powell | Scipy optimizers | Worse than CMA-ES |
+| A10 | Alternating Opt | 2D decomposition | Better RMSE, lower score |
+| A11 | Hybrid Alternating | Alt + standard | Diversity loss |
+| A12 | Diversity Generation | Split/perturb | MUCH worse |
+
+### Key Learnings
+1. **CMA-ES is well-suited** - Population-based search works better than gradient methods
+2. **Diversity is crucial** - 0.3 points (23% of max) for 3 diverse candidates
+3. **ACCURACY is the main gap** - Our RMSE ~0.25, leaders need ~0.08
+4. **Baseline is well-optimized** - SmartInit with 12/23 fevals is near-optimal
+5. **Feval splitting hurts** - Each init needs full feval budget to converge
+
+### Gap to Leaders
+```
+Our best:    ~1.03 score (RMSE ~0.25)
+Leaders:     ~1.22 score (RMSE ~0.08 estimated)
+Gap:         ~0.19 points
+
+To close gap: Need 3x RMSE reduction
+This requires: Fundamentally better physics understanding
+```
+
+### Recommended Next Steps
+1. **Physics-based analytical methods** - Reciprocity gap, Green's function
+2. **Better initialization** - Domain-specific insights for source localization
+3. **Competition analysis** - Study what successful teams do differently
+4. **Code optimization** - Make simulations faster to allow more fevals
+
 ---
 
