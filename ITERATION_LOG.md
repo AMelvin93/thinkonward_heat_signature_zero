@@ -1,10 +1,25 @@
 # Iteration Log - Heat Signature Zero
 
-**Session Start**: 2026-01-08 04:05:01
-**Max Iterations**: 10
-**Current Best**: 1.0224 @ 56.5 min (SmartInitOptimizer 12/23) ✅ NEW BEST!
+## EXTENDED SESSION CONFIG
+**Session Start**: [TO BE FILLED BY CLAUDE]
+**Max Iterations**: 40
+**Target Score**: 1.15+ (top 5 competitive) | 1.20+ (top 2 competitive)
+**Current Best**: 1.0224 @ 56.5 min (SmartInitOptimizer 12/23)
+**Gap to Target**: +0.13 to reach 1.15 | +0.18 to reach 1.20
+
+### Leaderboard Context
+```
+#1  Team Jonas M     1.2268
+#2  Team kjc         1.2265
+#3  MGöksu           1.1585
+#4  Matt Motoki      1.1581
+#5  Team StarAtNyte  1.1261
+--- WE ARE HERE ---  1.0224
+```
 
 ---
+
+## Previous Session (2026-01-08, Iterations 1-3)
 
 ## Iteration Summary
 | # | Approach | Config | Score | Time | Status |
@@ -152,6 +167,85 @@ This is inherent to parallel processing with 7 workers.
 | 12/23 | ~1.023 | ~59.5 min | ~33% |
 
 **Recommendation**: Use **12/23** - same risk but higher expected score.
+
+---
+
+## Session 2 (2026-01-08, Breakthrough Attempts A1)
+
+## Iteration Summary
+| # | Approach | Config | Score | Time | Status |
+|---|----------|--------|-------|------|--------|
+| A1a | Hybrid Direct (skip CMA-ES) | 12/18, skip=0.12/0.20 | 1.0117 | 54.8 min | ❌ Worse than baseline |
+| A1b | Hybrid Direct (higher thresh) | 12/23, skip=0.15/0.25 | 1.0052 | 51.5 min | ❌ Even worse |
+| A1c | Smart ICA (ICA as init) | 12/23 | 1.0102 | 60.1 min | ❌ Over budget, worse |
+| A1d | SmartInit (12/25, σ=0.15) | 12/25 | 1.0188 | 67.2 min | ❌ Over budget |
+| A1e | SmartInit (12/24, σ=0.15) | 12/24 | 1.0189 | 67.3 min | ❌ Over budget |
+| A1f | SmartInit (seed 123) | 12/24 | 1.0339 | 68.9 min | ❌ Over budget |
+| A1g | ICA Decomposition (reduced) | 10/15 | 1.0070 | 60.8 min | ❌ Over budget, worse |
+| A1h | ICA replaces tri | 12/20 | 1.0028 | 56.2 min | ❌ Within budget, worse |
+
+---
+
+## Iteration A1 - 2026-01-08 (Breakthrough Attempts)
+
+### A1a: Hybrid Direct Solution (Skip CMA-ES)
+- **Approach**: Generate direct position estimates (ICA, PCA, triangulation, smart), skip CMA-ES if RMSE below threshold
+- **Hypothesis**: Direct estimates for "easy" samples could skip CMA-ES entirely, saving time for hard samples
+- **Implementation**: `experiments/hybrid_direct/`
+
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | CMA-ES Skip | Status |
+|--------|-------|------------|------------|------|-------------|--------|
+| 12/18, skip=0.12/0.20 | 1.0117 | 0.184 | 0.269 | 54.8 min | 15% | ❌ Worse |
+| 12/23, skip=0.15/0.25 | 1.0052 | 0.188 | 0.255 | 51.5 min | 19% | ❌ Worse |
+
+**Root Cause**: Skipping CMA-ES hurts accuracy more than the time saved. Even with "good enough" thresholds, the direct estimates need refinement.
+
+---
+
+### A1c: Smart ICA (ICA as Additional Init)
+- **Approach**: Add ICA/PCA decomposition as additional init options alongside triangulation/smart/transfer
+- **Hypothesis**: ICA/PCA could provide better 2-source position estimates
+- **Implementation**: `experiments/smart_ica/`
+
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | ICA/PCA Benefit | Status |
+|--------|-------|------------|------------|------|-----------------|--------|
+| 12/23 | 1.0102 | 0.232 | 0.292 | 60.1 min | 1.2% | ❌ Over budget |
+
+**Root Cause**: ICA/PCA decomposition adds evaluation overhead but only benefits 1.2% of samples. The weighted centroid position estimation from ICA isn't accurate enough.
+
+---
+
+### A1g-h: ICA Decomposition Optimizer
+- **Approach**: Use ICA decomposition optimizer with various configurations
+- **Implementation**: `experiments/ica_decomposition/`
+
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | ICA Best % | Status |
+|--------|-------|------------|------------|------|------------|--------|
+| 10/15 (adds to tri) | 1.0070 | 0.218 | 0.329 | 60.8 min | 25% | ❌ Over budget |
+| 12/20 (replaces tri) | 1.0028 | 0.257 | 0.330 | 56.2 min | 31% | ❌ Worse |
+
+**Root Cause**: Even though ICA wins for 25-31% of 2-source samples, the overall score is worse because:
+1. Fevals are split across multiple inits
+2. ICA position estimation (weighted centroid) isn't accurate enough for final answer
+
+---
+
+### Key Learnings from Breakthrough Attempts
+
+1. **Direct position estimation is NOT accurate enough** - ICA/PCA weighted centroid gives approximate positions but they need CMA-ES refinement
+2. **Skip CMA-ES hurts accuracy** - Even "easy" samples benefit from refinement
+3. **Adding more inits has diminishing returns** - Each additional init dilutes fevals and adds evaluation overhead
+4. **The baseline SmartInit 12/23 remains optimal** - Score 1.0224 @ 56.5 min
+
+### Gap Analysis
+
+| Metric | Current (SmartInit 12/23) | Target (1.15) | Gap |
+|--------|---------------------------|---------------|-----|
+| Score | 1.0224 | 1.15 | -0.13 (13%) |
+| 1-src RMSE | ~0.18 | ~0.10 | ~45% reduction needed |
+| 2-src RMSE | ~0.27 | ~0.15 | ~44% reduction needed |
+
+**Conclusion**: The gap to 1.15 requires a ~45% reduction in RMSE across both 1-source and 2-source problems. This is unlikely to be achieved through parameter tuning alone - a fundamentally different approach would be needed.
 
 ---
 

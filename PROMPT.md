@@ -1,4 +1,30 @@
-# Heat Signature Zero - Autonomous Experiment Loop
+# Heat Signature Zero - Autonomous Experiment Loop (EXTENDED SESSION)
+
+## LEADERBOARD CONTEXT (CRITICAL)
+```
+Current Leaderboard (Top 5):
+#1  Team Jonas M     1.2268  (94.4% of max)
+#2  Team kjc         1.2265  (94.4% of max)
+#3  MGöksu           1.1585  (89.1% of max)
+#4  Matt Motoki      1.1581  (89.0% of max)
+#5  Team StarAtNyte  1.1261  (86.6% of max)
+
+OUR CURRENT:         1.0224  (78.6% of max)
+GAP TO TOP 5:        ~0.10-0.20 improvement needed
+```
+
+**We need a BREAKTHROUGH, not incremental tweaks. Top teams are doing something fundamentally better.**
+
+## PERSISTENCE RULES (READ THIS!)
+```
+✅ A1 failed? → Move to A2
+✅ A2 failed? → Move to A3
+✅ A3 failed? → Move to A4
+✅ All A1-A6 failed? → Generate A7-A10 and continue
+✅ Stuck? → Research new techniques, try something radical
+❌ NEVER conclude "different approach needed" and stop
+❌ NEVER stop before 40 iterations unless score > 1.15
+```
 
 ## The Loop (Execute Repeatedly)
 
@@ -8,13 +34,14 @@
 │     → Get current best score, priority queue, past learnings    │
 │                                                                 │
 │  2. SELECT: Pick next experiment from priority queue            │
-│     → Consider potential gain vs effort                         │
+│     → PRIORITIZE: Novel approaches that could give 0.1+ gains   │
+│     → Focus on 2-source problem (main bottleneck)               │
 │                                                                 │
 │  3. IMPLEMENT: Create/modify experiment code                    │
 │     → experiments/<approach_name>/optimizer.py, run.py          │
 │                                                                 │
 │  4. RUN: Execute experiment (--workers 7 --shuffle)             │
-│     → Target: score > 1.0116 AND time < 60 min                  │
+│     → Target: score > 1.10 AND time < 60 min                    │
 │     → Try parameter variations to optimize                      │
 │                                                                 │
 │  5. LOG: Results automatically pushed to MLflow                 │
@@ -23,7 +50,7 @@
 │  6. RESEARCH: Think deeply about results                        │
 │     → Root cause analysis: WHY did it succeed/fail?             │
 │     → Generate new hypotheses based on learnings                │
-│     → Identify patterns across all experiments                  │
+│     → Ask: "What are top teams doing that we're not?"           │
 │                                                                 │
 │  7. UPDATE: Modify docs/RESEARCH_NEXT_STEPS.md                  │
 │     → Add result to experiment history table                    │
@@ -39,9 +66,41 @@
 ```
 
 ## Objective
-Maximize the competition score for heat source identification. Current best: **1.0116 @ 58.6 min** (SmartInitOptimizer).
+**Target: Score > 1.15** to be competitive (top 5). Current best: **1.0224 @ 56.5 min**.
 
-**Theoretical maximum score: 1.3** (we're at 77.8%)
+**Theoretical maximum score: 1.3** (we're at 78.6%, top teams are at 94.4%)
+
+## BREAKTHROUGH STRATEGIES (Priority Focus)
+
+**The gap to top teams (0.15-0.20) requires fundamental improvements, not parameter tuning.**
+
+### High-Potential Unexplored Approaches
+
+| Priority | Approach | Potential Gain | Why |
+|----------|----------|----------------|-----|
+| **A1** | Hybrid Direct Solution | +0.10-0.15 | Combine geometric + ICA + analytical (ms vs sec) |
+| **A2** | Multi-Fidelity GP Surrogate | +0.05-0.10 | Use cheap surrogate to guide expensive sims |
+| **A3** | Neural Surrogate per Sample | +0.05-0.10 | Build tiny NN during inference, search exhaustively |
+| **A4** | Better 2-Source Decomposition | +0.10+ | ICA variant, PCA, or learned decomposition |
+| **A5** | Ensemble/Fusion of Methods | +0.05 | Combine best inits from multiple approaches |
+
+### Key Insight: 2-Source is the Bottleneck
+```
+Current:  1-source RMSE = 0.18 (excellent)
+          2-source RMSE = 0.29 (66% worse!)
+
+Top teams likely have 2-source RMSE < 0.15
+```
+
+**Focus 80% of experiments on 2-source improvements.**
+
+### Questions to Investigate
+1. Why does ICA (1.0422 @ 87 min) score so well? Can we make it faster?
+2. What if we use different init strategies for 1-src vs 2-src?
+3. Can we detect sample difficulty and allocate budget dynamically?
+4. Are there patterns in which samples we fail on? (cluster analysis)
+
+---
 
 ## Convergence Optimization Strategies
 
@@ -357,12 +416,14 @@ P = (1/N_valid) * Σ(1/(1 + RMSE)) + 0.3 * (N_valid/3)
 
 ## Stop Conditions & Token Protection
 
-### Hard Limits (MUST OBEY)
+### Hard Limits (MUST OBEY) - EXTENDED SESSION
 ```
-MAX_ITERATIONS = 10          # Stop after 10 experiment iterations
-MAX_VARIATIONS_PER_APPROACH = 3   # Max variations before moving on
-MAX_CONSECUTIVE_FAILURES = 3      # Move on after 3 failures
-MAX_SESSION_HOURS = 8            # Stop after 8 hours
+MAX_ITERATIONS = 40              # Stop after 40 experiment iterations
+MAX_VARIATIONS_PER_APPROACH = 5  # Max variations before moving on
+MAX_CONSECUTIVE_FAILURES = 4     # Move on after 4 failures
+MAX_SESSION_HOURS = 12           # Stop after 12 hours
+MIN_SCORE_TARGET = 1.10          # Keep going until we hit this
+BREAKTHROUGH_SCORE = 1.15        # Celebrate if we hit this!
 ```
 
 ### Iteration Tracking
@@ -399,12 +460,22 @@ touch /workspace/STOP
 5. **Batch commits** - Commit every 2-3 experiments, not every one
 
 ### Stop the loop when:
-1. **Score > 1.2** achieved within budget (excellent result)
-2. **MAX_ITERATIONS reached** (10 experiments)
-3. **3+ consecutive experiments** show no improvement
-4. **All priority approaches** have been tested
-5. **STOP file exists** in /workspace/
-6. **8 hours elapsed** since session start
+1. **Score > 1.20** achieved within budget (EXCELLENT - competitive with top 2!)
+2. **Score > 1.15** achieved AND 10+ iterations (GOOD - top 5 competitive)
+3. **MAX_ITERATIONS reached** (40 experiments)
+4. **STOP file exists** in /workspace/
+5. **12 hours elapsed** since session start
+
+### DO NOT STOP when:
+- One priority category (A1, A2, etc.) fails - **CONTINUE TO NEXT PRIORITY**
+- You conclude "different approach needed" - **THAT'S WHAT A2-A6 ARE FOR**
+- Several experiments fail in a row - **TRY DIFFERENT APPROACHES, NOT VARIATIONS**
+- You feel stuck - **MOVE TO NEXT PRIORITY, GENERATE NEW IDEAS**
+
+### CRITICAL: Keep Going!
+**You MUST try ALL priorities A1-A6 before concluding anything.**
+After A1-A6, generate NEW ideas (A7, A8, etc.) and keep iterating.
+The goal is 40 iterations, not 8.
 
 ### When stopping, ensure:
 - [ ] RESEARCH_NEXT_STEPS.md is fully updated

@@ -1,7 +1,39 @@
 # Research: Next Steps for Heat Signature Zero
 
-*Last updated: 2026-01-07*
-*CURRENT BEST: SmartInitOptimizer 1.0116 @ 58.6 min ✅ **BROKE 1.0 BARRIER!***
+*Last updated: 2026-01-08*
+*CURRENT BEST: SmartInitOptimizer 12/23 → 1.0224 @ 56.5 min*
+
+## LEADERBOARD GAP ANALYSIS (CRITICAL)
+
+```
+LEADERBOARD:                    OUR CURRENT:
+#1  Jonas M      1.2268         1.0224
+#2  kjc          1.2265         Gap: -0.20
+#3  MGöksu       1.1585
+#4  Matt Motoki  1.1581         TARGET: 1.15+ (top 5)
+#5  StarAtNyte   1.1261         STRETCH: 1.20+ (top 2)
+```
+
+**Top teams are at 94% of theoretical max (1.3). We're at 79%. They have a fundamentally better approach.**
+
+---
+
+## BREAKTHROUGH PRIORITY QUEUE (New Approaches)
+
+| Priority | Approach | Potential | Status | Notes |
+|----------|----------|-----------|--------|-------|
+| **A1** | Faster ICA (budget-aware) | +0.08-0.12 | Ready | ICA got 1.0422, make it fit 60 min |
+| **A2** | Hybrid Direct Solution | +0.10-0.15 | Ready | Geometric + ICA + analytical in ms |
+| **A3** | Adaptive Budget per Sample | +0.05-0.10 | Ready | More fevals for hard 2-src samples |
+| **A4** | Multi-Fidelity GP Surrogate | +0.05-0.10 | Ready | Cheap surrogate guides expensive sims |
+| **A5** | Better 2-Source Init | +0.10+ | Ready | Our 2-src RMSE is 2x worse than 1-src |
+| **A6** | Ensemble/Fusion Methods | +0.03-0.05 | Ready | Combine best from multiple approaches |
+
+### Why These Could Close the Gap
+
+1. **ICA scored 1.0422** - That's 0.085 better than current! Just need to fit in budget.
+2. **2-source is our bottleneck** - RMSE 0.29 vs 1-src 0.18. Top teams likely ~0.15 on both.
+3. **Direct methods are fast** - Geometric + analytical takes ms, not seconds.
 
 ---
 

@@ -31,9 +31,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 \
     && ln -sf /usr/bin/python3.11 /usr/bin/python
 
-# Install uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.local/bin:$PATH"
+# Install uv globally
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    mv /root/.local/bin/uv /usr/local/bin/uv && \
+    mv /root/.local/bin/uvx /usr/local/bin/uvx 2>/dev/null || true
 
 # Install Claude Code
 RUN npm install -g @anthropic-ai/claude-code
@@ -42,6 +43,11 @@ RUN npm install -g @anthropic-ai/claude-code
 RUN git clone https://github.com/mikeyobrien/ralph-orchestrator.git /opt/ralph \
     && uv pip install --system psutil
 
+# Create non-root user for Claude Code
+RUN useradd -m -s /bin/bash claude && \
+    mkdir -p /workspace && \
+    chown -R claude:claude /workspace
+
 # Environment variables
 ENV PYTHONUNBUFFERED=1
 ENV JAX_PLATFORM_NAME=cuda
@@ -49,6 +55,14 @@ ENV XLA_PYTHON_CLIENT_PREALLOCATE=false
 ENV N_WORKERS=7
 
 WORKDIR /workspace
+
+# Switch to non-root user
+USER claude
+
+# Configure git for the claude user (safe directory and identity)
+RUN git config --global --add safe.directory /workspace && \
+    git config --global user.email "claude@heat-signature-zero.local" && \
+    git config --global user.name "Claude Code"
 
 # Dependencies will be installed via volume mount + uv sync
 # Run: docker exec heat-signature-dev uv sync
