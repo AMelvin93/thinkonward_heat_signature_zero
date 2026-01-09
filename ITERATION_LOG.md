@@ -598,3 +598,98 @@ The 0.19 gap to top teams likely requires:
 
 ---
 
+## Session 6 (2026-01-09, Iteration A12)
+
+## Iteration Summary - Session 6
+| # | Approach | Config | Score | Time | Status |
+|---|----------|--------|-------|------|--------|
+| A12a | Guaranteed Diversity (split fevals) | 12/23, 3 inits | 0.7164 | 34.0 min | ❌ Much worse |
+| A12b | Perturbation Diversity | 12/23, perturb | 0.7469 | 32.3 min | ❌ Much worse |
+
+---
+
+## Iteration A12a - 2026-01-09 (Guaranteed Diversity - Split Fevals)
+- **Approach**: Split fevals across 3 structurally different inits (tri, left-right, top-bottom)
+- **Hypothesis**: Guaranteed diversity through structural variation would capture 0.3 bonus
+- **Implementation**: `experiments/diversity_guaranteed/`
+
+### Test Results (40 samples)
+| Config | 1-src RMSE | 2-src RMSE | Candidates | Score | Time |
+|--------|------------|------------|------------|-------|------|
+| 12/23, 3 inits | 0.5119 | 0.9113 | 3.0 | 0.7164 | 34.0 min |
+
+### Key Findings
+1. **Splitting fevals 3 ways KILLS convergence** - 2-source RMSE 0.91 vs baseline 0.27
+2. **Each init gets only ~7-8 fevals** - Not enough for CMA-ES to converge
+3. **Getting 3 diverse candidates is useless if they're all bad**
+
+**Root Cause**: With limited total fevals, splitting them across multiple inits means each gets insufficient budget to converge. The diversity bonus (0.3 points) doesn't compensate for massive accuracy loss.
+
+---
+
+## Iteration A12b - 2026-01-09 (Perturbation Diversity)
+- **Approach**: Full CMA-ES on best init, then perturb best solution for diversity
+- **Hypothesis**: Get accuracy from full fevals + diversity from perturbation
+- **Implementation**: `experiments/perturbation_diversity/`
+
+### Test Results (40 samples)
+| Config | 1-src RMSE | 2-src RMSE | Candidates | Score | Time |
+|--------|------------|------------|------------|-------|------|
+| 12/23, perturb | 0.4650 | 1.1445 | 2.6 | 0.7469 | 32.3 min |
+
+### Key Findings
+1. **Perturbation doesn't generate diverse ENOUGH candidates** - TAU=0.2 filter rejects them
+2. **2-source RMSE is terrible (1.14)** - Something wrong with implementation
+3. **CMA-ES history already provides better diversity** than intentional perturbation
+
+**Root Cause**: The baseline SmartInitOptimizer already extracts diverse candidates from the CMA-ES solution pool. Perturbation doesn't improve on this.
+
+---
+
+## Session 6 Key Learnings
+
+### Gap Analysis (Critical Insight)
+```
+Maximum possible score: 1.3 (perfect accuracy + full diversity)
+Leader score:          1.22 (94% of max)
+Our best score:        1.0329 (79% of max)
+Gap:                   0.19 points
+
+Score breakdown:
+- Accuracy component: 1/(1+RMSE) term, max = 1.0
+- Diversity component: 0.3 * (N_valid/3), max = 0.3
+
+Our score (~1.0) = ~0.7 accuracy + ~0.3 diversity
+Leader score (~1.22) = ~0.92 accuracy + ~0.3 diversity
+
+GAP IS PRIMARILY IN ACCURACY, NOT DIVERSITY!
+```
+
+### RMSE Gap to Leaders
+| Metric | Our Best | Leaders (estimated) | Ratio |
+|--------|----------|---------------------|-------|
+| 1-source RMSE | ~0.18-0.20 | ~0.05-0.08 | 3x worse |
+| 2-source RMSE | ~0.27-0.31 | ~0.08-0.12 | 3x worse |
+
+### What the Baseline Already Does Well
+The SmartInitOptimizer is already well-designed:
+1. **Smart init selection**: Evaluates multiple inits with 1 sim each, picks best
+2. **Full feval concentration**: ALL fevals go to best init (no dilution)
+3. **CMA-ES exploration**: Population-based search explores solution space
+4. **Diversity from CMA-ES pool**: Top solutions from CMA-ES provide natural diversity
+5. **Dissimilarity filtering**: TAU=0.2 ensures candidates are truly diverse
+
+### Why A12 Failed
+1. **Splitting fevals hurts convergence** - Each init needs ~20+ fevals to converge
+2. **Perturbation is less diverse than CMA-ES** - CMA-ES naturally explores more
+3. **Diversity is NOT the bottleneck** - We already get ~0.25-0.3 diversity bonus
+4. **ACCURACY is the bottleneck** - Our RMSE is 3x worse than leaders
+
+### Remaining Research Directions
+1. **Better physics-based initialization** - Start closer to true solution
+2. **Domain-specific analytical methods** - Reciprocity gap, Green's function
+3. **Competition analysis** - Study what makes top teams succeed
+4. **Hardware/implementation efficiency** - Allow more fevals within time budget
+
+---
+
