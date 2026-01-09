@@ -465,3 +465,136 @@ This is inherent to parallel processing with 7 workers.
 
 ---
 
+## Session 5 (2026-01-09, Iterations A9-A10)
+
+## Iteration Summary - Session 5
+| # | Approach | Config | Score | Time | Status |
+|---|----------|--------|-------|------|--------|
+| A9a | L-BFGS-B (scipy) | 15/25, 1 restart | 0.9765 | 51.8 min | ❌ Slow, lower accuracy |
+| A9b | Powell (scipy) | 15/25, 1 restart | 0.8340 | 29.5 min | ❌ Poor convergence |
+| A10 | Alternating Optimization | 12/24, 2 rounds | 0.9348 | ~56 min* | ❌ Lower score (diversity issue) |
+
+*Timing unreliable due to system load
+
+---
+
+## Iteration A9 - 2026-01-09 (Scipy Optimizers)
+- **Approach**: Replace CMA-ES with gradient-based scipy optimizers (L-BFGS-B, Powell)
+- **Hypothesis**: Gradient-based methods could converge faster on smooth objective
+- **Implementation**: `experiments/lbfgs_optimizer/`
+
+### Key Findings
+1. **L-BFGS-B is too slow** - Numerical gradient computation requires multiple function evaluations per iteration
+2. **Powell converges poorly** - Gets stuck in local minima, RMSE 0.37 vs baseline 0.18
+3. **CMA-ES is well-suited** - Population-based exploration works better for this problem
+
+**Root Cause**: The scipy optimizers need many more function evaluations than expected because:
+- L-BFGS-B computes numerical gradients (2D+1 evaluations per gradient)
+- Powell's conjugate direction search doesn't escape local minima well
+- CMA-ES's population-based search explores the space more effectively
+
+**Conclusion**: Scipy optimizers are NOT effective replacements for CMA-ES.
+
+---
+
+## Iteration A10 - 2026-01-09 (Alternating Optimization)
+- **Approach**: For 2-source problems, alternate between optimizing each source
+- **Hypothesis**: Decomposing 4D into alternating 2D problems should converge faster
+- **Implementation**: `experiments/alternating_opt/`
+
+### Test Results
+| Config | 1-src RMSE | 2-src RMSE | Score | Notes |
+|--------|------------|------------|-------|-------|
+| 12/24, 2 rounds, single candidate | 0.1686 | 0.2292 | 0.9524 | Good RMSE, low diversity score |
+| 12/24, 2 rounds, multi-candidate | 0.1704 | 0.2189 | 0.9348 | Even lower score (diversity filter issue) |
+
+### Key Findings
+1. **Alternating optimization IMPROVES 2-source RMSE** - 0.22 vs baseline 0.27-0.30
+2. **BUT overall score is LOWER** - Diversity bonus is not being captured
+3. **Candidate filtering issue** - TAU=0.2 filter removes similar candidates
+4. **1-source also improved** - 0.17 vs baseline 0.23
+
+**Root Cause of Lower Score**:
+- The score formula rewards diversity: P = accuracy + 0.3 * (N_valid/3)
+- With 1 candidate: diversity bonus = 0.1
+- With 3 candidates: diversity bonus = 0.3
+- Alternating opt gives better accuracy but fewer valid diverse candidates
+
+**Conclusion**: Alternating optimization improves RMSE but the implementation needs work on candidate generation to match baseline score.
+
+---
+
+## Session 5 Key Learnings
+
+1. **CMA-ES is hard to beat** - Both L-BFGS-B and Powell performed worse
+2. **Alternating optimization helps 2-source accuracy** - 0.22 vs 0.27-0.30 RMSE
+3. **Diversity is crucial for score** - Missing the 0.2 diversity bonus hurts significantly
+4. **Run-to-run variance remains high** - Need multiple seeds for reliable comparison
+
+### Potential Next Steps
+1. **Fix A10 candidate generation** - Generate diverse candidates without full optimization
+2. **Combine alternating opt with baseline** - Use alternating for 2-source, standard for 1-source
+3. **Research better initialization methods** - Start closer to true solution
+4. **Try different decomposition** - Maybe optimize intensity first, then positions
+
+---
+
+## Iteration A11 - 2026-01-09 (Hybrid Alternating + Standard CMA-ES)
+- **Approach**: Combine alternating optimization (accuracy) with standard CMA-ES (diversity)
+- **Hypothesis**: Get best of both worlds - alternating for primary candidate, standard for others
+- **Implementation**: `experiments/hybrid_alt/`
+
+### Test Results
+| Config | 1-src RMSE | 2-src RMSE | Score | Time | Status |
+|--------|------------|------------|-------|------|--------|
+| 12/23, 2 rounds | 0.1838 | **0.1562** | 0.9554 | 68.1 min | ❌ Over budget |
+| 12/23, 1 round | 0.1929 | 0.2301 | 0.9420 | 58.6 min | ❌ Lower score |
+| 12/25, 1 round | 0.2080 | 0.2295 | 0.9355 | 62.4 min | ❌ Over budget |
+
+### Key Findings
+1. **2-source RMSE of 0.1562** with 2 rounds is EXCELLENT (vs baseline 0.27-0.30)
+2. **BUT score is still lower** - Diversity bonus not captured
+3. **Trade-off**: More accuracy from alternating = less time for diversity candidates
+4. **Baseline scoring formula** rewards diversity heavily (0.3 points max)
+
+**Root Cause**: The competition scoring formula gives up to 0.3 points for 3 diverse candidates. Alternating optimization sacrifices this diversity for accuracy, but the accuracy improvement (0.15 vs 0.27 RMSE = ~0.12 improvement) doesn't compensate for the diversity loss (~0.2 loss).
+
+**Conclusion**: Hybrid alternating optimization is NOT an improvement over baseline. The baseline SmartInit optimizer is already well-optimized for the competition scoring formula.
+
+---
+
+## Session 5 Final Summary
+
+### Experiments Completed
+| # | Approach | Result | Status |
+|---|----------|--------|--------|
+| A9a | L-BFGS-B (scipy) | Slow, lower accuracy | ❌ NOT effective |
+| A9b | Powell (scipy) | Poor convergence | ❌ NOT effective |
+| A10 | Alternating Optimization | Better RMSE, lower score | ❌ NOT effective |
+| A11 | Hybrid Alt + Standard | Better RMSE, lower score | ❌ NOT effective |
+
+### Critical Insight
+**The baseline SmartInit (12/23) optimizer is already well-optimized for this problem.**
+
+Attempts to improve it have failed because:
+1. **CMA-ES is well-suited** - Population-based exploration works better than gradient methods
+2. **Diversity is crucial** - The scoring formula rewards 3 diverse candidates (0.3 points)
+3. **RMSE improvement alone isn't enough** - Must maintain diversity to compete
+
+### Remaining Gap Analysis
+```
+Current best:     1.0329 @ 57.0 min (A3b Adaptive Budget)
+Target:           1.15+ (competitive)
+Top teams:        1.22+ (leaders)
+Gap to close:     +0.09 to 1.15, +0.19 to 1.22
+```
+
+### What Might Close the Gap
+The 0.19 gap to top teams likely requires:
+1. **Fundamentally better physics understanding** - Not just optimizer tweaks
+2. **Better initialization from domain knowledge** - Start closer to true solution
+3. **Smarter candidate generation** - Ensure 3 diverse, high-quality candidates
+4. **Competition-specific insights** - Analyze what makes top teams succeed
+
+---
+

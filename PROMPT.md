@@ -13,60 +13,49 @@ Current best: **1.0329 @ 57.0 min**. Gap to close: **+0.20**
 --- WE ARE NOW ---   1.0329  (79.5% of max)
 ```
 
-## THE AUTONOMOUS LOOP
+---
+
+## THE AUTONOMOUS LOOP (Repeat Forever)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    CONTINUOUS RESEARCH CYCLE                        │
 │                                                                     │
-│  ┌─────────────┐                                                   │
-│  │   REFLECT   │ ← What do we know? What's the bottleneck?         │
-│  └──────┬──────┘                                                   │
-│         ▼                                                          │
-│  ┌─────────────┐                                                   │
-│  │  RESEARCH   │ ← WebSearch for techniques to solve bottleneck    │
-│  └──────┬──────┘                                                   │
-│         ▼                                                          │
-│  ┌─────────────┐                                                   │
-│  │ HYPOTHESIZE │ ← Form hypothesis: "X could work because Y"       │
-│  └──────┬──────┘                                                   │
-│         ▼                                                          │
-│  ┌─────────────┐                                                   │
-│  │ EXPERIMENT  │ ← Implement and test the hypothesis               │
-│  └──────┬──────┘                                                   │
-│         ▼                                                          │
-│  ┌─────────────┐                                                   │
-│  │   ANALYZE   │ ← Did it work? Why or why not?                    │
-│  └──────┬──────┘                                                   │
-│         ▼                                                          │
-│  ┌─────────────┐                                                   │
-│  │   UPDATE    │ ← Update docs with learnings, loop back           │
-│  └──────┬──────┘                                                   │
-│         │                                                          │
-│         └──────────────────► REPEAT FOREVER                        │
+│   1. REFLECT ──► 2. RESEARCH ──► 3. HYPOTHESIZE                    │
+│        ▲                              │                             │
+│        │                              ▼                             │
+│   8. REPEAT      ◄──────────    4. BUILD                           │
+│        ▲                              │                             │
+│        │                              ▼                             │
+│   7. UPDATE  ◄── 6. ANALYZE ◄── 5. TEST                            │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-## PHASE 1: REFLECT (Before Every Experiment)
+---
 
-Read the current state and identify the bottleneck:
+## STEP 1: REFLECT
+
+**Read the current state and understand where we are:**
 
 ```bash
-cat docs/RESEARCH_NEXT_STEPS.md   # Full history and learnings
-cat ITERATION_LOG.md              # Recent experiments
+cat docs/RESEARCH_NEXT_STEPS.md   # Full history, learnings, what works/doesn't
+cat ITERATION_LOG.md              # Recent experiment results
 ```
 
 **Ask yourself:**
-1. What is our current best score and why?
-2. What is the SINGLE BIGGEST bottleneck right now?
-3. What have we tried that DIDN'T work? (Don't repeat failures)
-4. What patterns have emerged from past experiments?
+- What is our current best score and configuration?
+- What is the SINGLE BIGGEST bottleneck right now?
+- What have we tried that DIDN'T work? (Don't repeat failures)
+- What patterns have emerged from past experiments?
+- What haven't we tried yet?
 
-**Current known bottleneck:** 2-source RMSE (~0.27) is 2x worse than 1-source (~0.14)
+**Known bottleneck:** 2-source RMSE (~0.27) is 2x worse than 1-source (~0.14)
 
-## PHASE 2: RESEARCH (Web Search for Solutions)
+---
 
-**Based on the bottleneck, search for solutions:**
+## STEP 2: RESEARCH
+
+**Use WebSearch to find techniques that could solve the bottleneck:**
 
 ```
 WebSearch: "<bottleneck> solution techniques"
@@ -78,178 +67,308 @@ WebSearch: "heat source localization <approach>"
 - "multiple heat source identification algorithm"
 - "blind source separation thermal imaging"
 - "fast inverse heat equation solver"
-- "CMA-ES convergence acceleration"
-- "surrogate-assisted optimization thermal"
-- "adjoint method heat source"
-- "neural network PDE inverse problem"
+- "CMA-ES convergence acceleration techniques"
+- "surrogate-assisted optimization PDE"
+- "adjoint method heat source identification"
+- "neural network inverse problem PDE"
+- "reduced order model thermal simulation"
 
 **Read promising results:**
 ```
-WebFetch: <url>
-→ What technique do they use?
-→ How does it work?
-→ Can we implement it?
-→ What results did they achieve?
+WebFetch: <url from search>
 ```
 
-**Add findings to RESEARCH_NEXT_STEPS.md:**
+Extract:
+- What technique do they use?
+- How does it work?
+- What problem does it solve?
+- Can we implement it in Python?
+- What results did they achieve?
+
+**Document findings in RESEARCH_NEXT_STEPS.md:**
 ```markdown
 ## Research Finding: <Technique Name>
 **Source**: <URL>
 **Key Idea**: <1-2 sentence summary>
-**Why It Might Help**: <reasoning>
+**Why It Might Help**: <reasoning based on our bottleneck>
 **Implementation Complexity**: Low/Medium/High
 **Expected Impact**: +X.XX potential improvement
 ```
 
-## PHASE 3: HYPOTHESIZE (Form a Testable Hypothesis)
+---
 
-Based on research + past learnings, form a clear hypothesis:
+## STEP 3: HYPOTHESIZE
+
+**Form a clear, testable hypothesis based on research + past learnings:**
 
 ```markdown
-## Hypothesis: <Name>
+## Hypothesis: <Descriptive Name>
 
-**Claim**: If we <do X>, then <Y will improve> because <reasoning>.
+**Claim**: If we <implement X>, then <metric Y will improve> because <reasoning Z>.
 
 **Based on**:
-- Research finding: <source>
-- Past experiment: <what we learned>
+- Research finding: <what you found>
+- Past experiment learning: <what we know>
 
-**Test plan**:
-1. Implement <specific change>
-2. Run with --max-samples 10 for quick validation
-3. If promising, run full 80-sample test
+**Implementation approach**:
+1. <Step 1>
+2. <Step 2>
+3. <Step 3>
 
-**Success criteria**: Score > 1.0329 AND time < 60 min
+**Success criteria**:
+- Score > 1.0329 (current best)
+- Time < 60 min projected
 ```
 
-## PHASE 4: EXPERIMENT (Implement and Test)
+---
+
+## STEP 4: BUILD
+
+**Create the experiment implementation:**
+
+```bash
+mkdir -p experiments/<approach_name>
+```
+
+**Required files:**
+
+1. **optimizer.py** - The core algorithm
+```python
+class NewOptimizer:
+    def __init__(self, ...):
+        # Configuration
+
+    def estimate_sources(self, sample, meta, ...):
+        # Your new approach
+        return candidates, best_rmse, ...
+```
+
+2. **run.py** - Test harness with MLflow logging
+```python
+# Must support:
+# --workers 7      (for G4dn simulation)
+# --shuffle        (for balanced batches)
+# --max-samples N  (for quick validation)
+
+# Must log to MLflow:
+# - submission_score
+# - rmse, rmse_1src, rmse_2src
+# - projected_400_samples_min
+```
+
+3. **__init__.py** - Module exports
+
+**Implementation checklist:**
+- [ ] Uses simulator at inference (required by competition)
+- [ ] Handles both 1-source and 2-source problems
+- [ ] Returns up to 3 diverse candidates per sample
+- [ ] Logs all metrics to MLflow
+- [ ] Prints clear results summary
+
+---
+
+## STEP 5: TEST
 
 **Quick validation first (2-3 min):**
 ```bash
 uv run python experiments/<name>/run.py --workers 7 --shuffle --max-samples 10
 ```
 
+Check:
+- Does it run without errors?
+- Is the score reasonable (> 0.9)?
+- Is the time reasonable (< 2 min for 10 samples)?
+
 **If promising, full test (10-12 min):**
 ```bash
 uv run python experiments/<name>/run.py --workers 7 --shuffle
 ```
 
-**Always log to MLflow and track:**
-- submission_score
-- rmse_1src, rmse_2src
-- projected_400_samples_min
+**Expected output:**
+```
+RESULTS
+======================================================================
+RMSE:             X.XXXXXX +/- X.XXXXXX
+Submission Score: X.XXXX
+Projected (400):  XX.X min
 
-## PHASE 5: ANALYZE (Deep Analysis)
+  1-source: RMSE=X.XXXX (n=XX)
+  2-source: RMSE=X.XXXX (n=XX)
 
-**After every experiment, think deeply:**
-
-1. **Did it work?** Compare to baseline (1.0329 @ 57.0 min)
-2. **If YES**: What specifically helped? Can we push further?
-3. **If NO**: Why did it fail? What does this teach us?
-4. **What's the NEW bottleneck?** (It may have shifted)
-
-**Update Meta-Patterns:**
-```markdown
-## What We've Learned
-
-### Techniques that WORK:
-- <technique>: +X% improvement because <why>
-
-### Techniques that DON'T WORK:
-- <technique>: failed because <why>
-
-### Current Bottleneck:
-- <specific bottleneck> is limiting our score
-
-### Next Research Direction:
-- Based on above, we should research <topic>
+Baseline: 1.0329 @ 57.0 min
+This run: X.XXXX @ XX.X min
+[IMPROVED/NO IMPROVEMENT/OVER BUDGET]
+======================================================================
 ```
 
-## PHASE 6: UPDATE (Document Everything)
+---
 
-**Update RESEARCH_NEXT_STEPS.md with:**
-1. Experiment result (score, time, key metrics)
-2. What we learned (why it worked/failed)
-3. New hypotheses generated
-4. Updated bottleneck analysis
-5. Next research direction
+## STEP 6: ANALYZE
+
+**Think deeply about the results:**
+
+1. **Did it beat baseline (1.0329 @ 57.0 min)?**
+   - If YES: What specifically helped? Which component?
+   - If NO: Why did it fail? What went wrong?
+
+2. **Metric breakdown:**
+   - Did 1-source improve? By how much?
+   - Did 2-source improve? By how much?
+   - Did time increase or decrease?
+
+3. **Root cause analysis:**
+   - If over budget: What dominated runtime?
+   - If accuracy dropped: Which samples failed?
+   - If succeeded: What was the key insight?
+
+4. **Pattern recognition:**
+   - Does this confirm or contradict past learnings?
+   - Has the bottleneck shifted?
+   - What new questions does this raise?
+
+5. **Next direction:**
+   - Based on this result, what should we research next?
+   - Should we iterate on this approach or try something different?
+
+---
+
+## STEP 7: UPDATE
+
+**Update ITERATION_LOG.md:**
+```markdown
+## Experiment: <Name> - <Date>
+- **Hypothesis**: <what we tested>
+- **Result**: Score X.XXXX @ XX.X min
+- **vs Baseline**: +X.XX / -X.XX
+- **Key Finding**: <most important learning>
+- **Next Action**: <what this suggests we try next>
+```
+
+**Update RESEARCH_NEXT_STEPS.md:**
+
+1. Add result to experiment history table
+2. Update "What Works" section (if successful)
+3. Update "What Doesn't Work" section (if failed)
+4. Update current bottleneck analysis
+5. Add new research directions based on learnings
+6. Update current best if improved
 
 **Commit to git:**
 ```bash
 git add -A
-git commit -m "[SCORE: X.XXXX] <approach>: <key finding>"
+git commit -m "[SCORE: X.XXXX @ XX.X min] <approach>: <key finding>"
 ```
 
-## CONSTRAINTS
+---
 
-- **Time Budget**: Must complete 400 samples in <60 min on G4dn.2xlarge
-- **For 80-sample tests**: Target <12 min (projects to ~60 min for 400)
-- **Must use simulator at inference** - no pre-computed solutions
-- **Workers**: Always use `--workers 7` for accurate timing
+## STEP 8: REPEAT
 
-## STOP CONDITIONS
+**Go back to Step 1 with new knowledge.**
 
-**Keep going until:**
+The loop continues forever until:
 - Score > 1.20 (competitive with top 2)
-- OR STOP file exists at /workspace/STOP
+- OR `/workspace/STOP` file exists
 - OR explicitly told to stop
 
 **Do NOT stop just because:**
-- An experiment failed
+- An experiment failed (learn from it!)
 - You feel stuck (do more research!)
-- You've done "enough" experiments
+- You've done "many" experiments (keep going!)
 
-## KEY INSIGHT
+---
+
+## CONSTRAINTS
+
+- **Time Budget**: 400 samples must complete in <60 min on G4dn.2xlarge
+- **For 80-sample tests**: Target <12 min (projects to ~60 min for 400)
+- **Must use simulator at inference** - no pre-computed lookup tables
+- **Workers**: Always use `--workers 7` for accurate timing
+- **Diversity**: Return up to 3 distinct candidates per sample
+
+---
+
+## KEY FILES
+
+| File | Purpose |
+|------|---------|
+| `docs/RESEARCH_NEXT_STEPS.md` | **Primary state** - learnings, history, what works |
+| `ITERATION_LOG.md` | Experiment tracking and results |
+| `experiments/` | All experimental code |
+| `CLAUDE.md` | Project constraints (read once at start) |
+| `src/` | Production code (only after validation) |
+
+---
+
+## BREAKTHROUGH INSIGHT
 
 **The gap to top teams (0.20) requires discovering something new.**
 
-Top teams are at 94% of theoretical max. They likely discovered a technique
-or insight that we haven't found yet. Your job is to RESEARCH until you find it.
+Top teams are at 94% of theoretical max (1.3). They likely discovered a technique or insight that gives them a fundamental advantage. Your job is to RESEARCH and EXPERIMENT until you find it.
 
-Possible breakthrough areas:
-- Better 2-source decomposition (ICA variants, NMF, learned decomposition)
+**Possible breakthrough areas:**
+- Better 2-source decomposition (ICA variants, NMF, learned methods)
 - Faster simulation (reduced order models, neural surrogates)
-- Better optimization (warm starting, surrogate-assisted)
-- Problem-specific insights (physics-informed approaches)
+- Better optimization (gradient-based, surrogate-assisted, warm starting)
+- Physics-informed approaches (adjoint methods, Green's functions)
+- Problem-specific insights (sensor placement, time series features)
+
+---
 
 ## EXAMPLE CYCLE
 
 ```
-REFLECT: "2-source RMSE is 0.27, twice as bad as 1-source. This is the bottleneck."
+REFLECT:
+  "Current best is 1.0329. 2-source RMSE (0.27) is 2x worse than 1-source (0.14).
+   Past experiments show ICA helps but is slow. Multi-start didn't help.
+   Bottleneck: 2-source position estimation accuracy."
 
-RESEARCH: WebSearch "multiple heat source separation algorithm"
-          Found paper on "adjoint-based source inversion" - O(1) gradient computation
+RESEARCH:
+  WebSearch: "multiple heat source localization fast algorithm"
+  Found: Paper on "reciprocity gap method" - uses adjoint solutions for O(1) source location
+  WebFetch: <paper url>
+  Key idea: Pre-compute adjoint fields, then source location is just inner products
 
-HYPOTHESIZE: "If we use adjoint gradients instead of finite differences in CMA-ES,
-             we could do 10x more iterations in the same time budget."
+HYPOTHESIZE:
+  "If we pre-compute adjoint fields for a grid of test positions, we can evaluate
+   1000s of candidate positions in milliseconds instead of seconds. This could
+   give us much better initialization for CMA-ES."
 
-EXPERIMENT: Implement adjoint_optimizer.py, test with --max-samples 10
-            Result: 1.05 score but 80 min runtime - too slow
+BUILD:
+  Create experiments/adjoint_init/optimizer.py
+  - Pre-compute adjoint fields on 20x10 grid
+  - Use inner products to score candidate positions
+  - Feed best positions to CMA-ES
 
-ANALYZE: "Adjoint computation itself is expensive. But the GRADIENT INFORMATION
-         is valuable. What if we use it just for initialization?"
+TEST:
+  uv run python experiments/adjoint_init/run.py --workers 7 --shuffle --max-samples 10
+  Result: 1.05 @ 65 min (promising score but over budget)
 
-UPDATE: Add finding to docs. New hypothesis: "Adjoint for init only"
+ANALYZE:
+  "Adjoint pre-computation takes 30 sec per sample - too slow.
+   BUT: the position estimates are excellent (0.15 RMSE before CMA-ES).
+   Idea: Cache adjoint fields across samples with similar kappa?"
 
-REPEAT: Research "warm start optimization gradient" ...
+UPDATE:
+  - Log result: 1.05 @ 65 min, over budget but best accuracy yet
+  - Learning: Adjoint gives great positions but too slow per-sample
+  - New hypothesis: "Shared adjoint cache for similar samples"
+  - Commit: "[SCORE: 1.05 @ 65 min] adjoint_init: excellent accuracy, needs caching"
+
+REPEAT:
+  Back to REFLECT with new knowledge about adjoint methods...
 ```
-
-## FILES
-
-- `docs/RESEARCH_NEXT_STEPS.md` - **Primary state** (learnings, hypotheses, history)
-- `ITERATION_LOG.md` - Experiment tracking
-- `experiments/` - All experimental code
-- `CLAUDE.md` - Project constraints (read once)
 
 ---
 
 ## START NOW
 
-1. Read `docs/RESEARCH_NEXT_STEPS.md` to understand current state
-2. Identify the current bottleneck
-3. Do web research to find potential solutions
-4. Form a hypothesis and test it
-5. Analyze, learn, and repeat
+1. Read `docs/RESEARCH_NEXT_STEPS.md` to understand full history
+2. Read `ITERATION_LOG.md` for recent experiments
+3. Identify the current bottleneck
+4. Do web research to find potential solutions
+5. Form a hypothesis, build it, test it, learn from it
+6. Update docs and repeat
 
 **Your goal: Get as close to 1.3 as possible through continuous research and experimentation.**
+
+**You drive everything. There is no pre-defined queue. Discover what works.**
