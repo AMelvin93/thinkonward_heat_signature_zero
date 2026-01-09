@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Run Ensemble/Refinement Optimizer experiment."""
+"""Run A7: lq-CMA-ES (Linear-Quadratic Surrogate) experiment."""
 
 import sys
 import os
@@ -17,8 +17,8 @@ sys.path.insert(0, str(project_root))
 import numpy as np
 from joblib import Parallel, delayed
 
-from experiments.ensemble.optimizer_v2 import (
-    EnsembleOptimizerV2,
+from experiments.lq_cmaes.optimizer import (
+    LQCMAESOptimizer,
     extract_enhanced_features,
     N_MAX,
 )
@@ -51,10 +51,9 @@ def calculate_sample_score(rmses, lambda_=LAMBDA, n_max=N_MAX, max_rmse=1.0):
 
 
 def process_sample(sample, meta, config, history_1src, history_2src):
-    optimizer = EnsembleOptimizerV2(
-        fevals_1src=config['fevals_1src'],
-        fevals_2src=config['fevals_2src'],
-        n_parallel_inits_2src=config.get('n_parallel_inits_2src', 1),
+    optimizer = LQCMAESOptimizer(
+        max_fevals_1src=config['max_fevals_1src'],
+        max_fevals_2src=config['max_fevals_2src'],
         sigma0_1src=config.get('sigma0_1src', 0.15),
         sigma0_2src=config.get('sigma0_2src', 0.20),
         use_triangulation=config.get('use_triangulation', True),
@@ -107,31 +106,24 @@ def process_batch(samples, meta, config, history_1src, history_2src, n_workers):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Run Ensemble Optimizer V2')
+    parser = argparse.ArgumentParser(description='Run lq-CMA-ES Optimizer')
     parser.add_argument('--workers', type=int, default=7)
     parser.add_argument('--batch-size', type=int, default=20)
     parser.add_argument('--max-samples', type=int, default=None)
-    # V2 fevals (simpler: no stages)
-    parser.add_argument('--fevals-1src', type=int, default=10)
-    parser.add_argument('--fevals-2src', type=int, default=24)
-    parser.add_argument('--n-parallel-inits', type=int, default=1,
-                        help='Number of parallel inits for 2-source (1=standard, 2=hedge)')
+    parser.add_argument('--max-fevals-1src', type=int, default=12)
+    parser.add_argument('--max-fevals-2src', type=int, default=23)
     parser.add_argument('--shuffle', action='store_true')
     parser.add_argument('--seed', type=int, default=42)
     args = parser.parse_args()
 
     config = {
-        'fevals_1src': args.fevals_1src,
-        'fevals_2src': args.fevals_2src,
-        'n_parallel_inits_2src': args.n_parallel_inits,
+        'max_fevals_1src': args.max_fevals_1src,
+        'max_fevals_2src': args.max_fevals_2src,
         'use_triangulation': True,
         'n_candidates': 3,
         'candidate_pool_size': 10,
         'k_similar': 1,
     }
-
-    total_1src = config['fevals_1src']
-    total_2src = config['fevals_2src']
 
     n_workers = args.workers
     actual_workers = os.cpu_count() if n_workers == -1 else n_workers
@@ -160,13 +152,13 @@ def main():
     n_batches = (n_samples + args.batch_size - 1) // args.batch_size
 
     print("=" * 70)
-    print("ENSEMBLE OPTIMIZER V2 (A6 - Source-Type Specialized)")
+    print("A7: lq-CMA-ES (Linear-Quadratic Surrogate)")
     print("=" * 70)
     print(f"Platform: {current_platform.upper()}")
     print(f"Samples: {n_samples} ({n_1src} 1-src, {n_2src} 2-src)")
     print(f"Workers: {actual_workers}" + (" (G4dn)" if is_g4dn_simulation else ""))
-    print(f"1-src fevals: {total_1src}")
-    print(f"2-src fevals: {total_2src} (parallel inits: {config['n_parallel_inits_2src']})")
+    print(f"1-src fevals: {config['max_fevals_1src']}")
+    print(f"2-src fevals: {config['max_fevals_2src']}")
     print("=" * 70)
 
     start_total = time.time()
@@ -218,7 +210,7 @@ def main():
         mlflow.set_tracking_uri("mlruns")
         mlflow.set_experiment("heat-signature-zero")
 
-        run_name = f"ensemble_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        run_name = f"lq_cmaes_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         with mlflow.start_run(run_name=run_name):
             mlflow.log_metric("submission_score", final_score)
@@ -226,10 +218,9 @@ def main():
             mlflow.log_metric("projected_400_samples_min", projected_400)
             mlflow.log_metric("rmse_1src", np.mean(rmse_by_nsources.get(1, [0])))
             mlflow.log_metric("rmse_2src", np.mean(rmse_by_nsources.get(2, [0])))
-            mlflow.log_param("optimizer", "EnsembleOptimizerV2")
-            mlflow.log_param("fevals_1src", config['fevals_1src'])
-            mlflow.log_param("fevals_2src", config['fevals_2src'])
-            mlflow.log_param("n_parallel_inits_2src", config['n_parallel_inits_2src'])
+            mlflow.log_param("optimizer", "LQCMAESOptimizer")
+            mlflow.log_param("max_fevals_1src", config['max_fevals_1src'])
+            mlflow.log_param("max_fevals_2src", config['max_fevals_2src'])
             mlflow.log_param("platform", current_platform)
 
         print(f"\n[MLflow] Logged: {run_name}")

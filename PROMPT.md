@@ -1,806 +1,255 @@
-# Heat Signature Zero - Autonomous Experiment Loop (EXTENDED SESSION)
+# Heat Signature Zero - Autonomous Research & Optimization Loop
 
-## LEADERBOARD CONTEXT (CRITICAL)
+## MISSION
+Achieve the highest possible score (target: 1.3 theoretical max, 1.22+ competitive).
+Current best: **1.0329 @ 57.0 min**. Gap to close: **+0.20**
+
+## LEADERBOARD CONTEXT
 ```
-Current Leaderboard (Top 5):
 #1  Team Jonas M     1.2268  (94.4% of max)
 #2  Team kjc         1.2265  (94.4% of max)
 #3  MGöksu           1.1585  (89.1% of max)
-#4  Matt Motoki      1.1581  (89.0% of max)
-#5  Team StarAtNyte  1.1261  (86.6% of max)
-
-OUR CURRENT:         1.0224  (78.6% of max)
-GAP TO TOP 5:        ~0.10-0.20 improvement needed
+--- TARGET ---       1.15+   (88.5% of max)
+--- WE ARE NOW ---   1.0329  (79.5% of max)
 ```
 
-**We need a BREAKTHROUGH, not incremental tweaks. Top teams are doing something fundamentally better.**
-
-## PERSISTENCE RULES (READ THIS!)
-```
-✅ A1 failed? → Move to A2
-✅ A2 failed? → Move to A3
-✅ A3 failed? → Move to A4
-✅ All A1-A6 failed? → Generate A7-A10 and continue
-✅ Stuck? → Research new techniques, try something radical
-❌ NEVER conclude "different approach needed" and stop
-❌ NEVER stop before 40 iterations unless score > 1.15
-```
-
-## The Loop (Execute Repeatedly)
+## THE AUTONOMOUS LOOP
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  1. READ: docs/RESEARCH_NEXT_STEPS.md                           │
-│     → Get current best score, priority queue, past learnings    │
-│                                                                 │
-│  2. SELECT: Pick next experiment from priority queue            │
-│     → PRIORITIZE: Novel approaches that could give 0.1+ gains   │
-│     → Focus on 2-source problem (main bottleneck)               │
-│                                                                 │
-│  3. IMPLEMENT: Create/modify experiment code                    │
-│     → experiments/<approach_name>/optimizer.py, run.py          │
-│                                                                 │
-│  4. RUN: Execute experiment (--workers 7 --shuffle)             │
-│     → Target: score > 1.10 AND time < 60 min                    │
-│     → Try parameter variations to optimize                      │
-│                                                                 │
-│  5. LOG: Results automatically pushed to MLflow                 │
-│     → submission_score, rmse, projected_400_samples_min         │
-│                                                                 │
-│  6. ANALYZE: Deep analysis of results                           │
-│     → What went WELL? What component helped?                    │
-│     → What went WRONG? Root cause analysis                      │
-│     → Compare to ALL past experiments - see patterns            │
-│                                                                 │
-│  7. RESEARCH: Web search for new techniques                     │
-│     → Based on analysis, search for solutions to bottlenecks    │
-│     → Use WebSearch for papers, techniques, approaches          │
-│     → Use WebFetch to read promising resources                  │
-│     → Add new ideas to RESEARCH_NEXT_STEPS.md                   │
-│                                                                 │
-│  8. UPDATE: Modify docs/RESEARCH_NEXT_STEPS.md                  │
-│     → Add result to experiment history table                    │
-│     → Document key learnings                                    │
-│     → Add NEW ideas from web research with hypotheses           │
-│     → Re-prioritize queue based on ALL insights                 │
-│                                                                 │
-│  9. COMMIT: Push to git                                         │
-│     → git add && git commit -m "[SCORE: X.XX] approach: result" │
-│                                                                 │
-│ 10. REPEAT: Go back to step 1                                   │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                    CONTINUOUS RESEARCH CYCLE                        │
+│                                                                     │
+│  ┌─────────────┐                                                   │
+│  │   REFLECT   │ ← What do we know? What's the bottleneck?         │
+│  └──────┬──────┘                                                   │
+│         ▼                                                          │
+│  ┌─────────────┐                                                   │
+│  │  RESEARCH   │ ← WebSearch for techniques to solve bottleneck    │
+│  └──────┬──────┘                                                   │
+│         ▼                                                          │
+│  ┌─────────────┐                                                   │
+│  │ HYPOTHESIZE │ ← Form hypothesis: "X could work because Y"       │
+│  └──────┬──────┘                                                   │
+│         ▼                                                          │
+│  ┌─────────────┐                                                   │
+│  │ EXPERIMENT  │ ← Implement and test the hypothesis               │
+│  └──────┬──────┘                                                   │
+│         ▼                                                          │
+│  ┌─────────────┐                                                   │
+│  │   ANALYZE   │ ← Did it work? Why or why not?                    │
+│  └──────┬──────┘                                                   │
+│         ▼                                                          │
+│  ┌─────────────┐                                                   │
+│  │   UPDATE    │ ← Update docs with learnings, loop back           │
+│  └──────┬──────┘                                                   │
+│         │                                                          │
+│         └──────────────────► REPEAT FOREVER                        │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-## Objective
-**Target: Score > 1.15** to be competitive (top 5). Current best: **1.0224 @ 56.5 min**.
+## PHASE 1: REFLECT (Before Every Experiment)
 
-**Theoretical maximum score: 1.3** (we're at 78.6%, top teams are at 94.4%)
+Read the current state and identify the bottleneck:
 
-## BREAKTHROUGH STRATEGIES (Priority Focus)
-
-**The gap to top teams (0.15-0.20) requires fundamental improvements, not parameter tuning.**
-
-### High-Potential Unexplored Approaches
-
-| Priority | Approach | Potential Gain | Why |
-|----------|----------|----------------|-----|
-| **A1** | Hybrid Direct Solution | +0.10-0.15 | Combine geometric + ICA + analytical (ms vs sec) |
-| **A2** | Multi-Fidelity GP Surrogate | +0.05-0.10 | Use cheap surrogate to guide expensive sims |
-| **A3** | Neural Surrogate per Sample | +0.05-0.10 | Build tiny NN during inference, search exhaustively |
-| **A4** | Better 2-Source Decomposition | +0.10+ | ICA variant, PCA, or learned decomposition |
-| **A5** | Ensemble/Fusion of Methods | +0.05 | Combine best inits from multiple approaches |
-
-### Key Insight: 2-Source is the Bottleneck
-```
-Current:  1-source RMSE = 0.18 (excellent)
-          2-source RMSE = 0.29 (66% worse!)
-
-Top teams likely have 2-source RMSE < 0.15
+```bash
+cat docs/RESEARCH_NEXT_STEPS.md   # Full history and learnings
+cat ITERATION_LOG.md              # Recent experiments
 ```
 
-**Focus 80% of experiments on 2-source improvements.**
+**Ask yourself:**
+1. What is our current best score and why?
+2. What is the SINGLE BIGGEST bottleneck right now?
+3. What have we tried that DIDN'T work? (Don't repeat failures)
+4. What patterns have emerged from past experiments?
 
-### Questions to Investigate
-1. Why does ICA (1.0422 @ 87 min) score so well? Can we make it faster?
-2. What if we use different init strategies for 1-src vs 2-src?
-3. Can we detect sample difficulty and allocate budget dynamically?
-4. Are there patterns in which samples we fail on? (cluster analysis)
+**Current known bottleneck:** 2-source RMSE (~0.27) is 2x worse than 1-source (~0.14)
 
----
+## PHASE 2: RESEARCH (Web Search for Solutions)
 
-## WEB RESEARCH PROTOCOL (Every 3-5 experiments or when stuck)
+**Based on the bottleneck, search for solutions:**
 
-### When to Research
-- After every 3-5 experiments
-- When an approach fails and you don't know why
-- When you've tried all queued ideas
-- When stuck for 30+ minutes
-
-### How to Research
-
-**Step 1: Identify the bottleneck from analysis**
-Example bottlenecks:
-- "2-source RMSE is 2x worse than 1-source"
-- "CMA-ES takes too many fevals to converge"
-- "Position estimation from ICA isn't accurate enough"
-
-**Step 2: Search for solutions**
 ```
-WebSearch: "heat source localization inverse problem"
-WebSearch: "two source separation thermal imaging"
-WebSearch: "CMA-ES convergence improvement techniques"
-WebSearch: "fast inverse heat conduction methods"
-WebSearch: "adjoint method heat source identification"
-WebSearch: "neural network heat source localization"
+WebSearch: "<bottleneck> solution techniques"
+WebSearch: "inverse heat conduction <specific problem>"
+WebSearch: "heat source localization <approach>"
 ```
 
-**Step 3: Read promising results**
+**Example research queries:**
+- "multiple heat source identification algorithm"
+- "blind source separation thermal imaging"
+- "fast inverse heat equation solver"
+- "CMA-ES convergence acceleration"
+- "surrogate-assisted optimization thermal"
+- "adjoint method heat source"
+- "neural network PDE inverse problem"
+
+**Read promising results:**
 ```
-WebFetch: <url from search results>
-→ Extract: What technique do they use?
-→ Extract: How does it compare to CMA-ES?
-→ Extract: Can we implement this in 1-2 hours?
+WebFetch: <url>
+→ What technique do they use?
+→ How does it work?
+→ Can we implement it?
+→ What results did they achieve?
 ```
 
-**Step 4: Add to priority queue**
+**Add findings to RESEARCH_NEXT_STEPS.md:**
 ```markdown
-### NEW: <Technique Name> (Priority AX)
-**Source**: <paper/article URL>
-**Hypothesis**: Based on <source>, this could help because...
-**Implementation Plan**:
-1. ...
-2. ...
-**Expected Impact**: +X.XX score improvement
+## Research Finding: <Technique Name>
+**Source**: <URL>
+**Key Idea**: <1-2 sentence summary>
+**Why It Might Help**: <reasoning>
+**Implementation Complexity**: Low/Medium/High
+**Expected Impact**: +X.XX potential improvement
 ```
 
-### Example Research Queries by Bottleneck
+## PHASE 3: HYPOTHESIZE (Form a Testable Hypothesis)
 
-| Bottleneck | Search Queries |
-|------------|----------------|
-| 2-source accuracy | "multiple heat source identification", "blind source separation thermal" |
-| Slow convergence | "surrogate-assisted CMA-ES", "warm starting evolutionary algorithms" |
-| Position estimation | "heat source triangulation algorithms", "thermal imaging localization" |
-| Time budget | "fast PDE solvers heat equation", "reduced order models thermal" |
+Based on research + past learnings, form a clear hypothesis:
 
----
+```markdown
+## Hypothesis: <Name>
 
-## ADVANCED STRATEGIES FOR SUCCESS
+**Claim**: If we <do X>, then <Y will improve> because <reasoning>.
 
-### 1. Sample-Level Failure Analysis (Every 10 experiments)
-Don't just look at aggregate RMSE - analyze WHICH samples we fail on:
-```python
-# After a run, check:
-# - Which specific samples have RMSE > 0.3?
-# - Are they clustered? (close sources, edge sources, low SNR?)
-# - What do the hard samples have in common?
-```
-This reveals the ROOT CAUSE of our bottleneck.
+**Based on**:
+- Research finding: <source>
+- Past experiment: <what we learned>
 
-### 2. Component Extraction from Failed Experiments
-Even failed experiments have useful parts:
-- "ICA failed overall BUT gave best init for 25% of 2-src samples"
-- "Bayesian was slow BUT found better positions than CMA-ES"
-- Extract these and combine them!
+**Test plan**:
+1. Implement <specific change>
+2. Run with --max-samples 10 for quick validation
+3. If promising, run full 80-sample test
 
-### 3. Combination/Ensemble Strategy (After 20 experiments)
-After testing many approaches, try COMBINING the best parts:
-```
-Best init from: ICA (for 2-src) + Smart (for 1-src)
-Best optimizer: CMA-ES with Adaptive Budget
-Best intensity: Analytical
-→ Create "FrankenOptimizer" that combines all wins
+**Success criteria**: Score > 1.0329 AND time < 60 min
 ```
 
-### 4. Radical Pivot Trigger
-If 10+ experiments show no improvement:
-- STOP iterating on current approach family
-- Web search for completely different techniques
-- Try something that seems "crazy" (neural nets, reinforcement learning, etc.)
-- The gap to top teams (0.15+) requires radical thinking
+## PHASE 4: EXPERIMENT (Implement and Test)
 
-### 5. Competition-Specific Research
-Search for:
-- "ThinkOnward challenge solutions"
-- "Kaggle heat source localization"
-- "inverse problem competition winning approaches"
-- Similar competitions may have published solutions
-
-### 6. Robustness Verification (Before declaring victory)
-Before claiming a new best:
-- Run with 3 different random seeds
-- Verify score is consistent (±0.01)
-- Check that no samples have RMSE > 0.5 (outlier failures)
-
-### 7. Exploitation Phase (After 25+ experiments)
-After exploring many approaches, switch to EXPLOITATION:
-1. Take the current best approach
-2. Try EVERY possible parameter combination within time budget
-3. Analyze which parameters have the biggest impact
-4. Squeeze out every last 0.01 improvement
-
+**Quick validation first (2-3 min):**
 ```bash
-# Parameter sweep for best approach
-for fevals_2src in 20 21 22 23 24; do
-  for sigma in 0.10 0.15 0.20; do
-    uv run python experiments/best/run.py --max-fevals-2src $fevals_2src --sigma $sigma --max-samples 10
-  done
-done
-```
-
-### 8. Time Budget Optimization
-The 60-min budget is a HARD CONSTRAINT. Strategies:
-- If we have 3+ min buffer, try adding more fevals
-- If we're at 58-60 min, find ways to shave time without losing accuracy
-- Consider: Is there a faster way to get the same result?
-
----
-
-## Convergence Optimization Strategies
-
-### 1. Fast Validation First
-Before running full 80-sample tests, do quick validation:
-```bash
-# Quick 10-sample test (2 min) to check if approach is viable
 uv run python experiments/<name>/run.py --workers 7 --shuffle --max-samples 10
 ```
-Only run full 80-sample test if quick test shows promise.
 
-**Note:** If `--max-samples` isn't supported, add it to the run.py:
-```python
-parser.add_argument('--max-samples', type=int, default=None,
-                    help='Limit samples for quick validation')
-# Then after loading samples and shuffling:
-if args.max_samples and args.max_samples < len(samples):
-    samples = samples[:args.max_samples]
-```
-
-### 2. Parallel Variations (Quick Exploration vs Accurate Timing)
-
-**For quick exploration (score comparison, not timing):**
-Use `--max-samples 10` to test variations quickly in sequence:
+**If promising, full test (10-12 min):**
 ```bash
-# Quick tests to find best config (~2 min each)
-uv run python experiments/<name>/run.py --max-fevals-2src 25 --workers 7 --shuffle --max-samples 10
-uv run python experiments/<name>/run.py --max-fevals-2src 30 --workers 7 --shuffle --max-samples 10
-uv run python experiments/<name>/run.py --subsample-factor 4 --workers 7 --shuffle --max-samples 10
+uv run python experiments/<name>/run.py --workers 7 --shuffle
 ```
 
-**For accurate timing (final validation):**
-Run ONE full experiment at a time with 7 workers:
+**Always log to MLflow and track:**
+- submission_score
+- rmse_1src, rmse_2src
+- projected_400_samples_min
+
+## PHASE 5: ANALYZE (Deep Analysis)
+
+**After every experiment, think deeply:**
+
+1. **Did it work?** Compare to baseline (1.0329 @ 57.0 min)
+2. **If YES**: What specifically helped? Can we push further?
+3. **If NO**: Why did it fail? What does this teach us?
+4. **What's the NEW bottleneck?** (It may have shifted)
+
+**Update Meta-Patterns:**
+```markdown
+## What We've Learned
+
+### Techniques that WORK:
+- <technique>: +X% improvement because <why>
+
+### Techniques that DON'T WORK:
+- <technique>: failed because <why>
+
+### Current Bottleneck:
+- <specific bottleneck> is limiting our score
+
+### Next Research Direction:
+- Based on above, we should research <topic>
+```
+
+## PHASE 6: UPDATE (Document Everything)
+
+**Update RESEARCH_NEXT_STEPS.md with:**
+1. Experiment result (score, time, key metrics)
+2. What we learned (why it worked/failed)
+3. New hypotheses generated
+4. Updated bottleneck analysis
+5. Next research direction
+
+**Commit to git:**
 ```bash
-# Full 80-sample run - accurate G4dn timing
-uv run python experiments/<name>/run.py --max-fevals-2src 28 --workers 7 --shuffle
+git add -A
+git commit -m "[SCORE: X.XXXX] <approach>: <key finding>"
 ```
 
-**WARNING:** Do NOT run multiple 7-worker experiments in parallel inside the container.
-The container is limited to 8 CPUs (G4dn simulation). Parallel runs will compete
-for resources and give inflated, inaccurate timing.
+## CONSTRAINTS
 
-### 3. Track Component Contributions
-For each experiment, isolate what helped:
-- Did accuracy improve? → Which component? (init? fevals? polish?)
-- Did speed improve? → Which phase got faster?
-- Use ablation: disable one component at a time to measure its contribution
+- **Time Budget**: Must complete 400 samples in <60 min on G4dn.2xlarge
+- **For 80-sample tests**: Target <12 min (projects to ~60 min for 400)
+- **Must use simulator at inference** - no pre-computed solutions
+- **Workers**: Always use `--workers 7` for accurate timing
 
-### 4. Exploit vs Explore Balance
-- **70% Exploit**: Variations on approaches scoring > 1.0
-- **30% Explore**: New untested approaches
-- If stuck (3 iterations no improvement) → increase explore to 50%
+## STOP CONDITIONS
 
-### 5. Combine Winning Components
-After 3-5 experiments, look for combinable wins:
-- "Smart init improved by X%" + "Timestep subsampling saved Y min"
-- → Try combining them in one optimizer
+**Keep going until:**
+- Score > 1.20 (competitive with top 2)
+- OR STOP file exists at /workspace/STOP
+- OR explicitly told to stop
 
-### 6. Focus on the Bottleneck
-Current bottleneck: **2-source RMSE (0.316)**
-- Prioritize approaches that specifically target 2-source accuracy
-- 1-source is nearly solved (RMSE 0.190)
+**Do NOT stop just because:**
+- An experiment failed
+- You feel stuck (do more research!)
+- You've done "enough" experiments
 
-## Critical Constraints
-- **Time Budget**: 400 samples must complete in <60 minutes on G4dn.2xlarge
-- **For 80-sample tests**: Target <11 min (projects to ~55 min for 400)
-- **Must use simulator at inference** - no static ML or grid search
-- **Workers**: Always use `--workers 7` for timing accuracy
+## KEY INSIGHT
 
-## Key Files
-- `docs/RESEARCH_NEXT_STEPS.md` - **Source of truth** for all experiments, results, and next steps
-- `CLAUDE.md` - Project rules and constraints
+**The gap to top teams (0.20) requires discovering something new.**
+
+Top teams are at 94% of theoretical max. They likely discovered a technique
+or insight that we haven't found yet. Your job is to RESEARCH until you find it.
+
+Possible breakthrough areas:
+- Better 2-source decomposition (ICA variants, NMF, learned decomposition)
+- Faster simulation (reduced order models, neural surrogates)
+- Better optimization (warm starting, surrogate-assisted)
+- Problem-specific insights (physics-informed approaches)
+
+## EXAMPLE CYCLE
+
+```
+REFLECT: "2-source RMSE is 0.27, twice as bad as 1-source. This is the bottleneck."
+
+RESEARCH: WebSearch "multiple heat source separation algorithm"
+          Found paper on "adjoint-based source inversion" - O(1) gradient computation
+
+HYPOTHESIZE: "If we use adjoint gradients instead of finite differences in CMA-ES,
+             we could do 10x more iterations in the same time budget."
+
+EXPERIMENT: Implement adjoint_optimizer.py, test with --max-samples 10
+            Result: 1.05 score but 80 min runtime - too slow
+
+ANALYZE: "Adjoint computation itself is expensive. But the GRADIENT INFORMATION
+         is valuable. What if we use it just for initialization?"
+
+UPDATE: Add finding to docs. New hypothesis: "Adjoint for init only"
+
+REPEAT: Research "warm start optimization gradient" ...
+```
+
+## FILES
+
+- `docs/RESEARCH_NEXT_STEPS.md` - **Primary state** (learnings, hypotheses, history)
+- `ITERATION_LOG.md` - Experiment tracking
 - `experiments/` - All experimental code
-- `src/` - Production-ready optimizers (only after validation)
+- `CLAUDE.md` - Project constraints (read once)
 
 ---
 
-## Autonomous Workflow Loop
-
-### Phase 1: Research & Select Next Experiment
-
-**FIRST: Safety checks before each iteration:**
-```bash
-# 1. Check for emergency stop
-if [ -f /workspace/STOP ]; then exit; fi
-
-# 2. Check iteration count in ITERATION_LOG.md
-# If >= 10 iterations, STOP and write final summary
-
-# 3. Record iteration start
-echo "## Iteration N - $(date)" >> ITERATION_LOG.md
-```
-
-**THEN: Read current state:**
-```bash
-cat docs/RESEARCH_NEXT_STEPS.md
-cat PROMPT.md  # Check for any updates to the workflow
-```
-
-**Check for user directives:** Look for sections like:
-- `## URGENT NOTE` - User wants to redirect focus
-- `## PAUSE` - User wants to stop the loop
-- `## PRIORITY OVERRIDE` - User changed the priority queue
-
-**Decision criteria for next experiment:**
-1. Check "Remaining Untested Approaches" section for priority order
-2. Consider potential score gain vs implementation effort
-3. Prefer approaches that address the **2-source RMSE bottleneck** (currently 0.316)
-
-**Current priority queue (from RESEARCH_NEXT_STEPS.md):**
-| Priority | Approach | Status |
-|----------|----------|--------|
-| 5 | Timestep Subsampling | Ready to test |
-| 6 | Early CMA-ES Termination | Untested |
-| 7 | Bayesian Optimization | Untested |
-
-### Phase 2: Implement Experiment
-```bash
-# Create experiment folder if new approach
-mkdir -p experiments/<approach_name>
-
-# Required files:
-# - optimizer.py: The optimizer implementation
-# - run.py: Run script with MLflow logging
-# - __init__.py: Module exports
-```
-
-**Implementation checklist:**
-- [ ] Uses simulator at inference (required)
-- [ ] Supports `--workers 7` for G4dn simulation
-- [ ] Logs to MLflow with key metrics
-- [ ] Supports `--shuffle` for balanced history
-- [ ] Prints projected 400-sample time
-
-### Phase 3: Run Experiment
-```bash
-# Standard test command (80 samples, 7 workers)
-uv run python experiments/<approach_name>/run.py --workers 7 --shuffle
-
-# Alternative configs to try if base works:
-# --max-fevals-2src 25  # More 2-source fevals
-# --subsample-factor 4   # For timestep subsampling
-```
-
-**Expected output format:**
-```
-RESULTS
-======================================================================
-Config:           <config description>
-Best RMSE:        X.XXXXXX +/- X.XXXXXX
-Avg Candidates:   X.X
-Submission Score: X.XXXX
-Projected (400):  XX.X min
-```
-
-### Phase 4: Analyze Results
-**Success criteria:**
-- Score > 1.0116 (current best) AND projected time < 60 min → **SUCCESS**
-- Score > 1.0 AND projected time < 55 min → **VIABLE** (safe margin)
-- Score improved but time > 60 min → **OVER BUDGET** (need optimization)
-- Score not improved → **FAILED** (document learnings)
-
-**Key metrics to track:**
-- `submission_score` - Primary metric
-- `rmse_2src` - Main bottleneck (currently 0.316)
-- `projected_400_samples_min` - Must be < 60
-
-### Phase 5: Commit & Document
-```bash
-# Commit experiment results to git
-git add experiments/<approach_name>/ docs/RESEARCH_NEXT_STEPS.md
-git commit -m "[SCORE: X.XXXX @ XX.X min] <approach>: <brief result>"
-
-# Commit message examples:
-# [SCORE: 1.0234 @ 54.2 min] timestep_subsampling: 2x factor beats baseline
-# [SCORE: 0.9812 @ 48.1 min] early_termination: faster but accuracy loss
-# [FAIL: 72.3 min] bayesian_opt: over budget, needs optimization
-
-# Push after significant milestones (new best, or every 3-5 experiments)
-# git push origin main
-
-# Update RESEARCH_NEXT_STEPS.md with:
-# 1. Add result to "Complete Experiment History" table
-# 2. Mark approach as tested in priority queue
-# 3. Add "Key Learning" from experiment
-# 4. Update "Current Best" if improved
-# 5. Add any new approach ideas discovered
-```
-
-**Documentation template for new result:**
-```markdown
-### <Approach Name> (Priority X) - TESTED ✅/❌
-
-**Result**: Score X.XXXX @ XX.X min
-
-**Test Results**:
-| Config | Score | RMSE | 2-src RMSE | Time | Status |
-|--------|-------|------|------------|------|--------|
-| <config> | X.XXXX | X.XXX | X.XXX | XX.X min | ✅/❌ |
-
-**Key Learning**: <What we learned from this experiment>
-
-**Recommendation**: <Keep/abandon this approach>
-```
-
-### Phase 6: ANALYZE Results (Deep Analysis)
-
-**IMPORTANT: Use extended thinking for this phase.**
-Before analyzing, say: "Let me think deeply about these results..."
-
-**After EVERY experiment, perform this analysis:**
-
-1. **What went WELL?**
-   - Which component contributed to improvement?
-   - Was it faster? More accurate? Better init?
-   - Can we amplify what worked?
-
-2. **What went WRONG?**
-   - If over budget: What dominated runtime? (timesteps? fevals? polish?)
-   - If accuracy loss: Which metric suffered? (1-src vs 2-src RMSE?)
-   - Root cause - WHY did it fail?
-
-3. **Compare to ALL past experiments:**
-   - Read the full experiment history in RESEARCH_NEXT_STEPS.md
-   - Look for PATTERNS across experiments:
-     - "All fast methods lose 2-src accuracy"
-     - "ICA helps but adds too much overhead"
-     - "More fevals always helps but time is the constraint"
-   - What have we learned that we haven't applied yet?
-
-4. **Identify the current bottleneck:**
-   - What is the SINGLE BIGGEST thing holding us back?
-   - Is it 2-source RMSE? Time budget? Init quality?
-
-### Phase 7: RESEARCH New Techniques (Web Search)
-
-**Every 3-5 experiments OR when stuck, do web research:**
-
-1. **Based on the bottleneck identified above, search:**
-   ```
-   WebSearch: "<bottleneck> solutions techniques"
-   WebSearch: "heat source localization <bottleneck>"
-   ```
-
-2. **Read promising results:**
-   ```
-   WebFetch: <promising URL>
-   → What technique do they use?
-   → Could it work for our problem?
-   → How hard to implement?
-   ```
-
-3. **Add findings to RESEARCH_NEXT_STEPS.md:**
-   ```markdown
-   ### NEW: <Technique Name> (Priority AX)
-   **Source**: <URL>
-   **Hypothesis**: This could help because...
-   **Implementation Plan**: ...
-   ```
-
-### Phase 8: UPDATE Documentation
-
-1. **Update RESEARCH_NEXT_STEPS.md:**
-   - Add result to experiment history table
-   - Document key learnings
-   - Add NEW ideas from web research
-   - Re-prioritize queue based on ALL insights
-
-2. **Re-prioritize the Queue:**
-   - If something shows promise → prioritize variations
-   - If a whole category fails → deprioritize similar approaches
-   - Add new approaches from web research
-
-**Decision tree for next experiment:**
-```
-Results Analysis
-├── Score improved AND time < 60 min?
-│   ├── YES → Try parameter variations to optimize further
-│   │         (e.g., --subsample-factor 4, --max-fevals-2src 30)
-│   └── NO → Analyze WHY, then:
-│       ├── Time issue? → Look for speedup opportunities
-│       ├── Accuracy issue? → What component caused loss?
-│       └── Generate new hypothesis → Add to priority queue
-│
-└── After optimization or 2-3 failed variations:
-    └── Move to next priority in RESEARCH_NEXT_STEPS.md
-```
-
-**If experiment succeeded:**
-1. Run 2-3 more times to verify consistency
-2. Try parameter variations to optimize further
-3. If consistently better → promote to `src/`
-4. Update `src/OPTIMIZER_HISTORY.md`
-
-**If experiment failed:**
-1. Document WHY it failed (not just that it failed)
-2. Extract any useful sub-components or insights
-3. Generate new approach ideas based on the failure
-4. Update priority queue and move to next
-
-**If hitting diminishing returns:**
-1. Document final best result for this approach
-2. **Think deeply**: "What would need to change to break through?"
-3. Research external resources (papers, similar problems)
-4. **Think step by step** to generate 2-3 new approach ideas
-5. Add to RESEARCH_NEXT_STEPS.md with clear hypotheses
-6. Continue to next priority
-
----
-
-## Quick Reference
-
-### Current Best Model (Updated)
-```bash
-# Option 1: Adaptive Budget (1.0329 @ 57.0 min) - NEW BEST
-uv run python experiments/adaptive_budget/run.py \
-    --min-fevals-1src 8 --max-fevals-1src 16 \
-    --min-fevals-2src 14 --max-fevals-2src 22 --workers 7 --shuffle
-
-# Option 2: Smart Init 12/23 (1.0224 @ 56.5 min) - Previous best
-uv run python experiments/smart_init_selection/run.py \
-    --max-fevals-1src 12 --max-fevals-2src 23 --workers 7 --shuffle
-```
-- Best Score: **1.0329** @ 57.0 min (Adaptive Budget)
-- Gap to 1.15: **-0.12** (still need 12% improvement)
-
-### Key Technical Insights
-1. **Heat equation is LINEAR in q**: `T(x,t) = q × T_unit(x,t)`
-2. **Heat2D time ∝ nt (timesteps)**, not grid size
-3. **2-source RMSE (0.316) is 66% worse than 1-source (0.190)** - main bottleneck
-4. **Smart Init Selection** eliminates wasted compute on losing initializations
-
-### Scoring Formula
-```
-P = (1/N_valid) * Σ(1/(1 + RMSE)) + 0.3 * (N_valid/3)
-```
-- Accuracy term: max 1.0 (when RMSE = 0)
-- Diversity term: max 0.3 (when 3 valid candidates)
-- **Total max: 1.3**
-
-### What Works
-- Smart Init Selection (+1.4%)
-- Analytical Intensity (+14.8%)
-- Enhanced Features (+3.3%)
-- Transfer Learning (+12.1%)
-- Shuffle (balanced history)
-
-### What Doesn't Work
-- Coarse-to-Fine Grid (grid size isn't bottleneck)
-- ICA Decomposition (too slow within budget)
-- Adaptive k in Transfer (dilutes fevals)
-
----
-
-## Stop Conditions & Token Protection
-
-### Hard Limits (MUST OBEY) - EXTENDED SESSION
-```
-MAX_ITERATIONS = 40              # Stop after 40 experiment iterations
-MAX_VARIATIONS_PER_APPROACH = 5  # Max variations before moving on
-MAX_CONSECUTIVE_FAILURES = 4     # Move on after 4 failures
-MAX_SESSION_HOURS = 12           # Stop after 12 hours
-MIN_SCORE_TARGET = 1.10          # Keep going until we hit this
-BREAKTHROUGH_SCORE = 1.15        # Celebrate if we hit this!
-```
-
-### Iteration Tracking
-At the START of each iteration, update `ITERATION_LOG.md`:
-```markdown
-## Iteration X - [timestamp]
-- Approach: <name>
-- Status: RUNNING/COMPLETED/FAILED
-- Score: X.XXXX (if completed)
-- Time: XX min (if completed)
-```
-
-**Check iteration count** - If >= MAX_ITERATIONS, STOP and summarize.
-
-### Emergency Stop File
-**Before EVERY iteration**, check for stop signal:
-```bash
-if [ -f /workspace/STOP ]; then
-    echo "STOP file detected - halting loop"
-    # Document current state and exit
-fi
-```
-
-**To stop the loop manually**, create the file:
-```bash
-touch /workspace/STOP
-```
-
-### Token Conservation Rules
-1. **Don't re-read entire files** - Only read sections you need
-2. **Keep responses concise** - No verbose explanations during loop
-3. **Skip analysis if clear failure** - Over budget by 20+ min? Just log and move on
-4. **Limit deep thinking** - Only use extended thinking for ambiguous results
-5. **Batch commits** - Commit every 2-3 experiments, not every one
-
-### Stop the loop when:
-1. **Score > 1.20** achieved within budget (EXCELLENT - competitive with top 2!)
-2. **Score > 1.15** achieved AND 10+ iterations (GOOD - top 5 competitive)
-3. **MAX_ITERATIONS reached** (40 experiments)
-4. **STOP file exists** in /workspace/
-5. **12 hours elapsed** since session start
-
-### DO NOT STOP when:
-- One priority category (A1, A2, etc.) fails - **CONTINUE TO NEXT PRIORITY**
-- You conclude "different approach needed" - **THAT'S WHAT A2-A6 ARE FOR**
-- Several experiments fail in a row - **TRY DIFFERENT APPROACHES, NOT VARIATIONS**
-- You feel stuck - **MOVE TO NEXT PRIORITY, GENERATE NEW IDEAS**
-
-### CRITICAL: Keep Going!
-**You MUST try ALL priorities A1-A6 before concluding anything.**
-After A1-A6, generate NEW ideas (A7, A8, etc.) and keep iterating.
-The goal is 40 iterations, not 8.
-
-### When stopping, ensure:
-- [ ] RESEARCH_NEXT_STEPS.md is fully updated
-- [ ] ITERATION_LOG.md has complete history
-- [ ] Best model is documented with exact command
-- [ ] All learnings are captured
-- [ ] Final summary written
-
----
-
-## META-LEARNING: Track Patterns Across Experiments
-
-### Update this section in RESEARCH_NEXT_STEPS.md after every 5 experiments:
-
-```markdown
-## Meta-Patterns Observed
-
-### What ALWAYS helps:
-- <pattern 1>
-- <pattern 2>
-
-### What NEVER helps:
-- <pattern 1>
-- <pattern 2>
-
-### What helps SOMETIMES (when?):
-- <pattern>: works when <condition>
-
-### Fundamental constraints we've discovered:
-- <constraint 1>
-- <constraint 2>
-```
-
-### Example Meta-Patterns:
-- "Speed optimizations always hurt 2-source accuracy"
-- "More fevals always helps but we're time-constrained"
-- "ICA helps 25% of 2-source samples but adds overhead"
-- "1-source is essentially solved at RMSE 0.18"
-
-### Use meta-patterns to:
-1. **STOP** trying approaches in the "never helps" category
-2. **DOUBLE DOWN** on approaches in the "always helps" category
-3. **CONDITIONALLY USE** approaches that help sometimes
-
----
-
-## Example Iteration
-
-```
-Iteration 1: Timestep Subsampling
-├── Read RESEARCH_NEXT_STEPS.md → Priority 5 is next
-├── Check experiments/timestep_subsampling/ exists
-├── Run: uv run python experiments/timestep_subsampling/run.py --workers 7 --shuffle
-├── Result: Score 1.02, Time 52 min → SUCCESS (if better than 1.0116)
-│   ├── Update docs with result
-│   ├── Try variations: --subsample-factor 4, --max-fevals-2src 30
-│   └── If consistent → promote to src/
-└── Or: Score 0.98, Time 45 min → FAILED (document learning, move to Priority 6)
-
-Iteration 2: Early CMA-ES Termination (if needed)
-├── Read updated RESEARCH_NEXT_STEPS.md
-├── Create experiments/early_termination/
-├── Implement early stopping logic
-├── Run and analyze...
-└── Continue loop...
-```
-
----
-
-## Overnight Robustness
-
-### Error Handling
-If an experiment crashes or errors:
-1. **Log the error** - Copy the full traceback
-2. **Document in RESEARCH_NEXT_STEPS.md** under the approach:
-   ```markdown
-   **Error**: <error type>
-   **Cause**: <likely cause>
-   **Fix attempted**: <what you tried>
-   ```
-3. **Try ONE fix** - If obvious (import error, typo), fix and retry
-4. **If still failing** - Mark as BLOCKED, move to next priority
-5. **Never retry same error more than twice**
-
-### Git Error Handling
-```bash
-# If "nothing to commit":
-# → This is OK, just continue to next iteration
-
-# If merge conflict or other git error:
-git status  # Check what's wrong
-git stash   # Save work if needed
-# Document the issue and continue
-```
-
-### Context Management
-After **every 3-5 iterations**, summarize progress:
-```markdown
-## SESSION SUMMARY (Iteration X)
-- Experiments run: [list]
-- Best result so far: Score X.XXXX @ XX min
-- Key learnings: [bullets]
-- Next priorities: [list]
-```
-This helps maintain context if the session gets long.
-
-### Stuck Detection
-**You are stuck if:**
-- 3 consecutive experiments show no improvement
-- Same error occurs twice
-- No new ideas can be generated
-
-**When stuck:**
-1. **Think deeply**: "What fundamental assumption might be wrong?"
-2. Review ALL past experiments in RESEARCH_NEXT_STEPS.md for patterns
-3. Consider radically different approaches (not just parameter tweaks)
-4. If truly stuck after 30 min of analysis → document state and PAUSE
-
-### Resource Checks
-Periodically verify:
-```bash
-# Check disk space (MLflow runs can grow)
-df -h /workspace
-
-# Check if MLflow tracking is working
-ls -la mlruns/
-```
-
-### Recovery
-If session crashes or needs to resume:
-1. Read `docs/RESEARCH_NEXT_STEPS.md` - it has full state
-2. Check `git log --oneline -10` for recent progress
-3. Check `mlruns/` for recent experiment results
-4. Continue from last documented state
-
-### Guardrails
-**DO NOT:**
-- Run more than 3 variations of a failed approach
-- Spend more than 2 hours on a single approach without results
-- Make changes to `src/` without a validated improvement
-- Delete or overwrite existing experiment code that worked
-- Ignore the 60-min time budget constraint
-
-**ALWAYS:**
-- Commit after each experiment (even failures)
-- Update RESEARCH_NEXT_STEPS.md with every result
-- Use `--workers 7` for timing accuracy
-- Check for user directives at the start of each iteration
-
----
-
-*This prompt guides autonomous experimentation for Heat Signature Zero.*
-*Primary goal: Beat 1.0116 score while staying under 60-min budget.*
-*Source of truth: docs/RESEARCH_NEXT_STEPS.md*
+## START NOW
+
+1. Read `docs/RESEARCH_NEXT_STEPS.md` to understand current state
+2. Identify the current bottleneck
+3. Do web research to find potential solutions
+4. Form a hypothesis and test it
+5. Analyze, learn, and repeat
+
+**Your goal: Get as close to 1.3 as possible through continuous research and experimentation.**

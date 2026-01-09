@@ -324,3 +324,144 @@ This is inherent to parallel processing with 7 workers.
 
 ---
 
+## Iteration A6 - 2026-01-09 (Ensemble/Fusion V2)
+- **Approach**: Source-Type Specialized Strategy (EnsembleOptimizerV2)
+- **Hypothesis**: Minimal fevals for 1-source (already solved) + Max fevals for 2-source (bottleneck)
+- **Implementation**: `experiments/ensemble/optimizer_v2.py`
+
+### Test Results
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 10/24 | 1.0070 | 0.237 | 0.274 | 67.1 min | ❌ Over budget |
+| 12/20 | 1.0090 | 0.211 | 0.276 | 58.1 min | ❌ Worse |
+| 12/22 | 1.0095 | 0.161 | 0.314 | 57.5 min | ❌ Worse |
+| 12/24 (2-init hedge) | 1.0129 | 0.205 | 0.274 | 68.0 min | ❌ Over budget |
+
+### Key Findings
+1. **"Minimal 1-src" strategy backfired** - 10 fevals isn't enough for good 1-src accuracy
+2. **V2 is slower than baseline** - Even with same fevals, V2 takes longer
+3. **2-init hedge improves 2-src accuracy** but adds too much time overhead
+4. **Baseline SmartInit (12/23) remains superior**
+
+**Root Cause**: The V2 optimizer lacks the staged refinement and adaptive budget features that make the baseline effective. The simplified approach doesn't translate to better performance.
+
+**Conclusion**: EnsembleOptimizerV2 is NOT an improvement. Moving to web research for new approaches.
+
+---
+
+## Iteration A7 - 2026-01-09 (lq-CMA-ES Linear-Quadratic Surrogate)
+- **Approach**: Use pycma's linear-quadratic surrogate to accelerate CMA-ES convergence
+- **Hypothesis**: Surrogate model could provide 6-20x faster convergence (per web research)
+- **Implementation**: `experiments/lq_cmaes/`
+
+### Test Results
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 12/23 | 1.0282 | 0.147 | 0.260 | 61.4 min | ❌ Over budget (+1.4) |
+| 12/21 | 1.0239 | 0.153 | 0.268 | 60.5 min | ❌ Over budget (+0.5) |
+| 12/20 | 1.0091 | 0.152 | 0.312 | 54.5 min | ❌ Worse than baseline |
+
+### Key Findings
+1. **12/23 shows good scores (1.0282)** but over budget by 1.4 min
+2. **fmin_lq_surr may have fallen back to standard CMA-ES** - No clear acceleration observed
+3. **Run-to-run variance is significant** - Same config gives different scores
+4. **Marginal improvement at best** - Score variance makes it hard to confirm improvement
+
+**Root Cause**: The lq-CMA-ES didn't provide the expected 6-20x convergence speedup. The surrogate model may not be effective for our objective function which involves expensive simulations. The overhead of building surrogate models may not pay off for low-feval budgets.
+
+**Conclusion**: lq-CMA-ES is NOT significantly better than baseline SmartInit 12/23. Continue to next approach.
+
+---
+
+## Session 4 Summary - A6-A7 (2026-01-09)
+
+### Experiments Run
+| # | Approach | Best Config | Best Score | Time | Status |
+|---|----------|-------------|------------|------|--------|
+| A6 | EnsembleOptimizerV2 | 12/24 (2-init hedge) | 1.0129 | 68.0 min | ❌ Over budget |
+| A7 | lq-CMA-ES | 12/23 | 1.0282 | 61.4 min | ❌ Over budget |
+| A3b (retest) | Adaptive Budget | 8-16/14-22 | 1.0234 | 56.1 min | ✅ Marginal improvement |
+
+### Key Findings
+1. **Run-to-run variance is significant** - Same config can give different scores
+2. **EnsembleOptimizerV2 is slower** than SmartInit baseline
+3. **lq-CMA-ES didn't provide expected speedup** - May need more fevals to benefit
+4. **Adaptive Budget (A3b) remains competitive** - 1.0234 @ 56.1 min
+
+### Current Best Scores
+| Rank | Approach | Score | Time | Status |
+|------|----------|-------|------|--------|
+| 1 | Adaptive Budget A3b | 1.0329 | 57.0 min | ✅ (from earlier run) |
+| 2 | SmartInit 12/23 | 1.0224 | 56.5 min | ✅ Baseline |
+| 3 | lq-CMA-ES 12/23 | 1.0282 | 61.4 min | ❌ Over budget |
+
+### Web Research Insights (from A7)
+- **lq-CMA-ES (surrogate-assisted)** claims 6-20x speedup but didn't materialize
+- **Adjoint/Conjugate Gradient** methods exist but were already tested as slow
+- **Multi-fidelity GP** tested in A2, didn't work well
+
+### Next Priority
+- Continue with A8-A10 based on new ideas
+- Focus on approaches that target 2-source RMSE (main bottleneck)
+
+---
+
+## Iteration A8 - 2026-01-09 (CMA-ES Population Size Tuning)
+- **Approach**: Test different CMA-ES population sizes to improve exploration
+- **Hypothesis**: Larger population may help escape local minima for 2-source
+- **Implementation**: `scripts/test_popsize.py`
+
+### Test Results (40 samples)
+| Config | Popsize | 1-src RMSE | 2-src RMSE | Time | Notes |
+|--------|---------|------------|------------|------|-------|
+| 12/23 (baseline) | 6 (default) | 0.236 | 0.250 | 31.0 min | Reference |
+| 12/23 | 4 | 0.201 | 0.288 | 28.8 min | Better 1-src, worse 2-src |
+| 12/23 | 10 | 0.312 | 0.246 | 35.3 min | Worse 1-src (too few generations) |
+
+### Full Test (80 samples)
+| Config | Popsize | 1-src RMSE | 2-src RMSE | Time | Score |
+|--------|---------|------------|------------|------|-------|
+| 15/25 | 6 | 0.220 | 0.312 | 44.0 min | ~0.90 |
+
+### Key Findings
+1. **Larger population hurts with fixed feval budget** - Fewer generations = less convergence
+2. **Smaller population (4) helps 1-source** - More generations for convergence
+3. **Default popsize (~6) is a good balance** - CMA-ES auto-scaling works well
+4. **2-source fundamentally needs more fevals** - Not a popsize issue
+
+**Root Cause**: The CMA-ES default population size scaling formula is well-tuned for our problem dimensionality (2D for 1-source, 4D for 2-source). Deviating from defaults doesn't help.
+
+**Conclusion**: Population size tuning is NOT effective. Default CMA-ES parameters are optimal.
+
+---
+
+## Final Session 4 Summary (A6-A8)
+
+### Experiments Completed in Session 4
+| # | Approach | Result | Status |
+|---|----------|--------|--------|
+| A6 | EnsembleOptimizerV2 | 1.0129 @ 68.0 min | ❌ Over budget, worse score |
+| A7 | lq-CMA-ES Surrogate | 1.0282 @ 61.4 min | ❌ Over budget by 1.4 min |
+| A8 | CMA-ES Population Tuning | No improvement | ❌ Default is optimal |
+
+### Current Best Approaches (Verified)
+| Rank | Approach | Score | Time | Notes |
+|------|----------|-------|------|-------|
+| 1 | Adaptive Budget A3b | 1.0329 | 57.0 min | (Historical best) |
+| 2 | Adaptive Budget A3b (retest) | 1.0234 | 56.1 min | Verified this session |
+| 3 | SmartInit 12/23 | 1.0224 | 56.5 min | Baseline |
+
+### Key Learnings from Session 4
+1. **Run-to-run variance is significant** - Historical 1.0329 vs retest 1.0234
+2. **Surrogate-assisted CMA-ES doesn't help** - Overhead exceeds benefit for low fevals
+3. **CMA-ES is already well-tuned** - Default parameters are optimal
+4. **2-source RMSE remains the bottleneck** - ~0.27-0.31 vs 1-source ~0.18-0.22
+
+### Recommendations for Future Iterations
+1. **Try fundamentally different approaches** for 2-source (not CMA-ES variants)
+2. **Consider ensemble of multiple initializations** (hedge strategy)
+3. **Explore sparse/structured optimization** for parameter space
+4. **Web research on inverse heat conduction** for domain-specific techniques
+
+---
+
