@@ -47,21 +47,27 @@ GAP TO TOP 5:        ~0.10-0.20 improvement needed
 │  5. LOG: Results automatically pushed to MLflow                 │
 │     → submission_score, rmse, projected_400_samples_min         │
 │                                                                 │
-│  6. RESEARCH: Think deeply about results                        │
-│     → Root cause analysis: WHY did it succeed/fail?             │
-│     → Generate new hypotheses based on learnings                │
-│     → Ask: "What are top teams doing that we're not?"           │
+│  6. ANALYZE: Deep analysis of results                           │
+│     → What went WELL? What component helped?                    │
+│     → What went WRONG? Root cause analysis                      │
+│     → Compare to ALL past experiments - see patterns            │
 │                                                                 │
-│  7. UPDATE: Modify docs/RESEARCH_NEXT_STEPS.md                  │
+│  7. RESEARCH: Web search for new techniques                     │
+│     → Based on analysis, search for solutions to bottlenecks    │
+│     → Use WebSearch for papers, techniques, approaches          │
+│     → Use WebFetch to read promising resources                  │
+│     → Add new ideas to RESEARCH_NEXT_STEPS.md                   │
+│                                                                 │
+│  8. UPDATE: Modify docs/RESEARCH_NEXT_STEPS.md                  │
 │     → Add result to experiment history table                    │
 │     → Document key learnings                                    │
-│     → Add new approach ideas with hypotheses                    │
-│     → Re-prioritize queue based on insights                     │
+│     → Add NEW ideas from web research with hypotheses           │
+│     → Re-prioritize queue based on ALL insights                 │
 │                                                                 │
-│  8. COMMIT: Push to git                                         │
+│  9. COMMIT: Push to git                                         │
 │     → git add && git commit -m "[SCORE: X.XX] approach: result" │
 │                                                                 │
-│  9. REPEAT: Go back to step 1                                   │
+│ 10. REPEAT: Go back to step 1                                   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -99,6 +105,133 @@ Top teams likely have 2-source RMSE < 0.15
 2. What if we use different init strategies for 1-src vs 2-src?
 3. Can we detect sample difficulty and allocate budget dynamically?
 4. Are there patterns in which samples we fail on? (cluster analysis)
+
+---
+
+## WEB RESEARCH PROTOCOL (Every 3-5 experiments or when stuck)
+
+### When to Research
+- After every 3-5 experiments
+- When an approach fails and you don't know why
+- When you've tried all queued ideas
+- When stuck for 30+ minutes
+
+### How to Research
+
+**Step 1: Identify the bottleneck from analysis**
+Example bottlenecks:
+- "2-source RMSE is 2x worse than 1-source"
+- "CMA-ES takes too many fevals to converge"
+- "Position estimation from ICA isn't accurate enough"
+
+**Step 2: Search for solutions**
+```
+WebSearch: "heat source localization inverse problem"
+WebSearch: "two source separation thermal imaging"
+WebSearch: "CMA-ES convergence improvement techniques"
+WebSearch: "fast inverse heat conduction methods"
+WebSearch: "adjoint method heat source identification"
+WebSearch: "neural network heat source localization"
+```
+
+**Step 3: Read promising results**
+```
+WebFetch: <url from search results>
+→ Extract: What technique do they use?
+→ Extract: How does it compare to CMA-ES?
+→ Extract: Can we implement this in 1-2 hours?
+```
+
+**Step 4: Add to priority queue**
+```markdown
+### NEW: <Technique Name> (Priority AX)
+**Source**: <paper/article URL>
+**Hypothesis**: Based on <source>, this could help because...
+**Implementation Plan**:
+1. ...
+2. ...
+**Expected Impact**: +X.XX score improvement
+```
+
+### Example Research Queries by Bottleneck
+
+| Bottleneck | Search Queries |
+|------------|----------------|
+| 2-source accuracy | "multiple heat source identification", "blind source separation thermal" |
+| Slow convergence | "surrogate-assisted CMA-ES", "warm starting evolutionary algorithms" |
+| Position estimation | "heat source triangulation algorithms", "thermal imaging localization" |
+| Time budget | "fast PDE solvers heat equation", "reduced order models thermal" |
+
+---
+
+## ADVANCED STRATEGIES FOR SUCCESS
+
+### 1. Sample-Level Failure Analysis (Every 10 experiments)
+Don't just look at aggregate RMSE - analyze WHICH samples we fail on:
+```python
+# After a run, check:
+# - Which specific samples have RMSE > 0.3?
+# - Are they clustered? (close sources, edge sources, low SNR?)
+# - What do the hard samples have in common?
+```
+This reveals the ROOT CAUSE of our bottleneck.
+
+### 2. Component Extraction from Failed Experiments
+Even failed experiments have useful parts:
+- "ICA failed overall BUT gave best init for 25% of 2-src samples"
+- "Bayesian was slow BUT found better positions than CMA-ES"
+- Extract these and combine them!
+
+### 3. Combination/Ensemble Strategy (After 20 experiments)
+After testing many approaches, try COMBINING the best parts:
+```
+Best init from: ICA (for 2-src) + Smart (for 1-src)
+Best optimizer: CMA-ES with Adaptive Budget
+Best intensity: Analytical
+→ Create "FrankenOptimizer" that combines all wins
+```
+
+### 4. Radical Pivot Trigger
+If 10+ experiments show no improvement:
+- STOP iterating on current approach family
+- Web search for completely different techniques
+- Try something that seems "crazy" (neural nets, reinforcement learning, etc.)
+- The gap to top teams (0.15+) requires radical thinking
+
+### 5. Competition-Specific Research
+Search for:
+- "ThinkOnward challenge solutions"
+- "Kaggle heat source localization"
+- "inverse problem competition winning approaches"
+- Similar competitions may have published solutions
+
+### 6. Robustness Verification (Before declaring victory)
+Before claiming a new best:
+- Run with 3 different random seeds
+- Verify score is consistent (±0.01)
+- Check that no samples have RMSE > 0.5 (outlier failures)
+
+### 7. Exploitation Phase (After 25+ experiments)
+After exploring many approaches, switch to EXPLOITATION:
+1. Take the current best approach
+2. Try EVERY possible parameter combination within time budget
+3. Analyze which parameters have the biggest impact
+4. Squeeze out every last 0.01 improvement
+
+```bash
+# Parameter sweep for best approach
+for fevals_2src in 20 21 22 23 24; do
+  for sigma in 0.10 0.15 0.20; do
+    uv run python experiments/best/run.py --max-fevals-2src $fevals_2src --sigma $sigma --max-samples 10
+  done
+done
+```
+
+### 8. Time Budget Optimization
+The 60-min budget is a HARD CONSTRAINT. Strategies:
+- If we have 3+ min buffer, try adding more fevals
+- If we're at 58-60 min, find ways to shave time without losing accuracy
+- Consider: Is there a faster way to get the same result?
 
 ---
 
@@ -306,39 +439,73 @@ git commit -m "[SCORE: X.XXXX @ XX.X min] <approach>: <brief result>"
 **Recommendation**: <Keep/abandon this approach>
 ```
 
-### Phase 6: Research & Adapt Based on Results
+### Phase 6: ANALYZE Results (Deep Analysis)
 
 **IMPORTANT: Use extended thinking for this phase.**
 Before analyzing, say: "Let me think deeply about these results..."
 
 **After EVERY experiment, perform this analysis:**
 
-1. **Root Cause Analysis** - Why did it succeed/fail?
+1. **What went WELL?**
+   - Which component contributed to improvement?
+   - Was it faster? More accurate? Better init?
+   - Can we amplify what worked?
+
+2. **What went WRONG?**
    - If over budget: What dominated runtime? (timesteps? fevals? polish?)
    - If accuracy loss: Which metric suffered? (1-src vs 2-src RMSE?)
-   - If succeeded: What was the key insight that made it work?
+   - Root cause - WHY did it fail?
 
-2. **Generate New Hypotheses** - Think harder about what the results imply:
-   - "Timestep subsampling worked because..." → Could we push further?
-   - "Early termination failed because..." → What alternative addresses this?
-   - Look for patterns across experiments (e.g., "all fast methods lose 2-src accuracy")
-   - Consider: "What would a domain expert notice that I might be missing?"
+3. **Compare to ALL past experiments:**
+   - Read the full experiment history in RESEARCH_NEXT_STEPS.md
+   - Look for PATTERNS across experiments:
+     - "All fast methods lose 2-src accuracy"
+     - "ICA helps but adds too much overhead"
+     - "More fevals always helps but time is the constraint"
+   - What have we learned that we haven't applied yet?
 
-3. **Update RESEARCH_NEXT_STEPS.md with NEW IDEAS:**
-   ```markdown
-   ### NEW: <Approach Name> (Priority X) - Untested
+4. **Identify the current bottleneck:**
+   - What is the SINGLE BIGGEST thing holding us back?
+   - Is it 2-source RMSE? Time budget? Init quality?
 
-   **Hypothesis**: Based on <previous experiment>, we believe...
+### Phase 7: RESEARCH New Techniques (Web Search)
 
-   **Why This Could Work**: <reasoning from results>
+**Every 3-5 experiments OR when stuck, do web research:**
 
-   **Implementation Plan**: <concrete steps>
+1. **Based on the bottleneck identified above, search:**
+   ```
+   WebSearch: "<bottleneck> solutions techniques"
+   WebSearch: "heat source localization <bottleneck>"
    ```
 
-4. **Re-prioritize the Queue** - Based on learnings:
-   - If timestep subsampling shows promise → prioritize variations
-   - If a whole category fails (e.g., "speed optimizations hurt accuracy") → deprioritize similar approaches
-   - Add new approaches discovered during analysis
+2. **Read promising results:**
+   ```
+   WebFetch: <promising URL>
+   → What technique do they use?
+   → Could it work for our problem?
+   → How hard to implement?
+   ```
+
+3. **Add findings to RESEARCH_NEXT_STEPS.md:**
+   ```markdown
+   ### NEW: <Technique Name> (Priority AX)
+   **Source**: <URL>
+   **Hypothesis**: This could help because...
+   **Implementation Plan**: ...
+   ```
+
+### Phase 8: UPDATE Documentation
+
+1. **Update RESEARCH_NEXT_STEPS.md:**
+   - Add result to experiment history table
+   - Document key learnings
+   - Add NEW ideas from web research
+   - Re-prioritize queue based on ALL insights
+
+2. **Re-prioritize the Queue:**
+   - If something shows promise → prioritize variations
+   - If a whole category fails → deprioritize similar approaches
+   - Add new approaches from web research
 
 **Decision tree for next experiment:**
 ```
@@ -379,12 +546,19 @@ Results Analysis
 
 ## Quick Reference
 
-### Current Best Model
+### Current Best Model (Updated)
 ```bash
+# Option 1: Adaptive Budget (1.0329 @ 57.0 min) - NEW BEST
+uv run python experiments/adaptive_budget/run.py \
+    --min-fevals-1src 8 --max-fevals-1src 16 \
+    --min-fevals-2src 14 --max-fevals-2src 22 --workers 7 --shuffle
+
+# Option 2: Smart Init 12/23 (1.0224 @ 56.5 min) - Previous best
 uv run python experiments/smart_init_selection/run.py \
-    --max-fevals-1src 12 --max-fevals-2src 22 --workers 7 --shuffle
+    --max-fevals-1src 12 --max-fevals-2src 23 --workers 7 --shuffle
 ```
-- Score: 1.0116 @ 58.6 min
+- Best Score: **1.0329** @ 57.0 min (Adaptive Budget)
+- Gap to 1.15: **-0.12** (still need 12% improvement)
 
 ### Key Technical Insights
 1. **Heat equation is LINEAR in q**: `T(x,t) = q × T_unit(x,t)`
@@ -483,6 +657,42 @@ The goal is 40 iterations, not 8.
 - [ ] Best model is documented with exact command
 - [ ] All learnings are captured
 - [ ] Final summary written
+
+---
+
+## META-LEARNING: Track Patterns Across Experiments
+
+### Update this section in RESEARCH_NEXT_STEPS.md after every 5 experiments:
+
+```markdown
+## Meta-Patterns Observed
+
+### What ALWAYS helps:
+- <pattern 1>
+- <pattern 2>
+
+### What NEVER helps:
+- <pattern 1>
+- <pattern 2>
+
+### What helps SOMETIMES (when?):
+- <pattern>: works when <condition>
+
+### Fundamental constraints we've discovered:
+- <constraint 1>
+- <constraint 2>
+```
+
+### Example Meta-Patterns:
+- "Speed optimizations always hurt 2-source accuracy"
+- "More fevals always helps but we're time-constrained"
+- "ICA helps 25% of 2-source samples but adds overhead"
+- "1-source is essentially solved at RMSE 0.18"
+
+### Use meta-patterns to:
+1. **STOP** trying approaches in the "never helps" category
+2. **DOUBLE DOWN** on approaches in the "always helps" category
+3. **CONDITIONALLY USE** approaches that help sometimes
 
 ---
 

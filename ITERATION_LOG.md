@@ -249,3 +249,78 @@ This is inherent to parallel processing with 7 workers.
 
 ---
 
+## Session 3 (2026-01-09, Iterations A2-A6+)
+
+## Iteration Summary - Session 3
+| # | Approach | Config | Score | Time | Status |
+|---|----------|--------|-------|------|--------|
+| A2 | Multi-Fidelity GP Surrogate | 8 coarse, 2 BO, 3 fine | 1.0020 | 86.4 min | ❌ Over budget |
+| A3a | Adaptive Budget | 8-16/16-28 fevals | 1.0438 | 67.2 min | ❌ Over budget |
+| A3b | Adaptive Budget | 8-16/14-22 fevals | **1.0329** | **57.0 min** | ✅ Best A3 |
+| A3c | Adaptive Budget | 10-14/16-24 fevals | 1.0339 | 66.2 min | ❌ Over budget |
+| A3d | Adaptive Budget | 8-12/14-20 fevals | 1.0019 | 56.4 min | ❌ Worse than baseline |
+
+---
+
+## Iteration A2 - 2026-01-09 (Multi-Fidelity GP)
+- **Approach**: Coarse grid (50x25) exploration + GP surrogate + fine refinement
+- **Hypothesis**: Use cheap simulations to guide expensive ones
+- **Implementation**: `experiments/multi_fidelity_gp/`
+
+### Key Findings
+1. **GP overhead too high for 2-source** - Fitting GP in 4D space is expensive
+2. **Best score: 1.0020 @ 86.4 min** - 26 min over budget
+3. **Quick test (10 samples) showed promise** - 1.0267 @ 57 min
+
+**Conclusion**: Multi-fidelity GP doesn't scale well to 2-source 4D parameter space.
+
+---
+
+## Iteration A3 - 2026-01-09 (Adaptive Budget)
+- **Approach**: Allocate more fevals to hard samples (high init RMSE)
+- **Hypothesis**: Save time on easy samples for hard ones
+- **Implementation**: `experiments/adaptive_budget/`
+
+### Key Findings
+1. **Best config: 14-22 2src fevals** - Score 1.0329 @ 57.0 min (+0.0105)
+2. **Adaptive budget works but marginal improvement**
+3. **Most 2-source samples hit max fevals** - They're all "hard"
+
+**Conclusion**: Marginal improvement (+1.0%) within budget. Baseline 12/23 still competitive.
+
+---
+
+## Iteration A4 - 2026-01-09 (Multi-Start CMA-ES)
+- **Approach**: Run CMA-ES from multiple diverse starting points
+- **Hypothesis**: Multiple restarts could help escape local minima
+- **Implementation**: `experiments/multi_start/`
+
+### Test Results
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 3×8+6 2src | 0.9938 | 0.136 | 0.247 | 84.9 min | ❌ Over budget |
+| 2×6+4 2src | 0.9307 | 0.165 | 0.306 | 45.6 min | ❌ Worse score |
+
+**Conclusion**: Multi-start dilutes fevals per run, hurting convergence. Not effective.
+
+---
+
+## Iteration A5 - 2026-01-09 (Better 2-Source Init)
+- **Approach**: Add advanced init methods (K-means, NMF, onset time, gradient)
+- **Hypothesis**: Better inits could improve 2-source convergence
+- **Implementation**: `experiments/better_2src_init/`
+
+### Test Results
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| With NMF | 1.0261 | 0.205 | 0.267 | 63.3 min | ❌ Over budget |
+| Without NMF | 1.0129 | 0.195 | 0.276 | 62.5 min | ❌ Over budget |
+| No advanced | 1.0210 | 0.214 | 0.272 | 58.8 min | ✅ ~baseline |
+
+### Init Type Distribution (with advanced)
+- triangulation: 30% | smart: 26% | nmf: 21% | kmeans: 11% | transfer: 9% | gradient: 3%
+
+**Conclusion**: Advanced inits add overhead without improving accuracy. Not effective.
+
+---
+
