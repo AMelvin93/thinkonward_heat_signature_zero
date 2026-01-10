@@ -1479,3 +1479,47 @@ Target (top 2):  1.22 (94% of max) - Gap: 0.124
 
 ---
 
+## Session 12 - Multi-Fidelity Optimization
+
+### A28 - Multi-Fidelity (Coarse Grid Exploration)
+- **Approach**: Use coarse grid (50x25) for CMA-ES exploration (~4x faster per sim)
+- **Fine grid** (100x50) only for final candidate evaluation
+- **Hypothesis**: More fevals with cheaper simulations = better exploration
+
+**Results (80 samples)**:
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| Fine grid 15/24 (baseline) | 1.0957 | 0.175 | 0.273 | 58.3 min | Previous best |
+| **Multi-fidelity 20/32** | **1.1094** | **0.171** | **0.231** | **44.1 min** | ✅ **NEW BEST** |
+| Multi-fidelity 20/40 | 1.0964 | 0.208 | 0.258 | 44.2 min | Worse |
+| Multi-fidelity 20/48 | 1.1047 | 0.205 | 0.219 | 54.1 min | OK |
+
+**Key Finding**: Multi-fidelity with 32 fevals gives:
+- **+1.3% score improvement** (1.0957 → 1.1094)
+- **15% reduction in 2-source RMSE** (0.273 → 0.231)
+- **14 minutes faster** (58.3 → 44.1 min)
+
+**Why It Works**:
+- Coarse grid simulations are ~4x faster
+- CMA-ES can do more exploration with same wall time
+- Final evaluation on fine grid maintains accuracy
+- Sweet spot is 32 fevals - more causes overfitting to coarse grid
+
+### Session 12 Summary
+
+**New Best Configuration**:
+```bash
+uv run python experiments/multi_fidelity/run.py --workers 7 --shuffle --max-fevals-2src 32
+```
+
+**Score: 1.1094 @ 44.1 min** (16 min buffer remaining)
+
+**Gap Analysis**:
+```
+Current:         1.1094 (85% of max 1.30)
+Target (top 5):  1.15 (88% of max) - Gap: 0.041
+Target (top 2):  1.22 (94% of max) - Gap: 0.111
+```
+
+---
+
