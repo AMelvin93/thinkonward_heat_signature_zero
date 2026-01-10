@@ -90,8 +90,8 @@ def main():
                         help='Shuffle samples for balanced batches')
     parser.add_argument('--max-fevals-1src', type=int, default=15,
                         help='Max fevals for 1-source (default: 15)')
-    parser.add_argument('--max-fevals-2src', type=int, default=20,
-                        help='Max fevals for 2-source (default: 20)')
+    parser.add_argument('--max-fevals-2src', type=int, default=22,
+                        help='Max fevals for 2-source (default: 22)')
     parser.add_argument('--early-fraction', type=float, default=0.3,
                         help='Fraction of early timesteps to use (default: 0.3)')
     parser.add_argument('--seed', type=int, default=42,

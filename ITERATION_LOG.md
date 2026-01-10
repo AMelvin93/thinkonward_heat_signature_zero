@@ -1326,3 +1326,31 @@ Target (top 2):  1.22 (94% of max) - Gap: +0.14
 
 ---
 
+## Session 9 Continued - Feval Tuning
+
+### A22 - Feval Optimization for 2-Source
+- **Approach**: Increase 2-source fevals while staying within budget
+- **Hypothesis**: More fevals for 2-source (the bottleneck) could improve accuracy
+
+### Test Results
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 15/20 @ 30% | 1.0796-1.0847 | 0.17-0.20 | 0.31 | 58-59 min | ✅ Previous best |
+| **15/22 @ 30%** | **1.0822** | **0.175** | **0.287** | **57.3 min** | ✅ **NEW BEST** |
+| 15/24 @ 30% | 1.0866 | 0.21 | 0.29 | 81 min | ❌ Over budget |
+
+### Key Findings
+1. **15/22 gives best trade-off** - Good score within comfortable time budget
+2. **2-source RMSE improved** - 0.287 vs 0.31 (7.4% improvement)
+3. **15/24 is over budget** - The extra 2 fevals add ~20 min for 400 samples
+4. **Time budget is tight** - Little room for more fevals
+
+### Updated Production Configuration
+```bash
+uv run python experiments/early_timestep_opt/run.py --workers 7 --shuffle --early-fraction 0.3 --max-fevals-2src 22
+```
+
+**Verified Best: Score 1.0822 @ 57.3 min** (2.7 min buffer)
+
+---
+
