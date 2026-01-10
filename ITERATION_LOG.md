@@ -1193,3 +1193,136 @@ Based on extensive experimentation and research, closing the 20% gap would likel
 
 ---
 
+## Session 9 (2026-01-10, Iterations A20-A21)
+
+## Iteration Summary - Session 9
+| # | Approach | Config | Score | Time | Status |
+|---|----------|--------|-------|------|--------|
+| A20 | Sensor Subset Diversity | 15/20, 3 subsets | 0.9473 | 64.0 min | ❌ Over budget, worse |
+| A21 | Early Timestep Optimization | 15/20, 30% early | **1.0796** | **58.4 min** | ✅ **NEW BEST!** |
+
+---
+
+## Iteration A20 - 2026-01-10 (Sensor Subset Diversity)
+- **Approach**: Use different sensor subsets to generate naturally diverse candidates
+- **Hypothesis**: Different subsets give different "views", natural diversity
+- **Implementation**: `experiments/sensor_subset_diversity/`
+
+### Research Basis
+- 2025 SIAM paper: "Two boundary points can uniquely determine a heat source"
+- Our samples have 8-12 sensors (4-6x more than theoretically needed)
+- Different sensor subsets should give different but valid solutions
+
+### Test Results
+| Config | Score | RMSE | Candidates | Time | Status |
+|--------|-------|------|------------|------|--------|
+| 15/20, 3 subsets | 0.9473 | 0.27 | 1.4 | 64.0 min | ❌ Over budget |
+
+### Key Findings
+1. **Different sensor subsets converge to SAME solution** - TAU filter rejects similar candidates
+2. **Diversity from subsets doesn't work** - The parameter space is too smooth
+3. **Splitting fevals hurts** - Each subset gets fewer fevals, worse convergence
+4. **Confirms A12 finding**: "Diversity comes from CMA-ES pool, not forced structural variation"
+
+**Conclusion**: Sensor subset diversity is NOT effective. Moving to temporal optimization.
+
+---
+
+## Iteration A21 - 2026-01-10 (Early Timestep Optimization)
+- **Approach**: Focus position optimization on EARLY timesteps (containing onset/timing info)
+- **Hypothesis**: Early timesteps are more discriminative for source positions
+- **Implementation**: `experiments/early_timestep_opt/`
+
+### Physics Insight
+```
+- Early timesteps: Temperature starts rising, contains TIMING information
+  - Different source positions → different arrival times at sensors
+  - This breaks symmetry/degeneracy in 2-source problems
+- Late timesteps: Quasi-steady state, LESS discriminative for position
+  - Similar patterns can arise from different source configurations
+```
+
+### Key Research Finding
+From Bayesian inference research (arXiv:2405.02319):
+- "Multiple solutions arise when number of sensors < number of unknowns"
+- Our 2-source samples have only 3-6 sensors (vs 6 unknowns)
+- With 8-10 sensors, "inversion problem" occurs (sources get swapped)
+- Solution: Use temporal information more effectively
+
+### Test Results
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 15/20, 30% early (20 samples) | 1.1092 | 0.214 | 0.218 | 58.2 min | ✅ +11.4%! |
+| 15/20, 30% early (80 samples) | **1.0796** | **0.198** | **0.308** | **58.4 min** | ✅ **+8.5%!** |
+
+### Key Findings
+1. **Early timestep focus IMPROVES both 1-src and 2-src accuracy**
+   - 1-source RMSE: 0.198 vs baseline 0.25 (-21%)
+   - 2-source RMSE: 0.308 vs baseline 0.33 (-7%)
+2. **Score improved by 8.5%** - 1.0796 vs 0.9951
+3. **Time within budget** - 58.4 min (1.6 min buffer)
+4. **Diversity maintained** - 2.8 candidates average
+
+### Why This Works
+- Early timesteps contain ONSET TIMING information
+- Timing → distance from source (heat arrival time)
+- This helps triangulation-based initialization
+- And helps CMA-ES find better positions during optimization
+- For 2-source: helps distinguish between two sources (different arrival times)
+
+**Conclusion**: Early timestep optimization is a **SIGNIFICANT IMPROVEMENT**.
+**NEW BEST: 1.0796 @ 58.4 min**
+
+---
+
+## Session 9 Key Learnings
+
+### Breakthrough Insight
+**Temporal information is under-utilized in our baseline.** By focusing position optimization on early timesteps (30% of data), we achieve:
+- Better position discrimination (timing information)
+- Helps break 2-source symmetry/degeneracy
+- +8.5% score improvement without exceeding time budget
+
+### Gap Analysis Update
+```
+Previous best:   0.9951 (77% of theoretical max 1.30)
+Session 9 best:  1.0796 (83% of max) - 6% improvement!
+Target (top 5):  1.15   (88% of max) - Gap: +0.07
+Target (top 2):  1.22   (94% of max) - Gap: +0.14
+```
+
+### Early Fraction Tuning Results
+| early_fraction | Score | Time | Status |
+|----------------|-------|------|--------|
+| 20% | 1.0600 | 58.7 min | ✅ Within budget |
+| **30% (seed 42)** | **1.0796** | **58.4 min** | ✅ **BEST** |
+| **30% (seed 123)** | **1.0847** | **59.4 min** | ✅ **BEST** |
+| 40% | 1.0918 | 83.4 min | ❌ Over budget |
+| 50% | 1.0715 | 58.8 min | ✅ Within budget |
+
+**Optimal: 30% early_fraction** - Best balance of score and time budget.
+
+### Remaining Research Directions
+1. ~~**Tune early_fraction**~~ - Done, 30% is optimal
+2. **Adaptive early fraction** - More for 2-source, less for 1-source
+3. **Temporal weighting** - Continuous weight decay instead of hard cutoff
+4. **Combine with transfer learning** - Add history from baseline optimizer
+5. **Multi-stage optimization** - Early for position, late for intensity refinement
+
+### Session 9 Final Summary
+
+**BREAKTHROUGH: Early Timestep Optimization**
+- **New Best: 1.0796-1.0847 @ 58-59 min** (+8-9% over baseline)
+- Key insight: Early timesteps contain timing information more discriminative for position
+- Helps break 2-source symmetry/degeneracy
+- Production-ready: `experiments/early_timestep_opt/` with `--early-fraction 0.3`
+
+**Gap to Leaders:**
+```
+Current:         1.08 (83% of max 1.30)
+Target (top 5):  1.15 (88% of max) - Gap: +0.07
+Target (top 2):  1.22 (94% of max) - Gap: +0.14
+```
+
+---
+
