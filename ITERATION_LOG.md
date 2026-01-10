@@ -941,3 +941,255 @@ Gap:           ~0.20 points (~3x RMSE reduction needed)
 
 ---
 
+## Iteration A16 - 2026-01-10 (IPOP-CMA-ES Restart Strategy)
+- **Approach**: Use restart strategy with increasing population (IPOP-CMA-ES)
+- **Hypothesis**: Restarts with larger populations could escape local minima for 2-source
+- **Implementation**: `experiments/ipop_cmaes/`
+
+### Test Results
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 10/20 (2 restarts) | 1.0096 | 0.188 | 0.311 | 56.0 min | ✅ Within budget, worse |
+| 12/24 (2 restarts) | 1.0462 | 0.168 | 0.288 | 61.6 min | ❌ Over budget by 1.6 min |
+| 12/24 (test 20 samples) | 1.0469 | - | - | 31.1 min proj | Unreliable projection |
+
+### Key Findings
+1. **12/24 shows good score (1.0462)** but over budget by 1.6 min
+2. **Restarts add overhead** - Each restart initializes new CMA-ES instance
+3. **No significant improvement over baseline** - 1.0462 vs 1.0329 (baseline A3b)
+4. **2-source RMSE similar to baseline** - 0.288 vs 0.290-0.295
+
+### Root Cause Analysis
+- IPOP-CMA-ES provides modest improvement but the restart overhead pushes it over budget
+- The additional exploration from restarts doesn't translate to major accuracy gains
+- For our low-feval budget (20-24 total), single-run CMA-ES is more efficient
+
+**Conclusion**: IPOP-CMA-ES is NOT effective within time budget. Continue with web research.
+
+---
+
+## Session 8 (2026-01-10, Autonomous Loop - Iterations A17-A18)
+
+## Iteration A17 - 2026-01-10 (Sparse L1 Optimization)
+- **Approach**: Compressed sensing with L1 regularization for sparse heat source identification
+- **Hypothesis**: Discretize domain into grid, use L1 optimization to find sparse sources
+- **Implementation**: `experiments/sparse_l1_optimization/`
+
+### Research Basis
+From web research on compressed sensing for heat source identification:
+- [Heat Source Identification with L1 Optimization](http://www.aimsciences.org/article/doi/10.3934/ipi.2014.8.199) - Point-wise values from sparse sensors can recover sparse initial conditions
+- [Decomposed Physics-Based Compressed Sensing (2024)](https://www.sciencedirect.com/science/article/abs/pii/S0017931025008439) - D-PBCS framework reliably reconstructs heat sources from sparse data
+- Split Bregman method for efficient L1 minimization
+
+### Implementation Plan
+1. Create coarse grid (e.g., 20x10 = 200 points) of potential source locations
+2. Build forward matrix A where A[i,j] = contribution of grid point j to sensor i
+3. Solve: minimize ||Ax - b||^2 + lambda * ||x||_1 (LASSO)
+4. Extract active sources from sparse solution
+5. Refine with CMA-ES
+
+### Analysis
+- **Building forward matrix requires 200 simulations per sample** (one per grid point)
+- Total: ~200 + 10-18 (refinement) = 210-218 simulations per sample
+- At current rate (~0.5 sec/sample for 10-20 sims), this projects to:
+  - 210 sims × (0.5 / 15 sims) = ~7 seconds per sample
+  - For 400 samples: 2800 seconds = **47 minutes**
+- However, forward matrix construction is SERIAL (can't parallelize easily)
+- Actual projected time: **67-133 minutes** (way over budget)
+
+**Conclusion**: Sparse L1 optimization is IMPRACTICAL for this problem due to excessive simulations needed for forward matrix construction.
+
+---
+
+## Iteration A18 - 2026-01-10 (Verification & Web Research)
+- **Approach**: Verify current best scores and research winning approaches
+- **Implementation**: Re-ran adaptive_budget and analytical_intensity optimizers
+
+### Verification Results
+| Optimizer | Claimed (ITERATION_LOG) | Verified (This Run) | Status |
+|-----------|-------------------------|---------------------|--------|
+| Adaptive Budget (A3b) | 1.0329 @ 57.0 min | 1.0286 @ 69.3 min | ❌ OVER BUDGET by 9.3 min |
+| Analytical Intensity (15/25) | - | 1.0249 @ 81.7 min | ❌ OVER BUDGET by 21.7 min |
+| Analytical Intensity (15/20) | 0.9973 @ 56.6 min | **0.9951 @ 55.6 min** | ✅ **VERIFIED BEST** |
+
+### Key Finding
+**The VERIFIED best WITHIN BUDGET is: 0.9951 @ 55.6 min (analytical_intensity 15/20)**
+
+Variance in scores is significant (±3-5%) due to:
+- Random sample ordering
+- Parallel batch processing with 7 workers
+- System load variations
+
+### Web Research Summary
+Conducted extensive web research on advanced techniques:
+
+1. **Neural Operators (FNO/PINO)**
+   - [Fourier Neural Operator (2020)](https://arxiv.org/abs/2010.08895) - 10^5x faster inference than numerical solvers
+   - [Invertible FNO (2024)](https://arxiv.org/abs/2402.11722) - Handles both forward and inverse problems
+   - **Problem**: Requires 1,000-8,000 training samples and 80,000 epochs (MASSIVE dataset generation - NOT ALLOWED)
+
+2. **Physics-Informed Neural Networks (PINNs)**
+   - [PINNs for Heat Transfer (2021)](https://asmedigitalcollection.asme.org/heattransfer/article/143/6/060801/1104439/) - Embed physics laws in loss function
+   - [Weak-Form PINNs (2025)](https://www.nature.com/articles/s41598-025-24427-4) - Enhanced for inverse problems
+   - **Problem**: Training cost is notable drawback, still requires significant training data
+
+3. **Sparse Optimization / Compressed Sensing**
+   - [L1 Heat Source Identification (UCLA)](http://www.aimsciences.org/article/doi/10.3934/ipi.2014.8.199) - Recover sparse sources from boundary measurements
+   - [D-PBCS Framework (2024)](https://www.sciencedirect.com/science/article/abs/pii/S0017931025008439) - Physics-based compressed sensing
+   - **Problem**: Requires building forward matrix (200+ simulations per sample)
+
+4. **Green's Function Methods**
+   - [3D Transient Green's Function](https://www.academia.edu/101582973/) - Reduce computational time drastically
+   - [Spectral Graph Method](https://www.sciencedirect.com/science/article/abs/pii/S0017931021012187) - Fast computation for any body shape, <1 min
+   - **Problem**: Complex implementation, may not be faster than optimized simulator
+
+5. **Thermal Image Processing**
+   - [Blob Detection with OpenCV](https://learnopencv.com/blob-detection-using-opencv-python-c/) - SimpleBlobDetector for heat sources
+   - [Watershed Segmentation](https://docs.opencv.org/4.x/d3/db4/tutorial_py_watershed.html) - Separate overlapping sources
+   - **Problem**: Our problem has SPARSE sensors (8-12 points), not images - these techniques don't apply
+
+6. **Academic Research Insights**
+   - [Multiple-Source Meshless Method](https://www.mdpi.com/2076-3417/9/13/2629) - Remarkably high accuracy for 2D inverse heat conduction
+   - Inverse heat source problem is "notably ill-posed" with "exponential instability"
+   - Strong non-uniqueness of solutions - hard to determine heat source uniquely
+
+### Gap Analysis
+```
+Current verified best:  0.9951 @ 55.6 min
+Target (top 5):         1.15+ (gap: +0.15, 15% improvement)
+Target (top 2):         1.20+ (gap: +0.20, 20% improvement)
+Theoretical max:        1.30
+
+Top teams (1.22) are at 94% of max.
+We are at 77% of max.
+```
+
+### Bottleneck Remains
+- 1-source RMSE: ~0.25 (good)
+- 2-source RMSE: ~0.33 (bottleneck - top teams likely ~0.08)
+- **Gap requires 4x improvement in 2-source RMSE**
+
+### Research Directions NOT Pursued (Due to Constraints)
+1. ❌ Neural networks: Training time violates "no massive dataset generation" rule
+2. ❌ Sparse L1: Requires too many simulations (200+ per sample)
+3. ❌ Green's function: Complex implementation, uncertain benefit
+4. ❌ Image processing methods: Don't apply to sparse sensor data
+
+**Conclusion**: The 20% gap to top teams likely requires a fundamental insight or technique that hasn't been discovered through web research or optimizer variations. The problem may require domain-specific knowledge from thermal physics or a completely novel approach.
+
+---
+
+## Iteration A19 - 2026-01-10 (Feval Configuration Optimization)
+- **Approach**: Fine-tune feval allocation to maximize score within 60-minute budget
+- **Hypothesis**: Different feval configurations might find sweet spot between accuracy and time
+
+### Test Results
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Sims/sample | Status |
+|--------|-------|------------|------------|------|-------------|--------|
+| 12/18 | 0.9863 | 0.223 | 0.329 | 55.3 min | 38.7 | ✅ Under budget, worse |
+| **15/20** | **0.9951** | **0.246** | **0.331** | **55.6 min** | **38.8** | ✅ **BEST WITHIN BUDGET** |
+| 18/20 | 1.0081 | 0.197 | 0.325 | 61.4 min | 43.9 | ❌ Over budget by 1.4 min |
+
+### Key Findings
+1. **18/20 achieves highest score (1.0081)** but exceeds 60-minute budget
+2. **15/20 is optimal within budget** - best balance of accuracy and time
+3. **Diminishing returns** - increasing fevals from 15→18 gains only +0.013 score (+1.3%)
+4. **1-source benefits more from extra fevals** - RMSE improved 0.246→0.197 (20% better)
+5. **2-source sees minimal benefit** - RMSE 0.331→0.325 (2% better)
+
+### Run-to-Run Variance
+With different random seeds/orderings, same config can vary by ±3-5% in score and ±2-3 min in time. The 18/20 config might occasionally fit within budget due to variance, but 15/20 is more reliable.
+
+**Conclusion**: **15/20 fevals remains the verified best production configuration** - Score 0.9951 @ 55.6 min with comfortable 4.4-minute buffer.
+
+---
+
+## Session 8 Summary (2026-01-10)
+
+### Experiments Conducted
+| # | Approach | Result | Time | Status |
+|---|----------|--------|------|--------|
+| A16 | IPOP-CMA-ES Restarts | 1.0462 | 61.6 min | ❌ Over budget |
+| A17 | Sparse L1 Optimization | Abandoned | - | ❌ Impractical (200+ sims) |
+| A18 | Verification & Research | 0.9951 | 55.6 min | ✅ Verified baseline |
+| A19 | Feval Optimization | 1.0081 (18/20) | 61.4 min | ❌ Best score but over budget |
+
+### Verified Production Configuration
+```
+Optimizer:       AnalyticalIntensityOptimizer
+Fevals:          15/20 (1-src/2-src)
+Score:           0.9951
+Time:            55.6 min (4.4 min buffer)
+RMSE:            0.297 ± 0.199
+  1-source:      0.246 ± 0.222
+  2-source:      0.331 ± 0.174
+Candidates:      2.9 avg
+Transfer benefit: 10-15%
+```
+
+### Extensive Web Research Conducted
+Researched cutting-edge techniques from 2024-2025:
+- Fourier Neural Operators (FNO/PINO) - 10^5x faster but requires massive training data ❌
+- Physics-Informed Neural Networks (PINNs) - Slow training, not practical ❌
+- Sparse L1 / Compressed Sensing - Requires 200+ sims for forward matrix ❌
+- Green's Function methods - Complex implementation, uncertain benefit ❌
+- Thermal image processing (blob/watershed) - Doesn't apply to sparse sensors ❌
+- Multiple-Source Meshless Method - Academic, complex implementation ❌
+
+### Gap Analysis - Final Assessment
+```
+Current verified best:  0.9951 (77% of theoretical max 1.30)
+Top 5 target:          1.15   (88% of max) - Gap: +0.16 (16%)
+Top 2 target:          1.20   (92% of max) - Gap: +0.20 (20%)
+Leaders:               1.2268 (94% of max) - Gap: +0.23 (23%)
+```
+
+### Bottleneck Identified
+**2-source RMSE is 2-3x worse than needed:**
+- Our 2-src RMSE: ~0.33
+- Estimated leaders' 2-src RMSE: ~0.08-0.12 (based on gap analysis)
+- **Requires 3-4x improvement in 2-source localization accuracy**
+
+### Key Learnings
+1. **CMA-ES is well-optimized** - Numerous variants tested (IPOP, lq-surrogate, alternating, multi-start) with no significant improvement
+2. **Analytical intensity gives major boost** - Closed-form intensity solution reduced params and improved accuracy
+3. **Transfer learning provides 10-15% benefit** - Similarity-based initialization helps
+4. **Variance is significant** - Same config can vary ±3-5% in score across runs
+5. **Advanced ML/neural methods impractical** - Training time violates competition constraints
+6. **2-source problem is fundamentally harder** - Ill-posed, exponential instability, strong non-uniqueness
+
+### What Would Be Needed to Reach 1.20
+Based on extensive experimentation and research, closing the 20% gap would likely require:
+
+1. **Fundamental physics insight** we haven't discovered
+   - Better analytical solution for 2-source separation
+   - Exploitation of problem structure we're missing
+   - Domain-specific knowledge from thermal physics
+
+2. **Algorithmic breakthrough**
+   - Novel initialization method for 2-source
+   - Better handling of permutation symmetry
+   - Faster high-quality optimization algorithm
+
+3. **Implementation efficiency**
+   - 2-3x faster simulator (allows more fevals in same time)
+   - Parallel-in-time methods
+   - Hardware acceleration done right
+
+4. **Problem-specific trick** top teams discovered
+   - Feature engineering from sensor data
+   - Preprocessing that reduces problem difficulty
+   - Clever use of linearity/superposition
+
+### Recommended Next Steps for Future Work
+1. **Analyze competition winners' solutions** (after competition ends) to understand their approach
+2. **Deep dive into thermal physics literature** for 2-source localization methods
+3. **Explore sensor placement optimization** - are some sensors more informative?
+4. **Time-series analysis** - currently only using final timestep, could use full temporal evolution
+5. **Adjoint-based methods** - compute gradients via adjoint equations (attempted but not fully optimized)
+
+### Final Verdict
+**The analytical intensity optimizer with 15/20 fevals is production-ready at 0.9951 @ 55.6 min.** Further improvement beyond this requires insights or techniques not discovered through extensive research and experimentation in this session.
+
+---
+

@@ -17,7 +17,7 @@
 
 ## MISSION
 Achieve the highest possible score (target: 1.3 theoretical max, 1.22+ competitive).
-Current best: **1.0329 @ 57.0 min**. Gap to close: **+0.20**
+Current best: **0.9951 @ 55.6 min** (verified, within budget). Gap to close: **+0.22**
 
 ## LEADERBOARD CONTEXT
 ```
