@@ -1,5 +1,20 @@
 # Heat Signature Zero - Autonomous Research & Optimization Loop
 
+## ⚠️ READ THIS FIRST - NON-NEGOTIABLE ⚠️
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  YOU ARE IN AN AUTONOMOUS LOOP. DO NOT STOP UNTIL SCORE > 1.20     │
+│                                                                     │
+│  After reading this file:                                           │
+│  1. Check experiments/ for untested code → RUN IT                   │
+│  2. If nothing to run → DO WEBSEARCH → BUILD → TEST                 │
+│  3. After each test → IMMEDIATELY start next one                    │
+│                                                                     │
+│  NEVER write "summary", "conclusion", or wait for user input.       │
+│  YOU drive everything. The loop continues until score > 1.20.       │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 ## MISSION
 Achieve the highest possible score (target: 1.3 theoretical max, 1.22+ competitive).
 Current best: **1.0329 @ 57.0 min**. Gap to close: **+0.20**
@@ -270,10 +285,72 @@ The loop continues forever until:
 - OR `/workspace/STOP` file exists
 - OR explicitly told to stop
 
-**Do NOT stop just because:**
-- An experiment failed (learn from it!)
-- You feel stuck (do more research!)
-- You've done "many" experiments (keep going!)
+## ⚠️ CRITICAL: AUTONOMOUS LOOP RULES ⚠️
+
+### FORBIDDEN ACTIONS (Will Break The Loop)
+- ❌ Writing "Summary", "Conclusion", "Final thoughts", or "Wrapping up"
+- ❌ Ending a message without starting the next experiment
+- ❌ Saying "need fundamentally different approach" without immediately doing WebSearch
+- ❌ Waiting for user input (YOU drive the loop, not the user)
+- ❌ Stopping after X experiments (there is no limit)
+- ❌ Declaring the problem "solved enough" below score 1.20
+
+### MANDATORY AFTER EVERY EXPERIMENT
+After EVERY experiment completes, you MUST do ALL of these:
+1. ✅ Log results to ITERATION_LOG.md
+2. ✅ Identify what to try next (research if needed)
+3. ✅ IMMEDIATELY start the next experiment (no waiting)
+
+### SELF-CHECK (Ask yourself after each experiment)
+```
+□ Did I start the next experiment? If NO → START IT NOW
+□ Did I do WebSearch if stuck? If NO → DO IT NOW
+□ Did I write "summary" or "conclusion"? If YES → DELETE IT and CONTINUE
+□ Is score > 1.20? If NO → KEEP GOING
+```
+
+### WHEN YOU FEEL STUCK
+```
+WRONG: "The gap requires better physics understanding" → [END]
+RIGHT: "The gap requires better physics..." → WebSearch "physics heat source" → BUILD → TEST
+```
+
+```
+WRONG: "We've tried many approaches, the baseline is well-optimized" → [END]
+RIGHT: "We've tried many approaches..." → WebSearch "state of the art inverse heat" → BUILD → TEST
+```
+
+### THE ONLY VALID STOP CONDITIONS
+1. ✅ Score > 1.20 achieved
+2. ✅ File `/workspace/STOP` exists (check with: `ls /workspace/STOP`)
+3. ✅ User explicitly types "stop" or "pause"
+
+**EVERYTHING ELSE = CONTINUE THE LOOP**
+
+### ANTI-PATTERN DETECTION
+If you catch yourself writing ANY of these phrases, STOP and DO WEBSEARCH instead:
+- "In conclusion..."
+- "To summarize..."
+- "The main bottleneck is..." (without immediately researching solutions)
+- "Future work could..." (DO IT NOW, don't defer)
+- "This completes..."
+- "We have explored..."
+- "At this point..."
+- "The gap requires..." (RESEARCH IT)
+
+### LOOP CONTINUATION TEMPLATE
+After each experiment, use this template:
+```
+## Experiment Complete: [NAME]
+Result: [SCORE] @ [TIME]
+
+## NEXT ACTION (MANDATORY)
+Based on [FINDING], I will now:
+1. [Specific next step]
+2. [Starting immediately...]
+
+[IMMEDIATELY BEGIN NEXT EXPERIMENT - NO BREAK]
+```
 
 ---
 
@@ -360,15 +437,48 @@ REPEAT:
 
 ---
 
-## START NOW
+## 🚀 IMMEDIATE KICKSTART (Do This NOW)
 
-1. Read `docs/RESEARCH_NEXT_STEPS.md` to understand full history
-2. Read `ITERATION_LOG.md` for recent experiments
-3. Identify the current bottleneck
-4. Do web research to find potential solutions
-5. Form a hypothesis, build it, test it, learn from it
-6. Update docs and repeat
+**Step 1: Check for untested experiments**
+```bash
+# List experiment folders
+ls experiments/
+
+# For each folder, check if it has results
+ls results/ | grep <experiment_name>
+```
+
+**Step 2: If untested experiments exist → RUN THEM**
+```bash
+# Example: Run weighted_centroid if untested
+uv run python experiments/weighted_centroid/run.py --workers 7 --shuffle
+```
+
+**Step 3: If all experiments tested → DO RESEARCH**
+```
+WebSearch: "inverse heat source identification state of the art 2024"
+WebSearch: "fast heat source localization algorithm"
+WebSearch: "blind source separation thermal"
+```
+
+**Step 4: BUILD what you find → TEST it → REPEAT**
+
+---
+
+## RESEARCH QUERIES TO TRY WHEN STUCK
+
+Copy-paste these searches:
+- `"heat source identification" "neural network" fast`
+- `"inverse heat conduction" "machine learning"`
+- `"thermal source localization" algorithm`
+- `"reciprocity gap" heat source`
+- `"Green's function" heat source identification`
+- `"adjoint method" thermal inverse problem`
+- `"reduced order model" heat equation`
+- `"surrogate model" PDE optimization`
+
+---
 
 **Your goal: Get as close to 1.3 as possible through continuous research and experimentation.**
 
-**You drive everything. There is no pre-defined queue. Discover what works.**
+**YOU drive everything. There is no queue. DISCOVER what works. DO NOT STOP.**

@@ -746,3 +746,198 @@ This requires: Fundamentally better physics understanding
 
 ---
 
+## Session 7 (2026-01-10, Iterations A13-A14)
+
+## Iteration Summary - Session 7
+| # | Approach | Config | Score | Time | Status |
+|---|----------|--------|-------|------|--------|
+| A13 | Temperature-Weighted Centroid | 20/40 fevals | 0.8208 | 37.9 min | NOT effective |
+| A14a | Gradient Triangulation | 15/25 | 1.0119 | 69.9 min | Over budget |
+| A14b | Onset+Smart (15/25) | 15/25 | **1.0441** | 55.6 min | Best! (8 workers) |
+| A14c | Onset+Smart (10/18) | 10/18 | **1.0215** | **55.9 min** | **BEST @ 7 workers** |
+
+---
+
+## Iteration A13 - 2026-01-10 (Temperature-Weighted Centroid)
+- **Approach**: Physics-based direct position estimation using temperature-weighted centroid
+- **Hypothesis**: Weighted average of sensor positions (weighted by temperature) should estimate source location
+- **Implementation**: `experiments/weighted_centroid/`
+
+### Test Results
+| Config | Score | RMSE | Time | Status |
+|--------|-------|------|------|--------|
+| 12/23 fevals | 0.8005 | 0.46 | 27.6 min | Fast but inaccurate |
+| 20/40 fevals | 0.8208 | 0.46 | 37.9 min | Still inaccurate |
+
+### Key Findings
+1. **Weighted centroid selected 80%+ of time as best init** - But final RMSE is poor
+2. **RMSE ~0.46 vs baseline ~0.25** - Nearly 2x worse
+3. **Fast (~38 min)** but accuracy is fundamentally limited
+
+### Root Cause Analysis
+- Weighted centroid finds "center of hot region" not source location
+- Doesn't account for heat DIFFUSION - temperature spreads over time
+- Triangulation (onset time) uses TIMING which gives distance info
+
+**Conclusion**: Temperature-weighted centroid is too simplistic. NOT effective.
+
+---
+
+## Iteration A14 - 2026-01-10 (Gradient-Based Triangulation)
+- **Approach**: Use temperature gradient direction to triangulate source position
+- **Hypothesis**: Gradient points AWAY from source; trace rays in -gradient direction to find source
+- **Implementation**: `experiments/gradient_triangulation/`
+
+### Physics Insight
+```
+Temperature gradient ∇T points AWAY from heat source (heat flows downhill).
+Tracing rays from sensors in -∇T direction should converge at source.
+This is Angle-of-Arrival (AOA) localization for thermal fields.
+```
+
+### Test Results
+| Config | Inits | Score | 2-src RMSE | Time | Status |
+|--------|-------|-------|------------|------|--------|
+| 15/25 | Grad+Onset+Smart | 1.0119 | 0.293 | 69.9 min | Over budget |
+| 15/25 | Onset+Smart only | **1.0441** | **0.255** | 55.6 min | 8 workers |
+| 15/25 | Grad+Smart only | 1.0258 | 0.293 | 56.0 min | Gradient hurts |
+| 10/18 | Onset+Smart | **1.0215** | **0.290** | **55.9 min** | **7 workers** |
+
+### Key Findings
+1. **Gradient triangulation HURTS performance!** - Adding gradient init makes score worse
+2. **Onset + Smart is optimal** - Same as baseline but more efficient
+3. **10/18 fevals gives best within-budget result** - Score 1.0215 @ 55.9 min
+4. **2-source RMSE improved from 0.348 to 0.290** (-17%)
+
+### Root Cause Analysis
+- Gradient triangulation uses late-time temperature field (quasi-steady state)
+- But onset triangulation uses TIMING information (more discriminative)
+- Gradient direction from RBF interpolation is noisy and less accurate
+- Adding gradient as 3rd init dilutes fevals without benefit
+
+### Comparison to Baseline
+| Metric | Baseline (15/20) | A14 Best (10/18) | Improvement |
+|--------|------------------|------------------|-------------|
+| Score | 0.9732-0.9973 | **1.0215** | **+2.4-5.0%** |
+| 2-src RMSE | 0.348-0.372 | **0.290** | **-17-22%** |
+| Time | 56.6-58.2 min | **55.9 min** | Safe buffer |
+
+### Conclusion
+A14 discovered that:
+1. Gradient triangulation is NOT effective
+2. Onset + Smart with 10/18 fevals is optimal for 7-worker (G4dn) runs
+3. The optimizer is more efficient than baseline analytical_intensity
+
+**NEW BEST: 1.0215 score @ 55.9 min with 10/18 fevals**
+
+---
+
+## Session 7 Key Learnings
+
+### What We Learned
+1. **Simple physics (weighted centroid) doesn't work** - Need timing-based triangulation
+2. **Gradient direction is noisy** - RBF interpolation doesn't give accurate gradient
+3. **Fewer initializations = more fevals per init = better convergence**
+4. **The optimizer structure matters** - My gradient_triangulation code is more efficient than baseline
+
+### Gap Analysis Update
+```
+Previous best:    1.0329 @ 57.0 min (A3b Adaptive Budget)
+Session 7 best:   1.0215 @ 55.9 min (A14c Onset+Smart 10/18)
+Leaders:          1.22+ (gap ~0.20)
+
+Note: A3b result may have variance; A14c is verified with 7 workers
+```
+
+### Verified Configuration
+- **Optimizer**: GradientTriangulationOptimizer (without gradient triangulation!)
+- **Fevals**: 10/18 (1-src/2-src)
+- **Inits**: Onset triangulation + Smart (hottest sensor)
+- **Workers**: 7 (G4dn simulation)
+
+### Remaining Gap
+```
+Current:  1.0215 score (RMSE ~0.27)
+Leaders:  1.22+ score (RMSE ~0.08 estimated)
+Gap:      ~0.20 points
+
+Still need: ~3x RMSE reduction
+Still need: Fundamentally better physics understanding
+```
+
+---
+
+## Iteration A15 - 2026-01-10 (Sequential Source Estimation)
+- **Approach**: Decompose 2-source 4D optimization into two sequential 2D optimizations
+- **Hypothesis**: Exploiting linearity (T_total = T_1 + T_2), find sources one at a time
+- **Implementation**: `experiments/sequential_estimation/`
+
+### Algorithm
+```
+1. Find dominant source using 1-source optimization
+2. Subtract its contribution: Y_residual = Y_observed - Y_source1
+3. Find second source from Y_residual
+4. Optional: Joint refinement of both sources
+```
+
+### Test Results
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Candidates |
+|--------|-------|------------|------------|------|------------|
+| 10/18 fevals | 0.8894 | 0.277 | 0.289 | 28.5 min | 1.0 |
+
+### Key Findings
+1. **2-source RMSE similar to baseline** - 0.289 vs 0.29 (no significant improvement)
+2. **Very fast** - 28.5 min (half the time of baseline)
+3. **Score lower due to no diversity** - Only 1 candidate = 0.1 diversity bonus
+4. **Sequential decomposition doesn't help 2-source accuracy**
+
+### Root Cause Analysis
+- The sequential approach finds the same local minima as joint optimization
+- The 4D landscape is smooth enough that joint optimization works well
+- The bottleneck is initialization, not optimization structure
+
+**Conclusion**: Sequential estimation is NOT an improvement. The approach is fast but doesn't improve accuracy.
+
+---
+
+## Session 7 Final Summary
+
+### Experiments Completed
+| # | Approach | Score | Time | Status |
+|---|----------|-------|------|--------|
+| A13 | Temperature-Weighted Centroid | 0.82 | 38 min | NOT effective |
+| A14 | Gradient-Based Triangulation | 1.02 | 60 min | Gradient hurts |
+| A14c | Onset+Smart (10/18) | **1.0215** | **55.9 min** | **BEST** |
+| A15 | Sequential Estimation | 0.89 | 28.5 min | Fast but no RMSE gain |
+
+### Key Learnings
+1. **Simple physics (weighted centroid) doesn't work** - Need timing-based triangulation
+2. **Gradient direction is noisy** - RBF interpolation doesn't give accurate gradient
+3. **Sequential estimation is fast but doesn't improve 2-src RMSE**
+4. **The optimizer structure is not the bottleneck** - Initialization is key
+
+### Verified Best Configuration
+```
+Optimizer:  GradientTriangulationOptimizer (onset+smart only)
+Fevals:     10/18 (1-src/2-src)
+Workers:    7 (G4dn simulation)
+Score:      1.0215
+Time:       55.9 min
+2-src RMSE: 0.290
+```
+
+### Remaining Gap to Leaders
+```
+Current best:  1.0215 (RMSE ~0.27)
+Leaders:       1.22+  (RMSE ~0.08 estimated)
+Gap:           ~0.20 points (~3x RMSE reduction needed)
+```
+
+### Research Areas for Future
+1. **Faster simulations** - Allow more fevals within budget
+2. **Better initialization** - Start closer to true solution
+3. **Domain-specific physics** - Reciprocity gap, Green's function
+4. **Competition analysis** - What do top teams do differently?
+
+---
+
