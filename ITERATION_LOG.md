@@ -1409,6 +1409,14 @@ uv run python experiments/early_timestep_opt/run.py --workers 7 --shuffle --earl
 
 **Key Finding**: Just adding 2 more fevals for 2-source gives +1.2% score improvement while staying within budget.
 
+### A26 - Further Feval Exploration (15/26, 15/28)
+- Tested higher fevals to use more budget
+- **15/26 on 20 samples**: 1.1245 @ 58.7 min (promising)
+- **15/26 on 80 samples**: 1.0855 @ 68.9 min (OVER BUDGET by 9 min)
+- **15/28 on 20 samples**: 1.1363 @ 100.7 min (way over budget)
+
+**Conclusion**: Significant timing variance between 20-sample and 80-sample runs. 15/24 is the safest configuration within budget.
+
 ---
 
 ## Session 10 Summary
