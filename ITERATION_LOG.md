@@ -1452,3 +1452,30 @@ Target (top 2):  1.22 (94% of max) - Gap: 0.124
 
 ---
 
+## Session 11 - Nelder-Mead Refinement
+
+### A27 - Nelder-Mead (Gradient-Free) Refinement
+- **Approach**: Use Nelder-Mead instead of L-BFGS-B for position refinement
+- **Hypothesis**: Nelder-Mead doesn't use finite differences, might be faster
+
+**Results (20 samples)**:
+| Config | Score | Time | Status |
+|--------|-------|------|--------|
+| 15/22 + Nelder-Mead (5 iter) | 1.1239 | 75.8 min | ❌ Over budget |
+| 15/22 + Nelder-Mead (2 iter) | 1.1168 | 67.4 min | ❌ Over budget |
+| 12/18 + Nelder-Mead (2 iter) | 1.1147 | 67.8 min | ❌ Over budget |
+
+**Finding**: Any refinement adds 10+ min overhead, pushing over budget. The issue is fundamental: refinement requires extra simulations that break the time budget.
+
+### Timing Variance Observation
+- 15/26 on 20 samples: 58.9 min (within budget)
+- 15/26 on 80 samples (Session 10): 68.9 min (over budget)
+- Significant variance exists between small-sample and full tests
+
+### Session 11 Conclusion
+**Position refinement approaches don't fit in time budget.** The fundamental constraint is that any extra simulations break the 60-minute limit.
+
+**Verified Best Remains: 1.0957 @ 58.3 min (15/24 @ 30% early fraction)**
+
+---
+

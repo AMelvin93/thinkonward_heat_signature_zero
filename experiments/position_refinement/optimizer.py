@@ -308,9 +308,8 @@ class PositionRefinementOptimizer:
         result = minimize(
             objective,
             pos_params,
-            method='L-BFGS-B',
-            bounds=bounds,
-            options={'maxiter': self.refinement_maxiter, 'disp': False}
+            method='Nelder-Mead',
+            options={'maxiter': self.refinement_maxiter, 'disp': False, 'xatol': 0.01, 'fatol': 0.001}
         )
 
         return result.x, n_evals[0]
