@@ -313,9 +313,9 @@ class EarlyTimestepOptimizer:
         solver = self._create_solver(kappa, bc)
         n_sims = [0]
 
-        # Use different early_fraction for 1-src vs 2-src
-        # 2-source benefits more from early timestep focus
-        early_frac = self.early_fraction if n_sources == 2 else 0.5
+        # Use configured early_fraction for both 1-src and 2-src
+        # 30% is optimal based on tuning experiments
+        early_frac = self.early_fraction
 
         # Objective using EARLY timesteps for position optimization
         if n_sources == 1:
