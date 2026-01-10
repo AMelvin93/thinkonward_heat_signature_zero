@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Run script for Early Timestep Optimization experiment.
+Run script for Position Refinement experiment.
 
-Key Innovation: Focus position optimization on early timesteps (containing
-onset/timing information) which should be more discriminative for source positions.
+Key Innovation: Add L-BFGS-B gradient-based refinement after CMA-ES
+to squeeze out extra position accuracy.
 
 Usage:
-    uv run python experiments/early_timestep_opt/run.py --workers 7 --shuffle
-    uv run python experiments/early_timestep_opt/run.py --workers 7 --max-samples 20 --early-fraction 0.3
+    uv run python experiments/position_refinement/run.py --workers 7 --shuffle
+    uv run python experiments/position_refinement/run.py --workers 7 --max-samples 20 --refine-iter 3
 """
 
 import argparse
@@ -25,7 +25,7 @@ _project_root = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, _project_root)
 
 # Local import
-from optimizer import EarlyTimestepOptimizer
+from optimizer import PositionRefinementOptimizer
 
 # MLflow (optional)
 try:
@@ -39,10 +39,11 @@ def process_single_sample(args):
     """Process a single sample (for parallel execution)."""
     idx, sample, meta, config = args
 
-    optimizer = EarlyTimestepOptimizer(
+    optimizer = PositionRefinementOptimizer(
         max_fevals_1src=config['max_fevals_1src'],
         max_fevals_2src=config['max_fevals_2src'],
         early_fraction=config['early_fraction'],
+        refinement_maxiter=config['refinement_maxiter'],
     )
 
     start = time.time()
@@ -81,7 +82,7 @@ def process_single_sample(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Run Early Timestep optimizer')
+    parser = argparse.ArgumentParser(description='Run Position Refinement optimizer')
     parser.add_argument('--workers', type=int, default=7,
                         help='Number of parallel workers (default: 7 for G4dn)')
     parser.add_argument('--max-samples', type=int, default=None,
@@ -90,10 +91,12 @@ def main():
                         help='Shuffle samples for balanced batches')
     parser.add_argument('--max-fevals-1src', type=int, default=15,
                         help='Max fevals for 1-source (default: 15)')
-    parser.add_argument('--max-fevals-2src', type=int, default=24,
-                        help='Max fevals for 2-source (default: 24)')
+    parser.add_argument('--max-fevals-2src', type=int, default=22,
+                        help='Max fevals for 2-source (default: 22)')
     parser.add_argument('--early-fraction', type=float, default=0.3,
                         help='Fraction of early timesteps to use (default: 0.3)')
+    parser.add_argument('--refine-iter', type=int, default=3,
+                        help='L-BFGS-B refinement iterations (default: 3)')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed (default: 42)')
     args = parser.parse_args()
@@ -119,12 +122,13 @@ def main():
     samples_to_process = [samples[i] for i in indices]
     n_samples = len(samples_to_process)
 
-    print(f"\nEarly Timestep Optimizer")
+    print(f"\nPosition Refinement Optimizer")
     print(f"=" * 60)
     print(f"Samples: {n_samples}")
     print(f"Workers: {args.workers}")
     print(f"Fevals: {args.max_fevals_1src}/{args.max_fevals_2src}")
     print(f"Early fraction: {args.early_fraction:.0%}")
+    print(f"Refinement iterations: {args.refine_iter}")
     print(f"Shuffle: {args.shuffle}")
     print(f"Seed: {args.seed}")
     print(f"=" * 60)
@@ -133,6 +137,7 @@ def main():
         'max_fevals_1src': args.max_fevals_1src,
         'max_fevals_2src': args.max_fevals_2src,
         'early_fraction': args.early_fraction,
+        'refinement_maxiter': args.refine_iter,
     }
 
     # Process samples
@@ -227,8 +232,8 @@ def main():
     print()
 
     # Comparison to baseline
-    baseline_score = 0.9951
-    baseline_time = 55.6
+    baseline_score = 1.0822  # Early timestep 15/22
+    baseline_time = 57.3
     diff_score = score - baseline_score
     diff_time = projected_400 - baseline_time
 
@@ -247,15 +252,16 @@ def main():
 
     # MLflow logging
     if MLFLOW_AVAILABLE:
-        mlflow.set_experiment("early_timestep_opt")
+        mlflow.set_experiment("position_refinement")
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        run_name = f"early_{args.early_fraction:.0%}_{args.max_fevals_1src}_{args.max_fevals_2src}_{timestamp}"
+        run_name = f"refine_{args.max_fevals_1src}_{args.max_fevals_2src}_r{args.refine_iter}_{timestamp}"
 
         with mlflow.start_run(run_name=run_name):
             mlflow.log_params({
                 'max_fevals_1src': args.max_fevals_1src,
                 'max_fevals_2src': args.max_fevals_2src,
                 'early_fraction': args.early_fraction,
+                'refinement_maxiter': args.refine_iter,
                 'workers': args.workers,
                 'n_samples': n_samples,
                 'shuffle': args.shuffle,

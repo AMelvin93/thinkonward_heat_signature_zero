@@ -1354,3 +1354,93 @@ uv run python experiments/early_timestep_opt/run.py --workers 7 --shuffle --earl
 
 ---
 
+## Session 10 - Alternative Approaches
+
+### A23 - Sequential 2-Source Estimation
+- **Approach**: Instead of joint 4D optimization, optimize sources sequentially:
+  1. Find dominant source (2D)
+  2. Subtract its contribution (using linearity)
+  3. Find second source in residual (2D)
+- **Hypothesis**: 2x 2D is easier than 1x 4D optimization
+
+**Results (20 samples)**:
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 15/22 | 1.0619 | 0.156 | 0.267 | 43.9 min | ❌ -2% score |
+| 15/30 | 1.0374 | 0.274 | 0.223 | 58.0 min | ❌ High variance |
+
+**Finding**: Sequential approach is faster but less accurate. High variance, some samples have very poor results.
+
+---
+
+### A24 - Position Refinement (L-BFGS-B after CMA-ES)
+- **Approach**: Add gradient-based refinement after CMA-ES
+- **Hypothesis**: L-BFGS-B can find more precise local optima
+
+**Results (20 samples)**:
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 15/22, refine=3 | **1.1627** | **0.131** | **0.154** | 202 min | ❌ 3.4x over budget |
+| 15/22, refine=1 | 1.1407 | 0.140 | 0.200 | 81 min | ❌ 1.4x over budget |
+| 12/18, refine=1 | 1.1429 | 0.134 | 0.227 | 86 min | ❌ 1.4x over budget |
+
+**Key Finding**: Position refinement achieves excellent accuracy:
+- 2-source RMSE: 0.154 (46% improvement over baseline 0.287!)
+- 1-source RMSE: 0.131 (25% improvement)
+- Score: 1.1627 (+7.4% over baseline)
+
+**Problem**: L-BFGS-B uses finite differences requiring O(2n+1) simulations per iteration.
+- For 2-source (4D): 9 simulations per iteration
+- Too expensive to fit in time budget
+
+**Conclusion**: Position refinement proves there's significant accuracy headroom, but L-BFGS-B is too slow.
+
+---
+
+### A25 - Extended CMA-ES (15/24 fevals)
+- **Approach**: Simply use more CMA-ES fevals to fill the budget
+- **Hypothesis**: More fevals = better convergence
+
+**Results (80 samples)**:
+| Config | Score | 1-src RMSE | 2-src RMSE | Time | Status |
+|--------|-------|------------|------------|------|--------|
+| 15/22 (baseline) | 1.0822 | 0.175 | 0.287 | 57.3 min | Previous best |
+| **15/24** | **1.0957** | 0.175 | **0.273** | **58.3 min** | ✅ **NEW BEST** |
+
+**Key Finding**: Just adding 2 more fevals for 2-source gives +1.2% score improvement while staying within budget.
+
+---
+
+## Session 10 Summary
+
+**Experiments Tested**:
+1. **A23 - Sequential 2-source**: Not effective (-2% score, high variance)
+2. **A24 - Position refinement**: Excellent accuracy (+7%) but way over budget (3x)
+3. **A25 - Extended CMA-ES (15/24)**: ✅ NEW BEST - +1.2% improvement within budget
+
+**Updated Production Configuration**:
+```bash
+uv run python experiments/early_timestep_opt/run.py --workers 7 --shuffle --early-fraction 0.3 --max-fevals-2src 24
+```
+
+**New Best: Score 1.0957 @ 58.3 min** (1.7 min buffer)
+
+**Gap Analysis**:
+```
+Current:         1.0957 (84% of max 1.30)
+Target (top 5):  1.15 (88% of max) - Gap: 0.054
+Target (top 2):  1.22 (94% of max) - Gap: 0.124
+```
+
+**Key Insight from Position Refinement**: There's significant accuracy headroom available:
+- 2-source RMSE can potentially reach 0.15 (from current 0.27)
+- 1-source RMSE can potentially reach 0.13 (from current 0.18)
+- This would give score ~1.16+ within budget
+
+**Next Research Direction**:
+- Need faster gradient estimation (not finite differences)
+- Consider analytical gradient computation
+- Or hybrid approach: CMA-ES for global, analytical intensity gradient for local
+
+---
+
