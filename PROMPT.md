@@ -268,11 +268,7 @@ This run: X.XXXX @ XX.X min
 5. Add new research directions based on learnings
 6. Update current best if improved
 
-**Commit to git:**
-```bash
-git add -A
-git commit -m "[SCORE: X.XXXX @ XX.X min] <approach>: <key finding>"
-```
+**DO NOT commit** - the user will handle git commits manually.
 
 ---
 
@@ -429,7 +425,6 @@ UPDATE:
   - Log result: 1.05 @ 65 min, over budget but best accuracy yet
   - Learning: Adjoint gives great positions but too slow per-sample
   - New hypothesis: "Shared adjoint cache for similar samples"
-  - Commit: "[SCORE: 1.05 @ 65 min] adjoint_init: excellent accuracy, needs caching"
 
 REPEAT:
   Back to REFLECT with new knowledge about adjoint methods...
