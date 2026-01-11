@@ -4,8 +4,8 @@
 **Session Start**: [TO BE FILLED BY CLAUDE]
 **Max Iterations**: 40
 **Target Score**: 1.15+ (top 5 competitive) | 1.20+ (top 2 competitive)
-**Current Best**: 1.1094 @ 44.1 min (Multi-fidelity 20/32)
-**Gap to Target**: +0.04 to reach 1.15 | +0.11 to reach 1.22
+**Current Best**: 1.09-1.11 @ 44-45 min (Multi-fidelity 20/32, variance ±0.02)
+**Gap to Target**: ~0.05 to reach 1.15 | ~0.12 to reach 1.22
 
 ### Leaderboard Context
 ```
@@ -1567,12 +1567,33 @@ Target (top 2):  1.22 (94% of max) - Gap: 0.111
 
 **The 40-sample timing estimates are unreliable** - always need 80-sample validation.
 
-**Verified Best Remains: 1.1094 @ 44.1 min (Multi-fidelity 20/32)**
+### A34 - Coarser Exploration Grids
+| Config | Score | Time | Status |
+|--------|-------|------|--------|
+| 25x12 coarse, 48 fevals | 1.0659 | 24.6 min | ❌ Too coarse |
+| 40x20 coarse, 40 fevals | 1.0807 | 27.2 min | ❌ Still too coarse |
 
-This appears to be near-optimal for this approach. Further gains require:
-- New solver acceleration (not just coarse grid)
-- Better initialization strategies
-- Fundamentally different optimization approach
+**Finding**: 50x25 is the optimal coarse grid - any coarser loses accuracy.
+
+### Variance Observation
+- Multiple 80-sample runs show score range: **1.09 - 1.11**
+- Run-to-run variance is ~0.02 (2%)
+- Caused by randomness in CMA-ES population sampling
+
+### Session 13 Final Conclusion
+
+**Best Configuration: Multi-fidelity 20/32 @ 1.09-1.11 (44-45 min)**
+
+All attempts to use the 16-minute budget buffer failed:
+1. More fevals → overfits to coarse grid
+2. Position refinement → 50-60 min overhead
+3. Smaller pool → kills diversity
+4. Coarser grids → loses accuracy
+
+This is likely near-optimal for this approach. To reach 1.15+:
+- Need fundamentally different approach
+- Or significant solver acceleration
+- Or better initialization strategies
 
 ---
 

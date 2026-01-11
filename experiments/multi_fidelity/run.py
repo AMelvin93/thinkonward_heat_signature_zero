@@ -32,6 +32,8 @@ def process_single_sample(args):
         max_fevals_2src=config['max_fevals_2src'],
         early_fraction=config['early_fraction'],
         candidate_pool_size=config.get('candidate_pool_size', 10),
+        nx_coarse=config.get('nx_coarse', 50),
+        ny_coarse=config.get('ny_coarse', 25),
     )
     start = time.time()
     try:
@@ -63,6 +65,8 @@ def main():
     parser.add_argument('--max-fevals-2src', type=int, default=32)
     parser.add_argument('--early-fraction', type=float, default=0.3)
     parser.add_argument('--candidate-pool-size', type=int, default=10)
+    parser.add_argument('--nx-coarse', type=int, default=50)
+    parser.add_argument('--ny-coarse', type=int, default=25)
     parser.add_argument('--seed', type=int, default=42)
     args = parser.parse_args()
 
@@ -96,6 +100,8 @@ def main():
         'max_fevals_2src': args.max_fevals_2src,
         'early_fraction': args.early_fraction,
         'candidate_pool_size': args.candidate_pool_size,
+        'nx_coarse': args.nx_coarse,
+        'ny_coarse': args.ny_coarse,
     }
 
     start_time = time.time()
