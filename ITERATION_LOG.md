@@ -4,8 +4,8 @@
 **Session Start**: [TO BE FILLED BY CLAUDE]
 **Max Iterations**: 40
 **Target Score**: 1.15+ (top 5 competitive) | 1.20+ (top 2 competitive)
-**Current Best**: 1.1154 @ 55.1 min (Coarse Refinement 3-iter top-2)
-**Gap to Target**: ~0.035 to reach 1.15 | ~0.105 to reach 1.22
+**Current Best**: 1.1233 @ 55.3 min (36 fevals + Coarse Refinement 3-iter top-2)
+**Gap to Target**: ~0.017 to reach 1.15 | ~0.087 to reach 1.22
 
 ### Leaderboard Context
 ```
@@ -1639,6 +1639,22 @@ Current:         1.1154 (86% of max 1.30)
 Target (top 5):  1.15 (88% of max) - Gap: 0.035
 Target (top 2):  1.22 (94% of max) - Gap: 0.105
 ```
+
+### A38 - Feval Optimization with Coarse Refinement
+| Config | Score | Time | Status |
+|--------|-------|------|--------|
+| 32 fevals + 3-iter top-2 | 1.1154 | 55.1 min | Previous best |
+| 34 fevals + 3-iter top-2 | 1.1082 | 55.9 min | ❌ Worse |
+| **36 fevals + 3-iter top-2** | **1.1233** | **55.3 min** | ✅ **NEW BEST** |
+| 38 fevals + 3-iter top-2 | 1.1060 | 56.4 min | ❌ Worse |
+| 40 fevals + 3-iter top-2 | 1.1208 | 55.8 min | ❌ Slightly worse |
+| 36 fevals + 4-iter top-2 | 1.1077 | 58.8 min | ❌ Worse |
+
+**Key Finding**: 36 fevals is the sweet spot for coarse-grid CMA-ES + refinement.
+
+**UPDATED BEST: 1.1233 @ 55.3 min (36 fevals + 3-iter top-2 coarse refinement)**
+
+**Gap to Top 5 (1.15): 0.017 (only 1.5%!)**
 
 ---
 
