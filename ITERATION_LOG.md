@@ -4,8 +4,8 @@
 **Session Start**: [TO BE FILLED BY CLAUDE]
 **Max Iterations**: 40
 **Target Score**: 1.15+ (top 5 competitive) | 1.20+ (top 2 competitive)
-**Current Best**: 1.0224 @ 56.5 min (SmartInitOptimizer 12/23)
-**Gap to Target**: +0.13 to reach 1.15 | +0.18 to reach 1.20
+**Current Best**: 1.1094 @ 44.1 min (Multi-fidelity 20/32)
+**Gap to Target**: +0.04 to reach 1.15 | +0.11 to reach 1.22
 
 ### Leaderboard Context
 ```
@@ -14,7 +14,7 @@
 #3  MGöksu           1.1585
 #4  Matt Motoki      1.1581
 #5  Team StarAtNyte  1.1261
---- WE ARE HERE ---  1.0224
+--- WE ARE HERE ---  1.1094  (multi-fidelity breakthrough)
 ```
 
 ---
@@ -1520,6 +1520,59 @@ Current:         1.1094 (85% of max 1.30)
 Target (top 5):  1.15 (88% of max) - Gap: 0.041
 Target (top 2):  1.22 (94% of max) - Gap: 0.111
 ```
+
+---
+
+## Session 13 - Refinement Exploration (Using 16 min Budget Buffer)
+
+### A29 - Higher Fevals (24/40) with Multi-Fidelity
+| Config | Score | Time | Status |
+|--------|-------|------|--------|
+| 24/40 (40 samples) | 1.0802 | 35.8 min | ❌ Lower score |
+
+**Finding**: More fevals doesn't help - overfits to coarse grid.
+
+### A30 - Multi-Fidelity + Nelder-Mead Refinement
+- **Approach**: Add 3 Nelder-Mead iterations on fine grid after CMA-ES
+
+| Config | Score | Time | Status |
+|--------|-------|------|--------|
+| 20/32 + 3 iter NM (40 samples) | 1.1274 | 40.9 min | ✅ Promising |
+| 20/32 + 3 iter NM (80 samples) | 1.1329 | 63.9 min | ❌ OVER BUDGET |
+| 20/32 + 5 iter NM (40 samples) | 1.1384 | 55.6 min | Tight budget |
+
+**Key Finding**: Refinement looks promising on small tests but fails on full 80 samples.
+
+### A31-A32 - Minimal Refinement Variations
+| Config | Score | Time | Status |
+|--------|-------|------|--------|
+| 1-src only refinement (80 samples) | 1.1241 | 113.9 min | ❌ WAY OVER |
+| 2-iter refinement (80 samples) | 1.1184 | 120.7 min | ❌ WAY OVER |
+
+**Finding**: ALL refinement approaches are over budget on full runs. The timing variance between 40-sample and 80-sample runs is significant.
+
+### A33 - Smaller Candidate Pool Size
+| Config | Score | Time | Status |
+|--------|-------|------|--------|
+| Pool=5, 24/40 fevals | 1.0185 | 29.1 min | ❌ Score dropped 8% |
+
+**Finding**: Smaller pool hurts diversity score significantly.
+
+### Session 13 Conclusion
+
+**All approaches to use the 16-minute buffer failed:**
+1. More fevals → overfits to coarse grid
+2. Position refinement → adds too much overhead (50-60 min)
+3. Smaller pool → kills diversity score
+
+**The 40-sample timing estimates are unreliable** - always need 80-sample validation.
+
+**Verified Best Remains: 1.1094 @ 44.1 min (Multi-fidelity 20/32)**
+
+This appears to be near-optimal for this approach. Further gains require:
+- New solver acceleration (not just coarse grid)
+- Better initialization strategies
+- Fundamentally different optimization approach
 
 ---
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Run script for Multi-Fidelity Optimization experiment.
+Run script for Multi-Fidelity + Refinement experiment.
 """
 
 import argparse
@@ -9,29 +9,23 @@ import pickle
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from datetime import datetime
 
 import numpy as np
 
 _project_root = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, _project_root)
 
-from optimizer import MultiFidelityOptimizer
-
-try:
-    import mlflow
-    MLFLOW_AVAILABLE = True
-except ImportError:
-    MLFLOW_AVAILABLE = False
+from optimizer import MultiFidelityRefinedOptimizer
 
 
 def process_single_sample(args):
     idx, sample, meta, config = args
-    optimizer = MultiFidelityOptimizer(
+    optimizer = MultiFidelityRefinedOptimizer(
         max_fevals_1src=config['max_fevals_1src'],
         max_fevals_2src=config['max_fevals_2src'],
         early_fraction=config['early_fraction'],
-        candidate_pool_size=config.get('candidate_pool_size', 10),
+        refine_maxiter=config['refine_maxiter'],
+        refine_1src_only=config.get('refine_1src_only', False),
     )
     start = time.time()
     try:
@@ -55,14 +49,15 @@ def process_single_sample(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Run Multi-Fidelity optimizer')
+    parser = argparse.ArgumentParser(description='Run Multi-Fidelity + Refinement optimizer')
     parser.add_argument('--workers', type=int, default=7)
     parser.add_argument('--max-samples', type=int, default=None)
     parser.add_argument('--shuffle', action='store_true')
     parser.add_argument('--max-fevals-1src', type=int, default=20)
     parser.add_argument('--max-fevals-2src', type=int, default=32)
     parser.add_argument('--early-fraction', type=float, default=0.3)
-    parser.add_argument('--candidate-pool-size', type=int, default=10)
+    parser.add_argument('--refine-maxiter', type=int, default=3)
+    parser.add_argument('--refine-1src-only', action='store_true')
     parser.add_argument('--seed', type=int, default=42)
     args = parser.parse_args()
 
@@ -85,7 +80,7 @@ def main():
     samples_to_process = [samples[i] for i in indices]
     n_samples = len(samples_to_process)
 
-    print(f"\nMulti-Fidelity Optimizer (Coarse: 50x25, Fine: 100x50)")
+    print(f"\nMulti-Fidelity + Refinement (maxiter={args.refine_maxiter})")
     print(f"=" * 60)
     print(f"Samples: {n_samples}, Workers: {args.workers}")
     print(f"Fevals: {args.max_fevals_1src}/{args.max_fevals_2src}")
@@ -95,7 +90,8 @@ def main():
         'max_fevals_1src': args.max_fevals_1src,
         'max_fevals_2src': args.max_fevals_2src,
         'early_fraction': args.early_fraction,
-        'candidate_pool_size': args.candidate_pool_size,
+        'refine_maxiter': args.refine_maxiter,
+        'refine_1src_only': args.refine_1src_only,
     }
 
     start_time = time.time()
@@ -130,7 +126,7 @@ def main():
 
     print(f"\n{'='*60}")
     print(f"RMSE: {rmse_mean:.4f}, Score: {score:.4f}, Projected: {projected_400:.1f} min")
-    if rmses_1src:
+    if rmses_1src and rmses_2src:
         print(f"  1-src: {np.mean(rmses_1src):.4f}, 2-src: {np.mean(rmses_2src):.4f}")
     print(f"Baseline: 1.0957 @ 58.3 min")
     print(f"Delta: {score - 1.0957:+.4f} score, {projected_400 - 58.3:+.1f} min")

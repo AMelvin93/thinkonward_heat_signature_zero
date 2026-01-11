@@ -54,11 +54,11 @@ Review CLAUDE.md and PROMPT.md for full context.
 YOU ARE IN AN INFINITE LOOP. DO NOT STOP UNTIL SCORE > 1.20 OR I TYPE "stop".
 
 WORKFLOW (REPEAT FOREVER):
-1. REFLECT - Read ITERATION_LOG.md for current state
+1. REFLECT - Read ITERATION_LOG.md and docs/RESEARCH_NEXT_STEPS.md for current state
 2. RESEARCH - WebSearch for new techniques if stuck
 3. BUILD - Create/modify experiment in experiments/<name>/
 4. TEST - Run: uv run python experiments/<name>/run.py --workers 7 --shuffle
-5. UPDATE - Log to ITERATION_LOG.md, git commit
+5. UPDATE - Log results to ITERATION_LOG.md
 6. IMMEDIATELY GO TO STEP 1 - NO SUMMARIES, NO CONCLUSIONS
 
 CRITICAL RULES:
@@ -67,6 +67,7 @@ CRITICAL RULES:
 - NEVER stop after N experiments - there is NO limit
 - After EVERY experiment, IMMEDIATELY start the next one
 - If score < 1.20, you are NOT done
+- Do NOT commit - the user will handle git commits
 
 FORBIDDEN PHRASES (if you write these, DELETE and CONTINUE):
 - "Session X Complete"
