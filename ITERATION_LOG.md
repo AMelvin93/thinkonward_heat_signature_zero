@@ -4,8 +4,8 @@
 **Session Start**: [TO BE FILLED BY CLAUDE]
 **Max Iterations**: 40
 **Target Score**: 1.15+ (top 5 competitive) | 1.20+ (top 2 competitive)
-**Current Best**: 1.09-1.11 @ 44-45 min (Multi-fidelity 20/32, variance ±0.02)
-**Gap to Target**: ~0.05 to reach 1.15 | ~0.12 to reach 1.22
+**Current Best**: 1.1154 @ 55.1 min (Coarse Refinement 3-iter top-2)
+**Gap to Target**: ~0.035 to reach 1.15 | ~0.105 to reach 1.22
 
 ### Leaderboard Context
 ```
@@ -1594,6 +1594,51 @@ This is likely near-optimal for this approach. To reach 1.15+:
 - Need fundamentally different approach
 - Or significant solver acceleration
 - Or better initialization strategies
+
+---
+
+## Session 14 - Coarse-Grid Refinement (Research-Driven)
+
+### Research Insight
+Based on web research on state-of-the-art methods:
+- [Reciprocity Gap Method](https://hal.science/hal-00732679/) - Non-iterative algebraic heat source identification
+- [Warm-Start CMA-ES](https://arxiv.org/abs/2012.06932) - Transfer learning for faster optimization
+- [POD-RBF Surrogates](https://www.mdpi.com/2072-666X/16/11/1267) - 10^4 speedup for thermal fields
+
+**Key Insight**: Previous refinement failed because it ran on FINE grid (100x50).
+Solution: Do Nelder-Mead refinement on COARSE grid (50x25) - 4x faster!
+
+### A35 - Coarse-Grid Refinement Experiments
+| Config | Score | Time | Status |
+|--------|-------|------|--------|
+| 5-iter top-3 (40 samples) | 1.1182 | 49.3 min | ✅ Promising |
+| 5-iter top-3 (80 samples) | 1.1158 | 68.1 min | ❌ Over budget |
+| 10-iter top-5 | 1.1284 | 84.0 min | ❌ Way over |
+| 3-iter top-2 (40 samples) | 1.1270 | 38.8 min | ✅ Very promising |
+| **3-iter top-2 (80 samples)** | **1.1154** | **55.1 min** | ✅ **NEW BEST** |
+| 2-iter top-1 | 1.1025 | 34.0 min | ❌ Too weak |
+| 4-iter top-2 (80 samples) | 1.1146 | 57.6 min | ✅ Good but slower |
+| 24 fevals + 5-iter top-2 | 1.1153 | 51.4 min | ✅ Good trade-off |
+
+### Key Findings
+1. **Coarse-grid refinement WORKS** - improves score without breaking budget
+2. **Optimal config: 3-iter top-2** - Best balance of score and time
+3. **More refinement = better accuracy but longer time** - Diminishing returns
+4. **40-sample estimates still unreliable** - Always validate on 80 samples
+
+### Session 14 Summary
+
+**NEW BEST: 1.1154 @ 55.1 min (Coarse Refinement 3-iter top-2)**
+
+Improvement: +0.6% over previous best (1.1094)
+Trade-off: +11 min time cost
+
+**Gap Analysis**:
+```
+Current:         1.1154 (86% of max 1.30)
+Target (top 5):  1.15 (88% of max) - Gap: 0.035
+Target (top 2):  1.22 (94% of max) - Gap: 0.105
+```
 
 ---
 
