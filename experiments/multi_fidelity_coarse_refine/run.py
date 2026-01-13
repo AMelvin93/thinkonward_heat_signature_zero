@@ -29,6 +29,7 @@ def process_single_sample(args):
         early_fraction=config['early_fraction'],
         refine_maxiter=config['refine_maxiter'],
         refine_top_n=config['refine_top_n'],
+        sigma0_2src=config.get('sigma0_2src', 0.20),
     )
     start = time.time()
     try:
@@ -61,6 +62,7 @@ def main():
     parser.add_argument('--early-fraction', type=float, default=0.3)
     parser.add_argument('--refine-maxiter', type=int, default=5)
     parser.add_argument('--refine-top-n', type=int, default=3)
+    parser.add_argument('--sigma0-2src', type=float, default=0.20)
     parser.add_argument('--seed', type=int, default=42)
     args = parser.parse_args()
 
@@ -96,6 +98,7 @@ def main():
         'early_fraction': args.early_fraction,
         'refine_maxiter': args.refine_maxiter,
         'refine_top_n': args.refine_top_n,
+        'sigma0_2src': args.sigma0_2src,
     }
 
     start_time = time.time()

@@ -365,10 +365,13 @@ Based on [FINDING], I will now:
 | File | Purpose |
 |------|---------|
 | `docs/RESEARCH_NEXT_STEPS.md` | **Primary state** - learnings, history, what works |
-| `ITERATION_LOG.md` | Experiment tracking and results |
+| `ITERATION_LOG.md` | **Current session** - append new experiments here (keep small!) |
+| `ITERATION_LOG_full_backup.md` | **Full history** - Sessions 1-14 archived here (reference only) |
 | `experiments/` | All experimental code |
 | `CLAUDE.md` | Project constraints (read once at start) |
 | `src/` | Production code (only after validation) |
+
+**IMPORTANT**: Keep `ITERATION_LOG.md` small (<500 lines). Append new results to the end. If history is needed, read from `ITERATION_LOG_full_backup.md`.
 
 ---
 

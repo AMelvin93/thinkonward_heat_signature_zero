@@ -51,14 +51,15 @@ Copy and paste this prompt to start an autonomous experimentation loop:
 ```
 Review CLAUDE.md and PROMPT.md for full context.
 
-YOU ARE IN AN INFINITE LOOP. DO NOT STOP UNTIL SCORE > 1.20 OR I TYPE "stop".
+YOU ARE IN AN INFINITE LOOP. DO NOT STOP UNTIL SCORE > 1.25 OR I TYPE "stop".
 
 WORKFLOW (REPEAT FOREVER):
-1. REFLECT - Read ITERATION_LOG.md and docs/RESEARCH_NEXT_STEPS.md for current state
+1. REFLECT - Read ITERATION_LOG.md (current state) and docs/RESEARCH_NEXT_STEPS.md
+   - Full history is in ITERATION_LOG_full_backup.md if needed
 2. RESEARCH - WebSearch for new techniques if stuck
 3. BUILD - Create/modify experiment in experiments/<name>/
 4. TEST - Run: uv run python experiments/<name>/run.py --workers 7 --shuffle
-5. UPDATE - Log results to ITERATION_LOG.md
+5. UPDATE - Append results to END of ITERATION_LOG.md (keep file small!)
 6. IMMEDIATELY GO TO STEP 1 - NO SUMMARIES, NO CONCLUSIONS
 
 CRITICAL RULES:

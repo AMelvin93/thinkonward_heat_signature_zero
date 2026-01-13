@@ -1,21 +1,21 @@
 # Research: Next Steps for Heat Signature Zero
 
-*Last updated: 2026-01-10 (Session 10)*
-*CURRENT BEST: Early Timestep + 15/24 fevals → 1.0957 @ 58.3 min*
+*Last updated: 2026-01-10 (Session 14)*
+*CURRENT BEST: Multi-fidelity + Coarse Refinement → 1.1233 @ 55.3 min*
 
 ## LEADERBOARD GAP ANALYSIS (CRITICAL)
 
 ```
 LEADERBOARD:                    OUR CURRENT:
-#1  Jonas M      1.2268         1.0957 (84% of max)
-#2  kjc          1.2265         Gap to top 5: -0.054
-#3  MGöksu       1.1585         Gap to top 2: -0.124
+#1  Jonas M      1.2268         1.1233 (86% of max)
+#2  kjc          1.2265         Gap to top 5: -0.017 (1.5%!)
+#3  MGöksu       1.1585         Gap to top 2: -0.097 (8%)
 #4  Matt Motoki  1.1581
 #5  StarAtNyte   1.1261         TARGET: 1.15+ (top 5)
---- WE ARE HERE --- 1.0957      STRETCH: 1.20+ (top 2)
+--- WE ARE HERE --- 1.1233      STRETCH: 1.20+ (top 2)
 ```
 
-**Progress: Started at 0.77 → Now at 1.0957 (+42% improvement)**
+**Progress: Started at 0.77 → Now at 1.1233 (+46% improvement)**
 
 ---
 
@@ -308,15 +308,22 @@ When the Ralph loop resumes, execute these experiments IN ORDER:
 ## CURRENT PRODUCTION CONFIGURATION
 
 ```bash
-# Best verified config within budget
-uv run python experiments/early_timestep_opt/run.py \
+# Best verified config within budget (Session 14)
+uv run python experiments/multi_fidelity/run.py \
     --workers 7 \
     --shuffle \
-    --early-fraction 0.3 \
-    --max-fevals-2src 24
+    --max-fevals-2src 36 \
+    --refine-top 2 \
+    --refine-iters 3
 
-# Score: 1.0957 @ 58.3 min (1.7 min buffer)
+# Score: 1.1233 @ 55.3 min (4.7 min buffer)
 ```
+
+### Multi-Fidelity Approach (BREAKTHROUGH)
+- **Coarse grid (50x25)** for CMA-ES exploration (~4x faster per sim)
+- **Fine grid (100x50)** only for final candidate evaluation
+- **Coarse-grid Nelder-Mead refinement** (3 iters on top-2 candidates)
+- **36 fevals** is the sweet spot for 2-source
 
 ---
 
@@ -327,12 +334,14 @@ Session 1-3:   0.77 → 1.02  (baseline improvements)
 Session 8:     1.02 → 0.995 (verified baseline)
 Session 9:     0.995 → 1.08 (early timestep breakthrough +8.5%)
 Session 10:    1.08 → 1.096 (extended fevals +1.5%)
+Session 12:    1.096 → 1.109 (multi-fidelity +1.2%)
+Session 14:    1.109 → 1.1233 (coarse refinement +1.3%)
 
-Total: +42% improvement from start
+Total: +46% improvement from start
 
 Gap remaining:
-- To top 5 (1.15): need +5% more
-- To top 2 (1.22): need +11% more
+- To top 5 (1.15): need +1.5% more  ← VERY CLOSE!
+- To top 2 (1.22): need +8% more
 ```
 
 ---
