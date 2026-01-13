@@ -3,7 +3,7 @@
 > **NOTE**: Full history (Sessions 1-14) archived in `ITERATION_LOG_full_backup.md`
 
 ## Current State
-- **Current Best**: 1.1233 @ 55.3 min (36 fevals + Coarse Refinement 3-iter top-2)
+- **Current Best**: 1.1247 @ 57.2 min (Robust Fallback 0.35/0.45)
 - **Leaderboard Position**: #7 (tied with Team Okpo)
 - **Gap to Top 5**: 0.030 (2.6%)
 - **Gap to Top 2**: 0.104 (9%)
@@ -113,4 +113,54 @@ uv run python experiments/multi_fidelity/run.py \
 **Analysis**: Coarser grid doesn't speed up enough, accuracy slightly worse.
 
 <!-- New experiments go below this line -->
+
+### Exp S15-10: Concentrated Fevals (concentrated_fevals)
+**Config**: 20/36 fevals, probe=8 per init (3 inits), 3-iter refine top-2
+**Result**: 1.1136 @ 58.0 min
+**Analysis**: Adding random init and probe phase overhead hurt rather than helped. Score -0.0097 from baseline. The probe phase consumed too many fevals (24 out of 36). Abandon this approach.
+
+### Exp S15-11: Cluster Init 2-Source (cluster_init_2src)
+**Config**: 20/36 fevals, 4 inits for 2-src (tri, smart, cluster, onset), 3-iter refine top-2
+**Result**: 1.1222 @ 65.1 min (OVER BUDGET)
+**Analysis**: Good score (-0.0011 from baseline) but over budget by 9.8 min. Key finding: 2-source RMSE improved to 0.2211 (vs baseline ~0.27). The cluster/onset inits help accuracy but spreading fevals across 4 inits is too slow. Need to select best inits first.
+
+### Exp S15-12: Smart Init Selection (smart_init_select)
+**Config**: 20/36 fevals, evaluate all inits first, use best 2 for CMA-ES
+**Result**: 1.1133 @ 51.1 min
+**Analysis**: Faster than baseline by 4.2 min but score -0.0100. Init evaluation overhead (8 sims) reduces CMA-ES budget too much. The selection doesn't compensate for fewer fevals.
+
+### Exp S15-13: More Refine Iterations (multi_fidelity_coarse_refine)
+**Config**: 20/36 fevals, 5 refine iters on top-3
+**Result**: 1.1228 @ 67.9 min (OVER BUDGET)
+**Analysis**: Better accuracy (2-src RMSE 0.2200) but over budget. More refinement helps but costs too much.
+
+### Exp S15-14: Baseline Rerun (multi_fidelity_coarse_refine)
+**Config**: 20/36 fevals, 3 refine iters on top-2
+**Result**: 1.1015 @ 55.5 min (variance detected)
+**Analysis**: Sample 28 had RMSE=1.4137 (outlier). High variance in results - sometimes CMA-ES gets stuck in poor local minima. Need robustness improvements.
+
+### Exp S15-15: Robust Fallback (threshold 0.4/0.5)
+**Config**: 20/36 fevals, fallback threshold 1-src=0.4, 2-src=0.5
+**Result**: 1.1211 @ 57.9 min
+**Analysis**: Fallback helped sample 28 but sample 50 still bad (0.7289). Close to baseline but not improved.
+
+### Exp S15-16: Robust Fallback (threshold 0.3/0.4)
+**Config**: 20/36 fevals, fallback threshold 1-src=0.3, 2-src=0.4
+**Result**: 1.1260 @ 66.2 min (OVER BUDGET)
+**Analysis**: IMPROVED score (+0.0027) but over budget. 2-src RMSE excellent (0.2067). Fallback triggers too often with low threshold, adding too much time.
+
+### Exp S15-17: Robust Fallback (threshold 0.35/0.45) **NEW BEST**
+**Config**: 20/36 fevals, fallback threshold 1-src=0.35, 2-src=0.45
+**Result**: 1.1247 @ 57.2 min (WITHIN BUDGET)
+**Analysis**: IMPROVED! +0.0014 over baseline, 2.8 min buffer. 2-src RMSE=0.2070. Sweet spot between accuracy and budget.
+
+### Exp S15-18: Robust Fallback (threshold 0.35/0.42)
+**Config**: 20/36 fevals, fallback threshold 1-src=0.35, 2-src=0.42, seed=43
+**Result**: 1.1224 @ 59.1 min (within budget)
+**Analysis**: Lower 2-src threshold didn't help. Sample 21 had RMSE=1.4417 outlier.
+
+### Exp S15-19: Robust Fallback (threshold 0.25/0.45)
+**Config**: 20/36 fevals, fallback threshold 1-src=0.25, 2-src=0.45, seed=43
+**Result**: 1.1222 @ 60.3 min (OVER BUDGET)
+**Analysis**: Very aggressive 1-src threshold triggers fallback too often. Over budget.
 
