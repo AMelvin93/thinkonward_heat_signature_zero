@@ -80,7 +80,7 @@ The loop ends ONLY when:
 1. Score > 1.25 achieved
 2. User types "stop"
 3. File /workspace/STOP exists
-
+    
 START NOW: Read ITERATION_LOG.md, identify the current best, and run the next experiment.
 ```
 

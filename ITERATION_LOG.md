@@ -4,22 +4,30 @@
 
 ## Current State
 - **Current Best**: 1.1247 @ 57.2 min (Robust Fallback 0.35/0.45)
-- **Leaderboard Position**: #7 (tied with Team Okpo)
-- **Gap to Top 5**: 0.030 (2.6%)
-- **Gap to Top 2**: 0.104 (9%)
+- **Leaderboard Position**: #8 (between StarAtNyte and Okpo)
+- **Gap to Top 5**: 0.029 (2.5%)
+- **Gap to Top 2**: 0.102 (8.8%)
 
-### Leaderboard Context (2026-01-13)
+### Leaderboard Context (2026-01-15)
 ```
 #1  Team Jonas M     1.2268
 #2  Team kjc         1.2265
-#3  Matt Motoki      1.2005   ← Big jump! Was #4
+#3  Matt Motoki      1.2005
 #4  MGöksu           1.1585
 #5  Team vellin      1.1533   ← Target
-#6  Team StarAtNyte  1.1261
-#7  Team Okpo        1.1232   ← WE ARE HERE (1.1233)
-#8  Koush            1.1096
-#9  ekarace          1.1061
-#10 Team lukasks     1.0996
+#6  Team olbap       1.1483   ← NEW
+#7  Team StarAtNyte  1.1261
+#8  WE ARE HERE      1.1247
+#9  Team Okpo        1.1232
+#10 Koush            1.1096
+#11 ekarace          1.1061
+#12 Team lukasks     1.0996
+#13 Team aleph_0     1.0939
+#14 羊保国            1.0836
+#15 Team Ti41e7      1.0805
+#16 PossibleAI       1.0692
+#17 Team ducto       1.0621
+#18 Team nacumaria00 1.0211
 ```
 
 ---
@@ -163,4 +171,50 @@ uv run python experiments/multi_fidelity/run.py \
 **Config**: 20/36 fevals, fallback threshold 1-src=0.25, 2-src=0.45, seed=43
 **Result**: 1.1222 @ 60.3 min (OVER BUDGET)
 **Analysis**: Very aggressive 1-src threshold triggers fallback too often. Over budget.
+
+---
+
+## Session 16 (2026-01-16)
+
+### Exp S16-01: Adaptive Budget V2 (adaptive_budget_v2)
+**Config**: Probe phase to estimate difficulty, easy/base/hard fevals allocation
+**Result**: 1.1127 @ 55.3 min
+**Analysis**: Probe phase overhead and misclassification hurt score. -0.012 from baseline.
+
+### Exp S16-02: Cluster-Smart (cluster_smart)
+**Config**: Use cluster init instead of smart init for 2-source
+**Result**: 1.1160 @ 62.1 min (OVER BUDGET)
+**Analysis**: Cluster init triggered fallback more often. Over budget.
+
+### Exp S16-03: Tri-Smart-Cluster (tri_smart_cluster)
+**Config**: 3 inits for 2-source (tri+smart+cluster), 12 fevals each
+**Result**: 1.1047 @ 54.8 min
+**Analysis**: With 3 inits, each gets fewer fevals (12 vs 18), reducing CMA-ES effectiveness.
+
+### Exp S16-04: Multi-Seed (multi_seed)
+**Config**: Run CMA-ES 2x with different seeds, take best
+**Result**: 1.1032 @ 62.5 min (OVER BUDGET)
+**Analysis**: Extra seeds added overhead without improving results. Fevals split too thin.
+
+### Exp S16-05: Sigma Fallback (sigma_fallback)
+**Config**: Fallback with larger sigma (0.30) for more exploration
+- Thresholds 0.35/0.45: 1.1217 @ 56.7 min
+- Thresholds 0.35/0.40, sigma=0.35: 1.1237 @ 58.3 min
+- Thresholds 0.30/0.38: **1.1303 @ 62.8 min (OVER BUDGET)** - Best score!
+- Thresholds 0.32/0.42: 1.1156 @ 61.3 min (OVER BUDGET)
+- Thresholds 0.35/0.42: 1.1203 @ 58.1 min
+
+**Analysis**: Sigma fallback with larger exploration helps reduce outliers. Best config (0.30/0.38) achieves 1.1303 but over budget. Sweet spot not yet found.
+
+### Current Status
+- **Best in budget**: 1.1247 @ 57.2 min (robust_fallback 0.35/0.45)
+- **Best overall**: 1.1303 @ 62.8 min (sigma_fallback 0.30/0.38) - but OVER BUDGET
+- **High variance**: Results fluctuate based on random seed and sample order
+- **Key outlier**: Sample 57 consistently problematic (2-src RMSE 0.3-0.6)
+
+### Observations
+1. Fallback strategies help reduce outliers but add time
+2. More aggressive thresholds improve score but break budget
+3. There's a tradeoff between accuracy and time that's hard to balance
+4. Sample 57 and a few others are consistently difficult
 
