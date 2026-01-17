@@ -1,0 +1,164 @@
+# Docker Compose for multi-worker Claude Code orchestration
+# Usage:
+#   docker-compose -f orchestration/docker-compose.workers.yml up -d
+#   docker-compose -f orchestration/docker-compose.workers.yml logs -f
+#   docker-compose -f orchestration/docker-compose.workers.yml down
+#
+# For 128GB RAM / 32 core system: each worker gets 8 CPUs, 32GB RAM
+# This leaves 8 cores and 32GB for system overhead
+
+version: '3.8'
+
+services:
+  # Worker 1: Threshold tuning
+  worker1:
+    build:
+      context: ..
+      dockerfile: Dockerfile.dev
+    image: heat-signature-zero:latest
+    container_name: claude-worker-1
+
+    # Resource allocation (8 CPUs, 32GB each - matches G4dn.2xlarge)
+    cpus: '8'
+    mem_limit: 32g
+
+    volumes:
+      - ..:/workspace
+      - ../mlruns:/workspace/mlruns
+      - ../orchestration/shared:/workspace/orchestration/shared
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - WORKER_ID=W1
+      - FOCUS_AREA=threshold_tuning
+      - N_WORKERS=7
+
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+    # Start Claude Code with the worker prompt
+    command: >
+      bash -c "
+        echo 'Worker W1 starting - Threshold Tuning';
+        cat /workspace/orchestration/shared/prompt_W1.txt;
+        echo '';
+        echo 'Run: claude --dangerously-skip-permissions';
+        echo 'Then paste the prompt above';
+        exec bash
+      "
+
+  # Worker 2: Init strategies
+  worker2:
+    build:
+      context: ..
+      dockerfile: Dockerfile.dev
+    image: heat-signature-zero:latest
+    container_name: claude-worker-2
+
+    cpus: '8'
+    mem_limit: 32g
+
+    volumes:
+      - ..:/workspace
+      - ../mlruns:/workspace/mlruns
+      - ../orchestration/shared:/workspace/orchestration/shared
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - WORKER_ID=W2
+      - FOCUS_AREA=init_strategies
+      - N_WORKERS=7
+
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+    command: >
+      bash -c "
+        echo 'Worker W2 starting - Init Strategies';
+        cat /workspace/orchestration/shared/prompt_W2.txt;
+        echo '';
+        echo 'Run: claude --dangerously-skip-permissions';
+        echo 'Then paste the prompt above';
+        exec bash
+      "
+
+  # Worker 3: Feval allocation
+  worker3:
+    build:
+      context: ..
+      dockerfile: Dockerfile.dev
+    image: heat-signature-zero:latest
+    container_name: claude-worker-3
+
+    cpus: '8'
+    mem_limit: 32g
+
+    volumes:
+      - ..:/workspace
+      - ../mlruns:/workspace/mlruns
+      - ../orchestration/shared:/workspace/orchestration/shared
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - WORKER_ID=W3
+      - FOCUS_AREA=feval_allocation
+      - N_WORKERS=7
+
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+    command: >
+      bash -c "
+        echo 'Worker W3 starting - Feval Allocation';
+        cat /workspace/orchestration/shared/prompt_W3.txt;
+        echo '';
+        echo 'Run: claude --dangerously-skip-permissions';
+        echo 'Then paste the prompt above';
+        exec bash
+      "
+
+  # Status monitor (optional)
+  monitor:
+    image: python:3.11-slim
+    container_name: orchestration-monitor
+
+    volumes:
+      - ..:/workspace
+
+    working_dir: /workspace
+
+    command: >
+      bash -c "
+        pip install filelock > /dev/null 2>&1;
+        while true; do
+          echo '========================================';
+          date;
+          echo '========================================';
+          python -c \"
+import json
+from pathlib import Path
+coord_file = Path('/workspace/orchestration/shared/coordination.json')
+if coord_file.exists():
+    data = json.loads(coord_file.read_text())
+    print(f'Best Score: {data.get(\"best_score\", \"N/A\")}')
+    print(f'Best Worker: {data.get(\"best_worker\", \"N/A\")}')
+    print(f'Completed: {len(data.get(\"experiments_completed\", []))}')
+    print(f'In Progress: {len(data.get(\"experiments_claimed\", {}))}')
+    print()
+    for wid, info in data.get('workers_registered', {}).items():
+        print(f'  {wid}: {info.get(\"experiments_run\", 0)} runs')
+else:
+    print('No coordination file yet')
+\";
+          sleep 60;
+        done
+      "
+
+    profiles:
+      - monitor

@@ -1,0 +1,73 @@
+{
+  "last_updated": null,
+  "updated_by": null,
+  "research_topics": [
+    {
+      "id": "RT001",
+      "name": "threshold_fine_tuning",
+      "priority": 1,
+      "status": "available",
+      "assigned_to": null,
+      "description": "Fine-tune fallback thresholds around current best (0.35/0.45)",
+      "hypothesis": "Small threshold adjustments may find better accuracy/time tradeoff",
+      "search_space": {
+        "threshold_1src": [0.33, 0.34, 0.35, 0.36, 0.37],
+        "threshold_2src": [0.43, 0.44, 0.45, 0.46, 0.47]
+      },
+      "expected_experiments": 5,
+      "created_at": "2026-01-17T00:00:00Z",
+      "rationale": "Baseline best config uses 0.35/0.45. Small variations may improve."
+    },
+    {
+      "id": "RT002",
+      "name": "lean_budget_optimization",
+      "priority": 2,
+      "status": "available",
+      "assigned_to": null,
+      "description": "Reduce fevals to save time while maintaining accuracy",
+      "hypothesis": "Lower fevals with good init can match accuracy faster",
+      "search_space": {
+        "fevals_1src": [14, 16, 18],
+        "fevals_2src": [28, 32, 36],
+        "fallback_fevals_1src": [10, 12, 14],
+        "fallback_fevals_2src": [14, 16, 18]
+      },
+      "expected_experiments": 4,
+      "created_at": "2026-01-17T00:00:00Z",
+      "rationale": "W3 finding: budget matters less than init. Try reducing fevals."
+    },
+    {
+      "id": "RT003",
+      "name": "onset_gradient_init",
+      "priority": 3,
+      "status": "available",
+      "assigned_to": null,
+      "description": "Use temperature onset and gradient for smarter initialization",
+      "hypothesis": "Physics-informed init will converge faster",
+      "search_space": {
+        "init_strategy": ["onset_gradient", "gradient_max", "onset_time"],
+        "refine_iters": [2, 3, 4],
+        "refine_top": [2, 3]
+      },
+      "expected_experiments": 4,
+      "created_at": "2026-01-17T00:00:00Z",
+      "rationale": "Better init could reduce fevals needed for convergence"
+    }
+  ],
+  "completed_topics": [],
+  "research_insights": {
+    "what_works": [
+      "Thresholds 0.35/0.45 provide good accuracy/time balance",
+      "Fallback mechanism is critical for hard samples"
+    ],
+    "what_doesnt_work": [
+      "Too aggressive thresholds (0.34/0.44) cause excessive fallbacks and slow runtime",
+      "High fevals for 2-src (40) doesn't improve accuracy - just adds time"
+    ],
+    "promising_directions": [
+      "Better initialization strategies",
+      "Smarter fallback triggering based on convergence patterns"
+    ],
+    "blocked_directions": []
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "worker_id": "W2",
+  "session_info": {
+    "started": null,
+    "last_active": null,
+    "experiments_this_session": 0
+  },
+  "current_topic": {
+    "name": null,
+    "priority": null,
+    "assigned_at": null,
+    "description": null,
+    "hypothesis": null,
+    "search_space": {}
+  },
+  "exploration_progress": {
+    "variations_planned": [],
+    "variations_tried": [],
+    "variations_remaining": [],
+    "best_result_in_topic": null,
+    "insights": []
+  },
+  "next_action": {
+    "type": null,
+    "description": null,
+    "config": {}
+  },
+  "topic_status": "idle",
+  "notes": []
+}

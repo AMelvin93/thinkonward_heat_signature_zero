@@ -248,3 +248,66 @@ uv run python experiments/multi_fidelity/run.py \
 - **High variance issue**: Results vary by 0.01-0.015 between runs with same config
 - **Key outliers**: Samples 34, 57, 63 consistently problematic
 
+
+---
+
+## Session 18 - Distributed Optimization (2026-01-17)
+
+### [W1] Experiment: threshold_0.34_0.44 | Score: 1.1168 @ 81.2 min
+**Config**: threshold_1src=0.34, threshold_2src=0.44, fevals 20/36
+**Result**: OVER_BUDGET - way over 60 min limit
+**Analysis**: More aggressive threshold (0.34 vs 0.35) triggered too many fallbacks. Sample 50 and 63 still have high RMSE (0.65, 0.53). The lower threshold added ~25 min overhead.
+**Next**: Try more conservative thresholds (0.37/0.48) to stay within budget while catching worst outliers.
+
+
+### [W3] Experiment: asymmetric_budget | Score: 1.1210 @ 85.5 min
+**Config**: fevals_1src=16, fevals_2src=40, fallback_fevals=14/20, threshold 0.35/0.45
+**Result**: OVER_BUDGET - 85.5 min way over limit
+**Analysis**: Hypothesis that more fevals for 2-src would help was WRONG. The 40 fevals added significant time but didn't improve 2-src RMSE (0.2177). Sample 57 still worst at 0.6306. Budget allocation matters less than init quality.
+**Next**: Try lean budget (18/32 primary, 12/16 fallback) - reduce time while maintaining similar accuracy.
+
+### [W1] Experiment: threshold_0.37_0.48 | Score: 1.1121 @ 83.3 min
+**Config**: threshold_1src=0.37, threshold_2src=0.48, fevals 20/36
+**Result**: OVER_BUDGET - 83.3 min projected
+**Analysis**: More conservative thresholds still over budget. Only 1 fallback triggered (sample 57). Sample 57 RMSE=0.579, sample 52 RMSE=0.419. High variance from baseline.
+**Next**: Verify baseline reproducibility with exact 0.35/0.45 config to check if environment is different.
+
+
+### [W3] Experiment: lean_budget | Score: 1.1191 @ 89.0 min
+**Config**: fevals_1src=18, fevals_2src=32, fallback_fevals=12/16, threshold 0.35/0.45
+**Result**: OVER_BUDGET - 89 min still way over
+**Analysis**: Even reduced fevals didn't help. Fallback is triggered too often. Sample 51 (2-src 0.5556) and Sample 21 (1-src 0.4202) are outliers. The issue is not budget size but fallback frequency.
+**Next**: Test NO FALLBACK (threshold=2.0) to establish pure optimization timing baseline.
+
+### [W1] Experiment: verify_baseline | Score: 1.1209 @ 86.8 min
+**Config**: threshold_1src=0.35, threshold_2src=0.45, fevals 20/36 (exact baseline config)
+**Result**: PARALLEL_CONTENTION - 86.8 min vs reported 57.2 min baseline
+**Analysis**: Resource contention from 3 workers running in parallel causes ~50% timing inflation. Score 1.1209 vs 1.1247 reported - some variance from CMA-ES randomness. Sample 50 still problematic (RMSE=0.50).
+**Next**: Focus on relative score improvements rather than absolute timing. Try higher sigma (0.25/0.30) with conservative thresholds (0.40/0.50) for better exploration.
+
+
+### [W3] Experiment: no_fallback | Score: 1.1067 @ 79.1 min
+**Config**: fevals=20/36, threshold=2.0/2.0 (no fallback)
+**Result**: LOW_SCORE - fastest but worst accuracy
+**Analysis**: NO FALLBACK is 79.1 min (vs 85-89 min with fallback). But score dropped to 1.1067 due to 4 outliers with RMSE>0.5: samples 34, 51, 57, 74 (all 2-source). These specific samples need fallback handling.
+**Next**: Try conservative thresholds (0.50/0.60) to only trigger fallback for the worst outliers.
+
+### [W1] Experiment: high_sigma_fallback | Score: 1.1244 @ 82.6 min
+**Config**: threshold_1src=0.40, threshold_2src=0.50, sigma0_1src=0.20, sigma0_2src=0.25, fallback_sigma=0.30/0.35
+**Result**: CLOSE_TO_BASELINE - only 0.0003 below baseline 1.1247!
+**Analysis**: Higher sigma (0.20/0.25 vs default 0.15/0.20) provides better exploration, reducing outliers. Only 6 samples with RMSE>0.4 vs more with default sigma. Sample 57 RMSE=0.297 (much better than previous runs).
+**Next**: Try even higher thresholds (0.45/0.55) with sigma 0.25/0.30 to further reduce time while maintaining exploration.
+
+
+### [W3] Experiment: conservative_threshold | Score: 1.1133 @ 74.5 min
+**Config**: fevals=20/36, threshold=0.50/0.60
+**Result**: BETTER TIME than previous, but still over budget
+**Analysis**: Conservative thresholds only triggered 7 fallbacks ([FB] in log). Time improved to 74.5 min (vs 79-89 for other configs). But still 3 outliers with RMSE>0.5 (samples 34, 57, 63).
+**Next**: Try high sigma approach (0.20/0.25) based on W1's finding that it helps exploration.
+
+### [W1] Experiment: very_high_sigma | Score: 1.1148 @ 72.7 min
+**Config**: threshold_1src=0.45, threshold_2src=0.55, sigma0_1src=0.25, sigma0_2src=0.30
+**Result**: LOW_SCORE - thresholds too high, missed outliers
+**Analysis**: 3 samples with RMSE>0.5 (63: 0.64, 34: 0.54, 51: 0.52). 2-src RMSE increased from 0.23 to 0.28 compared to high_sigma_fallback. The 0.45/0.55 thresholds are too lenient.
+**Next**: Try sigma 0.22/0.27 with thresholds 0.38/0.48 - intermediate between the two runs.
+

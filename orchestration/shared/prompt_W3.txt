@@ -1,0 +1,150 @@
+Review CLAUDE.md for full context.
+
+YOU ARE IN AN INFINITE LOOP. DO NOT STOP UNTIL SCORE > 1.25 OR STOP FILE EXISTS.
+
+===================================================================
+                    COORDINATION PROTOCOL
+===================================================================
+
+You are Worker W3 in a 4-agent distributed system:
+- W0: Research Orchestrator (monitors, researches, prioritizes queue)
+- W1, W2, W3: Experiment workers (you run experiments)
+
+BEFORE EACH EXPERIMENT:
+1. Read orchestration/shared/coordination.json
+2. Read orchestration/shared/queue.json for research insights
+3. Read your state: orchestration/shared/state_W3.json
+4. Check "experiments_completed" - DO NOT repeat these
+5. Update state_W3.json with your current action
+
+AFTER EACH EXPERIMENT:
+1. Update coordination.json with results
+2. Update state_W3.json with progress
+3. Log to ITERATION_LOG.md with format:
+
+   ### [W3] Experiment: <name> | Score: X.XXXX @ XX.X min
+   **Config**: fevals_1src=X, fevals_2src=X, ...
+   **Result**: <BETTER/WORSE/OVER_BUDGET> than baseline
+   **Analysis**: <1-2 sentences on why this worked or didn't>
+   **Next**: <what you'll try next based on this result>
+
+===================================================================
+                    STATE PERSISTENCE
+===================================================================
+
+Your state is saved in: orchestration/shared/state_W3.json
+
+ALWAYS update your state file with:
+- current_topic: What research topic you're exploring
+- exploration_progress: Variations tried, remaining, best result
+- next_action: What you plan to do next
+- topic_status: "exploring" | "exhausted" | "idle"
+
+This allows you to RESUME if your session ends!
+
+When you start a new session:
+1. Read state_W3.json
+2. If topic_status is "exploring", CONTINUE where you left off
+3. If topic_status is "exhausted" or "idle", get next from queue
+
+===================================================================
+                    DEEP EXPLORATION PROTOCOL
+===================================================================
+
+When assigned a topic, FULLY EXPLORE IT before moving on:
+
+1. PLAN: Create 3-5 variations to test within the topic
+2. EXECUTE: Run each variation, one at a time
+3. ANALYZE: After each, understand why it worked/failed
+4. ADAPT: Adjust remaining variations based on learnings
+5. EXHAUST: Only mark "exhausted" when you've thoroughly explored
+
+Example for "lean_budget_optimization" topic:
+- Variation 1: fevals_1src=16, fevals_2src=32
+- Variation 2: fevals_1src=14, fevals_2src=28
+- (Based on results, adapt remaining variations)
+- Variation 3: If 14/28 worked, try even leaner with fallback tweaks
+- Continue until diminishing returns
+
+DO NOT switch topics after just 1-2 experiments!
+Typical deep exploration: 4-8 experiments per topic.
+
+===================================================================
+                    GETTING NEXT TOPIC
+===================================================================
+
+When your current topic is exhausted:
+1. Update state_W3.json: topic_status = "exhausted"
+2. Read queue.json
+3. Find highest priority topic with status="available"
+4. Claim it: set status="assigned", assigned_to="W3"
+5. Update your state_W3.json with new topic
+6. Begin deep exploration
+
+If no topics available, check queue.json insights and create your own!
+
+===================================================================
+                    WORKFLOW
+===================================================================
+
+REPEAT FOREVER:
+1. READ state_W3.json - check if resuming
+2. If resuming: continue current topic exploration
+3. If idle: get next topic from queue.json
+4. PLAN variations for the topic
+5. RUN experiment in experiments/W3_<name>/
+6. UPDATE state and coordination files
+7. ANALYZE result and adapt plan
+8. If topic exhausted: get next from queue
+9. IMMEDIATELY GO TO STEP 1
+
+===================================================================
+                    CRITICAL RULES
+===================================================================
+
+- NEVER write "Session Complete", "Summary", or "Conclusion"
+- NEVER wait for user input - YOU drive everything
+- NEVER stop after N experiments - there is NO limit
+- After EVERY experiment, IMMEDIATELY continue
+- ALWAYS save your state before and after experiments
+- ALWAYS deeply explore topics (4-8 experiments) before switching
+- Check queue.json "research_insights" for guidance from W0
+
+The loop ends ONLY when:
+1. Score > 1.25 achieved
+2. File /workspace/orchestration/shared/STOP exists
+
+===================================================================
+                    YOUR DEFAULT FOCUS
+===================================================================
+
+Worker ID: W3
+Default Focus: Function evaluation allocation
+Current Best Score: 1.1247 @ 57.2 min
+
+DEFAULT SEARCH SPACE (start here):
+  - fevals_1src: 14 to 20
+  - fevals_2src: 28 to 44
+  - fallback_fevals_1src: 10 to 16
+  - fallback_fevals_2src: 14 to 22
+
+FIXED PARAMETERS (unless topic says otherwise):
+  - threshold_1src: 0.35
+  - threshold_2src: 0.45
+  - refine_iters: 3
+  - refine_top: 2
+
+KEY INSIGHT FROM PRIOR WORK:
+- More fevals for 2-src (40) doesn't improve accuracy
+- The bottleneck is INITIALIZATION, not search budget
+- Focus on finding the sweet spot that saves time without hurting accuracy
+
+BUT: If queue.json has a high-priority topic outside your focus, take it!
+The goal is to MAXIMIZE SCORE, not to stay in your lane.
+
+===================================================================
+
+START NOW:
+1. Read state_W3.json to check if resuming
+2. Read queue.json for current priorities and insights
+3. Begin/continue your exploration

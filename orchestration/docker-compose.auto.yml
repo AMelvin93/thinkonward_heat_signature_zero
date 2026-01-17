@@ -1,0 +1,135 @@
+# Docker Compose for FULLY AUTOMATED multi-worker orchestration
+# Each worker runs Claude Code in a loop with auto-restart on crash
+#
+# Usage:
+#   # First, set your API key
+#   export ANTHROPIC_API_KEY="your-key"  # or $env:ANTHROPIC_API_KEY in PowerShell
+#
+#   # Start all workers
+#   docker-compose -f orchestration/docker-compose.auto.yml up
+#
+#   # Watch logs
+#   docker-compose -f orchestration/docker-compose.auto.yml logs -f worker1
+#
+#   # Stop gracefully
+#   touch orchestration/shared/STOP
+#
+#   # Force stop
+#   docker-compose -f orchestration/docker-compose.auto.yml down
+
+services:
+  # Worker 1: Default focus on threshold tuning (but flexible)
+  worker1:
+    build:
+      context: ..
+      dockerfile: Dockerfile.dev
+    image: heat-signature-zero:latest
+    container_name: claude-worker-1
+
+    # Full G4dn.2xlarge equivalent resources
+    cpus: '8'
+    mem_limit: 32g
+
+    volumes:
+      - ..:/workspace
+      # Mount Claude credentials from host (for subscription auth)
+      # Mount Claude credentials directory
+      - /c/Users/amelv/.claude:/root/.claude
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Use API key if set, otherwise falls back to OAuth credentials
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - WORKER_ID=W1
+      - N_WORKERS=7
+
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+    # Use runner script for auto-restart loop
+    command: bash /workspace/orchestration/worker_runner.sh W1
+
+  # Worker 2: Default focus on init strategies (but flexible)
+  worker2:
+    build:
+      context: ..
+      dockerfile: Dockerfile.dev
+    image: heat-signature-zero:latest
+    container_name: claude-worker-2
+
+    cpus: '8'
+    mem_limit: 32g
+
+    volumes:
+      - ..:/workspace
+      # Mount Claude credentials directory
+      - /c/Users/amelv/.claude:/root/.claude
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - WORKER_ID=W2
+      - N_WORKERS=7
+
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+    command: bash /workspace/orchestration/worker_runner.sh W2
+
+  # Worker 3: Default focus on feval allocation (but flexible)
+  worker3:
+    build:
+      context: ..
+      dockerfile: Dockerfile.dev
+    image: heat-signature-zero:latest
+    container_name: claude-worker-3
+
+    cpus: '8'
+    mem_limit: 32g
+
+    volumes:
+      - ..:/workspace
+      # Mount Claude credentials directory
+      - /c/Users/amelv/.claude:/root/.claude
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - WORKER_ID=W3
+      - N_WORKERS=7
+
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
+    command: bash /workspace/orchestration/worker_runner.sh W3
+
+  # Optional: Status monitor (every 60s)
+  monitor:
+    image: python:3.11-slim
+    container_name: orchestration-monitor
+
+    volumes:
+      - ..:/workspace
+
+    working_dir: /workspace
+
+    command: >
+      bash -c "
+        pip install filelock > /dev/null 2>&1;
+        while true; do
+          clear;
+          echo '╔════════════════════════════════════════════════════════════╗';
+          echo '║           HEAT SIGNATURE ZERO - ORCHESTRATION              ║';
+          echo '╚════════════════════════════════════════════════════════════╝';
+          date;
+          echo '';
+          python3 /workspace/orchestration/status.py 2>/dev/null || echo 'Status check failed';
+          sleep 60;
+        done
+      "
+
+    profiles:
+      - monitor

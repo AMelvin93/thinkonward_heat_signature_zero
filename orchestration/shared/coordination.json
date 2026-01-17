@@ -1,0 +1,144 @@
+{
+  "best_score": 1.1247,
+  "best_config": {
+    "experiment": "robust_fallback",
+    "threshold_1src": 0.35,
+    "threshold_2src": 0.45,
+    "fallback_fevals": 18,
+    "notes": "Session 17 baseline"
+  },
+  "best_worker": null,
+  "best_time_min": 57.2,
+  "target_score": 1.25,
+  "experiments_in_progress": {
+    "W2_onset_gradient_init": {
+      "worker": "W2",
+      "started": "2026-01-17T00:02:00Z",
+      "config": {
+        "strategy": "onset_gradient_hybrid",
+        "refine_iters": 3,
+        "refine_top": 2,
+        "threshold_1src": 0.35,
+        "threshold_2src": 0.45
+      }
+    },
+    "W3_high_sigma": {
+      "worker": "W3",
+      "started": "2026-01-17T01:45:00Z",
+      "config": {
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "sigma0_1src": 0.20,
+        "sigma0_2src": 0.25,
+        "threshold_1src": 0.40,
+        "threshold_2src": 0.50,
+        "notes": "Based on W1's finding that higher sigma helps exploration"
+      }
+    },
+    "W1_optimal_sigma": {
+      "worker": "W1",
+      "started": "2026-01-17T02:00:00Z",
+      "config": {
+        "sigma0_1src": 0.22,
+        "sigma0_2src": 0.27,
+        "threshold_1src": 0.38,
+        "threshold_2src": 0.48,
+        "notes": "Optimal balance between sigma 0.20/0.25 and 0.25/0.30"
+      }
+    }
+  },
+  "experiments_completed": [
+    {
+      "name": "W1_threshold_0.34_0.44",
+      "worker": "W1",
+      "score": 1.1168,
+      "time_min": 81.2,
+      "result": "OVER_BUDGET"
+    },
+    {
+      "name": "W1_threshold_0.37_0.48",
+      "worker": "W1",
+      "score": 1.1121,
+      "time_min": 83.3,
+      "result": "OVER_BUDGET"
+    },
+    {
+      "name": "W1_verify_baseline",
+      "worker": "W1",
+      "score": 1.1209,
+      "time_min": 86.8,
+      "result": "PARALLEL_CONTENTION"
+    },
+    {
+      "name": "W1_high_sigma_fallback",
+      "worker": "W1",
+      "score": 1.1244,
+      "time_min": 82.6,
+      "result": "CLOSE_TO_BASELINE",
+      "notes": "sigma 0.20/0.25 + thresholds 0.40/0.50 = BEST W1 run!"
+    },
+    {
+      "name": "W1_very_high_sigma",
+      "worker": "W1",
+      "score": 1.1148,
+      "time_min": 72.7,
+      "result": "LOW_SCORE",
+      "notes": "sigma 0.25/0.30 + thresholds 0.45/0.55 = too high, missed outliers"
+    },
+    {
+      "name": "W3_asymmetric_budget",
+      "worker": "W3",
+      "score": 1.1210,
+      "time_min": 85.5,
+      "result": "OVER_BUDGET"
+    },
+    {
+      "name": "W3_lean_budget",
+      "worker": "W3",
+      "score": 1.1191,
+      "time_min": 89.0,
+      "result": "OVER_BUDGET"
+    },
+    {
+      "name": "W3_no_fallback",
+      "worker": "W3",
+      "score": 1.1067,
+      "time_min": 79.1,
+      "result": "LOW_SCORE"
+    },
+    {
+      "name": "W3_conservative_threshold",
+      "worker": "W3",
+      "score": 1.1133,
+      "time_min": 74.5,
+      "result": "LOW_SCORE"
+    }
+  ],
+  "workers": {
+    "W1": {
+      "focus": "threshold_tuning",
+      "status": "running",
+      "current_experiment": "W1_optimal_sigma",
+      "experiments_run": 5
+    },
+    "W2": {
+      "focus": "init_strategies",
+      "status": "running",
+      "current_experiment": "W2_onset_gradient_init",
+      "experiments_run": 0
+    },
+    "W3": {
+      "focus": "feval_allocation",
+      "status": "running",
+      "current_experiment": "W3_high_sigma",
+      "experiments_run": 4
+    }
+  },
+  "research_findings": [
+    "W1: BEST - sigma 0.20/0.25 + thresholds 0.40/0.50 gives 1.1244 score!",
+    "W1: sigma 0.25/0.30 + thresholds 0.45/0.55 is TOO HIGH - misses outliers (1.1148)",
+    "W1: ~50% slowdown from 3 parallel workers due to resource contention",
+    "W3: NO FALLBACK is fastest (79 min) but has 4 outliers RMSE>0.5"
+  ],
+  "notes": "Sweet spot found: sigma 0.20/0.25 with thresholds 0.40/0.50. Now fine-tuning."
+}

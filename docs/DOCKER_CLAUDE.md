@@ -86,6 +86,220 @@ START NOW: Read ITERATION_LOG.md, identify the current best, and run the next ex
 
 ---
 
+## Parallelization: 4-Agent Orchestration
+
+Run 4 Claude Code instances in parallel: 1 Research Orchestrator (W0) + 3 Experiment Workers (W1-W3). The orchestrator monitors results, researches new approaches, and prioritizes the work queue.
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         YOUR HOST MACHINE                                │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                    docker-compose -f orchestration/docker-compose.manual.yml up -d
+                                    │
+    ┌───────────────────────────────┼───────────────────────────────────────┐
+    │                               │                                       │
+    ▼                               ▼                                       ▼
+┌───────────────────┐   ┌──────────────────────────────────────────────────────┐
+│ claude-orchestrator│   │              EXPERIMENT WORKERS                       │
+│ (Linux container) │   │                                                        │
+│                   │   │  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐│
+│ W0 - ORCHESTRATOR │   │  │claude-worker-1│ │claude-worker-2│ │claude-worker-3││
+│ 4 CPUs, 16GB RAM  │   │  │8 CPUs, 32GB   │ │8 CPUs, 32GB   │ │8 CPUs, 32GB   ││
+│                   │   │  │               │ │               │ │               ││
+│ - Monitor results │   │  │W1: Thresholds │ │W2: Init Strat │ │W3: Fevals     ││
+│ - WebSearch       │   │  └───────┬───────┘ └───────┬───────┘ └───────┬───────┘│
+│ - Update queue    │   └──────────┼─────────────────┼─────────────────┼────────┘
+│ - Guide workers   │              │                 │                 │
+└─────────┬─────────┘              │                 │                 │
+          │                        │                 │                 │
+          └────────────────────────┴─────────────────┴─────────────────┘
+                                            │
+                          ┌─────────────────┴─────────────────┐
+                          │        SHARED FILESYSTEM          │
+                          │        /workspace/                │
+                          │                                   │
+                          │  orchestration/shared/            │
+                          │  ├── coordination.json            │
+                          │  ├── queue.json        <-- NEW    │
+                          │  ├── state_W1.json     <-- NEW    │
+                          │  ├── state_W2.json     <-- NEW    │
+                          │  ├── state_W3.json     <-- NEW    │
+                          │  ├── prompt_W0.txt     <-- NEW    │
+                          │  ├── prompt_W1.txt                │
+                          │  ├── prompt_W2.txt                │
+                          │  ├── prompt_W3.txt                │
+                          │  └── STOP (touch to stop)         │
+                          │                                   │
+                          │  ITERATION_LOG.md                 │
+                          └───────────────────────────────────┘
+```
+
+### Quick Start
+
+**Step 1: Start all 4 containers**
+```bash
+docker-compose -f orchestration/docker-compose.manual.yml up -d
+```
+
+**Step 2: Open 4 terminal windows and set up each agent**
+
+Terminal 0 (W0 - Research Orchestrator):
+```bash
+docker exec -it claude-orchestrator bash
+claude login          # Opens browser for auth - only needed once
+cat /workspace/orchestration/shared/prompt_W0.txt
+claude --dangerously-skip-permissions
+# Paste the prompt from the cat command above
+```
+
+Terminal 1 (W1 - Threshold Tuning):
+```bash
+docker exec -it claude-worker-1 bash
+claude login
+cat /workspace/orchestration/shared/prompt_W1.txt
+claude --dangerously-skip-permissions
+# Paste the prompt
+```
+
+Terminal 2 (W2 - Init Strategies):
+```bash
+docker exec -it claude-worker-2 bash
+claude login
+cat /workspace/orchestration/shared/prompt_W2.txt
+claude --dangerously-skip-permissions
+# Paste the prompt
+```
+
+Terminal 3 (W3 - Feval Allocation):
+```bash
+docker exec -it claude-worker-3 bash
+claude login
+cat /workspace/orchestration/shared/prompt_W3.txt
+claude --dangerously-skip-permissions
+# Paste the prompt
+```
+
+### Agent Roles
+
+| Agent | Role | Responsibility |
+|-------|------|----------------|
+| **W0** | Research Orchestrator | Monitor results, WebSearch for new techniques, update queue priorities, guide workers |
+| **W1** | Experiment Worker | Run experiments, default focus: threshold tuning |
+| **W2** | Experiment Worker | Run experiments, default focus: init strategies |
+| **W3** | Experiment Worker | Run experiments, default focus: feval allocation |
+
+### Worker Default Search Spaces
+
+| Worker | Default Focus | Search Space |
+|--------|---------------|--------------|
+| **W1** | Threshold tuning | `threshold_1src`: 0.28-0.42, `threshold_2src`: 0.38-0.55, `fallback_sigma` |
+| **W2** | Init strategies | `init_strategy`, `refine_iters`: 2-5, `refine_top`: 1-3 |
+| **W3** | Feval allocation | `fallback_fevals`: 14-24, `fevals_1src`, `fevals_2src`: 32-44 |
+
+**Note:** Workers are NOT strictly confined to their focus area. They pick topics from `queue.json` based on priority. The orchestrator (W0) manages priorities based on results.
+
+### New Features
+
+**State Persistence**: Workers save their state to `state_WX.json`. When a session ends, they can resume where they left off.
+
+**Priority Queue**: The orchestrator manages `queue.json` with research topics. Workers deeply explore one topic (4-8 experiments) before moving to the next.
+
+**Research Insights**: W0 tracks what works and what doesn't in `queue.json`. Workers read these insights to make better decisions.
+
+### Coordination Protocol
+
+Agents coordinate via shared files:
+
+**W0 Orchestrator (every 10-15 min):**
+1. Read all state files and `ITERATION_LOG.md`
+2. Analyze what's working and what isn't
+3. Research new techniques if stuck (WebSearch)
+4. Update `queue.json` with new topics and priorities
+5. Update `research_insights` to guide workers
+
+**Workers (before each experiment):**
+1. Read `state_WX.json` to check if resuming a topic
+2. Read `queue.json` for priorities and insights
+3. Read `coordination.json` to check what's been done
+4. Claim next topic from queue if needed
+
+**Workers (after each experiment):**
+1. Update `coordination.json` with results
+2. Update `state_WX.json` with progress
+3. Log to `ITERATION_LOG.md` with worker prefix: `[W1]`, `[W2]`, or `[W3]`
+4. Continue exploring topic (4-8 experiments) or get next from queue
+
+### Monitoring
+
+```bash
+# Check coordination status (from any terminal)
+python /workspace/orchestration/shared/check_status.py
+
+# Watch iteration log for all workers
+tail -f ITERATION_LOG.md
+
+# Watch specific worker's log
+docker logs -f claude-worker-1
+```
+
+### Stopping Workers
+
+```bash
+# Graceful stop - workers finish current experiment then stop
+touch /workspace/orchestration/shared/STOP
+
+# Force stop all containers
+docker-compose -f orchestration/docker-compose.manual.yml down
+```
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `orchestration/docker-compose.manual.yml` | Docker setup for 4 containers (1 orchestrator + 3 workers) |
+| `orchestration/shared/coordination.json` | Shared state: best score, claimed experiments, completed list |
+| `orchestration/shared/queue.json` | **NEW**: Priority queue with research topics and insights |
+| `orchestration/shared/state_W1.json` | **NEW**: W1 state for session resumption |
+| `orchestration/shared/state_W2.json` | **NEW**: W2 state for session resumption |
+| `orchestration/shared/state_W3.json` | **NEW**: W3 state for session resumption |
+| `orchestration/shared/prompt_W0.txt` | **NEW**: Research Orchestrator prompt |
+| `orchestration/shared/prompt_W1.txt` | Worker 1 prompt |
+| `orchestration/shared/prompt_W2.txt` | Worker 2 prompt |
+| `orchestration/shared/prompt_W3.txt` | Worker 3 prompt |
+| `orchestration/shared/check_status.py` | Quick status check script |
+| `ITERATION_LOG.md` | All workers log results here with [W1]/[W2]/[W3] prefixes |
+
+### Regenerating Prompts
+
+If you need to update the worker prompts (e.g., change focus areas or best score):
+
+```bash
+cd /workspace
+python -c "
+from orchestration.worker_prompts import generate_all_prompts
+from pathlib import Path
+prompts = generate_all_prompts(current_best=1.1247)  # Update this score
+for wid, prompt in prompts.items():
+    Path(f'orchestration/shared/prompt_{wid}.txt').write_text(prompt)
+    print(f'Generated prompt_{wid}.txt')
+"
+```
+
+### Tips
+
+- **Credentials persist**: Docker volumes store Claude credentials, so you only need to `claude login` once per container (unless you delete the volumes)
+- **Natural throttling**: Each experiment takes ~55-60 min, so workers rarely hit API rate limits simultaneously
+- **Resource allocation**: Workers get 8 CPUs + 32GB RAM each; Orchestrator gets 4 CPUs + 16GB RAM
+- **State resumption**: If a session ends, workers can resume from their `state_WX.json` file
+- **Deep exploration**: Workers explore 4-8 experiments per topic before moving to next
+- **Orchestrator guidance**: W0 monitors results and adjusts priorities - workers check `queue.json` for insights
+- **Flexibility**: Workers can pick any high-priority topic from the queue, not just their default focus
+
+---
+
 ## Useful Commands
 
 ### Run an experiment manually
