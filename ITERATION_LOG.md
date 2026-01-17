@@ -218,3 +218,33 @@ uv run python experiments/multi_fidelity/run.py \
 3. There's a tradeoff between accuracy and time that's hard to balance
 4. Sample 57 and a few others are consistently difficult
 
+---
+
+## Session 17 (2026-01-16 cont.)
+
+### Exp S17-01: Lean Sigma Fallback (lean_sigma_fallback)
+**Config**: Aggressive thresholds with reduced fallback fevals
+- 0.30/0.38, 20 fevals: 1.1073 @ 66.7 min (OVER BUDGET)
+- 0.33/0.42, 18 fevals: 1.1277 @ 60.2 min (OVER BUDGET by 0.2 min)
+- 0.34/0.44, 16 fevals: 1.1152 @ 58.5 min
+- 0.33/0.42, 16 fevals: 1.1159 @ 58.5 min
+- 0.33/0.42, 14 fevals: 1.1137 @ 56.5 min
+
+**Analysis**: Lean fallback helps time but loses accuracy. Best was 1.1277 @ 60.2 min but just over budget.
+
+### Exp S17-02: Multi-Init Fallback (multi_init_fallback)
+**Config**: Add random inits on fallback instead of just rerunning
+- 0.35/0.45, 2 inits, 20 fevals: 1.1166 @ 60.1 min (OVER BUDGET)
+- 0.35/0.48, 1 init, 18 fevals: **1.1285 @ 59.0 min** (best run)
+- 0.35/0.50, 1 init, 18 fevals: 1.1077 @ 56.6 min
+- 0.35/0.46, 1 init, 18 fevals: 1.1160 @ 58.4 min
+- Repeat tests: 1.1130-1.1220 (HIGH VARIANCE)
+
+**Analysis**: Multi-init fallback shows promising results but HIGH VARIANCE. Same config produces 1.1130-1.1285 on different runs. CMA-ES randomness makes reproducibility difficult.
+
+### Current Status
+- **Best in budget**: 1.1247 @ 57.2 min (robust_fallback 0.35/0.45, seed 42)
+- **Best overall**: 1.1303 @ 62.8 min (sigma_fallback 0.30/0.38) - OVER BUDGET
+- **High variance issue**: Results vary by 0.01-0.015 between runs with same config
+- **Key outliers**: Samples 34, 57, 63 consistently problematic
+
