@@ -1,32 +1,57 @@
 # Final Competition Submission Configuration
 # Target: 400 samples in <60 min on G4dn.2xlarge (8 vCPUs, 7 workers)
 #
-# Key constraints:
-# - Max time per sample: ~63s (400/7 workers, 60 min total)
-# - Score formula: (1/N) * sum(1/(1+RMSE)) + 0.3 * (N/3)
+# Uses RobustFallbackOptimizer with CMA-ES + fallback mechanism.
+# This is the optimizer that achieved the 1.1247 @ 57.2 min baseline.
 #
-# Test results (80 samples, 7 workers on Windows 32-core):
-# - max_iter=2: 54.7 min projected, score 0.52 [SAFE - guaranteed to fit]
-# - max_iter=3: 68.7 min projected, score 0.57 [slightly over, may work on G4dn]
-# - max_iter=4: 79.3 min projected, score 0.77 [risky, best score]
+# Scoring formula: (1/N) * sum(1/(1+RMSE)) + 0.3 * (N_candidates/3)
+# - Accuracy term: 1/(1+RMSE) per sample
+# - Diversity term: 0.3 * (N_candidates/3) rewards multiple distinct candidates
 #
-# Note: G4dn.2xlarge (Linux, 8 cores) may be 10-20% faster than Windows test.
-# RECOMMENDED: Start with max_iter=2, test on G4dn, increase if time allows.
+# CRITICAL: Must generate 2-3 candidates per sample for diversity bonus!
+# - 1 candidate: diversity bonus = 0.1
+# - 2 candidates: diversity bonus = 0.2
+# - 3 candidates: diversity bonus = 0.3 (max)
+#
+# Baseline result (Exp S15-17):
+# - Score: 1.1247 @ 57.2 min
+# - Config: threshold 0.35/0.45, fevals 20/36, sigma 0.15/0.20
 
 experiment_name: "final_submission"
 
-# Optimizer settings
+# Optimizer settings - RobustFallbackOptimizer
 optimizer:
-  type: "hybrid"
-  n_smart_inits: 1
-  n_random_inits: 0
-  min_candidate_distance: 0.15  # tau for filtering distinct candidates
-  n_max_candidates: 1           # Only 1 candidate (diversity bonus = 0.1)
-  max_iter: 3                   # L-BFGS-B iterations (3 = best within 60 min budget)
-  parallel: false               # Don't parallelize within sample (use sample-level)
-  use_triangulation: true       # Use triangulation init for 1-source (23% better RMSE)
+  type: "robust_fallback"
 
-# Grid settings
+  # CMA-ES parameters
+  sigma0_1src: 0.15         # CMA-ES initial step size for 1-source
+  sigma0_2src: 0.20         # CMA-ES initial step size for 2-source
+  max_fevals_1src: 20       # Function evaluations for 1-source
+  max_fevals_2src: 36       # Function evaluations for 2-source
+
+  # Fallback thresholds - trigger re-optimization if RMSE exceeds
+  threshold_1src: 0.35      # Fallback threshold for 1-source
+  threshold_2src: 0.45      # Fallback threshold for 2-source
+
+  # Candidate generation
+  candidate_pool_size: 10   # Pool of candidates before filtering
+  n_max_candidates: 3       # Max distinct candidates per sample
+
+  # Multi-fidelity settings
+  nx_coarse: 50             # Coarse grid for CMA-ES exploration
+  ny_coarse: 25
+
+  # Refinement
+  refine_maxiter: 3         # Nelder-Mead iterations on top candidates
+  refine_top_n: 2           # Refine top N candidates
+
+  # Early timestep optimization
+  early_fraction: 0.3       # Use 30% of timesteps for position objective
+
+  # Triangulation init
+  use_triangulation: true   # Use physics-based initialization
+
+# Grid settings (fine grid for final evaluation)
 grid:
   nx: 100
   ny: 50
@@ -36,16 +61,16 @@ grid:
 # Optimization bounds
 bounds:
   q_range: [0.5, 2.0]
-  margin: 0.05  # Edge margin for source positions
+  margin: 0.05              # Edge margin for source positions
 
 # Parallelization (for G4dn.2xlarge with 8 vCPUs)
 parallelization:
-  n_workers: 7  # Simulates G4dn.2xlarge (8 vCPUs - 1 for system)
-  backend: "joblib"
+  n_workers: 7              # 8 vCPUs - 1 for system
+  backend: "ProcessPoolExecutor"
 
 # Scoring (from competition rules)
 scoring:
-  lambda_: 0.3
-  tau: 0.2
-  n_max: 3
-  max_rmse_threshold: 1.0  # Discard candidates with RMSE > threshold
+  lambda_: 0.3              # Diversity weight
+  tau: 0.2                  # Dissimilarity threshold
+  n_max: 3                  # Max candidates
+  max_rmse_threshold: 1.0   # Discard candidates with RMSE > threshold
