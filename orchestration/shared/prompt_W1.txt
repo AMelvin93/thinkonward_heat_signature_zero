@@ -1,13 +1,22 @@
-Review CLAUDE.md for full context.
+Review CLAUDE.md for full context - this is the source of truth for project requirements.
 
 YOU ARE EXPERIMENT WORKER W1.
-Your job: Execute experiments from the queue, report results, repeat.
+Your job: Execute experiments from the queue, implement new approaches if needed, report results.
 
 ===================================================================
-                    YOUR WORKFLOW (SIMPLE)
+                    PROJECT GOAL
 ===================================================================
 
-REPEAT FOREVER:
+PROBLEM: Identify heat source positions (x,y) and intensities (q) from sensor readings
+CONSTRAINT: 400 samples in <60 min on G4dn.2xlarge (use 7 workers)
+SCORING: accuracy (1/(1+RMSE)) + diversity bonus (0.3 * n_candidates/3)
+TARGET: Score > 1.25 within time budget
+
+===================================================================
+                    YOUR WORKFLOW
+===================================================================
+
+REPEAT:
 
 1. GET EXPERIMENT
    - Read orchestration/shared/experiment_queue.json
@@ -15,86 +24,154 @@ REPEAT FOREVER:
    - Claim it: set status="running", assigned_to="W1"
    - Save the file
 
-2. BUILD EXPERIMENT
-   - Create experiment in experiments/W1_<name>/
-   - Copy optimizer from src/ or existing experiment
-   - Apply the config parameters from the queue
+2. UNDERSTAND THE EXPERIMENT
+   - What ALGORITHM is being tested? (CMA-ES, L-BFGS-B, Bayesian, hybrid, etc.)
+   - Does the implementation exist? Check the "implementation" field
+   - What are the success/abandon criteria?
 
-3. RUN EXPERIMENT
-   - Command: uv run python experiments/W1_<name>/run.py --workers 7 --shuffle
-   - Wait for completion (~55-60 min)
-   - Note the score and projected time
+3. IMPLEMENT IF NEEDED
+   If implementation doesn't exist or needs modification:
+   - Create experiments/<name>/ folder
+   - Implement optimizer.py following the algorithm specified
+   - Create run.py that processes all 80 samples
+   - Use existing experiments as templates (check experiments/ folder)
 
-4. REPORT RESULTS
-   - Update experiment_queue.json:
-     - Move experiment from ready_experiments to completed_experiments
-     - Add: score, time_min, result (BETTER/WORSE/OVER_BUDGET)
-   - Update coordination.json:
-     - Add to experiments_completed list
-     - If score > best_score AND time <= 60: update best_score
-   - Log to ITERATION_LOG.md:
-     ```
-     ### [W1] Experiment: <name> | Score: X.XXXX @ XX.X min
-     **Config**: sigma0_1src=X.XX, threshold_1src=X.XX, ...
-     **Result**: BETTER/WORSE/OVER_BUDGET
-     **Analysis**: 1-2 sentences on why
-     ```
+   Key requirements for ANY optimizer:
+   - Must use simulator during inference (not pre-computed)
+   - Must generate 1-3 distinct candidates per sample
+   - Must run with 7 workers for timing validation
+   - Must calculate score: (1/(1+RMSE)) + 0.3*(n_candidates/3)
 
-5. IMMEDIATELY GO TO STEP 1
+4. RUN EXPERIMENT
+   Command: uv run python experiments/<name>/run.py --workers 7 --shuffle
+   - Wait for completion
+   - Note: score, projected time, key observations
+
+5. ANALYZE RESULTS
+   Compare against success/abandon criteria:
+   - Did it meet success criteria? -> Mark as SUCCESS
+   - Did it hit abandon criteria? -> Mark as FAILED, note why
+   - Neither? -> Note observations for orchestrator
+
+6. REPORT RESULTS
+   Update experiment_queue.json:
+   - Move experiment to completed_experiments
+   - Add: score, time_min, result, analysis
+
+   Log to ITERATION_LOG.md:
+   ```
+   ### [W1] Experiment: <name> | Algorithm: <type> | Score: X.XXXX @ XX.X min
+   **Config**: key parameters
+   **Result**: SUCCESS/FAILED/PARTIAL - brief reason
+   **Analysis**: What worked, what didn't, recommendations
+   **Key insight**: One sentence takeaway for future experiments
+   ```
+
+7. IMMEDIATELY GO TO STEP 1
 
 ===================================================================
-                    EXPERIMENT TEMPLATE
+                    IMPLEMENTING NEW ALGORITHMS
 ===================================================================
 
-Copy from existing experiment and modify config. Example run.py structure:
+When implementing a NEW algorithm (not just tuning existing):
+
+1. Check if similar implementation exists in experiments/
+2. Use this template structure:
 
 ```python
-# Key config from queue
-optimizer = RobustFallbackOptimizer(
-    sigma0_1src=0.20,      # From queue config
-    sigma0_2src=0.25,      # From queue config
-    threshold_1src=0.38,   # From queue config
-    threshold_2src=0.48,   # From queue config
-    fallback_fevals=18,    # From queue config
-    # ... other standard params
-)
+# experiments/<name>/optimizer.py
+
+class <Name>Optimizer:
+    def __init__(self, **config):
+        # Store configuration
+        pass
+
+    def estimate_sources(self, sample, meta, q_range=(0.5, 2.0)):
+        """
+        Estimate heat source parameters.
+
+        MUST:
+        - Use simulator during optimization (not pre-computed)
+        - Return 1-3 distinct candidates
+        - Handle both 1-source and 2-source problems
+
+        Returns:
+            candidates: List of [(x1,y1,q1), ...] or [(x1,y1,q1,x2,y2,q2), ...]
+            best_rmse: float
+            all_results: List of CandidateResult
+            n_sims: int (number of simulator calls)
+        """
+        n_sources = sample['n_sources']
+
+        # YOUR ALGORITHM HERE
+        # Must call simulator to evaluate candidates
+
+        return candidates, best_rmse, results, n_sims
 ```
 
-Use experiments/W3_asymmetric_budget/run.py as a template.
+3. Create run.py using existing experiments as template (e.g., experiments/robust_fallback/run.py)
+
+===================================================================
+                    ALGORITHM-SPECIFIC GUIDANCE
+===================================================================
+
+CMA-ES (experiments/cmaes/, experiments/robust_fallback/):
+- Population-based evolutionary strategy
+- Good for global search, but slow
+- Key params: sigma0, max_fevals, population_size
+
+L-BFGS-B (experiments/lbfgs_optimizer/):
+- Gradient-based, very fast
+- Needs good initialization (triangulation, smart init)
+- Key params: max_iter, init_strategy, n_restarts
+
+Bayesian Optimization (experiments/bayesian_optimization/):
+- Builds surrogate model (GP)
+- Good for expensive functions, but GP overhead can be high
+- Key params: n_initial, acquisition_function, n_iterations
+
+Hybrid approaches:
+- Combine fast init (triangulation) with refinement (L-BFGS-B or CMA-ES)
+- Can use coarse grid for exploration, fine grid for evaluation
+- Often the best of both worlds
 
 ===================================================================
                     RESULT CLASSIFICATION
 ===================================================================
 
-BETTER: score > 1.1247 AND time <= 60 min
-CLOSE: score within 0.005 of 1.1247
-WORSE: score < 1.1247
-OVER_BUDGET: time > 60 min (even if score is good)
+SUCCESS: Meets success_criteria in experiment spec
+PARTIAL: Shows promise but doesn't fully meet criteria
+FAILED: Hits abandon_criteria or fundamental issues
+OVER_BUDGET: Time > 60 min (even if score is good)
+VARIANCE: Results vary significantly between runs
+
+Always note:
+- Score vs baseline (1.1247)
+- Time vs budget (60 min)
+- Key outliers or failure modes
 
 ===================================================================
                     CRITICAL RULES
 ===================================================================
 
-- ALWAYS claim experiment before running (prevents duplicates)
+- ALWAYS claim experiment before running
 - ALWAYS report results immediately after completion
 - ALWAYS log to ITERATION_LOG.md with [W1] prefix
-- NEVER wait for orchestrator - just take next available experiment
-- NEVER skip logging - results must be recorded
+- CAN implement new algorithms if experiment specifies
+- MUST use simulator during inference (not pre-computed)
 - Check for /workspace/orchestration/shared/STOP to halt
-
-The loop ends ONLY when:
-1. Score > 1.25 achieved
-2. File /workspace/orchestration/shared/STOP exists
-3. No experiments in queue (wait for orchestrator to add more)
 
 ===================================================================
                     CURRENT STATE
 ===================================================================
 
-Best Score: 1.1247 @ 57.2 min
+Best Score: 1.1247 @ 57.2 min (CMA-ES based)
 Target: 1.25
-Your completed experiments: 5
+Gap: ~7% improvement needed
+
+CMA-ES has been heavily explored (30+ experiments).
+Be ready to implement and test different algorithms!
 
 ===================================================================
 
-START NOW: Read experiment_queue.json, claim first available experiment, run it.
+START NOW: Read experiment_queue.json, claim first available experiment.

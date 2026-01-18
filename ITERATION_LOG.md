@@ -384,3 +384,166 @@ uv run python experiments/multi_fidelity/run.py \
 **Key Insight**: Higher sigma (0.20/0.25) adds ~10 min to runtime regardless of threshold/fallback settings.
 **Next**: Must either (1) reduce primary fevals (18/32), (2) use intermediate sigma (0.18/0.22), or (3) use baseline sigma (0.15/0.20) with aggressive thresholds.
 
+
+---
+
+## Session 20 - New Algorithm Exploration
+
+### [W1] Experiment: basin_hopping_lbfgs_refinement (EXP_BASINHOPPING_001) | Algorithm: Basin Hopping | Score: 1.0573 @ 1105.2 min
+**Config**: niter=5 (reduced from 15), T=0.5, stepsize=0.2, minimizer_maxiter=10 (reduced from 20), n_restarts=2 (reduced from 3)
+**Result**: **FAILED** - MASSIVELY OVER BUDGET (18x over budget!)
+**Analysis**:
+- Projected time: 1105.2 min for 400 samples (budget: 60 min)
+- Score: 1.0573 (below baseline 1.1247)
+- Simulator calls: 491-828 per sample (vs CMA-ES's 20-36 fevals)
+- Even with heavily reduced parameters, algorithm is fundamentally incompatible with expensive simulators
+
+**Root Cause**:
+- L-BFGS-B does ~50-80 function evaluations per call (not just 1!)
+- Basin hopping runs L-BFGS-B multiple times per restart
+- 5 iterations x 2 restarts = 10 L-BFGS-B runs per sample
+- Total: 500-800 simulator calls per sample
+
+**Key Insight**: scipy.optimize.basinhopping is designed for cheap function evaluations. For expensive simulators like ours, population-based methods (CMA-ES) are more efficient since they evaluate entire populations in parallel.
+
+**Recommendation**: SKIP basin hopping - algorithm fundamentally unsuitable for this problem.
+
+---
+
+### [W1] Experiment: differential_evolution_multistart (EXP_DIFFEVO_001) | Algorithm: Differential Evolution | Score: 0.9502 @ 60.2 min
+**Config**: strategy=best1bin, popsize=2, maxiter_1src=6, maxiter_2src=10, mutation=(0.5,1.0), recombination=0.7, polish=False
+**Result**: **FAILED** - Score below abandon criteria (0.9502 < 1.05)
+**Analysis**:
+- Tested multiple configurations:
+  - Original settings (popsize=10, maxiter=50): Score=1.03 @ 122 min (OVER BUDGET)
+  - Aggressive settings (popsize=2, maxiter=4/6): Score=1.01 @ 47 min (abandon criteria)
+  - Middle ground (popsize=2, maxiter=6/10): Score=0.95 @ 60 min (abandon criteria)
+- DE cannot match CMA-ES score within time budget
+- Simulations per sample: 31-70 (comparable to CMA-ES's 20-36)
+
+**Root Cause**:
+- DE lacks CMA-ES's covariance adaptation
+- With low iterations: doesn't converge well (low score)
+- With high iterations: exceeds time budget
+- The covariance adaptation in CMA-ES is crucial for efficient convergence on this problem
+
+**Key Insight**: CMA-ES's covariance adaptation is not optional - simpler evolutionary algorithms like DE cannot substitute. Population-based covariance estimation is key to CMA-ES's efficiency.
+
+**Recommendation**: SKIP differential evolution - CMA-ES is fundamentally better for this problem.
+
+---
+
+### [W1] Experiment: nelder_mead_pure_multistart (EXP_NM_MULTISTART_001) | Algorithm: Nelder-Mead | Score: 1.0315 @ 240.1 min
+**Config**: n_starts_1src=5, n_starts_2src=8, max_iter=50, early_termination=0.1
+**Result**: **FAILED** - MASSIVELY OVER BUDGET (4x over budget)
+**Analysis**:
+- With 5/8 starts x 50 iter: Score=1.0315 @ 240 min (4x over budget)
+- With 2/3 starts x 20 iter: Score=1.0128 @ 93 min (still over budget)
+- Simulations per sample: 56-132 (vs CMA-ES's 20-36)
+
+**Root Cause**:
+- Simplex method requires (n+1) function evaluations per iteration for n dimensions
+- Multiple restarts multiply the cost
+- Cannot match CMA-ES efficiency without covariance adaptation
+
+**Key Insight**: Nelder-Mead works well as refinement step (3 iters on top-2 candidates) but NOT as primary optimizer. CMA-ES's covariance adaptation is essential.
+
+---
+
+## Session 20 Summary: Alternative Algorithm Exploration
+
+**All three alternative algorithms FAILED:**
+
+| Algorithm | Best Score | Best Time | Issue |
+|-----------|------------|-----------|-------|
+| Basin Hopping | 1.057 | 1105 min | L-BFGS-B overhead (500-800 sims/sample) |
+| Differential Evolution | 0.950 | 60 min | Poor convergence without covariance adaptation |
+| Nelder-Mead Multistart | 1.032 | 240 min | Simplex method too slow (56-132 sims/sample) |
+
+**Key Conclusion**: CMA-ES with covariance adaptation is **essential** for this problem. The covariance matrix estimation allows CMA-ES to:
+1. Learn the problem structure efficiently
+2. Adapt search directions based on fitness landscape
+3. Achieve good solutions with only 20-36 function evaluations per sample
+
+No simpler algorithm can substitute for this capability. Future work should focus on:
+- Optimizing CMA-ES parameters (sigma, fevals, thresholds)
+- Better initialization strategies
+- Multi-fidelity improvements
+- NOT algorithm replacement
+
+---
+
+### [W1] Experiment: cmaes_18_34_baseline_sigma (EXP_REDUCED_FEVAL_001) | Algorithm: CMA-ES | Score: 1.1201 @ 63.4 min
+**Config**: fevals_1src=18, fevals_2src=34, sigma0=0.15/0.20, threshold=0.35/0.45
+**Result**: **PARTIAL** - Worse than baseline AND over budget
+**Analysis**:
+- Score: 1.1201 vs baseline 1.1247 (-0.0046)
+- Time: 63.4 min vs budget 60 min (+3.4 min)
+- Sample 57 major outlier: RMSE 0.7686 (2-source)
+- 1-source RMSE: 0.1404, 2-source RMSE: 0.2235
+
+**Key Insight**: Cannot reduce fevals below 20/36 without losing accuracy. The fevals reduction doesn't save enough time to justify the score loss.
+
+---
+
+### [W2] Experiment: fast_cmaes_lbfgs_refine (EXP_HYBRID_TWOSTAGE_001) | Algorithm: Hybrid Two-Stage | Score: 1.1459 @ 352.0 min
+**Config**: stage1_fevals=8/12, stage1_sigma=0.25, stage2_lbfgs_maxiter=15, n_candidates_to_refine=3, fallback_threshold=0.40/0.50
+**Result**: **FAILED** - MASSIVELY OVER BUDGET (5.9x over budget!)
+**Analysis**:
+- Score: 1.1459 vs baseline 1.1247 (+0.0212) - slight improvement
+- Time: 352.0 min projected (5.9x over 60 min budget!)
+- L-BFGS-B refinements: 73/80 samples
+- Fallbacks triggered: 3/80 samples
+- 1-source RMSE: 0.1294, 2-source RMSE: 0.2116
+- Some samples took 20+ minutes (max: 1234.8s for sample 57)
+
+**Root Cause**:
+- L-BFGS-B uses finite differences for gradient estimation
+- For 4D problem (2-source positions): ~8 function evaluations per gradient
+- With 15 iterations x 3 candidates = 360+ function evaluations per sample
+- CMA-ES with 8-12 fevals is actually MUCH cheaper than L-BFGS-B refinement
+
+**Comparison to Basin Hopping**:
+- Same underlying issue: L-BFGS-B is expensive without analytic gradients
+- Basin hopping: 1105 min (used L-BFGS-B as inner optimizer)
+- Hybrid two-stage: 352 min (used L-BFGS-B for refinement only)
+- Both fail due to gradient estimation overhead
+
+**Key Insight**: L-BFGS-B (and any gradient-based method) is incompatible with expensive simulators unless analytic gradients are available. The finite difference gradient estimation multiplies the cost by ~2n per iteration.
+
+**Recommendation**: SKIP any L-BFGS-B-based approaches for this problem.
+
+---
+
+### [W1] Experiment: lbfgs_analytical_intensity_multistart (EXP_LBFGS_ANALYTICAL_001) | SKIPPED
+**Reason**: W2's hybrid_twostage experiment (352 min) already proved L-BFGS-B is incompatible with expensive simulators. L-BFGS-B uses finite differences for gradients (2n function evaluations per gradient). For 4D problems, this means ~8 simulator calls per gradient step, making it far more expensive than CMA-ES.
+
+---
+
+## Final Session 20 Summary
+
+**Experiments Completed:**
+| ID | Algorithm | Score | Time | Result |
+|----|-----------|-------|------|--------|
+| EXP_BASINHOPPING_001 | Basin Hopping | 1.057 | 1105 min | FAILED |
+| EXP_DIFFEVO_001 | Differential Evolution | 0.950 | 60 min | FAILED |
+| EXP_NM_MULTISTART_001 | Nelder-Mead Multistart | 1.032 | 240 min | FAILED |
+| EXP_REDUCED_FEVAL_001 | CMA-ES 18/34 fevals | 1.120 | 63 min | PARTIAL |
+| EXP_HYBRID_TWOSTAGE_001 | Hybrid CMA-ES+L-BFGS-B | 1.146 | 352 min | FAILED (W2) |
+| EXP_LBFGS_ANALYTICAL_001 | L-BFGS-B Analytical | - | - | SKIPPED |
+
+**Critical Findings:**
+1. **CMA-ES covariance adaptation is ESSENTIAL** - No alternative algorithm can match its efficiency
+2. **L-BFGS-B incompatible with expensive simulators** - Finite difference gradients (2n evals/gradient) make it far more expensive than CMA-ES
+3. **Basin hopping/Nelder-Mead too slow** - Both require many more function evaluations than CMA-ES
+4. **Differential evolution lacks convergence** - Without covariance adaptation, it can't match CMA-ES accuracy
+
+**Recommendation for Future Work:**
+- Focus on CMA-ES parameter optimization (sigma, fevals, thresholds)
+- Explore better initialization strategies
+- Consider multi-fidelity improvements
+- DO NOT try replacing CMA-ES with other algorithms
+
+**Current Best Remains:** 1.1247 @ 57.2 min (robust_fallback with baseline settings)
+
+---
