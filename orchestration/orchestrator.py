@@ -23,7 +23,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from orchestration.coordinator import Coordinator, format_status_report
-from orchestration.worker_prompts import get_worker_prompt, WORKER_CONFIGS
+# Use v3 generic executor prompts
+from orchestration.worker_prompts_v3 import get_worker_prompt_v3 as get_worker_prompt
 
 
 @dataclass

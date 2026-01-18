@@ -1,5 +1,20 @@
 # Iteration Log - Heat Signature Zero
 
+---
+## Orchestration Model (v3)
+
+**Architecture**: W0 (orchestrator) maintains a prioritized experiment queue. Workers (W1-W4) claim and execute experiments independently via claim-based selection.
+
+**Key Files**:
+- `orchestration/shared/experiment_queue.json` - Prioritized experiment list
+- `orchestration/shared/coordination.json` - Best scores and worker status
+- `orchestration/shared/prompt_W0.txt` - Orchestrator instructions
+- `orchestration/shared/prompt_W1-W4.txt` - Worker instructions
+
+**Key Insight**: ICA achieved best accuracy (1.0422) but at 87 min. The ACCURACY is achievable. The problem is TIME.
+
+---
+
 > **NOTE**: Full history (Sessions 1-14) archived in `ITERATION_LOG_full_backup.md`
 
 ## Current State
@@ -547,3 +562,264 @@ No simpler algorithm can substitute for this capability. Future work should focu
 **Current Best Remains:** 1.1247 @ 57.2 min (robust_fallback with baseline settings)
 
 ---
+
+## Session 21: Coarse Grid Exploration
+
+### [W1] Experiment: cmaes_30x15_coarse_grid (EXP_ULTRACOARSE_001) | Algorithm: CMA-ES Ultra-Coarse | Score: 1.1206 @ 49.9 min
+**Config**: nx_coarse=30, ny_coarse=15, fevals=20/36, sigma0=0.20/0.25, threshold=0.35/0.45
+**Result**: **PARTIAL** - Saved time but lost accuracy
+**Analysis**:
+- Score: 1.1206 vs baseline 1.1247 (-0.0041)
+- Time: 49.9 min vs baseline 57.2 min (-7.3 min)
+- Grid speedup: 2.8x fewer cells (30x15=450 vs 50x25=1250)
+- 1-source RMSE: 0.1849, 2-source RMSE: 0.2442
+
+**Outliers (RMSE > 0.4):**
+| Sample | Sources | RMSE |
+|--------|---------|------|
+| 21 | 1-src | 1.0961 |
+| 57 | 2-src | 0.5912 |
+| 42 | 2-src | 0.5396 |
+| 63 | 2-src | 0.4697 |
+| 50 | 2-src | 0.4619 |
+| 67 | 2-src | 0.4391 |
+| 7 | 1-src | 0.4138 |
+
+**Root Cause**:
+- 30x15 grid is too coarse - PDE solution becomes unreliable
+- Optimization landscape becomes noisy and misleading
+- CMA-ES converges to wrong positions because coarse grid objective differs from fine grid
+- Sample 21 is a particularly bad failure case (RMSE > 1.0)
+
+**Key Insight**: 50x25 is the MINIMUM viable coarse grid for this problem. Further reduction (30x15) makes the optimization landscape unreliable. Time savings (7.3 min) don't justify the accuracy loss.
+
+**Conclusion**: Ultra-coarse grid approach ABANDONED. Must stay with 50x25 coarse grid.
+
+---
+
+### [W1] Experiment: sigma_schedule_exploration_to_refinement (EXP_ADAPTIVE_SIGMA_001) | Algorithm: CMA-ES Adaptive Sigma | Score: 1.1396 @ 68.3 min
+**Config**: sigma0=0.30/0.35 (2x baseline), fevals=20/36, threshold=0.35/0.45
+**Result**: **FAILED (OVER BUDGET)** - BEST SCORE EVER but 8.3 min over budget
+
+**Analysis**:
+- Score: **1.1396** (NEW BEST) vs baseline 1.1247 (+0.0149)
+- Time: 68.3 min vs baseline 57.2 min (+11.1 min)
+- 1-source RMSE: 0.1481 (vs baseline 0.1404)
+- 2-source RMSE: 0.2243 (vs baseline 0.2235)
+
+**Outliers (RMSE > 0.4):**
+| Sample | Sources | RMSE |
+|--------|---------|------|
+| 57 | 2-src | 0.8126 |
+| 40 | 2-src | 0.4410 |
+| 63 | 2-src | 0.4068 |
+| 65 | 2-src | 0.4025 |
+
+**Sigma-Time Relationship:**
+| Sigma | Score | Time |
+|-------|-------|------|
+| 0.15/0.20 (baseline) | 1.1247 | 57.2 min |
+| 0.20/0.25 | 1.1362 | 69.2 min |
+| 0.30/0.35 | 1.1396 | 68.3 min |
+
+**Key Finding**:
+- Higher sigma ALWAYS improves accuracy but proportionally increases time
+- CMA-ES internal sigma adaptation does NOT give "free" exploration
+- The hypothesis that CMA-ES would adapt down quickly was WRONG
+- Time cost is fixed: ~10-11 min per sigma increment regardless of starting point
+
+**Key Insight**: The sigma-time trade-off is fundamental to CMA-ES. There is no way to get higher sigma exploration benefits without paying the time cost. We cannot beat baseline 1.1247 @ 57.2 min within budget.
+
+**Conclusion**: Adaptive sigma approach ABANDONED. CMA-ES parameter tuning is EXHAUSTED.
+
+---
+
+### [W2] Experiment: sample_57_specific_handling (EXP_OUTLIER_FOCUS_001) | Algorithm: CMA-ES Outlier Handling | Score: 1.1167 @ 68.2 min
+**Config**: base_fevals=20/36, hard_sample_extra_fevals=10, hard_threshold=0.4 (initial RMSE), sigma=0.15/0.20, fallback_threshold=0.35/0.45
+**Result**: **FAILED** - OVER BUDGET (+8.2 min) AND worse score (-0.008)
+
+**Analysis**:
+- Score: 1.1167 vs baseline 1.1247 (-0.0080) - worse than baseline
+- Time: 68.2 min projected (13.7% over 60 min budget)
+- Hard samples detected: 51/80 (63.8%) - threshold too aggressive
+- Hard samples improved (RMSE < 0.4): 44/51
+- Hard samples still bad (RMSE >= 0.4): 7/51
+- High RMSE outliers: Sample 63 (0.6066), Sample 67 (0.5814), Sample 57 (0.5732), Sample 50 (0.5123)
+
+**Root Cause**:
+1. Initial RMSE threshold of 0.4 flagged 64% of samples as "hard"
+2. Quick initial evaluation (2-4 sims) adds overhead without benefit
+3. Extra 10 fevals per hard sample adds massive time overhead
+4. Hard samples often remain hard even with extra fevals
+5. Sample 57 still has RMSE 0.5732 despite extra fevals + fallback triggered
+
+**Key Finding**:
+- Initial RMSE is a POOR predictor of optimization difficulty
+- The problem with hard samples is not feval budget, but initialization quality
+- Extra fevals don't help if CMA-ES starts in a bad basin
+
+**Why Sample 57 Keeps Failing**:
+- This 2-source sample has sources that are close together or aligned in a way that confuses triangulation
+- Neither triangulation nor smart init provides a good starting point
+- CMA-ES gets stuck in local minima regardless of feval budget
+
+**Key Insight**: Hard samples need better initialization strategies (e.g., multiple random restarts, physics-informed init), not more function evaluations. The initial guess quality matters more than the search budget.
+
+**Recommendation**: Focus on initialization quality, not adaptive feval budgets.
+
+---
+
+### [W2] Experiment: targeted_2src_sigma_v1 | Algorithm: CMA-ES Targeted 2-Source | Score: 1.1236 @ 68.2 min
+**Config**: 1-src (sigma=0.15, fevals=20), 2-src (sigma=0.25, fevals=36)
+**Result**: **PARTIAL** - Improved 2-src RMSE but OVER BUDGET
+
+**Analysis**:
+- Score: 1.1236 vs baseline 1.1247 (-0.0011)
+- Time: 68.2 min projected (OVER BUDGET by 8.2 min)
+- 1-source RMSE: 0.1434 (similar to baseline 0.1397)
+- 2-source RMSE: 0.2183 (IMPROVED vs baseline 0.2337, delta -0.0154!)
+- Sample 57: RMSE 0.4050 (IMPROVED from 0.5732!)
+- Sample 50: RMSE 0.6926 (new major outlier)
+
+**Key Finding**: Higher sigma for 2-source (0.25 vs 0.20) DOES improve 2-source accuracy by ~7%, but adds ~11 min overhead due to CMA-ES exploration.
+
+---
+
+### [W2] Experiment: targeted_2src_sigma_v2 | Algorithm: CMA-ES Targeted 2-Source Reduced | Score: 1.1177 @ 57.5 min
+**Config**: 1-src (sigma=0.15, fevals=18), 2-src (sigma=0.25, fevals=32)
+**Result**: **FAILED** - IN BUDGET but worse score
+
+**Analysis**:
+- Score: 1.1177 vs baseline 1.1247 (-0.0070)
+- Time: 57.5 min projected (IN BUDGET)
+- 1-source RMSE: 0.1469 (slightly worse)
+- 2-source RMSE: 0.2438 (WORSE than baseline 0.2337)
+- Major outliers: Sample 63 (0.7344), Sample 50 (0.5558)
+
+**Key Finding**: Cannot compensate for higher sigma with reduced fevals - accuracy loss exceeds exploration benefit.
+
+**Conclusion from Targeted 2-Source Experiments**:
+- Higher sigma (0.25) for 2-source improves 2-source accuracy (~7%)
+- But time cost (~11 min) cannot be offset by reducing fevals
+- Trade-off is fundamental: exploration vs time
+- Baseline sigma (0.15/0.20) with fevals (20/36) remains optimal in-budget config
+
+---
+
+### [W2] Experiment: pso_optimizer (EXP_PSO_001) | Algorithm: Particle Swarm Optimization | Score: 1.0978 @ 54.5 min
+**Config**: n_particles=8, pso_iterations=8, fevals=20/36, w=0.7, c1=1.5, c2=1.5
+**Result**: **FAILED** - FASTER but significantly WORSE accuracy
+
+**Analysis**:
+- Score: 1.0978 vs baseline 1.1247 (-0.0269)
+- Time: 54.5 min projected (IN BUDGET - 2.7 min faster than CMA-ES!)
+- 1-source RMSE: 0.2771 (MUCH WORSE than CMA-ES 0.1397!)
+- 2-source RMSE: 0.2391 (similar to CMA-ES 0.2337)
+- Major outliers: Sample 21 (RMSE 2.13), Sample 28 (RMSE 1.74), Sample 7 (RMSE 0.71)
+
+**Key Finding**: PSO fails badly on 1-source problems (2D optimization) where CMA-ES succeeds easily. PSO velocity-based dynamics lack the adaptive covariance matrix that makes CMA-ES effective at learning the local landscape geometry.
+
+**Why PSO Fails Here**:
+1. PSO uses fixed cognitive/social coefficients - doesn't adapt to landscape
+2. CMA-ES learns covariance structure of the fitness landscape
+3. For heat source identification, landscape has elongated/curved valleys
+4. CMA-ES can follow these valleys; PSO bounces around inefficiently
+
+**Conclusion**: PSO is NOT a viable replacement for CMA-ES. While faster, the accuracy loss is unacceptable. CMA-ES's covariance adaptation is essential for this problem.
+
+---
+
+### [W1] Experiment: neural_network_surrogate_prefilter (EXP_SURROGATE_NN_001) | Algorithm: Surrogate NN Pre-filter | Score: 1.1203 @ 75.6 min
+**Config**: MLP surrogate (64-32 hidden), filter_ratio=50%, online learning per worker
+**Result**: **FAILED** - SLOWER and no filtering occurred
+
+**Analysis**:
+- Score: 1.1203 vs baseline 1.1247 (-0.0044)
+- Time: 75.6 min projected (OVER BUDGET by 15.6 min!)
+- Total sims: 9242, Filtered: 0 (0.0%)
+- 1-source RMSE: 0.1539 (similar to baseline)
+- 2-source RMSE: 0.2092 (similar to baseline)
+
+**Why Filtering Never Activated**:
+1. Each worker process has its own optimizer instance
+2. Training data collected per sample is too sparse (~20-50 samples/run)
+3. Need 20+ samples per source type (1-src vs 2-src) to train
+4. Parallel processing means each worker only sees fraction of total samples
+5. Surrogate never accumulated enough data to become useful
+
+**Root Cause**:
+- Online learning during parallel processing doesn't work
+- Each worker gets ~11 samples (80/7 workers)
+- Need minimum ~20 training samples per source type
+- Workers don't share training data
+
+**What Would Work Better**:
+1. PRE-TRAIN surrogate on existing CMA-ES run data before deployment
+2. Use CENTRALIZED data collection (not per-worker)
+3. Train on coarse grid RMSE values (cheap to compute)
+4. Pre-compute surrogate from previous experiments' data
+
+**Key Insight**: Surrogate-assisted CMA-ES requires PRE-TRAINING or centralized data sharing. Online learning per-worker is insufficient for parallel execution.
+
+---
+
+### [W2] Experiment: cobyla_refine (EXP_COBYLA_REFINE_001) | Algorithm: COBYLA Trust Region Refinement | Score: 1.1235 @ 88.8 min
+**Config**: COBYLA maxiter=20, rhobeg=0.1, replacing Nelder-Mead refinement
+**Result**: **FAILED** - Better accuracy but MASSIVELY over budget
+
+**Analysis**:
+- Score: 1.1235 vs baseline 1.1247 (-0.0012)
+- Time: 88.8 min projected (31.6 min SLOWER than baseline!)
+- 1-source RMSE: 0.1335 (IMPROVED from 0.1397)
+- 2-source RMSE: 0.2050 (IMPROVED from 0.2337)
+- COBYLA improved: 66/80 samples (82.5%)
+
+**Why COBYLA Fails Here**:
+1. COBYLA builds a linear model at each iteration, requiring n+1 function evaluations per step
+2. With maxiter=20 and 2 candidates to refine, that's ~40+ extra function evaluations
+3. Nelder-Mead with maxiter=3 only adds ~6-12 function evaluations
+4. The accuracy improvement doesn't justify the 55% time increase
+
+**Key Insight**: For this problem, a quick 3-iteration Nelder-Mead refinement is more efficient than COBYLA. The marginal accuracy gain from COBYLA is overwhelmed by its function evaluation cost.
+
+**Recommendation**: Keep Nelder-Mead for refinement. COBYLA would need analytic gradients to be competitive.
+
+---
+
+### [W2] Experiment: fast_ica (EXP_FAST_ICA_001) | Algorithm: Accelerated ICA Decomposition | Score: 1.1046 @ 151.1 min
+**Config**: FastICA max_iter=50, coarse search (50x25), Nelder-Mead refinement, fevals 10/15
+**Result**: **FAILED** - Massively over budget and worse accuracy
+
+**Analysis**:
+- Score: 1.1046 vs baseline 1.1247 (-0.0201)
+- Time: 151.1 min projected (91 min OVER BUDGET!)
+- 1-source RMSE: 0.1202 (good)
+- 2-source RMSE: 0.2188 (okay)
+- ICA best init: 23/48 2-source samples (47.9%)
+- 2 samples had RMSE=inf (errors in refinement)
+
+**Why Fast ICA Failed**:
+1. The coarse-to-fine strategy DOUBLED simulation count instead of reducing it
+2. Each sample runs: CMA-ES on coarse grid + Nelder-Mead refinement on fine grid
+3. Refinement step adds 100+ simulations per sample
+4. Total sims: ~190-200 for 2-source (vs ~70-100 in baseline)
+5. ICA decomposition itself is fast (milliseconds) - NOT the bottleneck
+
+**Critical Misunderstanding**:
+The original ICA experiment's 87 min runtime was NOT from ICA computation. It was from:
+1. Batched transfer learning with history accumulation
+2. Multiple initialization sources being fully optimized
+3. Complex feature extraction and matching
+
+**Key Insight**: The ICA signal decomposition is lightning fast (<10ms). The bottleneck was never the ICA algorithm - it was the optimizer workflow around it. Adding coarse-to-fine approach only made things worse.
+
+**What the Original ICA Got Right**:
+- ICA provides excellent 2-source initialization (47.9% win rate)
+- Position estimates from mixing matrix are physically meaningful
+- Linear superposition principle enables signal separation
+
+**Recommendation**: ICA is valuable as an initialization method but CANNOT be accelerated by changing ICA parameters. The time cost comes from simulation evaluations, not ICA computation. To use ICA within budget:
+1. Use ICA init WITHOUT additional refinement stages
+2. Replace other inits with ICA (not add to them)
+3. Keep existing CMA-ES workflow, just swap triangulation for ICA init
+

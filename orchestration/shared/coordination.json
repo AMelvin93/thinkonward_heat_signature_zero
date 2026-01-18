@@ -1,176 +1,180 @@
 {
-  "best_score": 1.1247,
-  "best_config": {
-    "experiment": "robust_fallback",
-    "threshold_1src": 0.35,
-    "threshold_2src": 0.45,
-    "fallback_fevals": 18,
-    "notes": "Session 17 baseline - still best within time budget"
+  "version": "4.0",
+  "last_updated": "2026-01-18T21:00:00Z",
+  "mode": "EXPLORATION",
+
+  "resume_tracking": {
+    "summaries_analyzed": [],
+    "last_cycle_timestamp": null,
+    "notes": "W0 tracks which SUMMARY.md files have been analyzed to avoid re-processing on resume"
   },
-  "best_worker": null,
-  "best_time_min": 57.2,
-  "target_score": 1.25,
-  "experiments_in_progress": {},
+
+  "best_scores": {
+    "in_budget": {
+      "score": 1.1247,
+      "time_min": 57.2,
+      "experiment": "robust_fallback",
+      "algorithm": "CMA-ES",
+      "date": "2026-01-17"
+    },
+    "best_ever": {
+      "score": 1.1396,
+      "time_min": 68.3,
+      "experiment": "adaptive_sigma",
+      "algorithm": "CMA-ES (sigma=0.30/0.35)",
+      "note": "OVER BUDGET by 8.3 min",
+      "date": "2026-01-18"
+    },
+    "best_accuracy": {
+      "score": 1.0422,
+      "time_min": 87.0,
+      "experiment": "ica_decomposition",
+      "algorithm": "ICA",
+      "note": "OVER BUDGET by 27 min - proves accuracy headroom exists",
+      "date": "2026-01-05"
+    },
+    "target": 1.25,
+    "baseline_to_beat": 1.1247
+  },
+
+  "exploration_progress": {
+    "total_experiments": 48,
+    "experiments_per_family": {
+      "evolutionary_cmaes": 34,
+      "evolutionary_other": 3,
+      "gradient_based": 4,
+      "gradient_free_local": 6,
+      "surrogate": 2,
+      "ensemble": 1,
+      "decomposition": 2,
+      "meta_learning": 0
+    },
+    "families_exhausted": ["evolutionary_cmaes", "gradient_based", "evolutionary_other"],
+    "families_to_explore": ["surrogate_lq", "ensemble", "decomposition", "bayesian_opt", "meta_learning"]
+  },
+
+  "experiments_in_progress": {
+    "EXP_ENSEMBLE_001": {
+      "worker": "W1",
+      "started": "2026-01-18T16:18:00Z",
+      "family": "ensemble",
+      "status": "IMPLEMENTATION COMPLETE (707 lines) - experiments/ensemble_voting/"
+    },
+    "EXP_FAST_ICA_001": {
+      "worker": "W1",
+      "started": "2026-01-18T16:20:00Z",
+      "family": "decomposition",
+      "status": "IMPLEMENTATION COMPLETE (787 lines) - experiments/fast_ica/"
+    }
+  },
+
   "experiments_completed": [
     {
-      "name": "W1_threshold_0.34_0.44",
+      "id": "EXP_SURROGATE_NN_001",
       "worker": "W1",
-      "score": 1.1168,
-      "time_min": 81.2,
-      "result": "OVER_BUDGET"
+      "score": 1.1203,
+      "time_min": 75.6,
+      "result": "FAILED",
+      "family": "surrogate",
+      "note": "Online learning doesn't work with parallel processing. Need PRE-TRAINED surrogate."
     },
     {
-      "name": "W1_threshold_0.37_0.48",
-      "worker": "W1",
-      "score": 1.1121,
-      "time_min": 83.3,
-      "result": "OVER_BUDGET"
-    },
-    {
-      "name": "W1_verify_baseline",
-      "worker": "W1",
-      "score": 1.1209,
-      "time_min": 86.8,
-      "result": "PARALLEL_CONTENTION"
-    },
-    {
-      "name": "W1_high_sigma_fallback",
-      "worker": "W1",
-      "score": 1.1244,
-      "time_min": 82.6,
-      "result": "CLOSE_TO_BASELINE",
-      "notes": "sigma 0.20/0.25 + thresholds 0.40/0.50 = BEST W1 run!"
-    },
-    {
-      "name": "W1_very_high_sigma",
-      "worker": "W1",
-      "score": 1.1148,
-      "time_min": 72.7,
-      "result": "LOW_SCORE",
-      "notes": "sigma 0.25/0.30 + thresholds 0.45/0.55 = too high, missed outliers"
-    },
-    {
-      "name": "W3_asymmetric_budget",
-      "worker": "W3",
-      "score": 1.1210,
-      "time_min": 85.5,
-      "result": "OVER_BUDGET"
-    },
-    {
-      "name": "W3_lean_budget",
-      "worker": "W3",
-      "score": 1.1191,
-      "time_min": 89.0,
-      "result": "OVER_BUDGET"
-    },
-    {
-      "name": "W3_no_fallback",
-      "worker": "W3",
-      "score": 1.1067,
-      "time_min": 79.1,
-      "result": "LOW_SCORE"
-    },
-    {
-      "name": "W3_conservative_threshold",
-      "worker": "W3",
-      "score": 1.1133,
-      "time_min": 74.5,
-      "result": "LOW_SCORE"
-    },
-    {
-      "name": "W1_sigma_sweet_spot",
-      "worker": "W1",
-      "score": 1.1330,
-      "time_min": 68.1,
-      "result": "OVER_BUDGET",
-      "notes": "BEST SCORE EVER! sigma 0.20/0.25 + thresholds 0.38/0.48. Only 2 outliers (34, 57). Sample 51 improved to 0.2488."
-    },
-    {
-      "name": "W2_sigma_baseline_thresh",
+      "id": "EXP_COBYLA_REFINE_001",
       "worker": "W2",
-      "score": 1.1362,
-      "time_min": 69.2,
-      "result": "OVER_BUDGET",
-      "notes": "NEW BEST SCORE EVER! sigma 0.20/0.25 + thresholds 0.35/0.45. Only 2 fallbacks (21, 63). Beats EXP001!"
+      "score": 1.1235,
+      "time_min": 88.8,
+      "result": "FAILED",
+      "family": "gradient_free_local",
+      "note": "COBYLA better accuracy but 55% slower. NM is more efficient for refinement."
     },
     {
-      "name": "W1_high_sigma_less_fallback",
-      "worker": "W1",
-      "score": 1.1170,
-      "time_min": 68.1,
-      "result": "WORSE_AND_OVER_BUDGET",
-      "notes": "FAILED! Higher thresholds (0.42/0.52) just shifted outliers (54, 66, 63) - NO time savings! Score dropped to 1.1170."
+      "id": "EXP_PSO_001",
+      "worker": "W2",
+      "score": 1.0978,
+      "time_min": 54.5,
+      "result": "FAILED",
+      "family": "evolutionary_other",
+      "note": "PSO faster but worse. 1-src RMSE 0.2771 vs CMA-ES 0.1397."
     },
     {
-      "name": "W1_sweet_spot_faster_fallback",
-      "worker": "W1",
-      "score": 1.1158,
-      "time_min": 71.0,
-      "result": "WORSE_AND_OVER_BUDGET",
-      "notes": "EXP007: Fewer fallback_fevals (14 vs 18) WORSE in both score (-0.0172 vs EXP001) AND time (+2.9 min). CONFIRMS: don't reduce fallback_fevals!"
-    },
-    {
-      "name": "W1_baseline_sigma_better_thresh",
-      "worker": "W1",
-      "score": 1.1236,
-      "time_min": 70.2,
-      "result": "PARALLEL_CONTENTION",
-      "notes": "EXP009: Same config as baseline, ran 70.2 min due to CPU contention with W2. Score ~= baseline. 0 fallbacks. NEEDS SOLO RE-RUN."
-    },
-    {
-      "name": "W1_very_reduced_primary_fevals",
-      "worker": "W1",
-      "score": 1.1150,
-      "time_min": 65.9,
-      "result": "WORSE_AND_OVER_BUDGET",
-      "notes": "EXP011: Very reduced fevals (16/30) only saved 0.7 min vs EXP008 but lost 0.0123 score. 5 fallbacks. CONFIRMS: aggressive fevals reduction doesn't work."
-    },
-    {
-      "name": "W1_sigma_0.17_0.21",
-      "worker": "W1",
-      "score": 1.1123,
-      "time_min": 69.4,
-      "result": "PARALLEL_CONTENTION",
-      "notes": "EXP013: Score 1.1123 WORSE than baseline. Only 2 fallbacks. BAD SIGMA."
-    },
-    {
-      "name": "W1_sigma_0.165_0.205",
-      "worker": "W1",
-      "score": 1.1050,
-      "time_min": 67.8,
-      "result": "WORSE_AND_OVER_BUDGET",
-      "notes": "EXP016: BAD SIGMA ZONE! Score 1.1050 is worst. 5 fallbacks."
-    },
-    {
-      "name": "W1_sigma_0.18_0.22_reverify",
-      "worker": "W1",
-      "score": 1.1271,
-      "time_min": 67.7,
-      "result": "OVER_BUDGET_BUT_BEATS_BASELINE",
-      "notes": "EXP018: Re-verification of EXP010. Score 1.1271 (+0.0024 vs baseline) but 67.7 min over budget. 3 fallbacks. Better than EXP016 (sample 50: 0.2971 vs 0.9120)."
+      "id": "CMAES_TUNING_BATCH",
+      "worker": "ALL",
+      "score": 1.1247,
+      "time_min": 57.2,
+      "result": "EXHAUSTED",
+      "family": "evolutionary_cmaes",
+      "note": "32+ experiments. Best in-budget: 1.1247."
     }
   ],
+
   "workers": {
     "W1": {
-      "focus": "threshold_and_sigma_tuning",
-      "status": "running",
-      "current_experiment": "EXP020_sigma_0.185_0.225",
-      "experiments_run": 13
+      "status": "active",
+      "current_experiment": "EXP_ENSEMBLE_001 + EXP_FAST_ICA_001",
+      "last_completed": "EXP_SURROGATE_NN_001",
+      "directive": "RUN both ensemble_voting and fast_ica tests"
     },
     "W2": {
-      "focus": "init_strategies_and_refinement",
-      "status": "running",
-      "current_experiment": "EXP019_sigma_0.18_0.22_higher_threshold",
-      "experiments_run": 1
+      "status": "idle",
+      "current_experiment": null,
+      "last_completed": "EXP_COBYLA_REFINE_001",
+      "directive": "HIGH PRIORITY: Implement lq-CMA-ES using pycma's built-in cma.fmin_lq_surr (linear-quadratic surrogate). This is a LOW-HANGING FRUIT that could give 2-6x speedup."
+    },
+    "W3": {
+      "status": "idle",
+      "current_experiment": null,
+      "last_completed": null,
+      "directive": "Implement Bayesian Optimization using scikit-optimize (skopt) as alternative to CMA-ES. Use GP surrogate with EI acquisition. Compare on 4-6 parameter space."
+    },
+    "W4": {
+      "status": "idle",
+      "current_experiment": null,
+      "last_completed": null,
+      "directive": "Implement multi-fidelity optimization with proper grid ratios: 25x12 (coarse) -> 50x25 (medium) -> 100x50 (fine). Literature suggests 4:1 cell ratio gives 5-10x speedup."
     }
   },
+
   "research_findings": [
-    "SIGMA MAP: 0.15=1.1247(baseline), 0.16-0.175=BAD ZONE, 0.18=1.1271-1.1337(GOOD), 0.20=1.1362(BEST)",
-    "EXP018 re-verification: sigma 0.18/0.22 gives 1.1271 @ 67.7 min (beats baseline +0.0024 but over budget)",
-    "EXP010 original: 1.1337 @ 63.5 min - EXP018 difference may be due to contention or variance",
-    "CRITICAL: Sigma range 0.16-0.175 is a BAD ZONE - ALL experiments WORSE than baseline!",
-    "NO MIDDLE GROUND: Cannot improve score while staying in budget by tuning sigma alone",
-    "TIMING: All parallel experiments show ~67-70 min timing due to contention"
+    "CMA-ES covariance adaptation is ESSENTIAL - no algorithm replacement works",
+    "PSO FAILED: faster but terrible 1-src accuracy - lacks covariance adaptation",
+    "COBYLA FAILED: better accuracy but 55% slower than Nelder-Mead refinement",
+    "SURROGATE NN FAILED: Online learning doesn't work with parallel processing",
+    "Sigma-time tradeoff is FUNDAMENTAL - no free lunch",
+    "L-BFGS-B makes gradient methods 10-50x more expensive (finite differences)",
+    "------- NEW FROM W0 RESEARCH SESSION 2026-01-18 -------",
+    "DISCOVERY: pycma has BUILT-IN lq-CMA-ES (cma.fmin_lq_surr) - global quadratic surrogate",
+    "Literature shows lq-CMA-ES achieves 2-6x speedup on benchmark functions",
+    "Quadratic surrogate is only used when rank correlation is high (adaptive)",
+    "DISCOVERY: POD (Proper Orthogonal Decomposition) can speed up simulations 70-100x",
+    "POD builds basis functions from snapshots, reduces DOFs while preserving accuracy",
+    "Paper: POD-based inverse algorithms 'more than 83 times faster than CFD'",
+    "DISCOVERY: Adjoint method enables O(1) gradient computation regardless of parameters",
+    "This could make L-BFGS-B viable - but requires implementing adjoint solver (complex)",
+    "DISCOVERY: Multi-fidelity with 4:1 cell ratio gives 5-10x model time speedup",
+    "Best practice: 10^3 coarse cells vs 10^4 fine cells for thermal problems",
+    "Our grid: 100x50=5000 cells, optimal coarse: 25x12=300 cells (17x fewer)",
+    "PRIORITY ORDER: (1) lq-CMA-ES (easiest), (2) multi-fidelity, (3) Bayesian opt, (4) POD",
+    "------- NEW FROM W0 RESEARCH CYCLE 2 -------",
+    "DISCOVERY: Warm Starting CMA-ES (WS-CMA-ES) from AAAI 2021",
+    "WS-CMA-ES transfers prior knowledge through CMA-ES initialization",
+    "Implementation available at CyberAgentAILab/cmaes Python library",
+    "Uses get_warm_start_mgd() to estimate promising distribution from source tasks",
+    "Could DRAMATICALLY accelerate transfer learning experiment!",
+    "DISCOVERY: Fast source count estimation is possible",
+    "Simple peak detection on thermal images can estimate 1 vs 2 sources",
+    "scipy.ndimage.maximum_filter or similar - count peaks above threshold",
+    "Could save time by NOT running 2-source optimizer on 1-source samples",
+    "ThermoMesh+ThermoNet achieves 99% source localization accuracy with ML",
+    "INSIGHT: Currently we may be wasting time trying 2-source on 1-source samples"
   ],
-  "notes": "Session 19: EXP018 confirms sigma 0.18/0.22 beats baseline but is over budget. Testing sigma 0.185/0.225 to explore score-time tradeoff."
+
+  "research_sources": [
+    "https://github.com/CMA-ES/pycma - pycma with lq-CMA-ES support",
+    "https://dl.acm.org/doi/10.1145/3321707.3321842 - Global surrogate assisted CMA-ES",
+    "https://www.researchgate.net/publication/228434549 - POD for inverse problems",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0045782521001468 - Adjoint method tutorial",
+    "https://www.frontiersin.org/articles/10.3389/fams.2022.1076296 - Bayesian optimization for expensive black-box"
+  ],
+
+  "notes": "V3.2 W0 RESEARCH CYCLE: Found 4 promising new approaches from literature. pycma's lq-CMA-ES is lowest-hanging fruit (built-in, 2-6x speedup potential). Also added Bayesian optimization and multi-fidelity experiments."
 }

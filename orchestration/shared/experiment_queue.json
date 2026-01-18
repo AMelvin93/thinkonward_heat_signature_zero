@@ -1,357 +1,256 @@
 {
-  "last_updated": "2026-01-18T12:00:00Z",
-  "updated_by": "W0_RESEARCH_ORCHESTRATOR",
-  "notes": "Comprehensive multi-algorithm exploration. CMA-ES exhausted after 32+ experiments. Time to try fundamentally different approaches.",
+  "version": "3.3",
+  "last_updated": "2026-01-18T21:15:00Z",
+  "notes": "W0 CYCLE 2: Added 2 more experiments from research - Fast Source Detection and Warm-Start CMA-ES. Total 8 available experiments.",
 
-  "current_best": {
-    "score": 1.1247,
-    "time_min": 57.2,
-    "algorithm": "cmaes_robust_fallback",
-    "config": "threshold_1src=0.35, threshold_2src=0.45, sigma=0.15/0.20, fevals=20/36",
-    "run_date": "2026-01-17"
-  },
-
-  "best_ever": {
-    "score": 1.1362,
-    "time_min": 69.2,
-    "algorithm": "cmaes_high_sigma",
-    "config": "sigma=0.20/0.25, threshold=0.35/0.45",
-    "note": "OVER BUDGET by 9.2 min - proves headroom exists",
-    "run_date": "2026-01-17"
-  },
-
-  "target": {
-    "score": 1.25,
-    "time_max_min": 60,
-    "gap_from_current": 0.1253,
-    "gap_percentage": "10.1%"
-  },
-
-  "leaderboard_context": {
-    "our_position": 8,
-    "top_5_threshold": 1.1533,
-    "gap_to_top_5": 0.0286,
-    "top_2_threshold": 1.2265,
-    "gap_to_top_2": 0.1018
-  },
-
-  "approach_status": {
-    "cmaes_multifidelity": {
-      "experiments_run": 32,
-      "best_score": 1.1362,
-      "best_time_min": 69.2,
-      "in_budget_best": 1.1247,
-      "status": "EXHAUSTED",
-      "key_findings": [
-        "Higher sigma (0.20/0.25) improves score by +0.0115 but adds ~10 min",
-        "Threshold tuning has diminishing returns",
-        "~68 min runtime is from PRIMARY optimization, NOT fallbacks",
-        "Cannot beat baseline within budget - fundamental tradeoff"
-      ],
-      "recommendation": "MOVE ON - try fundamentally different algorithms"
-    },
-    "lbfgs_multistart": {
-      "experiments_run": 5,
-      "best_score": 0.77,
-      "status": "ABANDONED",
-      "key_findings": [
-        "Gets stuck in local minima for 2-source problems",
-        "Fast when it works, but unreliable",
-        "Uses finite differences for gradients: 2n evals per gradient",
-        "W2 hybrid test showed 352 min (5.9x over budget) due to gradient overhead",
-        "L-BFGS-B is fundamentally incompatible with expensive simulators without analytic gradients"
-      ],
-      "recommendation": "SKIP - incompatible with expensive simulators"
-    },
-    "nelder_mead": {
-      "experiments_run": 4,
-      "best_score": 1.03,
-      "best_time_min": 240.1,
-      "status": "TESTED_FAILED",
-      "key_findings": [
-        "Used within multi-fidelity as refinement step works well",
-        "As primary optimizer with multistart: too slow and lower accuracy",
-        "With 5/8 starts x 50 iter: 1.03 score @ 240 min (4x over budget)",
-        "With 2/3 starts x 20 iter: 1.01 score @ 93 min (still over budget)",
-        "Simplex method inherently requires more function evaluations than CMA-ES"
-      ],
-      "recommendation": "KEEP as refinement step only, NOT as primary optimizer"
-    },
-    "bayesian_optimization": {
-      "experiments_run": 1,
-      "status": "TESTED_FAILED",
-      "key_findings": [
-        "GP overhead too high for time budget"
-      ],
-      "recommendation": "Skip - overhead doesn't pay off"
-    },
-    "differential_evolution": {
-      "experiments_run": 1,
-      "status": "TESTED_FAILED",
-      "best_score": 0.9502,
-      "best_time_min": 60.2,
-      "potential": "NONE - poor convergence without covariance adaptation",
-      "key_findings": [
-        "With aggressive settings (popsize=2, maxiter=6/10): score=0.95 @ 60 min",
-        "With original settings (popsize=10, maxiter=50): score=1.03 @ 122 min (over budget)",
-        "DE lacks CMA-ES's covariance adaptation - converges slower",
-        "Cannot match CMA-ES score within time budget"
-      ],
-      "recommendation": "SKIP - CMA-ES is superior for this problem"
-    },
-    "basin_hopping": {
-      "experiments_run": 1,
-      "status": "TESTED_FAILED",
-      "best_score": 1.0573,
-      "best_time_min": 1105.2,
-      "potential": "NONE - fundamentally too slow",
-      "key_findings": [
-        "L-BFGS-B does ~50-80 function evaluations per call",
-        "Basin hopping does multiple L-BFGS-B runs per restart",
-        "Total: 500-800 simulator calls per sample (vs CMA-ES 20-36)",
-        "Even with reduced params (niter=5, restarts=2): 1105 min projected"
-      ],
-      "recommendation": "SKIP - algorithm incompatible with expensive simulators"
-    },
-    "hybrid_twostage": {
-      "experiments_run": 1,
-      "status": "TESTED_FAILED",
-      "best_score": 1.1459,
-      "best_time_min": 352.0,
-      "potential": "NONE - L-BFGS-B too slow due to gradient estimation",
-      "key_findings": [
-        "L-BFGS-B uses finite differences for gradients: 2n function calls per gradient",
-        "For 4D (2-source): ~8 evals per gradient * 15 iters * 3 candidates = 360+ evals/sample",
-        "CMA-ES with 8-12 fevals is MUCH cheaper than L-BFGS-B refinement",
-        "352 min projected (5.9x over budget) despite slight score improvement (+0.02)",
-        "Same issue as basin_hopping: L-BFGS-B incompatible with expensive simulators"
-      ],
-      "recommendation": "SKIP - L-BFGS-B refinement adds massive overhead without analytic gradients"
-    },
-    "reduced_feval_conservative": {
-      "experiments_run": 3,
-      "best_score": 1.1201,
-      "best_time_min": 63.4,
-      "status": "TESTED_PARTIAL",
-      "key_findings": [
-        "18/32 fevals reduces time but loses ~0.01 score",
-        "18/34 fevals: 1.1201 @ 63.4 min - still over budget and lower score",
-        "Reduced fevals does NOT save time sufficiently",
-        "Sample 57 major outlier (RMSE 0.7686) hurts overall score"
-      ],
-      "recommendation": "Stick with 20/36 baseline fevals"
-    }
-  },
-
-  "ready_experiments": [
+  "experiment_queue": [
     {
-      "id": "EXP_ULTRACOARSE_001",
-      "algorithm": "cmaes_ultracoarse",
-      "name": "cmaes_30x15_coarse_grid",
+      "id": "EXP_LQ_CMAES_001",
       "priority": 1,
+      "family": "surrogate_lq",
       "status": "available",
-      "assigned_to": null,
-      "implementation": {
-        "base": "experiments/multi_fidelity/",
-        "modify": "Use 30x15 coarse grid instead of 50x25"
-      },
-      "config": {
-        "coarse_grid": [30, 15],
-        "fine_grid": [100, 50],
-        "fevals_1src": 20,
-        "fevals_2src": 36,
-        "sigma0_1src": 0.20,
-        "sigma0_2src": 0.25,
-        "threshold_1src": 0.35,
-        "threshold_2src": 0.45
-      },
-      "hypothesis": "Ultra-coarse grid (30x15) is 2.8x faster than current coarse (50x25). If CMA-ES can still converge with noisier objective, total time reduces by ~10+ min, allowing higher sigma within budget.",
-      "success_criteria": "Score >= 1.13 AND time <= 60 min",
-      "abandon_criteria": "Score < 1.08 OR accuracy degradation on fine grid"
+      "name": "lq_cma_es_builtin",
+      "description": "Use pycma's built-in lq-CMA-ES (linear-quadratic surrogate model)",
+      "hypothesis": "Global quadratic surrogate can reduce function evaluations by 2-6x while maintaining accuracy",
+      "research_source": "GECCO 2019 paper + pycma documentation. Shows 2-6x speedup on benchmark functions.",
+      "why_different": "Uses pycma's BUILT-IN surrogate support (cma.fmin_lq_surr), not custom implementation",
+      "implementation": [
+        "1. Replace cma.CMAEvolutionStrategy with cma.fmin_lq_surr or cma.fmin_lq_surr2",
+        "2. Configure: popsize=6-10, maxfevals=20-36 (matching our current budget)",
+        "3. The quadratic model is built from Moore-Penrose pseudoinverse",
+        "4. Surrogate is only used when rank correlation is high (built-in adaptive)",
+        "5. Compare time and accuracy to baseline CMA-ES"
+      ],
+      "success_criteria": "Score >= 1.12 AND time <= 45 min (25% speedup)",
+      "abort_criteria": "Score < 1.08 OR lq-CMA-ES doesn't converge"
     },
     {
-      "id": "EXP_OUTLIER_FOCUS_001",
-      "algorithm": "cmaes_outlier_handling",
-      "name": "sample_57_specific_handling",
+      "id": "EXP_ENSEMBLE_001",
       "priority": 1,
-      "status": "available",
-      "assigned_to": null,
-      "implementation": {
-        "base": "experiments/robust_fallback/",
-        "modify": "Add sample difficulty detection and adaptive fevals"
-      },
-      "config": {
-        "base_fevals_1src": 20,
-        "base_fevals_2src": 36,
-        "hard_sample_extra_fevals": 10,
-        "hard_sample_detection": "initial_rmse > 0.4",
-        "sigma0_1src": 0.15,
-        "sigma0_2src": 0.20,
-        "threshold_1src": 0.35,
-        "threshold_2src": 0.45
-      },
-      "hypothesis": "Sample 57 and similar outliers consistently fail. Detect hard samples early (high initial RMSE) and allocate extra fevals. May improve outliers without slowing easy samples.",
+      "family": "ensemble",
+      "status": "running",
+      "claimed_by": "W1",
+      "started": "2026-01-18T17:00:00Z",
+      "name": "optimizer_ensemble_voting",
+      "description": "Run multiple optimizers in parallel, take best result per sample",
+      "hypothesis": "Different optimizers excel on different samples; ensemble captures best of each",
+      "implementation": [
+        "1. For each sample, run: CMA-ES (20 fevals), Nelder-Mead from multiple inits (10 fevals)",
+        "2. Take candidate with lowest RMSE from all runs",
+        "3. If time permits, do light refinement on winner",
+        "4. Track which optimizer won for which sample type"
+      ],
       "success_criteria": "Score >= 1.13 AND time <= 60 min",
-      "abandon_criteria": "Time > 65 min OR no improvement on outliers"
+      "abort_criteria": "Time > 70 min consistently"
     },
     {
-      "id": "EXP_ADAPTIVE_SIGMA_001",
-      "algorithm": "cmaes_adaptive_sigma",
-      "name": "sigma_schedule_exploration_to_refinement",
+      "id": "EXP_BAYESIAN_OPT_001",
       "priority": 2,
+      "family": "bayesian_opt",
       "status": "available",
-      "assigned_to": null,
-      "implementation": {
-        "base": "experiments/robust_fallback/",
-        "modify": "Start with high sigma for exploration, reduce for refinement"
-      },
-      "config": {
-        "initial_sigma_1src": 0.30,
-        "initial_sigma_2src": 0.35,
-        "final_sigma_1src": 0.10,
-        "final_sigma_2src": 0.15,
-        "sigma_decay": "linear_over_fevals",
-        "fevals_1src": 20,
-        "fevals_2src": 36
-      },
-      "hypothesis": "High sigma early explores broadly, low sigma late refines. May get benefits of high sigma exploration without full time cost.",
-      "success_criteria": "Score >= 1.12 AND time <= 58 min",
-      "abandon_criteria": "Score < 1.10 OR time > 65 min"
+      "name": "bayesian_optimization_gp",
+      "description": "Use Bayesian Optimization with Gaussian Process surrogate as alternative to CMA-ES",
+      "hypothesis": "BO with GP+EI acquisition may be more sample-efficient for 4-6 parameter optimization",
+      "research_source": "Frontiers 2022: 'Bayesian optimization is capable of finding promising solutions for expensive-to-evaluate black box functions'",
+      "why_different": "BO uses explicit uncertainty modeling and acquisition functions (EI), unlike CMA-ES population-based search",
+      "implementation": [
+        "1. Use scikit-optimize (skopt) or GPyOpt for implementation",
+        "2. For 1-source: 4 parameters (x, y, q, n_sources)",
+        "3. For 2-source: 6 parameters (x1, y1, q1, x2, y2, q2)",
+        "4. Acquisition function: Expected Improvement (EI)",
+        "5. Initial samples: 5-10 random, then BO for 15-25 iterations",
+        "6. Compare to CMA-ES on same budget"
+      ],
+      "success_criteria": "Score >= 1.12 AND time <= 55 min",
+      "abort_criteria": "Score < 1.05 OR BO fails to converge"
+    },
+    {
+      "id": "EXP_MULTIFID_OPT_001",
+      "priority": 2,
+      "family": "multi_fidelity",
+      "status": "available",
+      "name": "multi_fidelity_proper_ratio",
+      "description": "Multi-fidelity optimization with literature-recommended grid ratios",
+      "hypothesis": "4:1 cell ratio between fidelity levels gives 5-10x speedup per level",
+      "research_source": "Literature: 'coarse mesh 10^3 cells vs fine mesh 10^4 nodes gives model time ratio of 5-10x'",
+      "why_different": "Our current multi-fidelity uses 30x15 which may be too coarse. Use 25x12 -> 50x25 -> 100x50 pyramid.",
+      "implementation": [
+        "1. Level 1 (coarse): 25x12 grid = 300 cells (17x faster than fine)",
+        "2. Level 2 (medium): 50x25 grid = 1250 cells (4x faster than fine)",
+        "3. Level 3 (fine): 100x50 grid = 5000 cells (baseline)",
+        "4. CMA-ES on coarse for 5-10 generations",
+        "5. Transfer top 50% to medium for 3-5 generations",
+        "6. Final refinement on fine grid",
+        "7. Test with different transfer ratios"
+      ],
+      "success_criteria": "Score >= 1.11 AND time <= 45 min",
+      "abort_criteria": "Coarse grid accuracy too poor for useful transfer"
+    },
+    {
+      "id": "EXP_TRANSFER_LEARN_001",
+      "priority": 3,
+      "family": "meta_learning",
+      "status": "running",
+      "claimed_by": "W2",
+      "started": "2026-01-18T18:30:00Z",
+      "name": "sample_clustering_transfer",
+      "description": "Cluster similar samples, transfer solutions between them",
+      "hypothesis": "Similar sensor patterns have similar solutions; transfer saves optimization time",
+      "implementation": [
+        "1. Extract features from sensor readings (peak locations, onset times)",
+        "2. Cluster samples using K-means (K=5-10)",
+        "3. Solve one sample per cluster fully",
+        "4. Use cluster centroid solution to initialize others in cluster",
+        "5. Compare to independent optimization"
+      ],
+      "success_criteria": "Same score with 20%+ time reduction",
+      "abort_criteria": "Clustering groups dissimilar samples"
+    },
+    {
+      "id": "EXP_POD_SURROGATE_001",
+      "priority": 3,
+      "family": "surrogate_pod",
+      "status": "available",
+      "name": "pod_reduced_order_model",
+      "description": "Use POD (Proper Orthogonal Decomposition) as fast surrogate for simulation",
+      "hypothesis": "POD-based reduced order model can be 70-100x faster than full simulation",
+      "research_source": "ResearchGate: 'POD-based inverse algorithms more than 83 times faster than CFD'",
+      "why_different": "POD learns optimal basis functions from simulation snapshots, preserving accuracy while reducing DOFs",
+      "implementation": [
+        "1. Collect snapshots from existing CMA-ES runs (T(x,y) fields for various source configs)",
+        "2. Compute SVD/POD to extract dominant modes (5-10 modes should capture 99% energy)",
+        "3. Build POD surrogate: project any new source config to get approximate T field",
+        "4. Use POD for CMA-ES candidate filtering (like NN surrogate but physics-based)",
+        "5. Only full-simulate candidates with low POD RMSE",
+        "6. Compare speed and accuracy"
+      ],
+      "success_criteria": "Score >= 1.12 AND time <= 40 min (40% speedup)",
+      "abort_criteria": "POD fails to capture 2-source thermal fields accurately",
+      "complexity": "HIGH - requires collecting and processing snapshot data"
+    },
+    {
+      "id": "EXP_FAST_SOURCE_DETECT_001",
+      "priority": 2,
+      "family": "preprocessing",
+      "status": "available",
+      "name": "fast_source_count_detection",
+      "description": "Fast detection of 1-source vs 2-source BEFORE optimization",
+      "hypothesis": "Simple peak detection on thermal images can determine n_sources, saving time by not running 2-src optimizer on 1-src samples",
+      "research_source": "W0 Research Cycle 2: Peak detection in thermal images, ThermoMesh 99% accuracy",
+      "why_different": "Currently we may waste time trying 2-source optimization on 1-source samples. Pre-detect and route.",
+      "implementation": [
+        "1. Use scipy.ndimage.maximum_filter on observed temperature field",
+        "2. Find local maxima above threshold (e.g., 0.1 above baseline)",
+        "3. Count distinct peaks - if 1 peak, likely 1-source; if 2+, likely 2-source",
+        "4. Route sample to appropriate optimizer (1-src: 4D, 2-src: 6D)",
+        "5. Measure detection accuracy and time savings"
+      ],
+      "success_criteria": ">=95% detection accuracy AND 10%+ time reduction",
+      "abort_criteria": "Detection accuracy <90%"
+    },
+    {
+      "id": "EXP_WS_CMAES_001",
+      "priority": 2,
+      "family": "meta_learning",
+      "status": "available",
+      "name": "warm_start_cmaes",
+      "description": "Use CyberAgentAILab's WS-CMA-ES to transfer solutions between similar samples",
+      "hypothesis": "Warm starting from similar samples reduces CMA-ES adaptation phase, speeding up convergence",
+      "research_source": "AAAI 2021 'Warm Starting CMA-ES for Hyperparameter Optimization' by Nomura et al.",
+      "why_different": "Uses formal warm-start method with get_warm_start_mgd() instead of ad-hoc initialization",
+      "implementation": [
+        "1. Install cmaes library (pip install cmaes) - different from pycma",
+        "2. For first N samples: run standard CMA-ES, collect (params, fitness) history",
+        "3. For subsequent samples: use get_warm_start_mgd() to estimate initial distribution",
+        "4. Pass mean, sigma, covariance to CMA optimizer",
+        "5. Track convergence speed improvement"
+      ],
+      "success_criteria": "Same score with 20%+ time reduction OR better score in same time",
+      "abort_criteria": "Warm start causes divergence or negative transfer"
+    },
+    {
+      "id": "EXP_COARSE_SURROGATE_001",
+      "priority": 4,
+      "family": "surrogate",
+      "status": "available",
+      "name": "coarse_grid_as_surrogate",
+      "description": "Use 40x20 coarse grid as cheap surrogate for candidate filtering (not 30x15 which failed)",
+      "hypothesis": "40x20 grid is 6x faster than 100x50; use to filter before fine evaluation",
+      "implementation": [
+        "1. For each CMA-ES generation: evaluate all candidates on 40x20 grid",
+        "2. Filter to top 50% by coarse RMSE",
+        "3. Evaluate filtered candidates on 50x25 grid",
+        "4. Use 50x25 results for CMA-ES update",
+        "5. Final evaluation on 100x50"
+      ],
+      "success_criteria": "Score >= 1.11 AND time <= 50 min",
+      "abort_criteria": "Coarse filtering removes good candidates consistently"
+    },
+    {
+      "id": "EXP_SURROGATE_NN_001",
+      "priority": 99,
+      "family": "surrogate",
+      "status": "completed",
+      "result": "FAILED - Online learning doesn't work with parallel processing",
+      "score": 1.1203,
+      "time_min": 75.6,
+      "worker": "W1",
+      "name": "neural_network_surrogate_prefilter",
+      "description": "Train small NN on (params -> RMSE) to pre-filter bad CMA-ES candidates"
+    },
+    {
+      "id": "EXP_COBYLA_REFINE_001",
+      "priority": 99,
+      "family": "gradient_free_local",
+      "status": "completed",
+      "result": "FAILED - 88.8 min over budget, COBYLA uses 20+ extra evals vs NM's 3-6",
+      "score": 1.1235,
+      "time_min": 88.8,
+      "worker": "W2",
+      "name": "cobyla_trust_region_refinement"
+    },
+    {
+      "id": "EXP_FAST_ICA_001",
+      "priority": 99,
+      "family": "decomposition",
+      "status": "completed",
+      "result": "FAILED - 151.1 min projected (91 min over budget), coarse-to-fine adds overhead",
+      "score": 1.1046,
+      "time_min": 151.1,
+      "worker": "W2",
+      "name": "accelerated_ica_decomposition",
+      "finding": "Coarse-to-fine (50x25 search + Nelder-Mead refinement) adds massive overhead. ICA itself is fast but the extra refinement stage doubles simulation count."
     }
   ],
+
+  "algorithm_families": {
+    "evolutionary_cmaes": "EXHAUSTED - 34 experiments, no more tuning",
+    "evolutionary_other": "PSO failed, may try genetic algorithms",
+    "gradient_based": "ABANDONED - finite differences too slow (adjoint method could change this)",
+    "gradient_free_local": "Nelder-Mead OK for refinement, COBYLA too slow",
+    "surrogate": "Custom NN failed. Try pycma's built-in lq-CMA-ES or POD",
+    "surrogate_lq": "NEW - pycma's built-in linear-quadratic surrogate. LOW-HANGING FRUIT",
+    "surrogate_pod": "NEW - POD-based reduced order model. HIGH potential but complex",
+    "decomposition": "ABANDONED - Fast ICA failed due to refinement overhead",
+    "ensemble": "In progress (W1)",
+    "bayesian_opt": "NEW - Alternative to CMA-ES using GP surrogate",
+    "multi_fidelity": "NEW - Proper grid ratios from literature",
+    "meta_learning": "In progress - transfer learning between similar samples"
+  },
 
   "completed_experiments": [
-    {
-      "id": "CMAES_BATCH",
-      "note": "32+ CMA-ES experiments completed (Sessions 15-19). See ITERATION_LOG.md for details.",
-      "summary": {
-        "best_score": 1.1362,
-        "best_time": 69.2,
-        "in_budget_best": 1.1247,
-        "conclusion": "CMA-ES approach exhausted - higher sigma helps accuracy but exceeds time budget"
-      }
-    },
-    {
-      "id": "EXP_BASINHOPPING_001",
-      "algorithm": "basin_hopping",
-      "name": "basin_hopping_lbfgs_refinement",
-      "run_date": "2026-01-18",
-      "assigned_to": "W1",
-      "result": "FAILED",
-      "score": 1.0573,
-      "time_min": 1105.2,
-      "analysis": "Basin hopping fundamentally too slow - L-BFGS-B does 50-80 fevals per call, totaling 500-800 simulator calls per sample vs CMA-ES's 20-36. Even reduced params (niter=5, restarts=2) projected 1105 min (18x over budget). Algorithm designed for cheap function evaluations, not expensive simulators.",
-      "key_insight": "Scipy basin_hopping incompatible with expensive simulators - stick with population-based methods like CMA-ES"
-    },
-    {
-      "id": "EXP_DIFFEVO_001",
-      "algorithm": "differential_evolution",
-      "name": "differential_evolution_multistart",
-      "run_date": "2026-01-18",
-      "assigned_to": "W1",
-      "result": "FAILED",
-      "score": 0.9502,
-      "time_min": 60.2,
-      "analysis": "DE lacks CMA-ES's covariance adaptation. Tested multiple configs: aggressive (popsize=2, maxiter=6/10) gave 0.95 score @ 60 min (abandon criteria met); original settings gave 1.03 @ 122 min (over budget). Cannot achieve CMA-ES-level accuracy within time budget.",
-      "key_insight": "CMA-ES's covariance adaptation is crucial for convergence on this problem - simpler evolutionary algorithms don't substitute"
-    },
-    {
-      "id": "EXP_NM_MULTISTART_001",
-      "algorithm": "nelder_mead",
-      "name": "nelder_mead_pure_multistart",
-      "run_date": "2026-01-18",
-      "assigned_to": "W1",
-      "result": "FAILED",
-      "score": 1.0315,
-      "time_min": 240.1,
-      "analysis": "Pure Nelder-Mead multistart is too slow. With 5/8 starts x 50 iter: 1.03 @ 240 min (4x over budget). With reduced 2/3 starts x 20 iter: 1.01 @ 93 min (still over budget, worse accuracy). Simplex method requires more function evaluations than CMA-ES per iteration.",
-      "key_insight": "Nelder-Mead works well as refinement step (3 iters on top-2 candidates) but NOT as primary optimizer"
-    },
-    {
-      "id": "EXP_REDUCED_FEVAL_001",
-      "algorithm": "cmaes_reduced_feval",
-      "name": "cmaes_18_34_baseline_sigma",
-      "run_date": "2026-01-18",
-      "assigned_to": "W1",
-      "result": "PARTIAL",
-      "score": 1.1201,
-      "time_min": 63.4,
-      "analysis": "Reduced fevals (18/34) did not improve over baseline. Score dropped to 1.1201 (-0.0046 vs baseline 1.1247) AND time is 63.4 min (still over budget). Sample 57 is major outlier (RMSE 0.7686). Reduced fevals doesn't save enough time and hurts accuracy.",
-      "key_insight": "Cannot reduce fevals below 20/36 without losing both accuracy and time savings"
-    },
-    {
-      "id": "EXP_HYBRID_TWOSTAGE_001",
-      "algorithm": "hybrid_twostage",
-      "name": "fast_cmaes_lbfgs_refine",
-      "run_date": "2026-01-18",
-      "assigned_to": "W2",
-      "result": "FAILED",
-      "score": 1.1459,
-      "time_min": 352.0,
-      "analysis": "Hybrid two-stage is massively over budget (5.9x). L-BFGS-B uses finite differences for gradients requiring 2n function calls per gradient. For 4D (2-source): ~8 evals per gradient * 15 iters * 3 candidates = 360+ evals per sample. CMA-ES with 8-12 fevals is actually MUCH cheaper. Score improved slightly (+0.02) but irrelevant given 352 min projected time.",
-      "key_insight": "L-BFGS-B without analytic gradients is incompatible with expensive simulators - same issue as basin_hopping"
-    }
-  ],
-
-  "research_queue": [
-    {
-      "topic": "Neural network surrogate models",
-      "search_queries": [
-        "neural network surrogate PDE optimization 2025",
-        "fast surrogate model heat equation inverse problem"
-      ],
-      "status": "researched",
-      "priority": "medium",
-      "findings": [
-        "PINNs (Physics-Informed Neural Networks) can provide millisecond predictions",
-        "Transfer learning PINNs reduce forward simulations needed",
-        "Multi-fidelity PINNs combine cheap/expensive evaluations",
-        "BUT: Requires offline training phase - complex implementation",
-        "Would need to pre-train on similar problems, fine-tune at inference"
-      ],
-      "references": [
-        "https://www.sciencedirect.com/science/article/abs/pii/S0735193323000519",
-        "https://www.nature.com/articles/s41598-021-99037-x"
-      ],
-      "recommendation": "HIGH EFFORT - consider only if time permits"
-    },
-    {
-      "topic": "Coarser grid exploration",
-      "status": "proposed",
-      "priority": "high",
-      "note": "30x15 or 25x12 coarse grid might speed up exploration phase without losing accuracy at final evaluation",
-      "hypothesis": "CMA-ES on ultra-coarse grid + fine-grid final evaluation"
-    },
-    {
-      "topic": "Outlier-specific handling",
-      "status": "proposed",
-      "priority": "high",
-      "note": "Sample 57 consistently appears as major outlier across all experiments. May need sample-specific initialization or more fevals."
-    }
-  ],
-
-  "key_insights": {
-    "timing_bottleneck": "Session 19 proved ~68 min runtime is from PRIMARY optimization, not fallbacks. Higher sigma adds ~10 min regardless of threshold settings.",
-    "score_accuracy_tradeoff": "Higher sigma (0.20/0.25) achieves 1.1362 score but exceeds budget. Baseline sigma (0.15/0.20) stays in budget but caps at 1.1247.",
-    "l_bfgs_b_incompatible": "L-BFGS-B without analytic gradients uses finite differences (2n evals per gradient) - incompatible with expensive simulators. Basin-hopping, hybrid two-stage all failed due to this.",
-    "cmaes_essential": "CMA-ES covariance adaptation is ESSENTIAL. Simpler evolutionary algorithms (DE) and simplex methods (Nelder-Mead) cannot match CMA-ES accuracy.",
-    "tested_failed": [
-      "Basin-hopping: 1105 min (18x over budget) - L-BFGS-B gradient overhead",
-      "Hybrid two-stage: 352 min (5.9x over budget) - same L-BFGS-B issue",
-      "Differential evolution: 0.95 score - lacks covariance adaptation",
-      "Nelder-Mead multistart: 240 min (4x over budget) - too many fevals",
-      "Reduced fevals (18/34): 1.12 @ 63 min - worse score, still over budget"
-    ],
-    "remaining_opportunities": [
-      "Ultra-coarse grid (30x15) - faster simulations may allow higher sigma within budget",
-      "Outlier-specific handling - sample 57 consistently fails, needs special treatment",
-      "Adaptive sigma schedule - high sigma early, low sigma late"
-    ],
-    "conclusion": "CMA-ES is the ONLY viable algorithm. Further improvement requires: (1) faster coarse grid, (2) outlier handling, or (3) sigma scheduling."
-  },
-
-  "execution_order": [
-    "EXP_ULTRACOARSE_001 and EXP_OUTLIER_FOCUS_001 in parallel (priority 1)",
-    "EXP_ADAPTIVE_SIGMA_001 if above don't work (priority 2)"
+    "CMAES_TUNING_BATCH",
+    "EXP_PSO_001",
+    "EXP_BASINHOPPING_001",
+    "EXP_DIFFEVO_001",
+    "EXP_NM_MULTISTART_001",
+    "EXP_HYBRID_TWOSTAGE_001",
+    "EXP_ULTRACOARSE_001",
+    "EXP_ADAPTIVE_SIGMA_001",
+    "EXP_OUTLIER_FOCUS_001",
+    "EXP_TARGETED_2SRC_001",
+    "EXP_SURROGATE_NN_001",
+    "EXP_COBYLA_REFINE_001",
+    "EXP_FAST_ICA_001"
   ]
 }

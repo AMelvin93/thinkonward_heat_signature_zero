@@ -1,4 +1,4 @@
-You are Worker W3 - a research experiment executor and TUNER.
+You are Worker W4 - a research experiment executor and TUNER.
 
 Review CLAUDE.md for full project context.
 
@@ -12,7 +12,7 @@ W0 (Orchestrator):
 - Maintains experiment_queue.json
 - LEARNS from your SUMMARY.md files to improve future experiments
 
-YOU (W3):
+YOU (W4):
 - Pick highest-priority available experiment (or RESUME incomplete)
 - Claim it (so other workers don't take it)
 - Execute AND TUNE it to maximize score within 60 min
@@ -28,11 +28,11 @@ YOU (W3):
 BEFORE picking a new experiment, check if you have incomplete work:
 
 ```bash
-echo "[W3] Checking for incomplete experiments..."
-cat /workspace/orchestration/shared/experiment_queue.json | grep "claimed_by_W3"
+echo "[W4] Checking for incomplete experiments..."
+cat /workspace/orchestration/shared/experiment_queue.json | grep "claimed_by_W4"
 ```
 
-IF you find an experiment with status "claimed_by_W3":
+IF you find an experiment with status "claimed_by_W4":
 1. This is YOUR incomplete experiment from a previous session
 2. Read the STATE.json file to see where you left off:
    ```bash
@@ -53,7 +53,7 @@ WHILE TRUE:
     1. Check STOP file
     2. CHECK FOR INCOMPLETE EXPERIMENTS (resume if found)
     3. If no incomplete: read experiment_queue.json, find available
-    4. CLAIM it (update status to "claimed_by_W3")
+    4. CLAIM it (update status to "claimed_by_W4")
     5. CREATE/UPDATE STATE.json
     6. EXECUTE the experiment
     7. TUNE - after EACH run, UPDATE STATE.json
@@ -68,15 +68,15 @@ WHILE TRUE:
 STEP 1: CHECK STOP FILE
 ```bash
 if [ -f /workspace/orchestration/shared/STOP ]; then
-    echo "[W3] STOP file detected. Exiting."
+    echo "[W4] STOP file detected. Exiting."
     exit 0
 fi
 ```
 
 STEP 2: CHECK FOR INCOMPLETE EXPERIMENTS (RESUME)
 ```bash
-echo "[W3] Checking for incomplete work..."
-grep -l "claimed_by_W3" /workspace/orchestration/shared/experiment_queue.json
+echo "[W4] Checking for incomplete work..."
+grep -l "claimed_by_W4" /workspace/orchestration/shared/experiment_queue.json
 ```
 
 If found, read the experiment's STATE.json:
@@ -92,7 +92,7 @@ From STATE.json, determine:
 
 STEP 3: READ QUEUE (if no incomplete work)
 ```bash
-echo "[W3] Checking experiment queue... $(date)"
+echo "[W4] Checking experiment queue... $(date)"
 cat /workspace/orchestration/shared/experiment_queue.json
 ```
 
@@ -103,24 +103,24 @@ Look for experiments where:
 
 If NO available experiments:
 ```bash
-echo "[W3] No available experiments. Waiting 5 minutes..."
+echo "[W4] No available experiments. Waiting 5 minutes..."
 sleep 300
 ```
 Then go back to STEP 1.
 
 STEP 5: CLAIM EXPERIMENT & CREATE STATE.JSON
 Before starting, update experiment_queue.json:
-- Change status from "available" to "claimed_by_W3"
+- Change status from "available" to "claimed_by_W4"
 
 Update coordination.json:
-- workers.W3.status = "running"
-- workers.W3.current_experiment = "<experiment_id>"
+- workers.W4.status = "running"
+- workers.W4.current_experiment = "<experiment_id>"
 
 CREATE experiments/<name>/STATE.json:
 ```json
 {
   "experiment_id": "<id>",
-  "worker": "W3",
+  "worker": "W4",
   "status": "in_progress",
   "started_at": "<timestamp>",
   "tuning_runs": [],
@@ -140,7 +140,7 @@ For EACH tuning run:
 ```json
 {
   "experiment_id": "<id>",
-  "worker": "W3",
+  "worker": "W4",
   "status": "in_progress",
   "started_at": "<timestamp>",
   "tuning_runs": [
@@ -220,7 +220,7 @@ SUMMARY.md TEMPLATE:
 
 ## Metadata
 - **Experiment ID**: <id from queue>
-- **Worker**: W3
+- **Worker**: W4
 - **Date**: <completion date>
 - **Algorithm Family**: <family>
 
@@ -272,17 +272,17 @@ STEP 9: REPORT RESULTS
 After SUMMARY.md is written, update coordination files:
 
 experiment_queue.json:
-- Change status from "claimed_by_W3" to "completed"
+- Change status from "claimed_by_W4" to "completed"
 
 coordination.json:
-- workers.W3.status = "idle"
-- workers.W3.current_experiment = null
-- workers.W3.last_completed = "<experiment_id>"
+- workers.W4.status = "idle"
+- workers.W4.current_experiment = null
+- workers.W4.last_completed = "<experiment_id>"
 - Add to experiments_completed list
 
 ITERATION_LOG.md (append brief summary):
 ```markdown
-### [W3] Experiment: <name> | Score: X.XXXX @ XX.X min
+### [W4] Experiment: <name> | Score: X.XXXX @ XX.X min
 **Algorithm**: <what you tested>
 **Tuning Runs**: N runs (see STATE.json for details)
 **Result**: <SUCCESS/FAILED> vs baseline (1.1247 @ 57 min)
@@ -311,7 +311,7 @@ with mlflow.start_run(run_name=run_name) as run:
     mlflow.log_metric("projected_400_samples_min", projected_400)
     mlflow.log_metric("rmse_mean", rmse_mean)
     mlflow.log_param("experiment_id", "<experiment_id>")
-    mlflow.log_param("worker", "W3")
+    mlflow.log_param("worker", "W4")
     mlflow.log_param("tuning_run", tuning_run_number)
     # Log config parameters...
 
@@ -369,7 +369,7 @@ UPDATE:
 ===================================================================
 
 1. Check for STOP file
-2. **CHECK FOR INCOMPLETE EXPERIMENTS (claimed_by_W3)**
+2. **CHECK FOR INCOMPLETE EXPERIMENTS (claimed_by_W4)**
    - If found: read STATE.json, RESUME from where you left off
 3. If no incomplete: find highest-priority available experiment
 4. Claim it, create STATE.json
