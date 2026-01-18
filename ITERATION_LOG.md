@@ -311,3 +311,76 @@ uv run python experiments/multi_fidelity/run.py \
 **Analysis**: 3 samples with RMSE>0.5 (63: 0.64, 34: 0.54, 51: 0.52). 2-src RMSE increased from 0.23 to 0.28 compared to high_sigma_fallback. The 0.45/0.55 thresholds are too lenient.
 **Next**: Try sigma 0.22/0.27 with thresholds 0.38/0.48 - intermediate between the two runs.
 
+---
+
+## Session 19 - Distributed Optimization Continued (2026-01-17)
+
+### [W1] Experiment: sigma_sweet_spot (EXP001) | Score: 1.1330 @ 68.1 min
+**Config**: sigma0_1src=0.20, sigma0_2src=0.25, threshold_1src=0.38, threshold_2src=0.48, fallback_fevals=18
+**Result**: OVER_BUDGET - but **BEST SCORE EVER** (1.1330 vs 1.1247 baseline)!
+**Analysis**:
+- Score improved by +0.0083 to 1.1330 - highest score ever achieved
+- Only 2 high RMSE outliers (samples 34: 0.5969, 57: 0.5589) vs usual 4
+- Sample 51 DRAMATICALLY improved: 0.2488 (vs 0.52+ in previous runs)
+- Sample 63 improved: 0.4432 (no longer an outlier)
+- Higher sigma + intermediate thresholds provide better exploration
+- Fallbacks triggered for problematic samples but too expensive for time budget
+- 1-source RMSE: 0.1457, 2-source RMSE: 0.2240 (both improved)
+
+**Key Insight**: Higher sigma (0.20/0.25) + intermediate thresholds (0.38/0.48) CAN beat baseline score. Challenge is fitting in 60 min budget.
+**Next**: EXP005 - try higher thresholds (0.42/0.52) with fewer fallback_fevals (14) to reduce time while keeping sigma benefits.
+
+### [W2] Experiment: sigma_with_baseline_threshold (EXP002) | Score: 1.1362 @ 69.2 min
+**Config**: sigma0_1src=0.20, sigma0_2src=0.25, threshold_1src=0.35, threshold_2src=0.45, fallback_fevals=18
+**Result**: OVER_BUDGET - but **NEW BEST SCORE** (1.1362 beats EXP001's 1.1330)!
+**Analysis**:
+- Score improved by +0.0115 vs baseline to 1.1362 - **HIGHEST SCORE EVER**
+- Only 2 fallbacks triggered: sample 21 (1-src 0.4900), sample 63 (2-src 0.4955)
+- More aggressive thresholds (0.35/0.45 vs 0.38/0.48) improved score but added time
+- 1-source RMSE: 0.1452 (good), 2-source RMSE: 0.2120 (improved from EXP001's 0.2240)
+- Delta from baseline: +0.0115 score but +12.0 min time
+
+**Key Insight**: Higher sigma (0.20/0.25) + baseline thresholds (0.35/0.45) achieves BEST score but ~9 min over budget. The aggressive thresholds catch more edge cases, improving score.
+**Next**: Need to find threshold/fallback combo that achieves 1.13+ score within 60 min budget.
+
+### [W1] Experiment: high_sigma_less_fallback (EXP005) | Score: 1.1170 @ 68.1 min
+**Config**: sigma0_1src=0.20, sigma0_2src=0.25, threshold_1src=0.42, threshold_2src=0.52, fallback_fevals=14
+**Result**: **WORSE** than baseline AND still OVER BUDGET!
+**Analysis**:
+- Score DROPPED to 1.1170 (-0.0077 vs baseline 1.1247)
+- Time UNCHANGED at 68.1 min - same as EXP001 despite higher thresholds!
+- 3 high RMSE outliers: sample 54 (0.6370), 66 (0.6134), 63 (0.5866)
+- **CRITICAL INSIGHT**: Higher thresholds DON'T reduce time - they just shift WHICH samples become outliers
+- EXP001 had outliers (34, 57), EXP005 has outliers (54, 66, 63) - completely different samples!
+- 1-source RMSE: 0.1500, 2-source RMSE: 0.2625 (both worse than EXP001)
+
+**Key Insight**: The ~68 min runtime is NOT dominated by fallbacks - it's the PRIMARY optimization (20/36 fevals). Higher thresholds just change which samples fail without reducing time.
+**Next**: Need to reduce PRIMARY fevals (not fallback) to hit budget. Try max_fevals 18/32 instead of 20/36.
+
+### [W2] Experiment: sigma_threshold_near_baseline (EXP004) | Score: 1.1189 @ 66.6 min
+**Config**: sigma0_1src=0.20, sigma0_2src=0.25, threshold_1src=0.36, threshold_2src=0.46, fallback_fevals=18
+**Result**: **WORSE** than baseline AND still OVER BUDGET!
+**Analysis**:
+- Score DROPPED to 1.1189 (-0.0058 vs baseline 1.1247)
+- Time 66.6 min - still 6.6 min over budget
+- 3 high RMSE outliers: sample 63 (0.6700), 28 (0.5627), 57 (0.5524)
+- Thresholds 0.36/0.46 are NOT the sweet spot - worse in both score AND time
+- Sample 28 (1-source, RMSE 0.56) is unusual - should have triggered fallback at 0.36 threshold
+- 1-source RMSE: 0.1660, 2-source RMSE: 0.2358 (both worse than EXP001/EXP002)
+
+**Key Insight**: Intermediate thresholds (0.36/0.46) don't help - they're worse than both aggressive (0.35) and relaxed (0.38+) thresholds.
+**Conclusion**: Thresholds in the 0.36-0.42 range give worse scores without time savings. Either use aggressive (0.35/0.45) for best score OR relaxed (0.40+/0.50+) for fewer fallbacks.
+
+### [W2] Experiment: balanced_timing_config (EXP006) | Score: 1.1204 @ 67.2 min
+**Config**: sigma0_1src=0.20, sigma0_2src=0.25, threshold_1src=0.40, threshold_2src=0.50, fallback_fevals=16
+**Result**: **WORSE** than baseline AND still OVER BUDGET!
+**Analysis**:
+- Score DROPPED to 1.1204 (-0.0043 vs baseline 1.1247)
+- Time 67.2 min - 7.2 min over budget
+- **ONLY 1 FALLBACK TRIGGERED** (sample 50: 0.5679) - yet still over budget!
+- 1-source RMSE: 0.1529, 2-source RMSE: 0.2337
+
+**CRITICAL CONFIRMATION**: Time is 67.2 min with ONLY 1 fallback! This PROVES the timing bottleneck is PRIMARY optimization with sigma 0.20/0.25, NOT fallbacks.
+**Key Insight**: Higher sigma (0.20/0.25) adds ~10 min to runtime regardless of threshold/fallback settings.
+**Next**: Must either (1) reduce primary fevals (18/32), (2) use intermediate sigma (0.18/0.22), or (3) use baseline sigma (0.15/0.20) with aggressive thresholds.
+

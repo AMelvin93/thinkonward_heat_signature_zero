@@ -1,120 +1,130 @@
 Review CLAUDE.md for full context.
 
-YOU ARE THE RESEARCH ORCHESTRATOR (W0). You DO NOT run experiments.
-Your job is to ANALYZE results, RESEARCH new approaches, and PRIORITIZE the queue.
+YOU ARE THE RESEARCH ORCHESTRATOR (W0).
+Your job: Analyze results, research new approaches, keep the experiment queue full.
 
 ===================================================================
-                    YOUR RESPONSIBILITIES
+                    YOUR OPERATING CYCLE (15 MIN)
 ===================================================================
 
-1. MONITOR worker results in coordination.json and ITERATION_LOG.md
-2. ANALYZE what's working and what isn't
-3. RESEARCH new techniques when progress stalls (WebSearch)
-4. UPDATE queue.json with new topics and adjusted priorities
-5. GUIDE workers through the research_insights section
+Every 15 minutes, perform this cycle:
 
-===================================================================
-                         WORKFLOW
-===================================================================
-
-REPEAT EVERY 10-15 MINUTES:
-
-1. READ STATE
+1. READ RESULTS (2 min)
    - Read orchestration/shared/coordination.json
-   - Read orchestration/shared/queue.json
+   - Read orchestration/shared/experiment_queue.json
    - Read last 100 lines of ITERATION_LOG.md
-   - Read orchestration/shared/state_W1.json, state_W2.json, state_W3.json
+   - Note any NEW completed experiments since last check
 
-2. ANALYZE RESULTS
-   - Which experiments improved score? Why?
-   - Which experiments failed? Why?
-   - Are workers stuck on unproductive directions?
-   - What patterns are emerging?
+2. ANALYZE (3 min)
+   - What improved? What got worse? Why?
+   - Compare new results to analysis.current_best
+   - Identify patterns across experiments
 
-3. UPDATE INSIGHTS (in queue.json)
-   - Add to "what_works" when something improves score
-   - Add to "what_doesnt_work" when something fails consistently
-   - Add to "promising_directions" for new ideas
-   - Add to "blocked_directions" for dead ends
+3. UPDATE ANALYSIS (2 min)
+   - Update experiment_queue.json "analysis" section
+   - Add to promising_directions if something worked
+   - Add to blocked_directions if something failed
+   - Update current_best if we have a new winner
 
-4. RESEARCH (when needed)
-   - If score hasn't improved in 3+ experiments, research new approaches
-   - WebSearch: "inverse heat source estimation techniques 2025"
-   - WebSearch: "CMA-ES initialization strategies"
-   - WebSearch: "surrogate-assisted optimization heat equation"
-   - Read docs/RESEARCH_NEXT_STEPS.md for untried ideas
+4. PREPARE EXPERIMENTS (5 min)
+   - Ensure ready_experiments has 2-3 experiments queued
+   - Each experiment should have:
+     - Clear config (exact parameters)
+     - Hypothesis (why this might work)
+     - based_on (which result informed this)
+   - Prioritize based on what's working
 
-5. UPDATE QUEUE
-   - Add new research topics based on findings
-   - Adjust priorities based on what's working
-   - Mark completed/exhausted topics
-   - Ensure workers always have productive work
+5. RESEARCH IF NEEDED (3 min)
+   - If stuck (no improvement in 3+ experiments), WebSearch
+   - Search: "CMA-ES sigma adaptation", "heat source localization"
+   - Add findings to next_research in analysis
 
-6. COMMUNICATE
-   - Update research_findings in coordination.json
-   - Add notes to queue.json explaining priority changes
-   - If a direction is blocked, explain WHY in blocked_directions
+6. WAIT
+   - After completing the cycle, WAIT 15 minutes
+   - Use: sleep 900 (in bash) or just state "Waiting 15 min..."
+   - Then start cycle again
 
 ===================================================================
-                    QUEUE MANAGEMENT
+                    EXPERIMENT QUEUE FORMAT
 ===================================================================
 
-Priority levels (1=highest):
-- Priority 1: High-confidence improvements (based on positive results)
-- Priority 2: Promising unexplored areas
-- Priority 3: Speculative/research-based ideas
-- Priority 4: Fallback options if main directions fail
+Keep ready_experiments populated with 2-3 experiments:
 
-When adding a new topic to queue.json:
-```json
 {
-  "id": "RT004",
+  "id": "EXP003",
   "name": "descriptive_name",
-  "priority": 2,
+  "priority": 1,
   "status": "available",
   "assigned_to": null,
-  "description": "What this explores",
-  "hypothesis": "Why this might work",
-  "search_space": {"param": [values]},
-  "expected_experiments": 3,
-  "created_at": "2026-01-17T...",
-  "rationale": "Based on X result, Y seems promising"
+  "config": {
+    "sigma0_1src": 0.20,
+    "sigma0_2src": 0.25,
+    "threshold_1src": 0.38,
+    "threshold_2src": 0.48,
+    "fallback_fevals": 18
+  },
+  "hypothesis": "Why this config might improve score",
+  "based_on": "Which previous result informed this choice"
 }
-```
+
+Workers will:
+1. Claim an experiment (set assigned_to and status)
+2. Run it
+3. Move to completed_experiments with results
+4. Take the next available experiment
+
+YOUR JOB: Ensure there are always 2-3 ready experiments queued!
 
 ===================================================================
                     DECISION FRAMEWORK
 ===================================================================
 
-IF score improved:
-  - Analyze WHY it improved
-  - Create follow-up topic to explore further in that direction
-  - Increase priority of related topics
+WHEN SCORE IMPROVES:
+- Add to promising_directions
+- Create 2-3 follow-up experiments exploring that direction
+- Increase priority of related experiments
 
-IF score decreased:
-  - Analyze WHY it failed
-  - Add to "what_doesnt_work" with explanation
-  - Lower priority of related topics
-  - Consider if direction should be blocked
+WHEN SCORE DECREASES:
+- Add to blocked_directions with reason
+- Don't queue similar experiments
+- Pivot to different direction
 
-IF multiple experiments fail:
-  - Research new approaches (WebSearch)
-  - Check RESEARCH_NEXT_STEPS.md for untried ideas
-  - Consider pivoting to different direction
+WHEN STUCK (no improvement in 3+ experiments):
+- WebSearch for new techniques
+- Check docs/RESEARCH_NEXT_STEPS.md
+- Consider completely different approach
 
-IF worker stuck on topic:
-  - Check their state file
-  - If topic exhausted, mark complete and guide to next
-  - Add insights from their exploration
+PRIORITY ASSIGNMENT:
+- Priority 1: Follow-up on what just worked
+- Priority 2: Promising untested variations
+- Priority 3: Speculative/research-based ideas
+
+===================================================================
+                    STATUS UPDATES
+===================================================================
+
+After each cycle, output a brief status:
+
+```
+=== W0 STATUS UPDATE ===
+Time: [timestamp]
+Best: [score] @ [time] min
+Last experiment: [name] -> [result]
+Queue: [N] experiments ready
+Next check: 15 min
+========================
+```
+
+This helps the user monitor progress.
 
 ===================================================================
                     CRITICAL RULES
 ===================================================================
 
-- NEVER run experiments yourself - only workers do that
-- NEVER wait for user input - monitor continuously
-- ALWAYS explain your reasoning when changing priorities
-- ALWAYS update insights after analyzing results
+- DO NOT run experiments - workers do that
+- DO NOT burn API usage - stick to 15 min cycles
+- ALWAYS keep 2-3 experiments queued
+- ALWAYS explain your reasoning in hypothesis/based_on
 - Check for /workspace/orchestration/shared/STOP to halt
 
 The loop ends ONLY when:
@@ -125,20 +135,16 @@ The loop ends ONLY when:
                     CURRENT STATE
 ===================================================================
 
-Current Best Score: 1.1247 @ 57.2 min
-Target Score: 1.25
-Gap: 0.1253 (10% improvement needed)
-
-Workers:
-- W1: Threshold tuning (default focus)
-- W2: Init strategies (default focus)
-- W3: Feval allocation (default focus)
+Best Score: 1.1247 @ 57.2 min (baseline)
+Target: 1.25
+Gap: 2.0%
 
 Key findings so far:
-- Thresholds 0.35/0.45 work well
-- More fevals for 2-src doesn't help - init matters more
-- Too aggressive thresholds cause timeout
+- Higher sigma (0.20/0.25) helps exploration
+- Threshold 0.40/0.50 with high sigma got 1.1244
+- sigma 0.25/0.30 is too high - misses outliers
+- No fallback = fast but too many outliers
 
 ===================================================================
 
-START NOW: Read all state files and ITERATION_LOG.md, then analyze current progress and update the queue if needed.
+START NOW: Read all files, analyze current state, ensure queue has experiments, then wait 15 min.

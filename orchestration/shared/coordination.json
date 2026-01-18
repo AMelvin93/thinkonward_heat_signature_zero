@@ -5,48 +5,12 @@
     "threshold_1src": 0.35,
     "threshold_2src": 0.45,
     "fallback_fevals": 18,
-    "notes": "Session 17 baseline"
+    "notes": "Session 17 baseline - still best within time budget"
   },
   "best_worker": null,
   "best_time_min": 57.2,
   "target_score": 1.25,
-  "experiments_in_progress": {
-    "W2_onset_gradient_init": {
-      "worker": "W2",
-      "started": "2026-01-17T00:02:00Z",
-      "config": {
-        "strategy": "onset_gradient_hybrid",
-        "refine_iters": 3,
-        "refine_top": 2,
-        "threshold_1src": 0.35,
-        "threshold_2src": 0.45
-      }
-    },
-    "W3_high_sigma": {
-      "worker": "W3",
-      "started": "2026-01-17T01:45:00Z",
-      "config": {
-        "fevals_1src": 20,
-        "fevals_2src": 36,
-        "sigma0_1src": 0.20,
-        "sigma0_2src": 0.25,
-        "threshold_1src": 0.40,
-        "threshold_2src": 0.50,
-        "notes": "Based on W1's finding that higher sigma helps exploration"
-      }
-    },
-    "W1_optimal_sigma": {
-      "worker": "W1",
-      "started": "2026-01-17T02:00:00Z",
-      "config": {
-        "sigma0_1src": 0.22,
-        "sigma0_2src": 0.27,
-        "threshold_1src": 0.38,
-        "threshold_2src": 0.48,
-        "notes": "Optimal balance between sigma 0.20/0.25 and 0.25/0.30"
-      }
-    }
-  },
+  "experiments_in_progress": {},
   "experiments_completed": [
     {
       "name": "W1_threshold_0.34_0.44",
@@ -112,33 +76,101 @@
       "score": 1.1133,
       "time_min": 74.5,
       "result": "LOW_SCORE"
+    },
+    {
+      "name": "W1_sigma_sweet_spot",
+      "worker": "W1",
+      "score": 1.1330,
+      "time_min": 68.1,
+      "result": "OVER_BUDGET",
+      "notes": "BEST SCORE EVER! sigma 0.20/0.25 + thresholds 0.38/0.48. Only 2 outliers (34, 57). Sample 51 improved to 0.2488."
+    },
+    {
+      "name": "W2_sigma_baseline_thresh",
+      "worker": "W2",
+      "score": 1.1362,
+      "time_min": 69.2,
+      "result": "OVER_BUDGET",
+      "notes": "NEW BEST SCORE EVER! sigma 0.20/0.25 + thresholds 0.35/0.45. Only 2 fallbacks (21, 63). Beats EXP001!"
+    },
+    {
+      "name": "W1_high_sigma_less_fallback",
+      "worker": "W1",
+      "score": 1.1170,
+      "time_min": 68.1,
+      "result": "WORSE_AND_OVER_BUDGET",
+      "notes": "FAILED! Higher thresholds (0.42/0.52) just shifted outliers (54, 66, 63) - NO time savings! Score dropped to 1.1170."
+    },
+    {
+      "name": "W1_sweet_spot_faster_fallback",
+      "worker": "W1",
+      "score": 1.1158,
+      "time_min": 71.0,
+      "result": "WORSE_AND_OVER_BUDGET",
+      "notes": "EXP007: Fewer fallback_fevals (14 vs 18) WORSE in both score (-0.0172 vs EXP001) AND time (+2.9 min). CONFIRMS: don't reduce fallback_fevals!"
+    },
+    {
+      "name": "W1_baseline_sigma_better_thresh",
+      "worker": "W1",
+      "score": 1.1236,
+      "time_min": 70.2,
+      "result": "PARALLEL_CONTENTION",
+      "notes": "EXP009: Same config as baseline, ran 70.2 min due to CPU contention with W2. Score ~= baseline. 0 fallbacks. NEEDS SOLO RE-RUN."
+    },
+    {
+      "name": "W1_very_reduced_primary_fevals",
+      "worker": "W1",
+      "score": 1.1150,
+      "time_min": 65.9,
+      "result": "WORSE_AND_OVER_BUDGET",
+      "notes": "EXP011: Very reduced fevals (16/30) only saved 0.7 min vs EXP008 but lost 0.0123 score. 5 fallbacks. CONFIRMS: aggressive fevals reduction doesn't work."
+    },
+    {
+      "name": "W1_sigma_0.17_0.21",
+      "worker": "W1",
+      "score": 1.1123,
+      "time_min": 69.4,
+      "result": "PARALLEL_CONTENTION",
+      "notes": "EXP013: Score 1.1123 WORSE than baseline. Only 2 fallbacks. BAD SIGMA."
+    },
+    {
+      "name": "W1_sigma_0.165_0.205",
+      "worker": "W1",
+      "score": 1.1050,
+      "time_min": 67.8,
+      "result": "WORSE_AND_OVER_BUDGET",
+      "notes": "EXP016: BAD SIGMA ZONE! Score 1.1050 is worst. 5 fallbacks."
+    },
+    {
+      "name": "W1_sigma_0.18_0.22_reverify",
+      "worker": "W1",
+      "score": 1.1271,
+      "time_min": 67.7,
+      "result": "OVER_BUDGET_BUT_BEATS_BASELINE",
+      "notes": "EXP018: Re-verification of EXP010. Score 1.1271 (+0.0024 vs baseline) but 67.7 min over budget. 3 fallbacks. Better than EXP016 (sample 50: 0.2971 vs 0.9120)."
     }
   ],
   "workers": {
     "W1": {
-      "focus": "threshold_tuning",
+      "focus": "threshold_and_sigma_tuning",
       "status": "running",
-      "current_experiment": "W1_optimal_sigma",
-      "experiments_run": 5
+      "current_experiment": "EXP020_sigma_0.185_0.225",
+      "experiments_run": 13
     },
     "W2": {
-      "focus": "init_strategies",
+      "focus": "init_strategies_and_refinement",
       "status": "running",
-      "current_experiment": "W2_onset_gradient_init",
-      "experiments_run": 0
-    },
-    "W3": {
-      "focus": "feval_allocation",
-      "status": "running",
-      "current_experiment": "W3_high_sigma",
-      "experiments_run": 4
+      "current_experiment": "EXP019_sigma_0.18_0.22_higher_threshold",
+      "experiments_run": 1
     }
   },
   "research_findings": [
-    "W1: BEST - sigma 0.20/0.25 + thresholds 0.40/0.50 gives 1.1244 score!",
-    "W1: sigma 0.25/0.30 + thresholds 0.45/0.55 is TOO HIGH - misses outliers (1.1148)",
-    "W1: ~50% slowdown from 3 parallel workers due to resource contention",
-    "W3: NO FALLBACK is fastest (79 min) but has 4 outliers RMSE>0.5"
+    "SIGMA MAP: 0.15=1.1247(baseline), 0.16-0.175=BAD ZONE, 0.18=1.1271-1.1337(GOOD), 0.20=1.1362(BEST)",
+    "EXP018 re-verification: sigma 0.18/0.22 gives 1.1271 @ 67.7 min (beats baseline +0.0024 but over budget)",
+    "EXP010 original: 1.1337 @ 63.5 min - EXP018 difference may be due to contention or variance",
+    "CRITICAL: Sigma range 0.16-0.175 is a BAD ZONE - ALL experiments WORSE than baseline!",
+    "NO MIDDLE GROUND: Cannot improve score while staying in budget by tuning sigma alone",
+    "TIMING: All parallel experiments show ~67-70 min timing due to contention"
   ],
-  "notes": "Sweet spot found: sigma 0.20/0.25 with thresholds 0.40/0.50. Now fine-tuning."
+  "notes": "Session 19: EXP018 confirms sigma 0.18/0.22 beats baseline but is over budget. Testing sigma 0.185/0.225 to explore score-time tradeoff."
 }

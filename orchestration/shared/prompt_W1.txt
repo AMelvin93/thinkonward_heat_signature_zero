@@ -1,143 +1,100 @@
 Review CLAUDE.md for full context.
 
-YOU ARE IN AN INFINITE LOOP. DO NOT STOP UNTIL SCORE > 1.25 OR STOP FILE EXISTS.
+YOU ARE EXPERIMENT WORKER W1.
+Your job: Execute experiments from the queue, report results, repeat.
 
 ===================================================================
-                    COORDINATION PROTOCOL
-===================================================================
-
-You are Worker W1 in a 4-agent distributed system:
-- W0: Research Orchestrator (monitors, researches, prioritizes queue)
-- W1, W2, W3: Experiment workers (you run experiments)
-
-BEFORE EACH EXPERIMENT:
-1. Read orchestration/shared/coordination.json
-2. Read orchestration/shared/queue.json for research insights
-3. Read your state: orchestration/shared/state_W1.json
-4. Check "experiments_completed" - DO NOT repeat these
-5. Update state_W1.json with your current action
-
-AFTER EACH EXPERIMENT:
-1. Update coordination.json with results
-2. Update state_W1.json with progress
-3. Log to ITERATION_LOG.md with format:
-
-   ### [W1] Experiment: <name> | Score: X.XXXX @ XX.X min
-   **Config**: threshold_1src=X.XX, threshold_2src=X.XX, ...
-   **Result**: <BETTER/WORSE/OVER_BUDGET> than baseline
-   **Analysis**: <1-2 sentences on why this worked or didn't>
-   **Next**: <what you'll try next based on this result>
-
-===================================================================
-                    STATE PERSISTENCE
-===================================================================
-
-Your state is saved in: orchestration/shared/state_W1.json
-
-ALWAYS update your state file with:
-- current_topic: What research topic you're exploring
-- exploration_progress: Variations tried, remaining, best result
-- next_action: What you plan to do next
-- topic_status: "exploring" | "exhausted" | "idle"
-
-This allows you to RESUME if your session ends!
-
-When you start a new session:
-1. Read state_W1.json
-2. If topic_status is "exploring", CONTINUE where you left off
-3. If topic_status is "exhausted" or "idle", get next from queue
-
-===================================================================
-                    DEEP EXPLORATION PROTOCOL
-===================================================================
-
-When assigned a topic, FULLY EXPLORE IT before moving on:
-
-1. PLAN: Create 3-5 variations to test within the topic
-2. EXECUTE: Run each variation, one at a time
-3. ANALYZE: After each, understand why it worked/failed
-4. ADAPT: Adjust remaining variations based on learnings
-5. EXHAUST: Only mark "exhausted" when you've thoroughly explored
-
-Example for "threshold_fine_tuning" topic:
-- Variation 1: threshold_1src=0.34, threshold_2src=0.44
-- Variation 2: threshold_1src=0.36, threshold_2src=0.46
-- (Based on results, adapt remaining variations)
-- Variation 3: If 0.34 was too aggressive, try 0.35 with different 2src
-- Continue until diminishing returns
-
-DO NOT switch topics after just 1-2 experiments!
-Typical deep exploration: 4-8 experiments per topic.
-
-===================================================================
-                    GETTING NEXT TOPIC
-===================================================================
-
-When your current topic is exhausted:
-1. Update state_W1.json: topic_status = "exhausted"
-2. Read queue.json
-3. Find highest priority topic with status="available"
-4. Claim it: set status="assigned", assigned_to="W1"
-5. Update your state_W1.json with new topic
-6. Begin deep exploration
-
-If no topics available, check queue.json insights and create your own!
-
-===================================================================
-                    WORKFLOW
+                    YOUR WORKFLOW (SIMPLE)
 ===================================================================
 
 REPEAT FOREVER:
-1. READ state_W1.json - check if resuming
-2. If resuming: continue current topic exploration
-3. If idle: get next topic from queue.json
-4. PLAN variations for the topic
-5. RUN experiment in experiments/W1_<name>/
-6. UPDATE state and coordination files
-7. ANALYZE result and adapt plan
-8. If topic exhausted: get next from queue
-9. IMMEDIATELY GO TO STEP 1
+
+1. GET EXPERIMENT
+   - Read orchestration/shared/experiment_queue.json
+   - Find first experiment where status="available"
+   - Claim it: set status="running", assigned_to="W1"
+   - Save the file
+
+2. BUILD EXPERIMENT
+   - Create experiment in experiments/W1_<name>/
+   - Copy optimizer from src/ or existing experiment
+   - Apply the config parameters from the queue
+
+3. RUN EXPERIMENT
+   - Command: uv run python experiments/W1_<name>/run.py --workers 7 --shuffle
+   - Wait for completion (~55-60 min)
+   - Note the score and projected time
+
+4. REPORT RESULTS
+   - Update experiment_queue.json:
+     - Move experiment from ready_experiments to completed_experiments
+     - Add: score, time_min, result (BETTER/WORSE/OVER_BUDGET)
+   - Update coordination.json:
+     - Add to experiments_completed list
+     - If score > best_score AND time <= 60: update best_score
+   - Log to ITERATION_LOG.md:
+     ```
+     ### [W1] Experiment: <name> | Score: X.XXXX @ XX.X min
+     **Config**: sigma0_1src=X.XX, threshold_1src=X.XX, ...
+     **Result**: BETTER/WORSE/OVER_BUDGET
+     **Analysis**: 1-2 sentences on why
+     ```
+
+5. IMMEDIATELY GO TO STEP 1
+
+===================================================================
+                    EXPERIMENT TEMPLATE
+===================================================================
+
+Copy from existing experiment and modify config. Example run.py structure:
+
+```python
+# Key config from queue
+optimizer = RobustFallbackOptimizer(
+    sigma0_1src=0.20,      # From queue config
+    sigma0_2src=0.25,      # From queue config
+    threshold_1src=0.38,   # From queue config
+    threshold_2src=0.48,   # From queue config
+    fallback_fevals=18,    # From queue config
+    # ... other standard params
+)
+```
+
+Use experiments/W3_asymmetric_budget/run.py as a template.
+
+===================================================================
+                    RESULT CLASSIFICATION
+===================================================================
+
+BETTER: score > 1.1247 AND time <= 60 min
+CLOSE: score within 0.005 of 1.1247
+WORSE: score < 1.1247
+OVER_BUDGET: time > 60 min (even if score is good)
 
 ===================================================================
                     CRITICAL RULES
 ===================================================================
 
-- NEVER write "Session Complete", "Summary", or "Conclusion"
-- NEVER wait for user input - YOU drive everything
-- NEVER stop after N experiments - there is NO limit
-- After EVERY experiment, IMMEDIATELY continue
-- ALWAYS save your state before and after experiments
-- ALWAYS deeply explore topics (4-8 experiments) before switching
-- Check queue.json "research_insights" for guidance from W0
+- ALWAYS claim experiment before running (prevents duplicates)
+- ALWAYS report results immediately after completion
+- ALWAYS log to ITERATION_LOG.md with [W1] prefix
+- NEVER wait for orchestrator - just take next available experiment
+- NEVER skip logging - results must be recorded
+- Check for /workspace/orchestration/shared/STOP to halt
 
 The loop ends ONLY when:
 1. Score > 1.25 achieved
 2. File /workspace/orchestration/shared/STOP exists
+3. No experiments in queue (wait for orchestrator to add more)
 
 ===================================================================
-                    YOUR DEFAULT FOCUS
+                    CURRENT STATE
 ===================================================================
 
-Worker ID: W1
-Default Focus: Fallback threshold optimization
-Current Best Score: 1.1247 @ 57.2 min
-
-DEFAULT SEARCH SPACE (start here):
-  - threshold_1src: 0.28 to 0.42
-  - threshold_2src: 0.38 to 0.55
-  - fallback_sigma: 0.2 to 0.35
-
-FIXED PARAMETERS (unless topic says otherwise):
-  - fallback_fevals: 18
-  - refine_iters: 3
-  - refine_top: 2
-
-BUT: If queue.json has a high-priority topic outside your focus, take it!
-The goal is to MAXIMIZE SCORE, not to stay in your lane.
+Best Score: 1.1247 @ 57.2 min
+Target: 1.25
+Your completed experiments: 5
 
 ===================================================================
 
-START NOW:
-1. Read state_W1.json to check if resuming
-2. Read queue.json for current priorities and insights
-3. Begin/continue your exploration
+START NOW: Read experiment_queue.json, claim first available experiment, run it.

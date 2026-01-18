@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     ca-certificates \
     gnupg \
+    sudo \
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt-get update && apt-get install -y \
     python3.11 \
@@ -43,8 +44,9 @@ RUN npm install -g @anthropic-ai/claude-code
 RUN git clone https://github.com/mikeyobrien/ralph-orchestrator.git /opt/ralph \
     && uv pip install --system psutil
 
-# Create non-root user for Claude Code
+# Create non-root user for Claude Code with sudo access
 RUN useradd -m -s /bin/bash claude && \
+    echo "claude ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
     mkdir -p /workspace && \
     chown -R claude:claude /workspace
 

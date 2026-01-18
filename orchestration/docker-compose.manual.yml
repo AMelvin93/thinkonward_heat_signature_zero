@@ -2,7 +2,7 @@
 version: "2.4"
 
 # Docker Compose for MANUAL multi-worker orchestration with Research Orchestrator
-# 4 containers: W0 (orchestrator) + W1, W2, W3 (experiment workers)
+# 3 containers: W0 (orchestrator) + W1, W2 (experiment workers)
 #
 # CRITICAL: CPU PINNING FOR ACCURATE TIMING
 # =========================================
@@ -12,26 +12,24 @@ version: "2.4"
 # CPU Layout (32-core system):
 #   - W1: cores 0-7   (8 cores) - mirrors G4dn.2xlarge
 #   - W2: cores 8-15  (8 cores) - mirrors G4dn.2xlarge
-#   - W3: cores 16-23 (8 cores) - mirrors G4dn.2xlarge
-#   - W0: cores 24-27 (4 cores) - orchestrator (no experiments)
-#   - Host OS: cores 28-31 (4 cores reserved)
+#   - W0: cores 16-19 (4 cores) - orchestrator (no experiments)
+#   - Host OS: cores 20-31 (12 cores reserved)
 #
 # This ensures each experiment worker has ISOLATED resources matching the
 # competition submission environment.
 #
 # Usage:
-#   # Start all 4 containers
+#   # Start all 3 containers
 #   docker-compose -f orchestration/docker-compose.manual.yml up -d
 #
 #   # Attach to each container (in separate terminals)
 #   docker exec -it claude-orchestrator bash    # W0 - Research Orchestrator
-#   docker exec -it claude-worker-1 bash        # W1 - Threshold Tuning
-#   docker exec -it claude-worker-2 bash        # W2 - Init Strategies
-#   docker exec -it claude-worker-3 bash        # W3 - Feval Allocation
+#   docker exec -it claude-worker-1 bash        # W1 - Experiment Worker
+#   docker exec -it claude-worker-2 bash        # W2 - Experiment Worker
 #
 #   # In each container:
 #   claude login
-#   cat /workspace/orchestration/shared/prompt_W0.txt  # (or W1, W2, W3)
+#   cat /workspace/orchestration/shared/prompt_W0.txt  # (or W1, W2)
 #   claude --dangerously-skip-permissions
 #   # Paste the prompt
 #
@@ -53,9 +51,9 @@ services:
     hostname: orchestrator
 
     # Orchestrator uses fewer resources (no experiments)
-    # Pinned to cores 24-27 (4 cores)
+    # Pinned to cores 16-19 (4 cores)
     cpus: '4'
-    cpuset: "24-27"
+    cpuset: "16-19"
     mem_limit: 16g
 
     volumes:
@@ -85,7 +83,7 @@ services:
         echo '';
         echo 'DOES NOT run experiments!';
         echo '';
-        echo 'CPU: Pinned to cores 24-27';
+        echo 'CPU: Pinned to cores 16-19';
         echo '';
         echo 'SETUP:';
         echo '  1. Run: claude login';
@@ -98,7 +96,7 @@ services:
       "
 
   # ===================================================================
-  # W1 - EXPERIMENT WORKER (Threshold Tuning focus)
+  # W1 - EXPERIMENT WORKER
   # PINNED TO CORES 0-7 - Mirrors G4dn.2xlarge (8 vCPUs)
   # ===================================================================
   worker1:
@@ -132,7 +130,7 @@ services:
     command: >
       bash -c "
         echo '========================================';
-        echo 'W1 - Threshold Tuning (default focus)';
+        echo 'W1 - EXPERIMENT WORKER';
         echo '========================================';
         echo '';
         echo 'CPU: Pinned to cores 0-7 (G4dn.2xlarge equivalent)';
@@ -151,7 +149,7 @@ services:
       "
 
   # ===================================================================
-  # W2 - EXPERIMENT WORKER (Init Strategies focus)
+  # W2 - EXPERIMENT WORKER
   # PINNED TO CORES 8-15 - Mirrors G4dn.2xlarge (8 vCPUs)
   # ===================================================================
   worker2:
@@ -185,7 +183,7 @@ services:
     command: >
       bash -c "
         echo '========================================';
-        echo 'W2 - Init Strategies (default focus)';
+        echo 'W2 - EXPERIMENT WORKER';
         echo '========================================';
         echo '';
         echo 'CPU: Pinned to cores 8-15 (G4dn.2xlarge equivalent)';
@@ -203,62 +201,8 @@ services:
         tail -f /dev/null
       "
 
-  # ===================================================================
-  # W3 - EXPERIMENT WORKER (Feval Allocation focus)
-  # PINNED TO CORES 16-23 - Mirrors G4dn.2xlarge (8 vCPUs)
-  # ===================================================================
-  worker3:
-    build:
-      context: ..
-      dockerfile: Dockerfile.dev
-    image: heat-signature-zero:latest
-    container_name: claude-worker-3
-    hostname: worker3
-
-    # G4dn.2xlarge equivalent: 8 vCPUs, 32GB RAM
-    # PINNED to dedicated cores 16-23 for accurate timing
-    cpus: '8'
-    cpuset: "16-23"
-    mem_limit: 32g
-
-    volumes:
-      - ..:/workspace
-      - claude-creds-w3:/root/.claude
-
-    environment:
-      - PYTHONUNBUFFERED=1
-      - WORKER_ID=W3
-      - N_WORKERS=7
-      - PS1=\[\e[34m\][W3]\[\e[0m\] \w\$$
-
-    working_dir: /workspace
-    stdin_open: true
-    tty: true
-
-    command: >
-      bash -c "
-        echo '========================================';
-        echo 'W3 - Feval Allocation (default focus)';
-        echo '========================================';
-        echo '';
-        echo 'CPU: Pinned to cores 16-23 (G4dn.2xlarge equivalent)';
-        echo 'RAM: 32GB isolated';
-        echo '';
-        echo 'Timing should now match submission environment!';
-        echo '';
-        echo 'SETUP:';
-        echo '  1. Run: claude login';
-        echo '  2. Run: cat /workspace/orchestration/shared/prompt_W3.txt';
-        echo '  3. Run: claude --dangerously-skip-permissions';
-        echo '  4. Paste the prompt from step 2';
-        echo '';
-        echo 'Container ready. Waiting...';
-        tail -f /dev/null
-      "
-
 # Named volumes to persist Claude credentials
 volumes:
   claude-creds-w0:
   claude-creds-w1:
   claude-creds-w2:
-  claude-creds-w3:
