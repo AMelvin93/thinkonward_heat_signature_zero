@@ -1,0 +1,107 @@
+{
+  "experiment_id": "EXP_SEQUENTIAL_HANDOFF_001",
+  "worker": "W2",
+  "status": "tuning_complete",
+  "started_at": "2026-01-19T00:10:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "description": "Initial config - NM maxiter=40/50 was WAY too expensive",
+      "config": {
+        "cmaes_fevals_1src": 12,
+        "cmaes_fevals_2src": 20,
+        "sigma0_1src": 0.20,
+        "sigma0_2src": 0.25,
+        "nm_maxiter_1src": 40,
+        "nm_maxiter_2src": 50,
+        "nm_top_n": 3
+      },
+      "score": null,
+      "time_min": null,
+      "in_budget": false,
+      "notes": "ABORTED - 2-source samples taking 500+ seconds each. NM on fine grid is too expensive. Killed at 34/80 samples."
+    },
+    {
+      "run": 2,
+      "description": "Reduced NM budget - maxiter 8/12, top_n=2, but still on FINE grid",
+      "config": {
+        "cmaes_fevals_1src": 15,
+        "cmaes_fevals_2src": 28,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "nm_maxiter_1src": 8,
+        "nm_maxiter_2src": 12,
+        "nm_top_n": 2,
+        "nm_grid": "fine"
+      },
+      "score": 1.1439,
+      "rmse": 0.1516,
+      "time_min": 126.5,
+      "in_budget": false,
+      "notes": "EXCELLENT score (+0.0192 vs baseline) but 2x over time budget. NM on fine grid still too expensive even with reduced iterations."
+    },
+    {
+      "run": 3,
+      "description": "NM on COARSE grid - saved 18 min but still over budget",
+      "config": {
+        "cmaes_fevals_1src": 15,
+        "cmaes_fevals_2src": 28,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "nm_maxiter_1src": 12,
+        "nm_maxiter_2src": 18,
+        "nm_top_n": 2,
+        "nm_grid": "coarse"
+      },
+      "score": 1.1331,
+      "rmse": 0.1647,
+      "time_min": 108.3,
+      "in_budget": false,
+      "notes": "Good score (+0.0084 vs baseline) but still 48 min over budget. Coarse NM helped but not enough. Score dropped vs Run 2 due to less precise NM."
+    },
+    {
+      "run": 4,
+      "description": "Minimal NM - top_n=1, maxiter=3/5 on coarse grid",
+      "config": {
+        "cmaes_fevals_1src": 15,
+        "cmaes_fevals_2src": 28,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "nm_maxiter_1src": 3,
+        "nm_maxiter_2src": 5,
+        "nm_top_n": 1,
+        "nm_grid": "coarse",
+        "threshold_1src": 0.35,
+        "threshold_2src": 0.45
+      },
+      "score": 1.1132,
+      "rmse": 0.1934,
+      "time_min": 56.6,
+      "in_budget": true,
+      "notes": "IN BUDGET but score dropped BELOW baseline (1.1247). Minimal NM doesn't help enough. 64/80 samples used NM, 2/80 fallback. The trade-off doesn't work: reducing CMA-ES to fit NM hurts more than NM helps."
+    }
+  ],
+  "best_in_budget": {
+    "run": 4,
+    "score": 1.1132,
+    "time_min": 56.6,
+    "config": {
+      "cmaes_fevals_1src": 15,
+      "cmaes_fevals_2src": 28,
+      "nm_maxiter_1src": 3,
+      "nm_maxiter_2src": 5,
+      "nm_top_n": 1,
+      "nm_grid": "coarse"
+    },
+    "notes": "BELOW baseline. Score 1.1132 vs baseline 1.1247 = -0.0115 worse"
+  },
+  "best_overall": {
+    "run": 2,
+    "score": 1.1439,
+    "time_min": 126.5,
+    "notes": "Best score achieved but 2x over time budget"
+  },
+  "next_config_to_try": null,
+  "conclusion": "FAILED - Sequential handoff fundamentally doesn't work within budget. NM improves accuracy when given time (Run 2: +0.0192) but the time overhead is prohibitive. When reduced enough to fit budget (Run 4), the score drops below baseline. There is no configuration that beats baseline within the 60-min budget.",
+  "summary_written": true
+}

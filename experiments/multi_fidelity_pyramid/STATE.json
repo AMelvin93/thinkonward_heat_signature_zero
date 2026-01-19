@@ -1,0 +1,134 @@
+{
+  "experiment_id": "EXP_MULTIFID_OPT_001",
+  "worker": "W1",
+  "status": "done",
+  "result": "FAILED",
+  "started_at": "2026-01-19T00:50:00Z",
+  "completed_at": "2026-01-19T01:30:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "nx_coarse": 25,
+        "ny_coarse": 12,
+        "nx_medium": 50,
+        "ny_medium": 25,
+        "nx_fine": 100,
+        "ny_fine": 50,
+        "coarse_fevals_1src": 10,
+        "coarse_fevals_2src": 16,
+        "medium_fevals_1src": 8,
+        "medium_fevals_2src": 12,
+        "transfer_top_n": 5,
+        "fine_top_n": 3,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "early_fraction": 0.3
+      },
+      "rmse_mean": 0.2588817101999609,
+      "time_min": 44.943006018797554,
+      "in_budget": true,
+      "mlflow_id": "4ab5762f50754d5b8cd966cd8317ca71",
+      "rmse_mean_1src": 0.2039000207408049,
+      "rmse_mean_2src": 0.29553616983939834,
+      "timestamp": "2026-01-18T20:52:12.674186"
+    },
+    {
+      "run": 2,
+      "config": {
+        "nx_coarse": 30,
+        "ny_coarse": 15,
+        "nx_medium": 50,
+        "ny_medium": 25,
+        "nx_fine": 100,
+        "ny_fine": 50,
+        "coarse_fevals_1src": 15,
+        "coarse_fevals_2src": 24,
+        "medium_fevals_1src": 10,
+        "medium_fevals_2src": 16,
+        "transfer_top_n": 5,
+        "fine_top_n": 3,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "early_fraction": 0.3
+      },
+      "rmse_mean": 0.23196296792684032,
+      "time_min": 92.21553997198741,
+      "in_budget": false,
+      "mlflow_id": "61f972c591254902adc3e4827ada3445",
+      "rmse_mean_1src": 0.16976931548152627,
+      "rmse_mean_2src": 0.273425402890383,
+      "timestamp": "2026-01-18T21:11:34.891812"
+    },
+    {
+      "run": 3,
+      "config": {
+        "nx_coarse": 30,
+        "ny_coarse": 15,
+        "nx_medium": 50,
+        "ny_medium": 25,
+        "nx_fine": 100,
+        "ny_fine": 50,
+        "coarse_fevals_1src": 15,
+        "coarse_fevals_2src": 24,
+        "medium_fevals_1src": 10,
+        "medium_fevals_2src": 16,
+        "transfer_top_n": 5,
+        "fine_top_n": 3,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "early_fraction": 0.3
+      },
+      "rmse_mean": 0.30391941203110767,
+      "time_min": 73.32412260770798,
+      "in_budget": false,
+      "mlflow_id": "b31e248d5a9b48ad906af975253d0276",
+      "rmse_mean_1src": 0.2673898815620333,
+      "rmse_mean_2src": 0.3282724323438239,
+      "timestamp": "2026-01-18T21:14:26.833666"
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "rmse_mean": 0.2588817101999609,
+    "time_min": 44.943006018797554,
+    "config": {
+      "nx_coarse": 25,
+      "ny_coarse": 12,
+      "nx_medium": 50,
+      "ny_medium": 25,
+      "nx_fine": 100,
+      "ny_fine": 50,
+      "coarse_fevals_1src": 10,
+      "coarse_fevals_2src": 16,
+      "medium_fevals_1src": 8,
+      "medium_fevals_2src": 12,
+      "transfer_top_n": 5,
+      "fine_top_n": 3,
+      "sigma0_1src": 0.15,
+      "sigma0_2src": 0.2,
+      "early_fraction": 0.3
+    }
+  },
+  "best_overall": {
+    "run": 2,
+    "rmse_mean": 0.23196296792684032,
+    "time_min": 92.21553997198741,
+    "rmse_mean_1src": 0.16976931548152627,
+    "rmse_mean_2src": 0.273425402890383
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "baseline_to_beat": {
+    "score": 1.1247,
+    "time_min": 57.2,
+    "rmse_mean_1src": 0.14,
+    "rmse_mean_2src": 0.21
+  },
+  "success_criteria": {
+    "score_min": 1.11,
+    "time_max_min": 45
+  },
+  "abort_criteria": "Coarse grid accuracy too poor for useful transfer",
+  "conclusion": "FAILED - Multi-fidelity pyramid doesn't work for thermal inverse problems. Coarse grid RMSE landscape is fundamentally different from fine grid. Solutions don't transfer."
+}

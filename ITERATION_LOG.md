@@ -823,3 +823,133 @@ The original ICA experiment's 87 min runtime was NOT from ICA computation. It wa
 2. Replace other inits with ICA (not add to them)
 3. Keep existing CMA-ES workflow, just swap triangulation for ICA init
 
+
+---
+
+### [W2] Experiment: cluster_transfer (EXP_TRANSFER_LEARN_001) | Score: 1.0804 @ 59.7 min
+**Algorithm**: Cluster-based transfer learning with K-means clustering on sensor features
+**Tuning Runs**: 3 runs (see experiments/cluster_transfer/STATE.json for details)
+**Result**: **FAILED** vs baseline (1.1247 @ 57 min)
+**Key Finding**: Sensor feature clustering does NOT predict solution similarity - transfer learning fundamentally doesn't work for inverse heat problems.
+
+**Hypothesis Tested**: Similar sensor patterns (temperature profiles, onset times, spatial centroids) have similar optimal heat source configurations. Clustering samples and transferring solutions from cluster representatives should reduce optimization time.
+
+**Tuning History**:
+| Run | Transfer Fevals | Transfer Sigma | Score | Time | Status |
+|-----|-----------------|----------------|-------|------|--------|
+| 1 | 10 | 0.08 | 1.0334 | 61.2 min | 5 failures, over budget |
+| 2 | 15 | 0.12 | 1.0804 | 59.7 min | Best - still 4% below baseline |
+| 3 | 18 | 0.15 | 1.0600 | 61.4 min | MORE budget = WORSE results |
+
+**Why Cluster Transfer Failed**:
+1. **Sensor features don't predict solutions**: The relationship between observed temperatures and source locations is highly non-linear. Samples with similar temperature patterns can have very different heat source positions.
+2. **Inverse problem degeneracy**: Multiple source configurations can produce similar temperature patterns, so similar features don't guarantee similar solutions.
+3. **Transfer hurt exploration**: Starting CMA-ES from transferred positions reduced diversity, causing the optimizer to get stuck in suboptimal regions.
+4. **Run 3 paradox**: Giving transfer mode MORE budget made results WORSE (1.0600 vs 1.0804), confirming transfer init was directing search to wrong regions.
+
+**Critical Insight**: For inverse heat problems, the mapping from observations to sources is too non-linear for feature-based clustering to provide useful warm-starts. The approach fundamentally doesn't work.
+
+**Recommendation**: 
+- Do NOT pursue cluster-based or feature-based transfer learning for this problem
+- WS-CMA-ES (covariance transfer, not solution transfer) may still be viable - transferring the learned search landscape shape rather than solutions
+- Focus on surrogate methods (lq-CMA-ES) or multi-fidelity instead of transfer learning
+
+
+### [W1] Experiment: lq_cma_es_builtin | RMSE: 0.253 @ 64.1 min | FAILED
+**Algorithm**: pycma's built-in lq-CMA-ES (linear-quadratic surrogate)
+**Tuning Runs**: 3 runs
+**Result**: **FAILED** - API mismatch, 29-71% worse RMSE, 7-17% slower than baseline
+**Key Finding**: fmin_lq_surr returns ONE solution but we need MULTIPLE candidates for diversity scoring. High-level API doesn't expose intermediate population solutions. See experiments/lq_cma_es_builtin/SUMMARY.md for details.
+
+
+---
+
+### [W1] Experiment: multi_fidelity_pyramid (EXP_MULTIFID_OPT_001) | RMSE: 0.259 @ 44.9 min | FAILED
+**Algorithm**: Multi-fidelity pyramid with 3-level grid (25x12 -> 50x25 -> 100x50)
+**Tuning Runs**: 3 runs
+**Result**: **FAILED** - Coarse grid RMSE landscape differs from fine grid. 45% worse accuracy than baseline.
+**Key Finding**: Multi-fidelity via grid coarsening doesn't work for inverse problems. Solutions don't transfer between resolutions. See experiments/multi_fidelity_pyramid/SUMMARY.md for details.
+
+**Tuning History**:
+| Run | Config | RMSE Mean | Time (min) | Status |
+|-----|--------|-----------|------------|--------|
+| 1 | 25x12 coarse, 10/16 fevals | 0.2589 | 44.9 | In budget, 45% worse |
+| 2 | 30x15 coarse, 15/24 fevals | 0.2320 | 92.2 | Over budget, 21% worse |
+| 3 | Same as Run 2 | 0.3039 | 73.3 | High variance, 79% worse |
+
+**Why Multi-Fidelity Pyramid Failed**:
+1. The RMSE landscape is fundamentally different at different grid resolutions
+2. Optimal source positions on coarse grid (25x12) do NOT correspond to optimal on fine grid (100x50)
+3. Heat diffusion physics change with cell size - coarse grids approximate poorly
+4. High variance between runs with same config (31% RMSE difference)
+
+**Recommendation**: ABANDON multi-fidelity via spatial grid coarsening. Alternative: try temporal fidelity (fewer timesteps) instead.
+
+
+---
+
+### [W2] Experiment: cmaes_to_nm_sequential (EXP_SEQUENTIAL_HANDOFF_001) | Score: 1.1132 @ 56.6 min | FAILED
+**Algorithm**: Sequential CMA-ES to Nelder-Mead handoff
+**Tuning Runs**: 4 runs
+**Result**: **FAILED** - Best in-budget score 1.1132 is WORSE than baseline 1.1247. See experiments/cmaes_to_nm_sequential/SUMMARY.md for details.
+
+**Hypothesis Tested**: Sequential handoff captures CMA-ES exploration + NM local refinement without doubling simulation count (unlike the failed ensemble approach).
+
+**Tuning History**:
+| Run | Config | Score | Time (min) | Status |
+|-----|--------|-------|------------|--------|
+| 1 | NM maxiter=40/50, fine grid | ABORTED | - | 500+ sec/sample |
+| 2 | NM maxiter=8/12, fine grid | 1.1439 | 126.5 | Best score, 2x over budget |
+| 3 | NM maxiter=12/18, coarse grid | 1.1331 | 108.3 | 48 min over budget |
+| 4 | NM maxiter=3/5, coarse grid | 1.1132 | 56.6 | IN BUDGET but BELOW baseline |
+
+**Why Sequential Handoff Failed**:
+1. **CMA-ES uses full budget**: Baseline CMA-ES already takes ~57 min, leaving no room for NM
+2. **NM's value requires time**: NM improves score (+0.0192 in Run 2) only when given adequate iterations
+3. **Accuracy-time tradeoff unfavorable**: Reducing NM to fit budget eliminates the accuracy benefit
+4. **Coarse NM loses precision**: Moving NM to coarse grid helps time but hurts accuracy
+
+**Critical Insight**: This approach fundamentally doesn't work because ANY post-processing after CMA-ES pushes us over budget. When reduced enough to fit, the benefit disappears.
+
+**Recommendation**: ABANDON hybrid/sequential handoff approaches. Focus on improving CMA-ES itself (initialization, surrogate) rather than adding post-processing.
+
+
+---
+
+### [W2] Experiment: fast_source_count_detection (EXP_FAST_SOURCE_DETECT_001) | ABORTED
+**Algorithm**: Peak detection / feature-based classification for n_sources detection
+**Status**: **ABORTED** - Invalid premise
+**Key Finding**: Baseline already uses `sample['n_sources']` from data. Detection not needed. See experiments/fast_source_count_detection/SUMMARY.md for details.
+
+**Why This Experiment Was Aborted**:
+1. **Invalid premise**: The baseline optimizer already has direct access to `n_sources` from the sample data. Detection is unnecessary.
+2. **Not feasible anyway**: Even if needed, sensor-based features only achieve 67% accuracy (target was 95%). Sparse sensor data doesn't carry enough information to distinguish 1-source from 2-source.
+
+**Analysis**:
+- Simple heuristic accuracy: 57.5% (barely better than random)
+- Random Forest CV accuracy: 67.5% (far below 95% target)
+- No features showed clear separation between 1-src and 2-src samples
+
+**Lesson Learned**: Always verify the problem exists before trying to solve it. Saved significant implementation time by catching the flawed premise early.
+
+---
+
+### [W1] Experiment: warm_start_cmaes (EXP_WS_CMAES_001) | RMSE: 0.276 @ 65.8 min | FAILED
+**Algorithm**: Warm Start CMA-ES (WS-CMA-ES) from CyberAgentAILab's cmaes library
+**Tuning Runs**: 2 runs
+**Result**: **FAILED** - WS-CMA-ES causes divergence, 62-170% worse accuracy than baseline
+**Key Finding**: WS-CMA-ES doesn't work for thermal inverse problems. Each sample is unique with no shared landscape structure. Probing phase wastes budget. meta_learning family EXHAUSTED.
+
+**Tuning History**:
+| Run | Config | RMSE | Time (min) | Status |
+|-----|--------|------|------------|--------|
+| 1 | 3 probing starts, 5 fevals | 0.2759 | 65.8 | Over budget, 62% worse |
+| 2 | 2 probing starts, 3 fevals | 0.4599 | 23.3 | In budget, 170% worse |
+
+**Why WS-CMA-ES Failed**:
+1. Each sample has unique heat source positions - no transfer between samples possible
+2. Probing phase wastes budget without providing useful warm start information
+3. CyberAgentAILab's cmaes library not as well-tuned as pycma for this problem
+4. get_warm_start_mgd() combines information from random probes that don't help convergence
+
+**Recommendation**: ABANDON meta_learning approaches (cluster_transfer + WS-CMA-ES both failed). Focus on within-sample optimizations.

@@ -1,0 +1,111 @@
+
+CMA-ES to Nelder-Mead Sequential Handoff Optimizer
+======================================================================
+Samples: 80, Workers: 7
+CMA-ES: fevals=15/28, sigma=0.18/0.22
+NM: maxiter=3/5, top_n=1, grid=coarse
+Fallback threshold: 1-src=0.35, 2-src=0.45
+======================================================================
+[  1/80] Sample   4: 1-src RMSE=0.1510 sims= 46 time=26.7s [OK]
+[  2/80] Sample   2: 1-src RMSE=0.0389 sims= 46 time=29.0s [OK]
+[  3/80] Sample   1: 1-src RMSE=0.1023 sims= 47 time=29.3s [OK][NM]
+[  4/80] Sample   5: 1-src RMSE=0.1830 sims= 46 time=36.0s [OK]
+[  5/80] Sample   6: 1-src RMSE=0.1144 sims= 46 time=36.4s [OK][NM]
+[  6/80] Sample   3: 1-src RMSE=0.1510 sims= 47 time=37.9s [OK][NM]
+[  7/80] Sample   0: 1-src RMSE=0.2005 sims= 47 time=39.3s [OK]
+[  8/80] Sample   8: 1-src RMSE=0.0996 sims= 47 time=29.5s [OK][NM]
+[  9/80] Sample   9: 1-src RMSE=0.1781 sims= 46 time=37.6s [OK][NM]
+[ 10/80] Sample  12: 1-src RMSE=0.1541 sims= 46 time=29.3s [OK][NM]
+[ 11/80] Sample  10: 1-src RMSE=0.1561 sims= 46 time=41.1s [OK]
+[ 12/80] Sample  11: 1-src RMSE=0.0392 sims= 46 time=44.5s [OK][NM]
+[ 13/80] Sample  13: 1-src RMSE=0.2821 sims= 46 time=44.0s [OK]
+[ 14/80] Sample   7: 1-src RMSE=0.1527 sims= 72 time=58.0s [OK][NM]
+[ 15/80] Sample  16: 1-src RMSE=0.1590 sims= 47 time=28.4s [OK][NM]
+[ 16/80] Sample  14: 1-src RMSE=0.1578 sims= 47 time=44.5s [OK][NM]
+[ 17/80] Sample  15: 1-src RMSE=0.0578 sims= 47 time=43.9s [OK][NM]
+[ 18/80] Sample  20: 1-src RMSE=0.0703 sims= 47 time=30.4s [OK]
+[ 19/80] Sample  21: 1-src RMSE=0.1100 sims= 47 time=27.4s [OK][NM]
+[ 20/80] Sample  17: 1-src RMSE=0.1024 sims= 46 time=46.2s [OK][NM]
+[ 21/80] Sample  18: 1-src RMSE=0.2492 sims= 47 time=44.7s [OK][NM]
+[ 22/80] Sample  19: 1-src RMSE=0.1023 sims= 47 time=42.4s [OK]
+[ 23/80] Sample  24: 1-src RMSE=0.1826 sims= 46 time=29.2s [OK][NM]
+[ 24/80] Sample  22: 1-src RMSE=0.1079 sims= 46 time=45.3s [OK][NM]
+[ 25/80] Sample  25: 1-src RMSE=0.1759 sims= 46 time=26.9s [OK][NM]
+[ 26/80] Sample  26: 1-src RMSE=0.1559 sims= 47 time=29.1s [OK][NM]
+[ 27/80] Sample  23: 1-src RMSE=0.1060 sims= 47 time=42.0s [OK][NM]
+[ 28/80] Sample  28: 1-src RMSE=0.1310 sims= 47 time=28.0s [OK][NM]
+[ 29/80] Sample  27: 1-src RMSE=0.1519 sims= 46 time=44.9s [OK][NM]
+[ 30/80] Sample  31: 1-src RMSE=0.1029 sims= 47 time=27.7s [OK][NM]
+[ 31/80] Sample  29: 1-src RMSE=0.0993 sims= 47 time=35.1s [OK][NM]
+[ 32/80] Sample  30: 1-src RMSE=0.1143 sims= 47 time=35.2s [OK][NM]
+[ 33/80] Sample  33: 2-src RMSE=0.1773 sims=120 time=68.5s [OK][NM]
+[ 34/80] Sample  35: 2-src RMSE=0.3682 sims=122 time=63.0s [OK][NM]
+[ 35/80] Sample  32: 2-src RMSE=0.0974 sims=120 time=81.9s [OK][NM]
+[ 36/80] Sample  37: 2-src RMSE=0.1534 sims=118 time=67.4s [OK][NM]
+[ 37/80] Sample  36: 2-src RMSE=0.3332 sims=120 time=94.9s [OK]
+[ 38/80] Sample  38: 2-src RMSE=0.1833 sims=118 time=100.3s [OK][NM]
+[ 39/80] Sample  34: 2-src RMSE=0.2397 sims=198 time=131.0s [OK][NM]
+[ 40/80] Sample  39: 2-src RMSE=0.2288 sims=118 time=64.5s [OK][NM]
+[ 41/80] Sample  40: 2-src RMSE=0.3059 sims=118 time=60.8s [OK][NM]
+[ 42/80] Sample  41: 2-src RMSE=0.1365 sims=120 time=63.4s [OK][NM]
+[ 43/80] Sample  43: 2-src RMSE=0.2447 sims=118 time=57.6s [OK][NM]
+[ 44/80] Sample  42: 2-src RMSE=0.2692 sims=118 time=90.8s [OK][NM]
+[ 45/80] Sample  44: 2-src RMSE=0.1414 sims=116 time=57.4s [OK][NM]
+[ 46/80] Sample  45: 2-src RMSE=0.4417 sims=122 time=58.4s [OK][NM]
+[ 47/80] Sample  47: 2-src RMSE=0.1208 sims=118 time=56.5s [OK]
+[ 48/80] Sample  48: 2-src RMSE=0.3281 sims=116 time=57.0s [OK][NM]
+[ 49/80] Sample  46: 2-src RMSE=0.1581 sims=118 time=86.4s [OK][NM]
+[ 50/80] Sample  49: 2-src RMSE=0.2984 sims=120 time=58.5s [OK][NM]
+[ 51/80] Sample  50: 2-src RMSE=0.1984 sims=118 time=58.1s [OK][NM]
+[ 52/80] Sample  51: 2-src RMSE=0.4490 sims=118 time=56.0s [OK]
+[ 53/80] Sample  53: 2-src RMSE=0.1306 sims=120 time=58.3s [OK][NM]
+[ 54/80] Sample  54: 2-src RMSE=0.3855 sims=122 time=59.8s [OK][NM]
+[ 55/80] Sample  52: 2-src RMSE=0.3891 sims=118 time=83.8s [OK][NM]
+[ 56/80] Sample  55: 2-src RMSE=0.1152 sims=120 time=56.9s [OK][NM]
+[ 57/80] Sample  57: 2-src RMSE=0.2634 sims=116 time=69.9s [OK]
+[ 58/80] Sample  59: 2-src RMSE=0.0640 sims=120 time=58.5s [OK][NM]
+[ 59/80] Sample  60: 2-src RMSE=0.1373 sims=116 time=57.5s [OK][NM]
+[ 60/80] Sample  56: 2-src RMSE=0.2106 sims=118 time=87.8s [OK]
+[ 61/80] Sample  61: 2-src RMSE=0.2563 sims=118 time=57.5s [OK]
+[ 62/80] Sample  58: 2-src RMSE=0.1183 sims=118 time=88.4s [OK][NM]
+[ 63/80] Sample  62: 2-src RMSE=0.3302 sims=120 time=89.1s [OK][NM]
+[ 64/80] Sample  63: 2-src RMSE=0.2964 sims=122 time=60.1s [OK][NM]
+[ 65/80] Sample  64: 2-src RMSE=0.1111 sims=120 time=60.3s [OK][NM]
+[ 66/80] Sample  66: 2-src RMSE=0.2855 sims=116 time=57.9s [OK][NM]
+[ 67/80] Sample  68: 2-src RMSE=0.2719 sims=116 time=58.3s [OK]
+[ 68/80] Sample  65: 2-src RMSE=0.2053 sims=120 time=90.3s [OK]
+[ 69/80] Sample  67: 2-src RMSE=0.1995 sims=118 time=88.2s [OK][NM]
+[ 70/80] Sample  70: 2-src RMSE=0.1245 sims=118 time=58.9s [OK][NM]
+[ 71/80] Sample  71: 2-src RMSE=0.4420 sims=118 time=58.5s [OK][NM]
+[ 72/80] Sample  72: 2-src RMSE=0.2371 sims=122 time=59.6s [OK][NM]
+[ 73/80] Sample  69: 2-src RMSE=0.2387 sims=118 time=88.5s [OK][NM]
+[ 74/80] Sample  73: 2-src RMSE=0.2332 sims=120 time=74.2s [OK][NM]
+[ 75/80] Sample  74: 2-src RMSE=0.4008 sims=120 time=58.3s [OK][NM]
+[ 76/80] Sample  77: 2-src RMSE=0.2297 sims=120 time=57.0s [OK][NM]
+[ 77/80] Sample  75: 2-src RMSE=0.1121 sims=118 time=72.4s [OK][NM]
+[ 78/80] Sample  79: 2-src RMSE=0.1373 sims=122 time=59.8s [OK][NM]
+[ 79/80] Sample  76: 2-src RMSE=0.1144 sims=116 time=86.1s [OK][NM]
+[ 80/80] Sample  78: 2-src RMSE=0.2220 sims=116 time=85.6s [OK][NM]
+
+======================================================================
+RESULTS: CMA-ES -> NM Sequential Handoff
+======================================================================
+RMSE:             0.193438
+Submission Score: 1.1132
+Total Time:       679.7s (11.3 min)
+Projected (400):  56.6 min
+
+  1-source: RMSE=0.1356 (n=32)
+  2-source: RMSE=0.2320 (n=48)
+
+NM refinement used: 64/80 samples
+Fallback triggered: 2/80 samples
+
+Target: Score >= 1.13 AND time <= 55 min
+Baseline (robust_fallback): 1.1247 @ 57.2 min
+This run:                   1.1132 @ 56.6 min
+Delta:                      -0.0115 score, -0.6 min
+
+STATUS: PARTIAL - Time OK but score dropped
+======================================================================
+

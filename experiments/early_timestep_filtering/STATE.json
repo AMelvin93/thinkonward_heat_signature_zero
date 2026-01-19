@@ -1,0 +1,42 @@
+{
+  "experiment_id": "EXP_TEMPORAL_FIDELITY_001",
+  "worker": "W2",
+  "status": "in_progress",
+  "started_at": "2026-01-19T03:00:00Z",
+  "family": "temporal_fidelity",
+  "hypothesis": "Simulating first 25-50% of timesteps maintains spatial optimization landscape while reducing simulation cost by 2-4x",
+  "feasibility_check": {
+    "completed": true,
+    "correlation_test": {
+      "25_percent_timesteps": {
+        "pearson_r": 0.9549,
+        "spearman_r": 0.8989,
+        "best_in_top3_pct": 95,
+        "best_preserved_pct": 65,
+        "viable": true
+      },
+      "50_percent_timesteps": {
+        "pearson_r": 0.9862,
+        "spearman_r": 0.9571,
+        "best_in_top3_pct": 100,
+        "best_preserved_pct": 85,
+        "viable": true
+      },
+      "75_percent_timesteps": {
+        "pearson_r": 0.9957,
+        "spearman_r": 0.9859,
+        "best_in_top3_pct": 100,
+        "best_preserved_pct": 95,
+        "viable": true
+      }
+    },
+    "conclusion": "25% timesteps gives 0.90 Spearman correlation with 4x speedup potential. 50% gives 0.96 correlation with 2x speedup. Both viable."
+  },
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": {
+    "timestep_fraction": 0.25,
+    "note": "Start with 25% for max speedup, refine if needed"
+  },
+  "summary_written": false
+}

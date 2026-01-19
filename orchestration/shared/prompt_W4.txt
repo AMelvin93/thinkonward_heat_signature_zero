@@ -116,7 +116,15 @@ Update coordination.json:
 - workers.W4.status = "running"
 - workers.W4.current_experiment = "<experiment_id>"
 
-CREATE experiments/<name>/STATE.json:
+**CRITICAL: FOLDER NAMING CONVENTION**
+The folder name MUST be the experiment's `name` field from experiment_queue.json.
+Example: If experiment has `"name": "lq_cma_es_builtin"`, create folder:
+  `/workspace/experiments/lq_cma_es_builtin/`
+
+DO NOT use shortened names, ID numbers, or alternative names.
+W0 uses the `name` field to find your STATE.json files.
+
+CREATE experiments/<name>/STATE.json (where <name> = experiment's "name" field):
 ```json
 {
   "experiment_id": "<id>",

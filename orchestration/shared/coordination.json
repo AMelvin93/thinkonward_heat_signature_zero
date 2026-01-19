@@ -1,11 +1,11 @@
 {
-  "version": "4.0",
-  "last_updated": "2026-01-18T21:00:00Z",
+  "version": "5.0",
+  "last_updated": "2026-01-19T02:50:00Z",
   "mode": "EXPLORATION",
 
   "resume_tracking": {
-    "summaries_analyzed": [],
-    "last_cycle_timestamp": null,
+    "summaries_analyzed": ["ensemble_voting", "cluster_transfer", "lq_cma_es_builtin", "bayesian_optimization_gp", "cmaes_to_nm_sequential", "multi_fidelity_pyramid", "fast_source_count_detection"],
+    "last_cycle_timestamp": "2026-01-19T00:37:00Z",
     "notes": "W0 tracks which SUMMARY.md files have been analyzed to avoid re-processing on resume"
   },
 
@@ -38,37 +38,116 @@
   },
 
   "exploration_progress": {
-    "total_experiments": 48,
+    "total_experiments": 56,
     "experiments_per_family": {
       "evolutionary_cmaes": 34,
       "evolutionary_other": 3,
       "gradient_based": 4,
       "gradient_free_local": 6,
       "surrogate": 2,
+      "surrogate_lq": 1,
       "ensemble": 1,
       "decomposition": 2,
-      "meta_learning": 0
+      "meta_learning": 3,
+      "hybrid": 1,
+      "bayesian_opt": 1,
+      "multi_fidelity": 1
     },
-    "families_exhausted": ["evolutionary_cmaes", "gradient_based", "evolutionary_other"],
-    "families_to_explore": ["surrogate_lq", "ensemble", "decomposition", "bayesian_opt", "meta_learning"]
+    "families_exhausted": ["evolutionary_cmaes", "gradient_based", "evolutionary_other", "ensemble", "decomposition", "meta_learning", "surrogate_lq", "bayesian_opt", "multi_fidelity", "hybrid", "preprocessing"],
+    "families_to_explore": ["surrogate_pod", "temporal_fidelity"]
   },
 
   "experiments_in_progress": {
-    "EXP_ENSEMBLE_001": {
-      "worker": "W1",
-      "started": "2026-01-18T16:18:00Z",
-      "family": "ensemble",
-      "status": "IMPLEMENTATION COMPLETE (707 lines) - experiments/ensemble_voting/"
-    },
-    "EXP_FAST_ICA_001": {
-      "worker": "W1",
-      "started": "2026-01-18T16:20:00Z",
-      "family": "decomposition",
-      "status": "IMPLEMENTATION COMPLETE (787 lines) - experiments/fast_ica/"
+    "EXP_TEMPORAL_FIDELITY_001": {
+      "worker": "W2",
+      "started": "2026-01-19T03:00:00Z",
+      "family": "temporal_fidelity",
+      "status": "Starting - Early timestep filtering for faster candidate evaluation"
     }
   },
 
   "experiments_completed": [
+    {
+      "id": "EXP_WS_CMAES_001",
+      "worker": "W1",
+      "score": 0.276,
+      "time_min": 65.8,
+      "result": "FAILED",
+      "family": "meta_learning",
+      "note": "WS-CMA-ES causes divergence. Best: RMSE 0.276 @ 66 min (62% worse than baseline). Probing wastes budget. meta_learning family EXHAUSTED."
+    },
+    {
+      "id": "EXP_FAST_SOURCE_DETECT_001",
+      "worker": "W2",
+      "score": null,
+      "time_min": null,
+      "result": "ABORTED",
+      "family": "preprocessing",
+      "note": "INVALID PREMISE - n_sources already in sample data. Detection not needed. Sensor-based features give only 67% accuracy, far below 95% target."
+    },
+    {
+      "id": "EXP_SEQUENTIAL_HANDOFF_001",
+      "worker": "W2",
+      "score": 1.1132,
+      "time_min": 56.6,
+      "result": "FAILED",
+      "family": "hybrid",
+      "note": "Sequential CMA-ES to NM handoff FAILED. Best in-budget 1.1132 is WORSE than baseline 1.1247. NM improves score (+0.0192) when given time, but time overhead is prohibitive. When reduced to fit budget, score drops below baseline."
+    },
+    {
+      "id": "EXP_MULTIFID_OPT_001",
+      "worker": "W1",
+      "score": 0.259,
+      "time_min": 44.9,
+      "result": "FAILED",
+      "family": "multi_fidelity",
+      "note": "Multi-fidelity pyramid FAILED. Coarse grid RMSE landscape differs from fine grid. Best in-budget: RMSE 0.259 @ 45 min (45% worse than baseline). Solutions don't transfer between resolutions."
+    },
+    {
+      "id": "EXP_BAYESIAN_OPT_001",
+      "worker": "W1",
+      "score": 0.31,
+      "time_min": 57.6,
+      "result": "FAILED",
+      "family": "bayesian_opt",
+      "note": "GP surrogate doesn't model thermal RMSE landscape. Run 1: 91% worse 1-src, 60% worse 2-src (in budget). Run 2: 39% worse 1-src, 31% worse 2-src but 45% over budget. CMA-ES's covariance adaptation is essential."
+    },
+    {
+      "id": "EXP_LQ_CMAES_001",
+      "worker": "W1",
+      "score": 0.253,
+      "time_min": 64.1,
+      "result": "FAILED",
+      "family": "surrogate_lq",
+      "note": "fmin_lq_surr API mismatch - returns ONE solution but we need MULTIPLE candidates for diversity scoring. 29-71% worse RMSE, 7-17% slower than baseline."
+    },
+    {
+      "id": "EXP_TRANSFER_LEARN_001",
+      "worker": "W2",
+      "score": 1.0804,
+      "time_min": 59.7,
+      "result": "FAILED",
+      "family": "meta_learning",
+      "note": "Cluster transfer FAILED - sensor features don't predict solution similarity. Inverse problem is too non-linear."
+    },
+    {
+      "id": "EXP_ENSEMBLE_001",
+      "worker": "W1",
+      "score": 1.0972,
+      "time_min": 347.9,
+      "result": "FAILED",
+      "family": "ensemble",
+      "note": "Ensemble 5.8x over budget. Focus on REDUCING simulations, not adding optimizers."
+    },
+    {
+      "id": "EXP_FAST_ICA_001",
+      "worker": "W2",
+      "score": 1.1046,
+      "time_min": 151.1,
+      "result": "FAILED",
+      "family": "decomposition",
+      "note": "Coarse-to-fine adds massive overhead."
+    },
     {
       "id": "EXP_SURROGATE_NN_001",
       "worker": "W1",
@@ -109,28 +188,28 @@
 
   "workers": {
     "W1": {
-      "status": "active",
-      "current_experiment": "EXP_ENSEMBLE_001 + EXP_FAST_ICA_001",
-      "last_completed": "EXP_SURROGATE_NN_001",
-      "directive": "RUN both ensemble_voting and fast_ica tests"
-    },
-    "W2": {
       "status": "idle",
       "current_experiment": null,
-      "last_completed": "EXP_COBYLA_REFINE_001",
-      "directive": "HIGH PRIORITY: Implement lq-CMA-ES using pycma's built-in cma.fmin_lq_surr (linear-quadratic surrogate). This is a LOW-HANGING FRUIT that could give 2-6x speedup."
+      "last_completed": "EXP_WS_CMAES_001",
+      "directive": "Queue empty. Waiting for new experiments."
+    },
+    "W2": {
+      "status": "active",
+      "current_experiment": "EXP_TEMPORAL_FIDELITY_001",
+      "last_completed": "EXP_FAST_SOURCE_DETECT_001",
+      "directive": "Testing early timestep filtering for faster candidate evaluation"
     },
     "W3": {
       "status": "idle",
       "current_experiment": null,
       "last_completed": null,
-      "directive": "Implement Bayesian Optimization using scikit-optimize (skopt) as alternative to CMA-ES. Use GP surrogate with EI acquisition. Compare on 4-6 parameter space."
+      "directive": "Pick next highest-priority AVAILABLE experiment from queue"
     },
     "W4": {
       "status": "idle",
       "current_experiment": null,
       "last_completed": null,
-      "directive": "Implement multi-fidelity optimization with proper grid ratios: 25x12 (coarse) -> 50x25 (medium) -> 100x50 (fine). Literature suggests 4:1 cell ratio gives 5-10x speedup."
+      "directive": "Pick next highest-priority AVAILABLE experiment from queue"
     }
   },
 
@@ -141,40 +220,93 @@
     "SURROGATE NN FAILED: Online learning doesn't work with parallel processing",
     "Sigma-time tradeoff is FUNDAMENTAL - no free lunch",
     "L-BFGS-B makes gradient methods 10-50x more expensive (finite differences)",
-    "------- NEW FROM W0 RESEARCH SESSION 2026-01-18 -------",
+    "------- W0 RESEARCH SESSION 2026-01-18 -------",
     "DISCOVERY: pycma has BUILT-IN lq-CMA-ES (cma.fmin_lq_surr) - global quadratic surrogate",
     "Literature shows lq-CMA-ES achieves 2-6x speedup on benchmark functions",
     "Quadratic surrogate is only used when rank correlation is high (adaptive)",
-    "DISCOVERY: POD (Proper Orthogonal Decomposition) can speed up simulations 70-100x",
-    "POD builds basis functions from snapshots, reduces DOFs while preserving accuracy",
-    "Paper: POD-based inverse algorithms 'more than 83 times faster than CFD'",
-    "DISCOVERY: Adjoint method enables O(1) gradient computation regardless of parameters",
-    "This could make L-BFGS-B viable - but requires implementing adjoint solver (complex)",
-    "DISCOVERY: Multi-fidelity with 4:1 cell ratio gives 5-10x model time speedup",
-    "Best practice: 10^3 coarse cells vs 10^4 fine cells for thermal problems",
-    "Our grid: 100x50=5000 cells, optimal coarse: 25x12=300 cells (17x fewer)",
-    "PRIORITY ORDER: (1) lq-CMA-ES (easiest), (2) multi-fidelity, (3) Bayesian opt, (4) POD",
-    "------- NEW FROM W0 RESEARCH CYCLE 2 -------",
+    "------- W1 EXP_LQ_CMAES_001 RESULTS (2026-01-19) -------",
+    "lq-CMA-ES FAILED: API mismatch - fmin_lq_surr returns ONE solution, we need MULTIPLE candidates",
+    "RMSE 29-71% worse than baseline, 7-17% slower - NO benefit at all",
+    "Fundamental issue: High-level API doesn't expose intermediate population solutions",
+    "Would need to use SurrogatePopulation with ask/tell interface - loses 'built-in' advantage",
+    "------- W1 EXP_BAYESIAN_OPT_001 RESULTS (2026-01-19) -------",
+    "Bayesian Optimization FAILED: GP surrogate doesn't model thermal RMSE landscape well",
+    "Run 1: 91% worse 1-src RMSE, 60% worse 2-src RMSE (in budget at 57.6 min)",
+    "Run 2: 39% worse 1-src, 31% worse 2-src but 45% over budget (87.4 min)",
+    "Fundamental issue: The RMSE landscape is complex/multimodal, GP kernel doesn't capture local structure",
+    "CMA-ES's adaptive covariance matrix is ESSENTIAL - captures search landscape through population sampling",
+    "BO's Expected Improvement acquisition gets stuck in suboptimal local minima",
+    "Recommendation: ABANDON surrogate-based algorithm replacements. Focus on optimizing WITHIN CMA-ES framework.",
+    "------- W0 RESEARCH CYCLE 2 -------",
     "DISCOVERY: Warm Starting CMA-ES (WS-CMA-ES) from AAAI 2021",
     "WS-CMA-ES transfers prior knowledge through CMA-ES initialization",
     "Implementation available at CyberAgentAILab/cmaes Python library",
     "Uses get_warm_start_mgd() to estimate promising distribution from source tasks",
-    "Could DRAMATICALLY accelerate transfer learning experiment!",
     "DISCOVERY: Fast source count estimation is possible",
     "Simple peak detection on thermal images can estimate 1 vs 2 sources",
-    "scipy.ndimage.maximum_filter or similar - count peaks above threshold",
-    "Could save time by NOT running 2-source optimizer on 1-source samples",
-    "ThermoMesh+ThermoNet achieves 99% source localization accuracy with ML",
-    "INSIGHT: Currently we may be wasting time trying 2-source on 1-source samples"
+    "------- W0 CYCLE 3: ENSEMBLE_VOTING ANALYSIS (2026-01-18T22:00) -------",
+    "ENSEMBLE FAILED BADLY: 1.0972 @ 347.9 min (5.8x over budget, WORSE score than baseline)",
+    "KEY INSIGHT: Running multiple optimizers MULTIPLIES simulation count - fundamentally unworkable",
+    "NELDER-MEAD WINS 74% but adds massive overhead when run from multiple random inits",
+    "NM SHOULD BE USED FOR REFINEMENT ONLY (single init from CMA-ES best) not full optimization",
+    "BASELINE IS WELL-TUNED: Complex ensembles do NOT beat well-tuned CMA-ES",
+    "CRITICAL PATH: Focus on REDUCING simulations per sample, not adding more optimization paths",
+    "------- W1 EXP_MULTIFID_OPT_001 RESULTS (2026-01-19) -------",
+    "Multi-fidelity pyramid FAILED: Coarse grid RMSE landscape differs from fine grid",
+    "Run 1 (25x12 coarse): RMSE 0.259 @ 45 min (in budget but 45% worse than baseline)",
+    "Run 2 (30x15 coarse): RMSE 0.232 @ 92 min (better accuracy but 53% over budget)",
+    "Run 3 (same as Run 2): RMSE 0.304 @ 73 min (high variance, 79% worse)",
+    "Fundamental issue: The RMSE landscape changes with grid resolution",
+    "Optimal source positions on coarse grid DON'T correspond to optimal on fine grid",
+    "ABANDON multi-fidelity via grid coarsening for inverse problems",
+    "Alternative to explore: fewer timesteps (temporal fidelity) instead of spatial coarsening",
+    "------- W2 EXP_SEQUENTIAL_HANDOFF_001 RESULTS (2026-01-19) -------",
+    "Sequential CMA-ES to NM handoff FAILED: Best in-budget score 1.1132 is WORSE than baseline 1.1247",
+    "Run 2 (fine NM, 8/12 iters): Score 1.1439 @ 126.5 min - EXCELLENT score but 2x over budget",
+    "Run 3 (coarse NM, 12/18 iters): Score 1.1331 @ 108.3 min - still 48 min over budget",
+    "Run 4 (minimal coarse NM, 3/5 iters): Score 1.1132 @ 56.6 min - IN BUDGET but BELOW baseline",
+    "Fundamental issue: CMA-ES already uses full time budget. No room for NM.",
+    "NM improves score (+0.0192) when given adequate iterations, but time overhead prohibitive",
+    "Reducing NM to fit budget loses accuracy benefit - score drops BELOW baseline",
+    "ABANDON hybrid/sequential handoff approaches - adding ANY post-processing blows budget",
+    "------- W2 EXP_FAST_SOURCE_DETECT_001 RESULTS (2026-01-19) -------",
+    "Fast source detection ABORTED: INVALID PREMISE - n_sources already in sample data",
+    "Baseline uses sample['n_sources'] directly - detection is unnecessary",
+    "Even if needed, sensor-based features give only 67% accuracy (target was 95%)",
+    "Simple heuristics: 57.5%, Random Forest: 67.5% - not separable from sparse sensors",
+    "ABORT early when hypothesis is flawed - saved significant implementation time",
+    "------- W0 DEEP RESEARCH CYCLE 2026-01-19T00:37:00Z -------",
+    "SYNTHESIS: Spatial coarsening fails (multi-fid), post-processing fails (NM handoff)",
+    "KEY INSIGHT: Both experiments show adding/changing work is ineffective",
+    "NEW DIRECTION: Temporal fidelity (fewer timesteps, same spatial grid)",
+    "DISCOVERY: Samples have 800-1200 timesteps - significant speedup potential",
+    "RESEARCH: Early timestep stopping can filter candidates (heat eq approximates steady-state over time)",
+    "RESEARCH: Lyapunov equation methods can avoid time-consuming transient analysis during optimization",
+    "RESEARCH: Multi-level CMA-ES can achieve 10x speedup with proper fidelity hierarchy",
+    "HYPOTHESIS: Simulating first 25-50% of timesteps maintains spatial landscape while reducing cost",
+    "SOURCE: https://arxiv.org/html/2402.09638v1 - Multi-Fidelity Methods Survey",
+    "SOURCE: https://www.sciencedirect.com/science/article/abs/pii/S0378778811000533 - Rapid PDE optimization",
+    "NEW EXPERIMENT: EXP_TEMPORAL_FIDELITY_001 - Use reduced timesteps for candidate filtering",
+    "------- W1 EXP_WS_CMAES_001 RESULTS (2026-01-19) -------",
+    "WS-CMA-ES FAILED: Probing phase wastes budget, warm start causes divergence",
+    "Run 1 (3 probing, 15/25 main): RMSE 0.276 @ 66 min (over budget, 62% worse)",
+    "Run 2 (2 probing, 20/32 main): RMSE 0.460 @ 23 min (in budget, 170% worse)",
+    "Fundamental issue: Each sample has unique source positions - no shared landscape structure",
+    "Probing from random inits doesn't provide useful warm start information",
+    "get_warm_start_mgd() combines poor probes into even worse starting distribution",
+    "meta_learning family EXHAUSTED: cluster_transfer + WS-CMA-ES both FAILED",
+    "CONCLUSION: Transfer learning between samples is NOT viable for inverse heat problems"
   ],
 
   "research_sources": [
     "https://github.com/CMA-ES/pycma - pycma with lq-CMA-ES support",
+    "https://github.com/CMA-ES/lq-cma - Official lq-CMA-ES implementation",
+    "https://hal.science/hal-05035436/document - Rank-lq-CMA-ES GECCO'25",
     "https://dl.acm.org/doi/10.1145/3321707.3321842 - Global surrogate assisted CMA-ES",
     "https://www.researchgate.net/publication/228434549 - POD for inverse problems",
-    "https://www.sciencedirect.com/science/article/abs/pii/S0045782521001468 - Adjoint method tutorial",
+    "https://www.nature.com/articles/s41467-025-63076-z - One-shot operator learning Nature Comms 2025",
     "https://www.frontiersin.org/articles/10.3389/fams.2022.1076296 - Bayesian optimization for expensive black-box"
   ],
 
-  "notes": "V3.2 W0 RESEARCH CYCLE: Found 4 promising new approaches from literature. pycma's lq-CMA-ES is lowest-hanging fruit (built-in, 2-6x speedup potential). Also added Bayesian optimization and multi-fidelity experiments."
+  "notes": "V5.0 W1 completed EXP_WS_CMAES_001 (FAILED). meta_learning family EXHAUSTED. W2 running temporal_fidelity. Remaining families: surrogate_pod, temporal_fidelity."
 }

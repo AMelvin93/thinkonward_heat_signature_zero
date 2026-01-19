@@ -1,0 +1,90 @@
+{
+  "experiment_id": "EXP_WS_CMAES_001",
+  "worker": "W1",
+  "status": "done",
+  "result": "FAILED",
+  "started_at": "2026-01-19T01:45:00Z",
+  "completed_at": "2026-01-19T02:15:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "n_probing_starts": 3,
+        "probing_fevals": 5,
+        "main_fevals_1src": 15,
+        "main_fevals_2src": 25,
+        "ws_gamma": 0.1,
+        "ws_alpha": 0.1,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "early_fraction": 0.3
+      },
+      "rmse_mean": 0.27594736348047694,
+      "time_min": 65.83038900295894,
+      "in_budget": false,
+      "mlflow_id": "85600c5927634c699bf5cf84ffa91ccc",
+      "rmse_mean_1src": 0.29174793597594184,
+      "rmse_mean_2src": 0.2654136484835004,
+      "timestamp": "2026-01-19T00:47:22.929380"
+    },
+    {
+      "run": 2,
+      "config": {
+        "n_probing_starts": 2,
+        "probing_fevals": 3,
+        "main_fevals_1src": 20,
+        "main_fevals_2src": 32,
+        "ws_gamma": 0.1,
+        "ws_alpha": 0.1,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "early_fraction": 0.3
+      },
+      "rmse_mean": 0.45987766959049825,
+      "time_min": 23.33777705828349,
+      "in_budget": true,
+      "mlflow_id": "8ac369226bd14898b96239b089aa0194",
+      "rmse_mean_1src": 0.3366209531475851,
+      "rmse_mean_2src": 0.5420488138857736,
+      "timestamp": "2026-01-19T00:52:48.408217"
+    }
+  ],
+  "best_in_budget": {
+    "run": 2,
+    "rmse_mean": 0.45987766959049825,
+    "time_min": 23.33777705828349,
+    "config": {
+      "n_probing_starts": 2,
+      "probing_fevals": 3,
+      "main_fevals_1src": 20,
+      "main_fevals_2src": 32,
+      "ws_gamma": 0.1,
+      "ws_alpha": 0.1,
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "early_fraction": 0.3
+    }
+  },
+  "best_overall": {
+    "run": 1,
+    "rmse_mean": 0.27594736348047694,
+    "time_min": 65.83038900295894,
+    "rmse_mean_1src": 0.29174793597594184,
+    "rmse_mean_2src": 0.2654136484835004
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "baseline_to_beat": {
+    "score": 1.1247,
+    "time_min": 57.2,
+    "rmse_mean_1src": 0.14,
+    "rmse_mean_2src": 0.21
+  },
+  "success_criteria": {
+    "score_min": 1.1247,
+    "time_max_min": 55,
+    "note": "Same score with 20%+ time reduction OR better score in same time"
+  },
+  "abort_criteria": "Warm start causes divergence or negative transfer",
+  "conclusion": "FAILED - WS-CMA-ES doesn't work for thermal inverse problems. Each sample is unique with no shared landscape structure. Probing wastes budget. meta_learning family exhausted."
+}

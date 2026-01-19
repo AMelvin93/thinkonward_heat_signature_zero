@@ -1,0 +1,26 @@
+{
+  "experiment_id": "EXP_FAST_SOURCE_DETECT_001",
+  "worker": "W2",
+  "status": "aborted",
+  "started_at": "2026-01-19T02:10:00Z",
+  "completed_at": "2026-01-19T02:25:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "abort_reason": "INVALID PREMISE - The baseline already has access to n_sources from sample data (sample['n_sources']). Detection is unnecessary. Additionally, detection accuracy from sensor features is only 57-67%, far below the 95% success criteria.",
+  "analysis": {
+    "feature_analysis": {
+      "var_sensors": "NO separation between 1-src and 2-src",
+      "temp_range": "NO separation",
+      "avg_corr": "NO separation",
+      "onset_spread": "NO separation",
+      "entropy": "NO separation"
+    },
+    "heuristic_accuracy": "57.5%",
+    "ml_classifier_accuracy": "67.5% +/- 10.8%",
+    "baseline_majority": "60% (always guess 2)",
+    "success_criteria": ">=95% accuracy",
+    "conclusion": "Sensor-based features don't carry enough information to distinguish 1-source from 2-source. The problem is fundamentally ill-posed with sparse sensor data."
+  },
+  "summary_written": true
+}

@@ -1,0 +1,92 @@
+{
+  "experiment_id": "EXP_BAYESIAN_OPT_001",
+  "worker": "W1",
+  "status": "completed",
+  "result": "FAILED",
+  "started_at": "2026-01-19T00:15:00Z",
+  "completed_at": "2026-01-19T00:40:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "n_calls_1src": 15,
+        "n_calls_2src": 25,
+        "n_initial_points": 5,
+        "acquisition_function": "EI",
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "rmse_mean": 0.3085,
+      "time_min": 57.6,
+      "in_budget": true,
+      "mlflow_id": "26173f859b194e8d9f96d9e2645bf2cf",
+      "rmse_mean_1src": 0.2673,
+      "rmse_mean_2src": 0.3360,
+      "timestamp": "2026-01-18T20:17:31Z",
+      "notes": "In budget but RMSE 2x worse than baseline"
+    },
+    {
+      "run": 2,
+      "config": {
+        "n_calls_1src": 25,
+        "n_calls_2src": 40,
+        "n_initial_points": 8,
+        "acquisition_function": "EI",
+        "refine_maxiter": 5,
+        "refine_top_n": 3
+      },
+      "rmse_mean": 0.2432,
+      "time_min": 87.4,
+      "in_budget": false,
+      "mlflow_id": "52052e54b2e34bda93b132c991eb1868",
+      "rmse_mean_1src": 0.1948,
+      "rmse_mean_2src": 0.2754,
+      "timestamp": "2026-01-18T20:35:50Z",
+      "notes": "More iterations improved RMSE but massively over budget"
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "rmse_mean": 0.3085,
+    "time_min": 57.6,
+    "config": {
+      "n_calls_1src": 15,
+      "n_calls_2src": 25
+    }
+  },
+  "best_overall": {
+    "run": 2,
+    "rmse_mean": 0.2432,
+    "time_min": 87.4,
+    "rmse_mean_1src": 0.1948,
+    "rmse_mean_2src": 0.2754
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "baseline_to_beat": {
+    "score": 1.1247,
+    "time_min": 57.2,
+    "rmse_mean_1src": 0.14,
+    "rmse_mean_2src": 0.21
+  },
+  "success_criteria": {
+    "score_min": 1.12,
+    "time_max_min": 55
+  },
+  "failure_analysis": {
+    "why_failed": [
+      "1. GP surrogate doesn't model the RMSE landscape well for thermal inverse problems",
+      "2. Even with more iterations (run 2), RMSE was 31-39% worse than baseline",
+      "3. More BO iterations dramatically increased time (87.4 min vs target 60)",
+      "4. CMA-ES's covariance adaptation is fundamentally better suited for this problem",
+      "5. BO's Expected Improvement acquisition often converged to suboptimal local minima"
+    ],
+    "comparison_vs_baseline": {
+      "run1_rmse_1src": "0.27 vs 0.14 baseline (91% worse)",
+      "run1_rmse_2src": "0.34 vs 0.21 baseline (60% worse)",
+      "run2_rmse_1src": "0.19 vs 0.14 baseline (39% worse)",
+      "run2_rmse_2src": "0.28 vs 0.21 baseline (31% worse)",
+      "run2_time": "87 min vs 57 min baseline (53% slower)"
+    }
+  }
+}

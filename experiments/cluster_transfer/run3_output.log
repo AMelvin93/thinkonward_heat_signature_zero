@@ -1,0 +1,131 @@
+
+Cluster Transfer Optimizer
+======================================================================
+Samples: 80, Workers: 7
+Fevals: full=20/36, transfer=18
+Sigma: full=0.15/0.2, transfer=0.15
+Clusters: 1-src=4, 2-src=6
+Fallback threshold: 1-src=0.35, 2-src=0.45
+======================================================================
+
+[Phase 1] Clustering samples...
+  Created 10 clusters, 10 representatives
+
+[Phase 2] Optimizing 10 representatives...
+  Rep sample   2: 1-src RMSE=0.0061 time=27.5s [OK]
+  Rep sample  18: 1-src RMSE=0.1357 time=44.1s [OK]
+  Rep sample  19: 1-src RMSE=0.0997 time=45.1s [OK]
+  Rep sample  31: 1-src RMSE=0.1026 time=30.1s [OK]
+  Rep sample  45: 2-src RMSE=0.1759 time=81.6s [OK]
+  Rep sample  44: 2-src RMSE=0.1598 time=81.9s [OK]
+  Rep sample  75: 2-src RMSE=0.1178 time=103.3s [OK]
+  Rep sample  38: 2-src RMSE=0.1498 time=112.7s [OK]
+  Rep sample  63: 2-src RMSE=0.4260 time=77.6s [OK]
+  Rep sample  52: 2-src RMSE=0.2193 time=116.8s [OK]
+
+[Phase 3] Optimizing 70 samples with transfer...
+[ 11/80] Sample   1: 1-src RMSE=0.1023 sims= 60 time=31.5s [OK][T]
+[ 12/80] Sample   4: 1-src RMSE=0.1512 sims= 61 time=33.0s [OK][T]
+[ 13/80] Sample   3: 1-src RMSE=0.2255 sims= 62 time=41.5s [OK][T]
+[ 14/80] Sample   6: 1-src RMSE=0.1195 sims= 60 time=39.4s [OK][T]
+[ 15/80] Sample   5: 1-src RMSE=0.1732 sims= 62 time=40.5s [OK][T]
+[ 16/80] Sample   0: 1-src RMSE=0.1416 sims= 62 time=41.0s [OK][T]
+[ 17/80] Sample   8: 1-src RMSE=0.0985 sims= 61 time=32.3s [OK][T]
+[ 18/80] Sample   9: 1-src RMSE=0.1963 sims= 61 time=40.7s [OK][T]
+[ 19/80] Sample  12: 1-src RMSE=0.1496 sims= 61 time=34.0s [OK][T]
+[ 20/80] Sample   7: 1-src RMSE=0.4428 sims=103 time=78.4s [OK][T]
+[ 21/80] Sample  10: 1-src RMSE=0.1516 sims= 62 time=47.7s [OK][T]
+[ 22/80] Sample  11: 1-src RMSE=0.0368 sims= 61 time=52.4s [OK][T]
+[ 23/80] Sample  13: 1-src RMSE=0.1088 sims= 61 time=52.8s [OK][T]
+[ 24/80] Sample  16: 1-src RMSE=0.1566 sims= 61 time=33.8s [OK][T]
+[ 25/80] Sample  14: 1-src RMSE=0.1666 sims= 60 time=47.2s [OK][T]
+[ 26/80] Sample  20: 1-src RMSE=0.1215 sims= 60 time=30.2s [OK][T]
+[ 27/80] Sample  21: 1-src RMSE=0.2779 sims= 60 time=30.7s [OK][T]
+[ 28/80] Sample  15: 1-src RMSE=0.0745 sims= 61 time=49.8s [OK][T]
+[ 29/80] Sample  17: 1-src RMSE=0.1021 sims= 61 time=44.6s [OK][T]
+[ 30/80] Sample  22: 1-src RMSE=0.1200 sims= 62 time=44.5s [OK][T]
+[ 31/80] Sample  24: 1-src RMSE=0.1721 sims= 60 time=29.4s [OK][T]
+[ 32/80] Sample  25: 1-src RMSE=0.1231 sims= 61 time=28.8s [OK][T]
+[ 33/80] Sample  26: 1-src RMSE=0.1936 sims= 62 time=26.9s [OK][T]
+[ 34/80] Sample  23: 1-src RMSE=0.1074 sims= 61 time=42.2s [OK][T]
+[ 35/80] Sample  28: 1-src RMSE=0.1165 sims= 61 time=29.1s [OK][T]
+[ 36/80] Sample  27: 1-src RMSE=0.1511 sims= 60 time=42.2s [OK][T]
+[ 37/80] Sample  29: 1-src RMSE=0.0992 sims= 62 time=38.0s [OK][T]
+[ 38/80] Sample  30: 1-src RMSE=0.1342 sims= 60 time=37.1s [OK][T]
+[ 39/80] Sample  33: 2-src RMSE=0.2510 sims=104 time=51.7s [OK][T]
+[ 40/80] Sample  35: 2-src RMSE=0.1995 sims=106 time=51.9s [OK][T]
+[ 41/80] Sample  32: 2-src RMSE=0.0815 sims=106 time=59.8s [OK][T]
+[ 42/80] Sample  34: 2-src RMSE=inf sims=  0 time=62.4s [ERR][T]
+[ 43/80] Sample  37: 2-src RMSE=0.1589 sims=106 time=48.8s [OK][T]
+[ 44/80] Sample  39: 2-src RMSE=0.3307 sims=106 time=49.7s [OK][T]
+[ 45/80] Sample  36: 2-src RMSE=0.1921 sims=106 time=77.3s [OK][T]
+[ 46/80] Sample  40: 2-src RMSE=0.3611 sims=104 time=52.7s [OK][T]
+[ 47/80] Sample  41: 2-src RMSE=0.2591 sims=102 time=52.0s [OK][T]
+[ 48/80] Sample  43: 2-src RMSE=0.1838 sims=106 time=55.2s [OK][T]
+[ 49/80] Sample  47: 2-src RMSE=0.1241 sims=104 time=58.1s [OK][T]
+[ 50/80] Sample  42: 2-src RMSE=inf sims=  0 time=87.3s [ERR][T]
+[ 51/80] Sample  48: 2-src RMSE=0.4214 sims=104 time=57.3s [OK][T]
+[ 52/80] Sample  46: 2-src RMSE=0.3230 sims=104 time=87.6s [OK][T]
+[ 53/80] Sample  49: 2-src RMSE=0.2572 sims=108 time=59.4s [OK][T]
+[ 54/80] Sample  50: 2-src RMSE=0.2020 sims=106 time=58.3s [OK][T]
+[ 55/80] Sample  51: 2-src RMSE=0.2665 sims=106 time=57.6s [OK][T]
+[ 56/80] Sample  53: 2-src RMSE=0.3459 sims=102 time=55.2s [OK][T]
+[ 57/80] Sample  54: 2-src RMSE=0.1696 sims=108 time=61.8s [OK][T]
+[ 58/80] Sample  55: 2-src RMSE=0.2425 sims=106 time=56.8s [OK][T]
+[ 59/80] Sample  59: 2-src RMSE=0.0279 sims=106 time=58.1s [OK][T]
+[ 60/80] Sample  57: 2-src RMSE=0.4347 sims=104 time=76.5s [OK][T]
+[ 61/80] Sample  60: 2-src RMSE=0.1865 sims=106 time=61.3s [OK][T]
+[ 62/80] Sample  56: 2-src RMSE=0.1116 sims=108 time=89.7s [OK][T]
+[ 63/80] Sample  58: 2-src RMSE=0.1595 sims=104 time=89.3s [OK][T]
+[ 64/80] Sample  61: 2-src RMSE=0.1454 sims=104 time=60.3s [OK][T]
+[ 65/80] Sample  62: 2-src RMSE=0.3183 sims=106 time=87.7s [OK][T]
+[ 66/80] Sample  64: 2-src RMSE=0.1182 sims=106 time=61.9s [OK][T]
+[ 67/80] Sample  68: 2-src RMSE=0.3133 sims=104 time=58.9s [OK][T]
+[ 68/80] Sample  66: 2-src RMSE=inf sims=  0 time=62.4s [ERR][T]
+[ 69/80] Sample  65: 2-src RMSE=0.3547 sims=106 time=91.6s [OK][T]
+[ 70/80] Sample  67: 2-src RMSE=0.2752 sims=106 time=95.9s [OK][T]
+[ 71/80] Sample  70: 2-src RMSE=0.1689 sims=106 time=60.3s [OK][T]
+[ 72/80] Sample  71: 2-src RMSE=0.2498 sims=102 time=59.5s [OK][T]
+[ 73/80] Sample  69: 2-src RMSE=0.3222 sims=108 time=95.6s [OK][T]
+[ 74/80] Sample  72: 2-src RMSE=0.2462 sims=106 time=61.3s [OK][T]
+[ 75/80] Sample  74: 2-src RMSE=0.4294 sims=102 time=62.3s [OK][T]
+[ 76/80] Sample  73: 2-src RMSE=0.2702 sims=106 time=80.3s [OK][T]
+[ 77/80] Sample  77: 2-src RMSE=0.2801 sims=104 time=55.9s [OK][T]
+[ 78/80] Sample  79: 2-src RMSE=0.1425 sims=106 time=61.3s [OK][T]
+[ 79/80] Sample  76: 2-src RMSE=0.2626 sims=104 time=87.9s [OK][T]
+[ 80/80] Sample  78: 2-src RMSE=inf sims=  0 time=87.4s [ERR][T]
+
+======================================================================
+RESULTS: Cluster Transfer Optimizer
+======================================================================
+RMSE:             0.197292
+Submission Score: 1.0600
+Total Time:       737.3s (12.3 min)
+Projected (400):  61.4 min
+
+  1-source: RMSE=0.1424 (n=32)
+  2-source: RMSE=0.2372 (n=44)
+
+Clustering stats:
+  Representatives: 10 samples (full optimization)
+  Transfer samples: 70 samples (reduced optimization)
+  Transfer init used: 15 samples
+
+Time breakdown:
+  Representative phase: 720.7s
+  Transfer phase: 3926.0s
+
+Target: Same score with 20%+ time reduction
+Baseline (robust_fallback): 1.1247 @ 57.2 min
+This cluster run:           1.0600 @ 61.4 min
+Delta:                      -0.0647 score, +4.2 min
+
+STATUS: FAILED - Over budget by 1.4 min
+======================================================================
+
+
+High RMSE samples (4):
+  Sample 34: 2-src RMSE=inf sims=0     
+  Sample 42: 2-src RMSE=inf sims=0     
+  Sample 66: 2-src RMSE=inf sims=0     
+  Sample 78: 2-src RMSE=inf sims=0     

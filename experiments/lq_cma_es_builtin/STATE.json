@@ -1,0 +1,112 @@
+{
+  "experiment_id": "EXP_LQ_CMAES_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-18T23:30:00Z",
+  "completed_at": "2026-01-19T00:10:00Z",
+  "result": "FAILED",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "refine_maxiter": 3,
+        "refine_top_n": 2,
+        "rmse_threshold_1src": 0.4,
+        "rmse_threshold_2src": 0.5
+      },
+      "score": 0.2679,
+      "time_min": 66.7,
+      "in_budget": false,
+      "mlflow_id": "1c2d93d8edaf418f9a52908a554f3337",
+      "rmse_mean": 0.268,
+      "rmse_mean_1src": 0.187,
+      "rmse_mean_2src": 0.322,
+      "timestamp": "2026-01-18T19:30:59Z",
+      "notes": "Initial run - scoring format error, used RMSE as fallback"
+    },
+    {
+      "run": 2,
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "refine_maxiter": 3,
+        "refine_top_n": 2,
+        "rmse_threshold_1src": 0.4,
+        "rmse_threshold_2src": 0.5
+      },
+      "score": 0.253,
+      "time_min": 64.1,
+      "in_budget": false,
+      "mlflow_id": "4372b4befb964bfd82c72a73eb344e55",
+      "rmse_mean": 0.253,
+      "rmse_mean_1src": 0.179,
+      "rmse_mean_2src": 0.302,
+      "timestamp": "2026-01-18T19:45:44Z",
+      "notes": "Fixed scoring format, still errors due to predictions structure"
+    },
+    {
+      "run": 3,
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "refine_maxiter": 3,
+        "refine_top_n": 2,
+        "rmse_threshold_1src": 0.4,
+        "rmse_threshold_2src": 0.5
+      },
+      "score": 0.291,
+      "time_min": 61.8,
+      "in_budget": false,
+      "mlflow_id": "b44884fc53354e9b97aba0140c9aca31",
+      "rmse_mean": 0.291,
+      "rmse_mean_1src": 0.180,
+      "rmse_mean_2src": 0.365,
+      "timestamp": "2026-01-18T19:58:59Z",
+      "notes": "Test data missing 'Y' field for proper scoring"
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 2,
+    "score": 0.253,
+    "time_min": 64.1,
+    "rmse_mean_1src": 0.179,
+    "rmse_mean_2src": 0.302
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "baseline_to_beat": {
+    "score": 1.1247,
+    "time_min": 57.2,
+    "rmse_mean_1src": 0.14,
+    "rmse_mean_2src": 0.21
+  },
+  "success_criteria": {
+    "score_min": 1.12,
+    "time_max_min": 45
+  },
+  "failure_analysis": {
+    "why_failed": [
+      "1. fmin_lq_surr only returns ONE final solution, not intermediate population members",
+      "2. We need multiple diverse candidates (up to 3) for diversity scoring bonus",
+      "3. The quadratic surrogate may not fit the RMSE landscape well for this thermal problem",
+      "4. With only 10-18 fevals per initialization, the surrogate has insufficient data to build a good model",
+      "5. No speedup achieved - actually SLOWER than baseline CMA-ES"
+    ],
+    "comparison_vs_baseline": {
+      "rmse_1src": "0.18 vs 0.14 baseline (29% worse)",
+      "rmse_2src": "0.30-0.36 vs 0.21 baseline (43-71% worse)",
+      "time": "61-67 min vs 57 min baseline (7-17% slower)",
+      "diversity": "1 candidate vs 3 candidates (much less diversity)"
+    },
+    "fundamental_mismatch": "lq-CMA-ES is designed for single-objective optimization returning one best solution. Our problem requires multiple diverse candidates for scoring bonus. The high-level fmin_lq_surr API doesn't expose intermediate solutions."
+  }
+}

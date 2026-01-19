@@ -1,0 +1,89 @@
+{
+  "experiment_id": "EXP_TRANSFER_LEARN_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-18T23:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "description": "Initial config - baseline parameters",
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "max_fevals_transfer": 10,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.20,
+        "sigma0_transfer": 0.08,
+        "n_clusters_1src": 4,
+        "n_clusters_2src": 6,
+        "threshold_1src": 0.35,
+        "threshold_2src": 0.45
+      },
+      "score": 1.0334,
+      "time_min": 61.2,
+      "rmse_mean": 0.2043,
+      "in_budget": false,
+      "failed_samples": 5,
+      "transfer_init_used": 17,
+      "notes": "FAILED - 5 samples failed with inf RMSE, only 17/70 used transfer init. Transfer sigma too small (0.08) and fevals too low (10)"
+    },
+    {
+      "run": 2,
+      "description": "Increased transfer budget - fevals 15, sigma 0.12",
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "max_fevals_transfer": 15,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.20,
+        "sigma0_transfer": 0.12,
+        "n_clusters_1src": 4,
+        "n_clusters_2src": 6,
+        "threshold_1src": 0.35,
+        "threshold_2src": 0.45
+      },
+      "score": 1.0804,
+      "time_min": 59.7,
+      "rmse_mean": 0.1996,
+      "in_budget": true,
+      "failed_samples": 3,
+      "transfer_init_used": 21,
+      "notes": "PARTIAL - Best in-budget run. Score 0.044 below baseline."
+    },
+    {
+      "run": 3,
+      "description": "Full budget for transfer - fevals 18, sigma 0.15",
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "max_fevals_transfer": 18,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.20,
+        "sigma0_transfer": 0.15,
+        "n_clusters_1src": 4,
+        "n_clusters_2src": 6,
+        "threshold_1src": 0.35,
+        "threshold_2src": 0.45
+      },
+      "score": 1.0600,
+      "time_min": 61.4,
+      "rmse_mean": 0.1973,
+      "in_budget": false,
+      "failed_samples": 4,
+      "transfer_init_used": 15,
+      "notes": "FAILED - More budget made results WORSE. Transfer init causing optimization to explore wrong regions."
+    }
+  ],
+  "best_in_budget": {
+    "run": 2,
+    "score": 1.0804,
+    "time_min": 59.7,
+    "config": {
+      "max_fevals_transfer": 15,
+      "sigma0_transfer": 0.12
+    }
+  },
+  "next_config_to_try": null,
+  "experiment_conclusion": "FAILED - Cluster transfer approach fundamentally doesn't work. Sensor feature clustering doesn't predict solution similarity. Best achievable score 1.0804 is 4% below baseline 1.1247.",
+  "summary_written": true
+}

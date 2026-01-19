@@ -33,4 +33,5 @@ dependencies = [
     "mlflow>=2.9.0",
     "pyyaml>=6.0",
     "cma>=3.3.0",
+    "scikit-optimize>=0.10.2",
 ]
