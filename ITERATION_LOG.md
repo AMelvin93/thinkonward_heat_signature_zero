@@ -953,3 +953,65 @@ The original ICA experiment's 87 min runtime was NOT from ICA computation. It wa
 4. get_warm_start_mgd() combines information from random probes that don't help convergence
 
 **Recommendation**: ABANDON meta_learning approaches (cluster_transfer + WS-CMA-ES both failed). Focus on within-sample optimizations.
+
+---
+
+### [W1] Experiment: adaptive_sample_budget (EXP_ADAPTIVE_BUDGET_001) | Score: 1.1143 @ 56.2 min | FAILED
+**Algorithm**: Adaptive budget allocation via early termination + bonus budget for hard samples
+**Tuning Runs**: 3 runs
+**Result**: **FAILED** - Early termination hurts CMA-ES accuracy. Fixed-budget baseline is already optimal.
+**Key Finding**: CMA-ES needs its full budget to adapt the covariance matrix properly. Early termination based on sigma/stagnation hurts accuracy. budget_allocation family FAILED.
+
+**Tuning History**:
+| Run | Config | Score | Time (min) | Early Term % | Status |
+|-----|--------|-------|------------|--------------|--------|
+| 1 | fevals 20/36, bonus 10/18, sigma<0.01 | 1.1277 | 75.4 | 0% | Over budget, bonus adds overhead |
+| 2 | fevals 20/36, no bonus, sigma<0.05 | 1.1070 | 70.2 | 23.8% | Over budget, -1.8% accuracy |
+| 3 | fevals 15/28, no early term | 1.1143 | 56.2 | 0% | In budget, -1% vs baseline |
+
+**Why Adaptive Budget Failed**:
+1. **Early termination hurts accuracy**: When 23.8% of samples terminate early (Run 2), overall score drops -0.018 vs baseline
+2. **No reliable convergence signal**: Sigma < threshold doesn't mean optimum is found
+3. **Bonus budget adds overhead**: Extra fevals for hard samples increases time without corresponding savings
+4. **Fixed-budget is optimal**: The baseline's 15/28 fevals was already tuned to be near-optimal
+5. **Parallel processing limits redistribution**: Can't easily share saved budget between parallel workers
+
+**Critical Insight**: CMA-ES is designed to use its full budget effectively. The algorithm adapts its strategy based on progress. Premature termination disrupts this adaptation.
+
+**Recommendation**: ABANDON budget reallocation approaches. Focus on reducing per-eval cost (temporal fidelity, surrogate models) rather than reducing number of evals.
+
+---
+
+### [W2] Experiment: niching_cmaes_diversity (EXP_NICHING_CMAES_001) | Score: 1.0622 @ 46.9 min | FAILED
+**Algorithm**: Niching CMA-ES with taboo regions for diversity
+**Tuning Runs**: 2 runs
+**Result**: **FAILED** - Niching hurts accuracy more than it helps diversity. Baseline already near-optimal.
+**Key Finding**: Scoring formula AVERAGES accuracy over candidates. Adding diverse but worse candidates hurts score. diversity family EXHAUSTED.
+
+**Critical Discovery - The Scoring Formula**:
+```
+score = (1/N) * sum(1/(1+L_i)) + 0.3 * (N/3)
+```
+- First term AVERAGES accuracy over all N candidates
+- Adding worse diverse candidates decreases average accuracy
+- Diversity gain (0.1 per candidate) doesn't compensate for accuracy loss
+
+**Tuning History**:
+| Run | Config | Score | Time (min) | N_valid | Status |
+|-----|--------|-------|------------|---------|--------|
+| 1 | Taboo niching (radius=0.15) | 1.0622 | 46.9 | 1.70 | FAILED (-0.11 vs baseline) |
+| 2 | Baseline analysis | 1.1741 | 47.2 | 2.75 | 80% of samples already have 3 candidates |
+
+**Why Niching Failed**:
+1. **Baseline already achieves near-maximum diversity**: 80% of samples get 3 candidates, avg N_valid = 2.75
+2. **Taboo regions push to suboptimal solutions**: Penalizing proximity to found optima causes worse RMSE
+3. **Scoring punishes worse candidates**: Even if diverse, adding high-RMSE candidates hurts average
+4. **One global optimum per sample**: Thermal inverse problems don't have multiple distinct optima
+
+**Example Calculation**:
+- 1 candidate @ RMSE=0: score = 1.0 + 0.1 = 1.1
+- 3 candidates @ RMSE=[0, 0.5, 0.5]: score = (1/3)*(1 + 0.67 + 0.67) + 0.3 = 0.78 + 0.3 = 1.08
+
+Adding diverse but worse candidates DECREASED score from 1.1 to 1.08!
+
+**Recommendation**: ABANDON diversity optimization. Focus on accuracy improvement only. Baseline is already near-optimal for diversity.

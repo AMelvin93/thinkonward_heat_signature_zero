@@ -1,42 +1,39 @@
 {
   "experiment_id": "EXP_TEMPORAL_FIDELITY_001",
   "worker": "W2",
-  "status": "in_progress",
+  "status": "completed",
   "started_at": "2026-01-19T03:00:00Z",
+  "completed_at": "2026-01-19T05:30:00Z",
   "family": "temporal_fidelity",
   "hypothesis": "Simulating first 25-50% of timesteps maintains spatial optimization landscape while reducing simulation cost by 2-4x",
-  "feasibility_check": {
-    "completed": true,
-    "correlation_test": {
-      "25_percent_timesteps": {
-        "pearson_r": 0.9549,
-        "spearman_r": 0.8989,
-        "best_in_top3_pct": 95,
-        "best_preserved_pct": 65,
-        "viable": true
-      },
-      "50_percent_timesteps": {
-        "pearson_r": 0.9862,
-        "spearman_r": 0.9571,
-        "best_in_top3_pct": 100,
-        "best_preserved_pct": 85,
-        "viable": true
-      },
-      "75_percent_timesteps": {
-        "pearson_r": 0.9957,
-        "spearman_r": 0.9859,
-        "best_in_top3_pct": 100,
-        "best_preserved_pct": 95,
-        "viable": true
-      }
+  "tuning_runs": [
+    {"run_id": 1, "config": "25% timesteps", "score": 1.1219, "time_min": 30.3, "notes": "Fast but slight score drop"},
+    {"run_id": 2, "config": "35% timesteps", "score": 1.1143, "time_min": 36.3, "notes": "Worse than 25%"},
+    {"run_id": 3, "config": "40% timesteps", "score": 1.1362, "time_min": 39.0, "notes": "+0.0115 vs baseline"},
+    {"run_id": 4, "config": "45% timesteps", "score": 1.1267, "time_min": 40.0, "notes": "Good but not optimal"},
+    {"run_id": 5, "config": "50% timesteps", "score": 1.1250, "time_min": 36.3, "notes": "Slightly above baseline"},
+    {"run_id": 6, "config": "75% timesteps", "score": 1.1224, "time_min": 48.6, "notes": "Too slow, worse score"},
+    {"run_id": 7, "config": "50% + more fevals", "score": 1.1155, "time_min": 43.8, "notes": "More fevals HURT"},
+    {"run_id": 8, "config": "40% + 8 NM refine", "score": 1.1342, "time_min": 45.8, "notes": "NM on truncated hurts"},
+    {"run_id": 9, "config": "40% + 5 NM polish (full)", "score": 1.1555, "time_min": 51.5, "notes": "NM polish on full helps!"},
+    {"run_id": 10, "config": "40% + 8 NM polish (full)", "score": 1.1688, "time_min": 58.4, "notes": "BEST! +0.0441 vs original baseline"}
+  ],
+  "best_in_budget": {
+    "config": {
+      "timestep_fraction": 0.40,
+      "final_polish_maxiter": 8,
+      "note": "40% timesteps for CMA-ES, then 8 NM iterations on best candidate using FULL timesteps"
     },
-    "conclusion": "25% timesteps gives 0.90 Spearman correlation with 4x speedup potential. 50% gives 0.96 correlation with 2x speedup. Both viable."
+    "score": 1.1688,
+    "time_min": 58.4,
+    "delta_vs_original_baseline": "+0.0441 score, +1.2 min (within budget)"
   },
-  "tuning_runs": [],
-  "best_in_budget": null,
-  "next_config_to_try": {
-    "timestep_fraction": 0.25,
-    "note": "Start with 25% for max speedup, refine if needed"
-  },
-  "summary_written": false
+  "key_findings": [
+    "40% timesteps + final NM polish is the winning combination",
+    "NM polish must use FULL timesteps (not truncated) to improve accuracy",
+    "8 NM iterations on full timesteps adds ~20 min but gains +0.0326 score",
+    "Final score 1.1688 @ 58.4 min - best result ever in-budget",
+    "2-source RMSE dropped from 0.21 to 0.14 with polish"
+  ],
+  "summary_written": true
 }

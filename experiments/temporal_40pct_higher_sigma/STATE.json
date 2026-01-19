@@ -1,0 +1,49 @@
+{
+  "experiment_id": "EXP_TEMPORAL_HIGHER_SIGMA_001",
+  "worker": "W1",
+  "status": "in_progress",
+  "started_at": "2026-01-19T06:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "sigma0_1src": 0.25,
+        "sigma0_2src": 0.30,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "score": 1.1745,
+      "rmse_mean": 0.1365,
+      "rmse_mean_1src": 0.1048,
+      "rmse_mean_2src": 0.1575,
+      "time_min": 63.0,
+      "in_budget": false,
+      "mlflow_run": "run1_sigma_025_030",
+      "timestamp": "2026-01-19T06:45:00Z",
+      "finding": "Higher sigma improves score (+0.0057 vs W2) but 3 min over budget"
+    }
+  ],
+  "next_config_to_try": {
+    "run": 2,
+    "config": {
+      "sigma0_1src": 0.25,
+      "sigma0_2src": 0.30,
+      "timestep_fraction": 0.40,
+      "final_polish_maxiter": 5
+    },
+    "rationale": "Keep sigma high but reduce polish from 8 to 5 to save ~5 min"
+  },
+  "baseline_to_beat": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "config": "40% temporal + 8 NM polish (W2 best)"
+  },
+  "success_criteria": {
+    "score_min": 1.17,
+    "time_max_min": 60,
+    "note": "Beat W2's 1.1688 while staying in budget"
+  },
+  "abort_criteria": "Higher sigma doesn't improve score or pushes over 60 min budget"
+}

@@ -1,0 +1,64 @@
+{
+  "experiment_id": "EXP_NICHING_CMAES_001",
+  "worker": "W2",
+  "status": "tuning_complete",
+  "started_at": "2026-01-19T06:30:00Z",
+  "completed_at": "2026-01-19T07:15:00Z",
+  "family": "diversity",
+  "hypothesis": "Niching CMA-ES can maintain multiple local optima simultaneously, improving the diversity component of the scoring (0.3 * N_valid/3)",
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES + 40% temporal fidelity + 8 NM polish"
+  },
+  "tuning_runs": [
+    {
+      "run_id": 1,
+      "config": {
+        "approach": "taboo_niching",
+        "n_independent_runs": 3,
+        "taboo_radius": 0.15,
+        "taboo_penalty": 10.0,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 5
+      },
+      "score": 1.0622,
+      "time_min": 46.9,
+      "n_samples": 10,
+      "avg_n_valid": 1.70,
+      "notes": "FAILED - Score dropped significantly. Taboo regions push CMA-ES to suboptimal solutions."
+    },
+    {
+      "run_id": 2,
+      "config": "baseline_analysis",
+      "notes": "Ran baseline with polish on 20 samples to understand current diversity",
+      "findings": {
+        "score": 1.1741,
+        "time_min": 47.2,
+        "avg_n_valid": 2.75,
+        "distribution": {
+          "3_candidates": "80% (16/20)",
+          "2_candidates": "15% (3/20)",
+          "1_candidates": "5% (1/20)"
+        }
+      }
+    }
+  ],
+  "best_in_budget": {
+    "config": "baseline (optimizer_with_polish)",
+    "score": 1.1688,
+    "time_min": 58.4,
+    "notes": "Niching approach failed to beat baseline. Baseline already achieves near-maximum diversity."
+  },
+  "key_findings": [
+    "CRITICAL: Scoring formula AVERAGES accuracy over all valid candidates",
+    "Formula: score = (1/N)*sum(1/(1+L_i)) + 0.3*(N/3)",
+    "Adding worse diverse candidates HURTS the score more than the diversity term helps",
+    "Taboo-based niching pushes CMA-ES to suboptimal solutions",
+    "Baseline already achieves ~2.75 N_valid average (near maximum of 3)",
+    "80% of samples already have 3 candidates",
+    "Diversity improvement is NOT a viable path - focus on accuracy instead"
+  ],
+  "next_config_to_try": null,
+  "summary_written": true
+}

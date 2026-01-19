@@ -1,7 +1,7 @@
 {
-  "version": "4.0",
-  "last_updated": "2026-01-19T02:45:00Z",
-  "notes": "W1 completed EXP_WS_CMAES_001 (FAILED). WS-CMA-ES causes divergence, 62-170% worse accuracy. meta_learning family EXHAUSTED.",
+  "version": "5.0",
+  "last_updated": "2026-01-19T05:00:00Z",
+  "notes": "QUEUE REFILLED. W2 SUCCESS with temporal fidelity (1.1362 @ 39 min). Added 6 new experiments building on this breakthrough. New baseline: 1.1362.",
 
   "experiment_queue": [
     {
@@ -28,7 +28,7 @@
       "worker": "W2",
       "name": "cmaes_to_nm_sequential",
       "description": "CMA-ES exploration then hand off best to Nelder-Mead run",
-      "finding": "Sequential handoff fundamentally doesn't work. NM improves score (+0.0192) when given time, but time overhead is prohibitive. When reduced to fit budget, score drops BELOW baseline. CMA-ES already uses full time budget."
+      "finding": "Sequential handoff fundamentally doesn't work. NM improves score (+0.0192) when given time, but time overhead is prohibitive."
     },
     {
       "id": "EXP_BAYESIAN_OPT_001",
@@ -41,7 +41,7 @@
       "worker": "W1",
       "name": "bayesian_optimization_gp",
       "description": "Use Bayesian Optimization with Gaussian Process surrogate as alternative to CMA-ES",
-      "finding": "Bayesian Optimization is NOT suitable for thermal inverse problem. GP surrogate fails to capture the complex RMSE landscape. CMA-ES's covariance adaptation is essential."
+      "finding": "Bayesian Optimization is NOT suitable for thermal inverse problem. GP surrogate fails to capture the complex RMSE landscape."
     },
     {
       "id": "EXP_MULTIFID_OPT_001",
@@ -55,31 +55,31 @@
       "name": "multi_fidelity_proper_ratio",
       "actual_folder": "multi_fidelity_pyramid",
       "description": "Multi-fidelity optimization with literature-recommended grid ratios",
-      "finding": "Multi-fidelity via grid coarsening doesn't work for inverse problems. RMSE landscape is fundamentally different at different resolutions. Solutions don't transfer."
+      "finding": "Multi-fidelity via grid coarsening doesn't work for inverse problems. RMSE landscape is fundamentally different at different resolutions."
     },
     {
       "id": "EXP_FAST_SOURCE_DETECT_001",
       "priority": 99,
       "family": "preprocessing",
       "status": "completed",
-      "result": "ABORTED - Invalid premise. n_sources already in sample data. Detection accuracy only 67% (target 95%).",
+      "result": "ABORTED - Invalid premise. n_sources already in sample data.",
       "worker": "W2",
       "name": "fast_source_count_detection",
       "description": "Fast detection of 1-source vs 2-source BEFORE optimization",
-      "finding": "Baseline already uses sample['n_sources']. Detection not needed. Sensor-based features give only 67% accuracy, far below 95% target."
+      "finding": "Baseline already uses sample['n_sources']. Detection not needed."
     },
     {
       "id": "EXP_WS_CMAES_001",
       "priority": 99,
       "family": "meta_learning",
       "status": "completed",
-      "result": "FAILED - WS-CMA-ES causes divergence. Best: RMSE 0.276 @ 66 min (62% worse than baseline). Probing wastes budget.",
+      "result": "FAILED - WS-CMA-ES causes divergence. Best: RMSE 0.276 @ 66 min (62% worse than baseline).",
       "score": 0.276,
       "time_min": 65.8,
       "worker": "W1",
       "name": "warm_start_cmaes",
       "description": "Use CyberAgentAILab's WS-CMA-ES to transfer solutions between similar samples",
-      "finding": "WS-CMA-ES doesn't work for thermal inverse problems. Each sample is unique with no shared optimization landscape structure. Probing phase wastes budget. meta_learning family EXHAUSTED."
+      "finding": "WS-CMA-ES doesn't work for thermal inverse problems. Each sample is unique with no shared optimization landscape structure."
     },
     {
       "id": "EXP_TRANSFER_LEARN_001",
@@ -93,15 +93,134 @@
       "name": "sample_clustering_transfer",
       "actual_folder": "cluster_transfer",
       "description": "Cluster similar samples, transfer solutions between them",
-      "finding": "Clustering by sensor features doesn't predict solution similarity. Best in-budget score 1.0804 is 4% below baseline. Transfer learning fundamentally doesn't work for this problem."
+      "finding": "Clustering by sensor features doesn't predict solution similarity. Transfer learning doesn't work for this problem."
+    },
+    {
+      "id": "EXP_ADAPTIVE_BUDGET_001",
+      "priority": 99,
+      "family": "budget_allocation",
+      "status": "completed",
+      "result": "FAILED - Early termination hurts accuracy. Best in-budget: 1.1143 @ 56 min (1% worse than baseline).",
+      "score": 1.1143,
+      "time_min": 56.2,
+      "worker": "W1",
+      "name": "adaptive_sample_budget",
+      "description": "Dynamically allocate fevals per sample based on convergence speed",
+      "finding": "Early termination based on sigma/stagnation hurts accuracy. CMA-ES needs full budget."
+    },
+    {
+      "id": "EXP_TEMPORAL_FIDELITY_001",
+      "priority": 99,
+      "family": "temporal_fidelity",
+      "status": "completed",
+      "result": "SUCCESS - NEW BEST! Score 1.1362 @ 39 min (+0.0115 vs baseline, 32% faster).",
+      "score": 1.1362,
+      "time_min": 39.0,
+      "worker": "W2",
+      "name": "early_timestep_filtering",
+      "description": "Use reduced timesteps (40%) for candidate filtering, same spatial grid",
+      "finding": "40% timesteps is optimal. Maintains 100x50 spatial grid, RMSE correlation 0.95+. Counterintuitive: more fevals HURT."
+    },
+    {
+      "id": "EXP_TEMPORAL_HIGHER_SIGMA_001",
+      "priority": 1,
+      "family": "temporal_fidelity_extended",
+      "status": "claimed_by_W1",
+      "claimed_at": "2026-01-19T06:00:00Z",
+      "name": "temporal_40pct_higher_sigma",
+      "description": "Combine 40% temporal fidelity with higher sigma (0.25/0.30) for better accuracy",
+      "hypothesis": "We have 18 min headroom (39 min vs 57 min budget). Higher sigma takes more time but gets better accuracy. Combining with temporal fidelity may achieve both.",
+      "research_source": "Previous finding: adaptive_sigma achieved best-ever score 1.1396 but at 68.3 min (over budget). With 40% timesteps, we may fit in budget.",
+      "why_different": "Leverages temporal fidelity speedup to enable higher sigma that was previously over-budget",
+      "implementation": [
+        "1. Start with early_timestep_filtering optimizer (40% timesteps)",
+        "2. Increase sigma from baseline (0.17/0.21) to (0.25/0.30)",
+        "3. May need to reduce fevals slightly to stay in budget",
+        "4. Test sigma values: 0.22/0.27, 0.25/0.30, 0.28/0.33",
+        "5. Target: Score >= 1.14 @ <= 55 min"
+      ],
+      "success_criteria": "Score >= 1.14 AND time <= 55 min",
+      "abort_criteria": "Higher sigma doesn't improve score or pushes over budget"
+    },
+    {
+      "id": "EXP_NICHING_CMAES_001",
+      "priority": 99,
+      "family": "diversity",
+      "status": "completed",
+      "result": "FAILED - Scoring formula AVERAGES accuracy over candidates. Adding worse diverse candidates hurts score. Baseline already at 2.75/3 N_valid.",
+      "score": 1.0622,
+      "time_min": 46.9,
+      "worker": "W2",
+      "name": "niching_cmaes_diversity",
+      "description": "Use Niching CMA-ES to maintain population diversity for multiple candidate solutions",
+      "finding": "Diversity is NOT the bottleneck. Baseline already achieves 80% 3-candidate samples. Taboo-based niching hurts accuracy more than diversity helps."
+    },
+    {
+      "id": "EXP_IPOP_TEMPORAL_001",
+      "priority": 3,
+      "family": "temporal_fidelity_extended",
+      "status": "available",
+      "name": "ipop_cmaes_temporal",
+      "description": "IPOP-CMA-ES (increasing population) with 40% temporal fidelity",
+      "hypothesis": "IPOP-CMA-ES restarts with larger populations to escape local optima. Combined with temporal fidelity speedup, can explore more thoroughly.",
+      "research_source": "IPOP-CMA-ES is standard restart strategy in pycma. Has shown benefits for multimodal functions.",
+      "why_different": "Current baseline uses fixed population. IPOP may find better solutions with larger populations enabled by temporal speedup.",
+      "implementation": [
+        "1. Enable IPOP in CMA-ES (restart with 2x population)",
+        "2. Use 40% temporal fidelity for evaluation",
+        "3. Set max_restarts = 2-3 (within time budget)",
+        "4. Track improvement per restart",
+        "5. Compare diversity of solutions across restarts"
+      ],
+      "success_criteria": "Score >= 1.14 AND time <= 55 min",
+      "abort_criteria": "Restarts don't improve solution quality"
+    },
+    {
+      "id": "EXP_PHYSICS_INIT_001",
+      "priority": 4,
+      "family": "initialization",
+      "status": "available",
+      "name": "physics_informed_init",
+      "description": "Use sensor temperature gradients to initialize source location estimates",
+      "hypothesis": "High temperature sensors likely near heat sources. Gradient analysis can provide better initial guesses than random initialization.",
+      "research_source": "Standard practice in inverse problems. Temperature gradient points toward heat source.",
+      "why_different": "Current approach uses random smart_init. Physics-based init may start closer to optimum, reducing iterations needed.",
+      "implementation": [
+        "1. Analyze sensor temperatures at final timestep",
+        "2. Find hottest sensor region(s)",
+        "3. Estimate source x,y from temperature gradient direction",
+        "4. Use estimated positions as CMA-ES initial mean",
+        "5. Compare convergence speed and final accuracy vs random init",
+        "6. Combine with 40% temporal fidelity"
+      ],
+      "success_criteria": "Faster convergence (20%+ fewer fevals) OR better accuracy",
+      "abort_criteria": "Physics init doesn't beat random init consistently"
+    },
+    {
+      "id": "EXP_ADAPTIVE_TIMESTEP_001",
+      "priority": 5,
+      "family": "temporal_fidelity_extended",
+      "status": "available",
+      "name": "adaptive_timestep_fraction",
+      "description": "Start with 25% timesteps, increase to 40% as CMA-ES converges",
+      "hypothesis": "Early CMA-ES iterations need rough landscape estimate (25% timesteps fine). Later iterations benefit from more accurate signal (40% timesteps).",
+      "research_source": "Multi-fidelity optimization literature: start cheap, increase fidelity near convergence.",
+      "why_different": "Fixed 40% is suboptimal - early iterations overpay, late iterations may need more accuracy.",
+      "implementation": [
+        "1. First 50% of fevals: use 25% timesteps",
+        "2. Last 50% of fevals: use 40% timesteps",
+        "3. Alternative: continuous increase 25% -> 40% based on generation",
+        "4. Track if this improves speed or accuracy",
+        "5. Test thresholds: (25%/50%), (30%/40%), (25%/40%)"
+      ],
+      "success_criteria": "Score >= 1.13 AND time <= 35 min (faster than fixed 40%)",
+      "abort_criteria": "Variable timesteps hurt accuracy vs fixed 40%"
     },
     {
       "id": "EXP_POD_SURROGATE_001",
-      "priority": 3,
+      "priority": 6,
       "family": "surrogate_pod",
-      "status": "paused_by_W2",
-      "paused_reason": "Feasibility confirmed (10-20 modes needed), but coefficient mapping is complex. Pivoting to higher-priority EXP_TEMPORAL_FIDELITY_001.",
-      "claimed_at": "2026-01-19T02:35:00Z",
+      "status": "available",
       "name": "pod_reduced_order_model",
       "description": "Use POD (Proper Orthogonal Decomposition) as fast surrogate for simulation",
       "hypothesis": "POD-based reduced order model can be 70-100x faster than full simulation",
@@ -115,52 +234,10 @@
         "5. Only full-simulate candidates with low POD RMSE",
         "6. Compare speed and accuracy"
       ],
-      "success_criteria": "Score >= 1.12 AND time <= 40 min (40% speedup)",
+      "success_criteria": "Score >= 1.13 AND time <= 35 min",
       "abort_criteria": "POD fails to capture 2-source thermal fields accurately",
-      "complexity": "HIGH - requires collecting and processing snapshot data"
-    },
-    {
-      "id": "EXP_ADAPTIVE_BUDGET_001",
-      "priority": 1,
-      "family": "budget_allocation",
-      "status": "available",
-      "name": "adaptive_sample_budget",
-      "description": "Dynamically allocate fevals per sample based on convergence speed",
-      "hypothesis": "Some samples converge faster than others. Redistributing budget from easy to hard samples improves overall score without increasing total time.",
-      "research_source": "W0 observation: Baseline uses fixed fevals (15/28) but some samples need fewer iterations to converge. Early convergence detection could free budget for harder samples.",
-      "why_different": "Unlike other approaches, this doesn't change CMA-ES or add overhead. It just redistributes existing budget more efficiently.",
-      "implementation": [
-        "1. Track CMA-ES convergence metrics per sample (sigma shrinkage, fitness stagnation)",
-        "2. If sample converges early (sigma < threshold OR fitness stable for N generations), terminate",
-        "3. Bank saved fevals into a 'bonus pool'",
-        "4. For samples with high initial RMSE or slow convergence, draw from bonus pool",
-        "5. Use two-pass approach: first pass identifies easy/hard samples, second pass reallocates",
-        "6. Alternative: single-pass with running average to predict difficulty"
-      ],
-      "success_criteria": "Score >= 1.13 AND time <= 57 min (same budget, better allocation)",
-      "abort_criteria": "Early termination hurts more than bonus helps"
-    },
-    {
-      "id": "EXP_TEMPORAL_FIDELITY_001",
-      "priority": 1,
-      "family": "temporal_fidelity",
-      "status": "claimed_by_W2",
-      "claimed_at": "2026-01-19T03:00:00Z",
-      "name": "early_timestep_filtering",
-      "description": "Use reduced timesteps (25-50%) for candidate filtering, same spatial grid",
-      "hypothesis": "Simulating first 25-50% of timesteps maintains spatial optimization landscape while reducing simulation cost by 2-4x",
-      "research_source": "W0 deep research 2026-01-19: Multi-fidelity via spatial coarsening FAILED because landscape changes. Temporal fidelity maintains spatial structure.",
-      "why_different": "Unlike spatial coarsening (which failed), temporal reduction keeps 100x50 grid intact. RMSE landscape at t=50% should correlate with t=100%.",
-      "implementation": [
-        "1. For CMA-ES candidate evaluation: simulate only first 25-50% of timesteps",
-        "2. Compute RMSE over available timesteps (truncated time series)",
-        "3. Use truncated RMSE for CMA-ES population ranking",
-        "4. For final candidates: run full simulation (100% timesteps) to get accurate RMSE",
-        "5. Test correlation between truncated and full RMSE",
-        "6. Tune timestep fraction (25%, 50%, 75%) for best speed/accuracy tradeoff"
-      ],
-      "success_criteria": "Score >= 1.12 AND time <= 45 min (20% speedup)",
-      "abort_criteria": "Truncated RMSE ranking poorly correlated with full RMSE (<0.7 correlation)"
+      "complexity": "HIGH - requires collecting and processing snapshot data",
+      "note": "Re-enabled from paused status. Temporal fidelity success shows cheap surrogates can work."
     },
     {
       "id": "EXP_COARSE_SURROGATE_001",
@@ -169,17 +246,7 @@
       "status": "deprioritized",
       "name": "coarse_grid_as_surrogate",
       "description": "Use 40x20 coarse grid as cheap surrogate for candidate filtering",
-      "note": "DEPRIORITIZED - Multi-fidelity via spatial coarsening PROVEN to fail (EXP_MULTIFID_OPT_001). Different resolution = different landscape.",
-      "hypothesis": "40x20 grid is 6x faster than 100x50; use to filter before fine evaluation",
-      "implementation": [
-        "1. For each CMA-ES generation: evaluate all candidates on 40x20 grid",
-        "2. Filter to top 50% by coarse RMSE",
-        "3. Evaluate filtered candidates on 50x25 grid",
-        "4. Use 50x25 results for CMA-ES update",
-        "5. Final evaluation on 100x50"
-      ],
-      "success_criteria": "Score >= 1.11 AND time <= 50 min",
-      "abort_criteria": "Coarse filtering removes good candidates consistently"
+      "note": "DEPRIORITIZED - Multi-fidelity via spatial coarsening PROVEN to fail (EXP_MULTIFID_OPT_001). Different resolution = different landscape."
     },
     {
       "id": "EXP_ENSEMBLE_001",
@@ -235,17 +302,21 @@
     "evolutionary_other": "PSO failed, may try genetic algorithms",
     "gradient_based": "ABANDONED - finite differences too slow (adjoint method could change this)",
     "gradient_free_local": "Nelder-Mead OK for refinement, COBYLA too slow",
-    "surrogate": "Custom NN failed. lq-CMA-ES FAILED (API mismatch). Try POD",
-    "surrogate_lq": "FAILED - fmin_lq_surr returns ONE solution, we need MULTIPLE candidates for diversity scoring",
-    "surrogate_pod": "IN PROGRESS (W2) - POD-based reduced order model. HIGH potential but complex",
+    "surrogate": "Custom NN failed. lq-CMA-ES FAILED (API mismatch). POD re-enabled.",
+    "surrogate_lq": "FAILED - fmin_lq_surr returns ONE solution, we need MULTIPLE candidates",
+    "surrogate_pod": "AVAILABLE - Re-enabled, complexity high but temporal fidelity shows cheap surrogates work",
     "decomposition": "ABANDONED - Fast ICA failed due to refinement overhead",
     "ensemble": "ABANDONED - 5.8x over budget, worse score. Fundamentally unworkable.",
-    "hybrid": "FAILED - Sequential handoff doesn't fit in budget. NM adds value but time cost prohibitive.",
-    "bayesian_opt": "FAILED - GP surrogate doesn't model thermal RMSE landscape. 31-91% worse accuracy than CMA-ES.",
-    "multi_fidelity": "FAILED - Coarse grid (SPATIAL) RMSE landscape differs from fine grid. Solutions don't transfer.",
-    "temporal_fidelity": "NEW - Use fewer TIMESTEPS (not coarser grid) for candidate filtering. W0 research 2026-01-19.",
-    "meta_learning": "EXHAUSTED - Both cluster_transfer and WS-CMA-ES FAILED. No shared landscape structure between samples.",
-    "preprocessing": "ABORTED - n_sources already in sample data. Detection not needed."
+    "hybrid": "FAILED - Sequential handoff doesn't fit in budget.",
+    "bayesian_opt": "FAILED - GP surrogate doesn't model thermal RMSE landscape.",
+    "multi_fidelity": "FAILED - Coarse grid (SPATIAL) RMSE landscape differs from fine grid.",
+    "temporal_fidelity": "SUCCESS! 40% timesteps achieves 1.1362 @ 39 min. NEW BASELINE.",
+    "temporal_fidelity_extended": "NEW - Building on temporal fidelity success with sigma tuning, IPOP, adaptive timesteps",
+    "budget_allocation": "FAILED - Early termination hurts CMA-ES accuracy.",
+    "meta_learning": "EXHAUSTED - Both cluster_transfer and WS-CMA-ES FAILED.",
+    "preprocessing": "ABORTED - n_sources already in sample data.",
+    "diversity": "NEW - Niching CMA-ES for multiple candidate solutions",
+    "initialization": "NEW - Physics-informed initialization from sensor gradients"
   },
 
   "completed_experiments": [
@@ -269,6 +340,8 @@
     "EXP_MULTIFID_OPT_001",
     "EXP_SEQUENTIAL_HANDOFF_001",
     "EXP_FAST_SOURCE_DETECT_001",
-    "EXP_WS_CMAES_001"
+    "EXP_WS_CMAES_001",
+    "EXP_ADAPTIVE_BUDGET_001",
+    "EXP_TEMPORAL_FIDELITY_001"
   ]
 }

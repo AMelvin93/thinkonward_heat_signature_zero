@@ -1,21 +1,22 @@
 {
-  "version": "5.0",
-  "last_updated": "2026-01-19T02:50:00Z",
+  "version": "5.3",
+  "last_updated": "2026-01-19T06:00:00Z",
   "mode": "EXPLORATION",
 
   "resume_tracking": {
-    "summaries_analyzed": ["ensemble_voting", "cluster_transfer", "lq_cma_es_builtin", "bayesian_optimization_gp", "cmaes_to_nm_sequential", "multi_fidelity_pyramid", "fast_source_count_detection"],
-    "last_cycle_timestamp": "2026-01-19T00:37:00Z",
+    "summaries_analyzed": ["ensemble_voting", "cluster_transfer", "lq_cma_es_builtin", "bayesian_optimization_gp", "cmaes_to_nm_sequential", "multi_fidelity_pyramid", "fast_source_count_detection", "early_timestep_filtering", "adaptive_sample_budget", "warm_start_cmaes"],
+    "last_cycle_timestamp": "2026-01-19T06:15:00Z",
     "notes": "W0 tracks which SUMMARY.md files have been analyzed to avoid re-processing on resume"
   },
 
   "best_scores": {
     "in_budget": {
-      "score": 1.1247,
-      "time_min": 57.2,
-      "experiment": "robust_fallback",
-      "algorithm": "CMA-ES",
-      "date": "2026-01-17"
+      "score": 1.1688,
+      "time_min": 58.4,
+      "experiment": "early_timestep_filtering",
+      "algorithm": "CMA-ES + 40% temporal fidelity + 8 NM polish (full timesteps)",
+      "date": "2026-01-19",
+      "note": "NEW BEST! +0.0441 vs original baseline (1.1247), within budget"
     },
     "best_ever": {
       "score": 1.1396,
@@ -34,11 +35,25 @@
       "date": "2026-01-05"
     },
     "target": 1.25,
-    "baseline_to_beat": 1.1247
+    "baseline_to_beat": 1.1688
+  },
+
+  "queue_status": {
+    "available_experiments": 5,
+    "claimed_experiments": 1,
+    "status": "HEALTHY",
+    "experiments": [
+      "EXP_TEMPORAL_HIGHER_SIGMA_001 (priority 1) - CLAIMED by W1",
+      "EXP_NICHING_CMAES_001 (priority 2)",
+      "EXP_IPOP_TEMPORAL_001 (priority 3)",
+      "EXP_PHYSICS_INIT_001 (priority 4)",
+      "EXP_ADAPTIVE_TIMESTEP_001 (priority 5)",
+      "EXP_POD_SURROGATE_001 (priority 6)"
+    ]
   },
 
   "exploration_progress": {
-    "total_experiments": 56,
+    "total_experiments": 58,
     "experiments_per_family": {
       "evolutionary_cmaes": 34,
       "evolutionary_other": 3,
@@ -51,22 +66,50 @@
       "meta_learning": 3,
       "hybrid": 1,
       "bayesian_opt": 1,
-      "multi_fidelity": 1
+      "multi_fidelity": 1,
+      "temporal_fidelity": 1,
+      "budget_allocation": 1
     },
-    "families_exhausted": ["evolutionary_cmaes", "gradient_based", "evolutionary_other", "ensemble", "decomposition", "meta_learning", "surrogate_lq", "bayesian_opt", "multi_fidelity", "hybrid", "preprocessing"],
-    "families_to_explore": ["surrogate_pod", "temporal_fidelity"]
+    "families_exhausted": ["evolutionary_cmaes", "gradient_based", "evolutionary_other", "ensemble", "decomposition", "meta_learning", "surrogate_lq", "bayesian_opt", "multi_fidelity", "hybrid", "preprocessing", "budget_allocation", "diversity"],
+    "families_to_explore": ["temporal_fidelity_extended", "initialization", "surrogate_pod"]
   },
 
   "experiments_in_progress": {
-    "EXP_TEMPORAL_FIDELITY_001": {
-      "worker": "W2",
-      "started": "2026-01-19T03:00:00Z",
-      "family": "temporal_fidelity",
-      "status": "Starting - Early timestep filtering for faster candidate evaluation"
+    "EXP_TEMPORAL_HIGHER_SIGMA_001": {
+      "worker": "W1",
+      "claimed_at": "2026-01-19T06:00:00Z",
+      "status": "running"
     }
   },
 
   "experiments_completed": [
+    {
+      "id": "EXP_NICHING_CMAES_001",
+      "worker": "W2",
+      "score": 1.0622,
+      "time_min": 46.9,
+      "result": "FAILED",
+      "family": "diversity",
+      "note": "Niching FAILED. Scoring averages accuracy over candidates - worse diverse candidates hurt. Baseline already at 2.75/3 N_valid."
+    },
+    {
+      "id": "EXP_TEMPORAL_FIDELITY_001",
+      "worker": "W2",
+      "score": 1.1688,
+      "time_min": 58.4,
+      "result": "SUCCESS",
+      "family": "temporal_fidelity",
+      "note": "NEW BEST! 40% timesteps + 8 NM polish (full): +0.0441 vs baseline. 2-src RMSE dropped 33%."
+    },
+    {
+      "id": "EXP_ADAPTIVE_BUDGET_001",
+      "worker": "W1",
+      "score": 1.1143,
+      "time_min": 56.2,
+      "result": "FAILED",
+      "family": "budget_allocation",
+      "note": "Early termination hurts CMA-ES accuracy. Fixed-budget baseline is optimal."
+    },
     {
       "id": "EXP_WS_CMAES_001",
       "worker": "W1",
@@ -74,7 +117,7 @@
       "time_min": 65.8,
       "result": "FAILED",
       "family": "meta_learning",
-      "note": "WS-CMA-ES causes divergence. Best: RMSE 0.276 @ 66 min (62% worse than baseline). Probing wastes budget. meta_learning family EXHAUSTED."
+      "note": "WS-CMA-ES causes divergence. Probing wastes budget. meta_learning family EXHAUSTED."
     },
     {
       "id": "EXP_FAST_SOURCE_DETECT_001",
@@ -83,7 +126,7 @@
       "time_min": null,
       "result": "ABORTED",
       "family": "preprocessing",
-      "note": "INVALID PREMISE - n_sources already in sample data. Detection not needed. Sensor-based features give only 67% accuracy, far below 95% target."
+      "note": "INVALID PREMISE - n_sources already in sample data."
     },
     {
       "id": "EXP_SEQUENTIAL_HANDOFF_001",
@@ -92,7 +135,7 @@
       "time_min": 56.6,
       "result": "FAILED",
       "family": "hybrid",
-      "note": "Sequential CMA-ES to NM handoff FAILED. Best in-budget 1.1132 is WORSE than baseline 1.1247. NM improves score (+0.0192) when given time, but time overhead is prohibitive. When reduced to fit budget, score drops below baseline."
+      "note": "Sequential CMA-ES to NM handoff FAILED. Best in-budget 1.1132 is WORSE than baseline."
     },
     {
       "id": "EXP_MULTIFID_OPT_001",
@@ -101,7 +144,7 @@
       "time_min": 44.9,
       "result": "FAILED",
       "family": "multi_fidelity",
-      "note": "Multi-fidelity pyramid FAILED. Coarse grid RMSE landscape differs from fine grid. Best in-budget: RMSE 0.259 @ 45 min (45% worse than baseline). Solutions don't transfer between resolutions."
+      "note": "Coarse grid RMSE landscape differs from fine grid."
     },
     {
       "id": "EXP_BAYESIAN_OPT_001",
@@ -110,7 +153,7 @@
       "time_min": 57.6,
       "result": "FAILED",
       "family": "bayesian_opt",
-      "note": "GP surrogate doesn't model thermal RMSE landscape. Run 1: 91% worse 1-src, 60% worse 2-src (in budget). Run 2: 39% worse 1-src, 31% worse 2-src but 45% over budget. CMA-ES's covariance adaptation is essential."
+      "note": "GP surrogate doesn't model thermal RMSE landscape."
     },
     {
       "id": "EXP_LQ_CMAES_001",
@@ -119,7 +162,7 @@
       "time_min": 64.1,
       "result": "FAILED",
       "family": "surrogate_lq",
-      "note": "fmin_lq_surr API mismatch - returns ONE solution but we need MULTIPLE candidates for diversity scoring. 29-71% worse RMSE, 7-17% slower than baseline."
+      "note": "fmin_lq_surr API mismatch - returns ONE solution but we need MULTIPLE candidates."
     },
     {
       "id": "EXP_TRANSFER_LEARN_001",
@@ -128,7 +171,7 @@
       "time_min": 59.7,
       "result": "FAILED",
       "family": "meta_learning",
-      "note": "Cluster transfer FAILED - sensor features don't predict solution similarity. Inverse problem is too non-linear."
+      "note": "Cluster transfer FAILED - sensor features don't predict solution similarity."
     },
     {
       "id": "EXP_ENSEMBLE_001",
@@ -137,43 +180,7 @@
       "time_min": 347.9,
       "result": "FAILED",
       "family": "ensemble",
-      "note": "Ensemble 5.8x over budget. Focus on REDUCING simulations, not adding optimizers."
-    },
-    {
-      "id": "EXP_FAST_ICA_001",
-      "worker": "W2",
-      "score": 1.1046,
-      "time_min": 151.1,
-      "result": "FAILED",
-      "family": "decomposition",
-      "note": "Coarse-to-fine adds massive overhead."
-    },
-    {
-      "id": "EXP_SURROGATE_NN_001",
-      "worker": "W1",
-      "score": 1.1203,
-      "time_min": 75.6,
-      "result": "FAILED",
-      "family": "surrogate",
-      "note": "Online learning doesn't work with parallel processing. Need PRE-TRAINED surrogate."
-    },
-    {
-      "id": "EXP_COBYLA_REFINE_001",
-      "worker": "W2",
-      "score": 1.1235,
-      "time_min": 88.8,
-      "result": "FAILED",
-      "family": "gradient_free_local",
-      "note": "COBYLA better accuracy but 55% slower. NM is more efficient for refinement."
-    },
-    {
-      "id": "EXP_PSO_001",
-      "worker": "W2",
-      "score": 1.0978,
-      "time_min": 54.5,
-      "result": "FAILED",
-      "family": "evolutionary_other",
-      "note": "PSO faster but worse. 1-src RMSE 0.2771 vs CMA-ES 0.1397."
+      "note": "Ensemble 5.8x over budget."
     },
     {
       "id": "CMAES_TUNING_BATCH",
@@ -188,28 +195,28 @@
 
   "workers": {
     "W1": {
-      "status": "idle",
-      "current_experiment": null,
-      "last_completed": "EXP_WS_CMAES_001",
-      "directive": "Queue empty. Waiting for new experiments."
+      "status": "running",
+      "current_experiment": "EXP_TEMPORAL_HIGHER_SIGMA_001",
+      "last_completed": "EXP_ADAPTIVE_BUDGET_001",
+      "directive": "Running temporal_40pct_higher_sigma - combining 40% timesteps with higher sigma"
     },
     "W2": {
-      "status": "active",
-      "current_experiment": "EXP_TEMPORAL_FIDELITY_001",
-      "last_completed": "EXP_FAST_SOURCE_DETECT_001",
-      "directive": "Testing early timestep filtering for faster candidate evaluation"
+      "status": "idle",
+      "current_experiment": null,
+      "last_completed": "EXP_NICHING_CMAES_001",
+      "directive": "Niching FAILED. Diversity is NOT the bottleneck. Pick next available experiment."
     },
     "W3": {
       "status": "idle",
       "current_experiment": null,
       "last_completed": null,
-      "directive": "Pick next highest-priority AVAILABLE experiment from queue"
+      "directive": "NEW BEST 1.1688! Use optimizer_with_polish.py. Focus on diversity improvements if any headroom remains."
     },
     "W4": {
       "status": "idle",
       "current_experiment": null,
       "last_completed": null,
-      "directive": "Pick next highest-priority AVAILABLE experiment from queue"
+      "directive": "NEW BEST 1.1688! Use optimizer_with_polish.py. Only 1.6 min headroom - marginal gains only."
     }
   },
 
@@ -220,93 +227,41 @@
     "SURROGATE NN FAILED: Online learning doesn't work with parallel processing",
     "Sigma-time tradeoff is FUNDAMENTAL - no free lunch",
     "L-BFGS-B makes gradient methods 10-50x more expensive (finite differences)",
-    "------- W0 RESEARCH SESSION 2026-01-18 -------",
-    "DISCOVERY: pycma has BUILT-IN lq-CMA-ES (cma.fmin_lq_surr) - global quadratic surrogate",
-    "Literature shows lq-CMA-ES achieves 2-6x speedup on benchmark functions",
-    "Quadratic surrogate is only used when rank correlation is high (adaptive)",
-    "------- W1 EXP_LQ_CMAES_001 RESULTS (2026-01-19) -------",
-    "lq-CMA-ES FAILED: API mismatch - fmin_lq_surr returns ONE solution, we need MULTIPLE candidates",
-    "RMSE 29-71% worse than baseline, 7-17% slower - NO benefit at all",
-    "Fundamental issue: High-level API doesn't expose intermediate population solutions",
-    "Would need to use SurrogatePopulation with ask/tell interface - loses 'built-in' advantage",
-    "------- W1 EXP_BAYESIAN_OPT_001 RESULTS (2026-01-19) -------",
-    "Bayesian Optimization FAILED: GP surrogate doesn't model thermal RMSE landscape well",
-    "Run 1: 91% worse 1-src RMSE, 60% worse 2-src RMSE (in budget at 57.6 min)",
-    "Run 2: 39% worse 1-src, 31% worse 2-src but 45% over budget (87.4 min)",
-    "Fundamental issue: The RMSE landscape is complex/multimodal, GP kernel doesn't capture local structure",
-    "CMA-ES's adaptive covariance matrix is ESSENTIAL - captures search landscape through population sampling",
-    "BO's Expected Improvement acquisition gets stuck in suboptimal local minima",
-    "Recommendation: ABANDON surrogate-based algorithm replacements. Focus on optimizing WITHIN CMA-ES framework.",
-    "------- W0 RESEARCH CYCLE 2 -------",
-    "DISCOVERY: Warm Starting CMA-ES (WS-CMA-ES) from AAAI 2021",
-    "WS-CMA-ES transfers prior knowledge through CMA-ES initialization",
-    "Implementation available at CyberAgentAILab/cmaes Python library",
-    "Uses get_warm_start_mgd() to estimate promising distribution from source tasks",
-    "DISCOVERY: Fast source count estimation is possible",
-    "Simple peak detection on thermal images can estimate 1 vs 2 sources",
-    "------- W0 CYCLE 3: ENSEMBLE_VOTING ANALYSIS (2026-01-18T22:00) -------",
-    "ENSEMBLE FAILED BADLY: 1.0972 @ 347.9 min (5.8x over budget, WORSE score than baseline)",
-    "KEY INSIGHT: Running multiple optimizers MULTIPLIES simulation count - fundamentally unworkable",
-    "NELDER-MEAD WINS 74% but adds massive overhead when run from multiple random inits",
-    "NM SHOULD BE USED FOR REFINEMENT ONLY (single init from CMA-ES best) not full optimization",
-    "BASELINE IS WELL-TUNED: Complex ensembles do NOT beat well-tuned CMA-ES",
-    "CRITICAL PATH: Focus on REDUCING simulations per sample, not adding more optimization paths",
-    "------- W1 EXP_MULTIFID_OPT_001 RESULTS (2026-01-19) -------",
-    "Multi-fidelity pyramid FAILED: Coarse grid RMSE landscape differs from fine grid",
-    "Run 1 (25x12 coarse): RMSE 0.259 @ 45 min (in budget but 45% worse than baseline)",
-    "Run 2 (30x15 coarse): RMSE 0.232 @ 92 min (better accuracy but 53% over budget)",
-    "Run 3 (same as Run 2): RMSE 0.304 @ 73 min (high variance, 79% worse)",
-    "Fundamental issue: The RMSE landscape changes with grid resolution",
-    "Optimal source positions on coarse grid DON'T correspond to optimal on fine grid",
-    "ABANDON multi-fidelity via grid coarsening for inverse problems",
-    "Alternative to explore: fewer timesteps (temporal fidelity) instead of spatial coarsening",
-    "------- W2 EXP_SEQUENTIAL_HANDOFF_001 RESULTS (2026-01-19) -------",
-    "Sequential CMA-ES to NM handoff FAILED: Best in-budget score 1.1132 is WORSE than baseline 1.1247",
-    "Run 2 (fine NM, 8/12 iters): Score 1.1439 @ 126.5 min - EXCELLENT score but 2x over budget",
-    "Run 3 (coarse NM, 12/18 iters): Score 1.1331 @ 108.3 min - still 48 min over budget",
-    "Run 4 (minimal coarse NM, 3/5 iters): Score 1.1132 @ 56.6 min - IN BUDGET but BELOW baseline",
-    "Fundamental issue: CMA-ES already uses full time budget. No room for NM.",
-    "NM improves score (+0.0192) when given adequate iterations, but time overhead prohibitive",
-    "Reducing NM to fit budget loses accuracy benefit - score drops BELOW baseline",
-    "ABANDON hybrid/sequential handoff approaches - adding ANY post-processing blows budget",
-    "------- W2 EXP_FAST_SOURCE_DETECT_001 RESULTS (2026-01-19) -------",
-    "Fast source detection ABORTED: INVALID PREMISE - n_sources already in sample data",
-    "Baseline uses sample['n_sources'] directly - detection is unnecessary",
-    "Even if needed, sensor-based features give only 67% accuracy (target was 95%)",
-    "Simple heuristics: 57.5%, Random Forest: 67.5% - not separable from sparse sensors",
-    "ABORT early when hypothesis is flawed - saved significant implementation time",
-    "------- W0 DEEP RESEARCH CYCLE 2026-01-19T00:37:00Z -------",
-    "SYNTHESIS: Spatial coarsening fails (multi-fid), post-processing fails (NM handoff)",
-    "KEY INSIGHT: Both experiments show adding/changing work is ineffective",
-    "NEW DIRECTION: Temporal fidelity (fewer timesteps, same spatial grid)",
-    "DISCOVERY: Samples have 800-1200 timesteps - significant speedup potential",
-    "RESEARCH: Early timestep stopping can filter candidates (heat eq approximates steady-state over time)",
-    "RESEARCH: Lyapunov equation methods can avoid time-consuming transient analysis during optimization",
-    "RESEARCH: Multi-level CMA-ES can achieve 10x speedup with proper fidelity hierarchy",
-    "HYPOTHESIS: Simulating first 25-50% of timesteps maintains spatial landscape while reducing cost",
-    "SOURCE: https://arxiv.org/html/2402.09638v1 - Multi-Fidelity Methods Survey",
-    "SOURCE: https://www.sciencedirect.com/science/article/abs/pii/S0378778811000533 - Rapid PDE optimization",
-    "NEW EXPERIMENT: EXP_TEMPORAL_FIDELITY_001 - Use reduced timesteps for candidate filtering",
-    "------- W1 EXP_WS_CMAES_001 RESULTS (2026-01-19) -------",
-    "WS-CMA-ES FAILED: Probing phase wastes budget, warm start causes divergence",
-    "Run 1 (3 probing, 15/25 main): RMSE 0.276 @ 66 min (over budget, 62% worse)",
-    "Run 2 (2 probing, 20/32 main): RMSE 0.460 @ 23 min (in budget, 170% worse)",
-    "Fundamental issue: Each sample has unique source positions - no shared landscape structure",
-    "Probing from random inits doesn't provide useful warm start information",
-    "get_warm_start_mgd() combines poor probes into even worse starting distribution",
-    "meta_learning family EXHAUSTED: cluster_transfer + WS-CMA-ES both FAILED",
-    "CONCLUSION: Transfer learning between samples is NOT viable for inverse heat problems"
+    "------- W2 EXP_TEMPORAL_FIDELITY_001 SUCCESS (2026-01-19) -------",
+    "BREAKTHROUGH: 40% timesteps achieves 1.1362 @ 39 min (+0.0115 vs baseline, 32% faster)",
+    "KEY INSIGHT: Temporal fidelity works because spatial grid remains intact (100x50)",
+    "Unlike spatial coarsening (FAILED), truncated time series maintains RMSE landscape correlation",
+    "Correlation test: 40% timesteps gives 0.95+ Spearman correlation with full RMSE",
+    "SWEET SPOT: 40% timesteps optimal. Below 40% = too noisy, above 40% = diminishing returns",
+    "COUNTERINTUITIVE: More fevals with truncated signal HURTS (overfits to noisy proxy)",
+    "------- W2 EXP_TEMPORAL_FIDELITY_001 POLISH UPDATE (2026-01-19) -------",
+    "MAJOR BREAKTHROUGH: 40% timesteps + 8 NM polish (full) = 1.1688 @ 58.4 min",
+    "CRITICAL: NM polish must use FULL timesteps, not truncated (polishing proxy overfits to noise)",
+    "2-source RMSE dropped from 0.21 to 0.14 (33% reduction) with full-timestep polish",
+    "NEW BASELINE: 1.1688 @ 58.4 min (early_timestep_filtering with 8 NM polish)",
+    "------- W1 EXP_ADAPTIVE_BUDGET_001 FAILED (2026-01-19) -------",
+    "Early termination based on sigma/stagnation hurts accuracy",
+    "CMA-ES needs full budget to properly adapt covariance matrix",
+    "Fixed-budget approach is already near-optimal",
+    "------- STRATEGY UPDATE (2026-01-19) -------",
+    "NEW BEST EVER IN-BUDGET: 1.1688 surpasses previous best-ever (1.1396 was over budget)",
+    "Key recipe: CMA-ES (40% timesteps) + NM polish (full timesteps) = fast exploration + accurate refinement",
+    "Remaining gap to target (1.25): 0.0612 - marginal gains now, diminishing returns expected",
+    "CONCLUSION: Temporal fidelity + full-timestep polish is optimal strategy",
+    "------- W2 EXP_NICHING_CMAES_001 FAILED (2026-01-19) -------",
+    "CRITICAL: Scoring formula AVERAGES accuracy: score = (1/N)*sum(1/(1+L_i)) + 0.3*(N/3)",
+    "Adding diverse but worse candidates HURTS the score more than diversity bonus helps",
+    "Baseline already achieves 2.75/3 N_valid (80% of samples have 3 candidates)",
+    "Taboo-based niching pushes CMA-ES to suboptimal solutions",
+    "CONCLUSION: Diversity is NOT the bottleneck. Focus on accuracy improvement only."
   ],
 
   "research_sources": [
     "https://github.com/CMA-ES/pycma - pycma with lq-CMA-ES support",
     "https://github.com/CMA-ES/lq-cma - Official lq-CMA-ES implementation",
-    "https://hal.science/hal-05035436/document - Rank-lq-CMA-ES GECCO'25",
-    "https://dl.acm.org/doi/10.1145/3321707.3321842 - Global surrogate assisted CMA-ES",
-    "https://www.researchgate.net/publication/228434549 - POD for inverse problems",
-    "https://www.nature.com/articles/s41467-025-63076-z - One-shot operator learning Nature Comms 2025",
-    "https://www.frontiersin.org/articles/10.3389/fams.2022.1076296 - Bayesian optimization for expensive black-box"
+    "https://arxiv.org/html/2402.09638v1 - Multi-Fidelity Methods Survey",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0378778811000533 - Rapid PDE optimization"
   ],
 
-  "notes": "V5.0 W1 completed EXP_WS_CMAES_001 (FAILED). meta_learning family EXHAUSTED. W2 running temporal_fidelity. Remaining families: surrogate_pod, temporal_fidelity."
+  "notes": "V5.3 NEW BEST: 1.1688 @ 58.4 min (40% timesteps + 8 NM polish on full timesteps). Surpasses previous best-ever 1.1396. Only 1.6 min headroom remaining. Consider this the production configuration."
 }

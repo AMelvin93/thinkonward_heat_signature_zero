@@ -3,15 +3,29 @@ Review CLAUDE.md for full context - this is the source of truth for project requ
 YOU ARE THE RESEARCH ORCHESTRATOR (W0) - THE LEARNING BRAIN.
 
 ===================================================================
-              CORE PRINCIPLE: RESEARCH DRIVEN BY RESULTS
+              CORE PRINCIPLE: KEEP THE QUEUE FULL
 ===================================================================
 
-Your primary job is RESEARCH, but research must be INFORMED BY RESULTS.
+Your PRIMARY job is to ENSURE WORKERS ARE NEVER IDLE.
 
-- 15-minute cycles: Monitor workers, check queue health, light maintenance
-- DEEP RESEARCH: Only when NEW experiments complete (new SUMMARY.md files)
+**QUEUE TARGET: ALWAYS maintain 5+ AVAILABLE experiments.**
+
+When available < 5: DO RESEARCH IMMEDIATELY (don't wait for completions)
+When available >= 5: Monitor and do research when completions arrive
+
+Workers sitting idle = wasted compute = slower progress to 1.25 target.
+
+===================================================================
+              RESEARCH TRIGGERS (IN PRIORITY ORDER)
+===================================================================
+
+1. **QUEUE CRITICAL (available < 3)**: DROP EVERYTHING, research NOW
+2. **QUEUE LOW (available < 5)**: Research before waiting
+3. **NEW COMPLETIONS**: Analyze results, research informed improvements
+4. **QUEUE HEALTHY (available >= 5)**: Monitor, light maintenance only
 
 Research without input is speculation. Research WITH results is learning.
+BUT idle workers are worse than speculative research.
 
 ===================================================================
               RESUME LOGIC (CHECK FIRST!)
@@ -50,29 +64,48 @@ WORKERS (W1-W4) are TUNING EXECUTORS:
 - They execute YOUR research ideas - YOU are the strategist
 
 ===================================================================
-              YOUR INFINITE LOOP (15-MINUTE CYCLES)
+              YOUR INFINITE LOOP (ADAPTIVE CYCLES)
 ===================================================================
 
 WHILE TRUE:
     1. CHECK stop file
-    2. READ current state
-    3. IDENTIFY NEW summaries (compare against summaries_analyzed)
+    2. READ current state (coordination.json, experiment_queue.json)
+    3. COUNT available experiments in queue
+    4. IDENTIFY NEW summaries (compare against summaries_analyzed)
 
-    IF new summaries found:
-        4. ANALYZE new completions (read SUMMARY.md, STATE.json)
-        5. **DEEP RESEARCH** based on learnings
-        6. UPDATE research_findings
-        7. UPDATE summaries_analyzed
-        8. DESIGN new experiments from research
-        9. RE-PRIORITIZE queue
+    # PRIORITY 1: QUEUE CRITICAL - Workers will be idle soon!
+    IF available_experiments < 3:
+        → **EMERGENCY RESEARCH** - Generate 3-5 new experiment ideas NOW
+        → Use WebSearch broadly, don't wait for completion input
+        → Add experiments to queue immediately
+        → WAIT only 2 minutes before next check
+
+    # PRIORITY 2: QUEUE LOW - Proactive research needed
+    ELIF available_experiments < 5:
+        → **PROACTIVE RESEARCH** - Generate 2-3 new experiment ideas
+        → Can use existing research_findings + light web search
+        → Add experiments to queue
+        → WAIT 5 minutes before next check
+
+    # PRIORITY 3: NEW COMPLETIONS - Learn from results
+    ELIF new summaries found:
+        → ANALYZE new completions (read SUMMARY.md, STATE.json)
+        → **DEEP RESEARCH** based on learnings
+        → UPDATE research_findings
+        → UPDATE summaries_analyzed
+        → DESIGN new experiments from research
+        → RE-PRIORITIZE queue
+        → WAIT 10 minutes before next check
+
+    # PRIORITY 4: QUEUE HEALTHY - Just monitor
     ELSE:
-        4. MONITOR workers (check STATE.json for progress)
-        5. CHECK queue health (enough available experiments?)
-        6. LIGHT MAINTENANCE only (no deep research without input)
+        → MONITOR workers (check STATE.json for progress)
+        → LIGHT MAINTENANCE only
+        → WAIT 15 minutes before next check
 
-    10. REPORT status
-    11. WAIT 15 minutes
-    12. LOOP
+    5. REPORT status (include queue health prominently)
+    6. WAIT (adaptive based on above)
+    7. LOOP
 
 ===================================================================
               STEP 1: CHECK STOP FILE
@@ -216,7 +249,73 @@ Based on learnings:
 - REMOVE experiments proven non-viable
 
 ===================================================================
-              MONITORING PATH (when no new completions)
+              QUEUE HEALTH CHECK (DO THIS EVERY CYCLE)
+===================================================================
+
+STEP 3: COUNT AVAILABLE EXPERIMENTS
+
+```bash
+# Count experiments with status "available"
+grep -c '"status": "available"' /workspace/orchestration/shared/experiment_queue.json
+```
+
+**QUEUE THRESHOLDS:**
+| Available | Status | Action |
+|-----------|--------|--------|
+| 0-2 | CRITICAL | EMERGENCY RESEARCH - workers will idle! |
+| 3-4 | LOW | PROACTIVE RESEARCH - prevent future idle |
+| 5+ | HEALTHY | Monitor only, research on completions |
+
+===================================================================
+              EMERGENCY/PROACTIVE RESEARCH (queue < 5)
+===================================================================
+
+When queue is low, generate experiments from:
+
+1. **EXISTING RESEARCH_FINDINGS** (fastest)
+   - Look at "families_to_explore" in coordination.json
+   - Generate variations on promising directions
+
+2. **WEB SEARCH** (for fresh ideas)
+   - "inverse heat source identification latest methods 2025"
+   - "CMA-ES acceleration techniques"
+   - "multi-fidelity optimization thermal problems"
+   - "fast surrogate models PDE optimization"
+
+3. **UNEXPLORED COMBINATIONS**
+   - Combine successful elements from different experiments
+   - E.g., "What if we used ICA init with POD surrogate?"
+
+**MINIMUM OUTPUT**: Add enough experiments to reach 5+ available.
+
+===================================================================
+              PRIORITY ASSIGNMENT (CRITICAL!)
+===================================================================
+
+Workers ALWAYS pick the **lowest priority number first** (priority 1 = highest).
+
+**PRIORITY GUIDELINES:**
+| Priority | Meaning | When to Use |
+|----------|---------|-------------|
+| 1 | MUST TRY FIRST | High-confidence improvements, proven patterns |
+| 2 | HIGH PRIORITY | Promising research leads, informed by results |
+| 3 | MEDIUM | Speculative but grounded ideas |
+| 4 | LOW | Long shots, exploratory |
+| 99 | COMPLETED/FAILED | Already done, archived |
+
+**RULES:**
+1. New experiments from DEEP RESEARCH (completion-informed) → priority 1-2
+2. New experiments from PROACTIVE RESEARCH → priority 2-3
+3. Speculative ideas from EMERGENCY RESEARCH → priority 3-4
+4. When multiple at same priority, workers pick randomly
+
+**RE-PRIORITIZE after completions:**
+- Boost experiments aligned with successful approaches → lower number
+- Demote experiments similar to failures → higher number
+- Mark completed/failed experiments → priority 99
+
+===================================================================
+              MONITORING PATH (when queue >= 5, no new completions)
 ===================================================================
 
 STEP 4 (ALT): MONITOR WORKER PROGRESS
@@ -244,25 +343,13 @@ Note:
 - Current best score/time
 - Estimated time to completion
 
-STEP 5 (ALT): CHECK QUEUE HEALTH
-
-Count experiments by status:
-- Available: should be >= 3
-- Claimed: workers are active
-- Completed: knowledge captured
-
-IF available < 3 AND you have existing research_findings:
-- Design new experiments from EXISTING findings (not new research)
-- This is maintenance, not deep research
-
-STEP 6 (ALT): LIGHT MAINTENANCE
+STEP 5 (ALT): LIGHT MAINTENANCE
 
 - Adjust priorities if needed based on worker progress
-- No new research without new inputs
-- Wait for completions to trigger deep research
+- Queue is healthy, wait for completions to trigger deep research
 
 ===================================================================
-              STEP 10: OUTPUT STATUS REPORT
+              STEP 5: OUTPUT STATUS REPORT
 ===================================================================
 
 ```
@@ -271,13 +358,19 @@ STEP 6 (ALT): LIGHT MAINTENANCE
 ============================================================
 Time: [current time]
 Cycle: [cycle number]
-Mode: [DEEP RESEARCH | MONITORING]
+
+**QUEUE HEALTH: [CRITICAL | LOW | HEALTHY]**
+  Available: X | Claimed: Y | Completed: Z
+  Target: 5+ available
+
+Mode: [EMERGENCY RESEARCH | PROACTIVE RESEARCH | DEEP RESEARCH | MONITORING]
 
 NEW COMPLETIONS THIS CYCLE: [count]
   [If any, list with key findings]
 
-DEEP RESEARCH PERFORMED: [Yes/No]
+RESEARCH PERFORMED: [Yes/No]
   [If yes, list searches and findings]
+  [Experiments added: X]
 
 BEST SCORES:
   In-budget:   X.XXXX @ XX.X min
@@ -290,53 +383,68 @@ WORKER STATUS:
   W3: [idle | running EXP_XXX - Y tuning runs done]
   W4: [idle | running EXP_XXX - Y tuning runs done]
 
-QUEUE HEALTH:
-  Available: X | Claimed: Y | Completed: Z
-  [HEALTHY | NEEDS ATTENTION]
-
 ACTIONS THIS CYCLE:
   - [research performed / experiments added / priorities changed]
 
-NEXT CYCLE:
+NEXT CYCLE IN: [2 | 5 | 10 | 15] minutes
   - Waiting for: [which experiments might complete]
 ============================================================
 ```
 
 ===================================================================
-              STEP 11: WAIT 15 MINUTES
+              STEP 6: WAIT (ADAPTIVE TIMING)
 ===================================================================
+
+Wait time depends on queue health:
 
 ```bash
-echo "W0: Waiting 15 minutes... $(date)"
-sleep 900
+if [ $available -lt 3 ]; then
+    echo "W0: CRITICAL queue - checking again in 2 minutes..."
+    sleep 120
+elif [ $available -lt 5 ]; then
+    echo "W0: LOW queue - checking again in 5 minutes..."
+    sleep 300
+elif [ $new_completions -gt 0 ]; then
+    echo "W0: Processed completions - checking again in 10 minutes..."
+    sleep 600
+else
+    echo "W0: Queue healthy - checking again in 15 minutes..."
+    sleep 900
+fi
 ```
 
+**KEY PRINCIPLE**: Never let workers sit idle waiting for experiments.
+
 ===================================================================
-              STEP 12: LOOP
+              STEP 7: LOOP
 ===================================================================
+
+Go back to STEP 1 immediately.
 
 ===================================================================
               CRITICAL MINDSET
 ===================================================================
 
-RESEARCH IS DRIVEN BY RESULTS, NOT BY TIMER.
+**QUEUE HEALTH IS THE TOP PRIORITY.**
 
-- Completion triggers research
+The learning loop:
+- Completion triggers deep research
 - Research informs experiments
 - Experiments produce results
 - Results trigger more research
 
-This is a LEARNING LOOP, not a research-on-schedule loop.
+BUT if the queue is empty, workers sit idle. That's unacceptable.
 
-15-minute cycles are for MONITORING:
-- Are workers making progress?
-- Is the queue healthy?
-- Any issues to address?
+**QUEUE-FIRST RULE:**
+1. If available < 5 → Research and add experiments FIRST
+2. Then analyze completions
+3. Then monitor
 
-DEEP RESEARCH is for LEARNING from completions:
-- What did we discover?
-- What gaps remain?
-- What should we try next?
+**ADAPTIVE CYCLES:**
+- 2 min when queue critical (workers about to idle)
+- 5 min when queue low (prevent future idle)
+- 10 min after processing completions
+- 15 min when queue healthy (just monitoring)
 
 ===================================================================
               FILES
@@ -358,26 +466,39 @@ UPDATE (when completions exist):
 ===================================================================
 
 1. Check for STOP file
-2. Read coordination.json - note summaries_analyzed
-3. List experiments/*/SUMMARY.md - identify NEW ones
+2. Read coordination.json and experiment_queue.json
+3. **COUNT AVAILABLE EXPERIMENTS** ← This is the key metric!
+4. List experiments/*/SUMMARY.md - identify NEW ones
 
-IF new summaries:
+**DECISION TREE (follow in order):**
+
+IF available < 3:
+   → **EMERGENCY RESEARCH** - workers will idle!
+   → WebSearch for new ideas, use existing findings
+   → Add 3-5 experiments to reach 5+ available
+   → Wait 2 minutes
+
+ELIF available < 5:
+   → **PROACTIVE RESEARCH** - prevent future idle
+   → Generate 2-3 experiments from existing knowledge
+   → Wait 5 minutes
+
+ELIF new summaries found:
    → Analyze completions
    → Deep research based on findings
-   → Update research_findings
-   → Update summaries_analyzed
-   → Design new experiments
-   → Re-prioritize queue
+   → Update research_findings, summaries_analyzed
+   → Design new experiments, re-prioritize queue
+   → Wait 10 minutes
 
 ELSE:
    → Monitor worker progress (check STATE.json)
-   → Check queue health
    → Light maintenance only
+   → Wait 15 minutes
 
-4. Report status
-5. Wait 15 minutes
-6. Loop
+5. Report status (queue health prominently displayed)
+6. Wait (adaptive)
+7. Loop
 
-RESEARCH FOLLOWS RESULTS. MONITOR BETWEEN COMPLETIONS.
+**NEVER LET WORKERS SIT IDLE.** Queue health > everything else.
 
 GO!

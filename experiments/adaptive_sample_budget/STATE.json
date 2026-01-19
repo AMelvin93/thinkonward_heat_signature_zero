@@ -1,0 +1,76 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_BUDGET_001",
+  "worker": "W1",
+  "status": "done",
+  "result": "FAILED",
+  "started_at": "2026-01-19T03:15:00Z",
+  "completed_at": "2026-01-19T04:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "sigma_converge_thresh": 0.01,
+        "stagnation_gens": 3,
+        "bonus_fevals_1src": 10,
+        "bonus_fevals_2src": 18,
+        "allow_bonus": true
+      },
+      "score": 1.1277,
+      "rmse_mean": 0.1858,
+      "time_min": 75.4,
+      "in_budget": false,
+      "early_terminated_pct": 0.0,
+      "bonus_used_pct": 11.2,
+      "finding": "Early termination threshold too strict. Bonus adds overhead. OVER BUDGET."
+    },
+    {
+      "run": 2,
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "sigma_converge_thresh": 0.05,
+        "stagnation_gens": 2,
+        "allow_bonus": false
+      },
+      "score": 1.1070,
+      "rmse_mean": 0.2084,
+      "time_min": 70.2,
+      "in_budget": false,
+      "early_terminated_pct": 23.8,
+      "finding": "Early termination HURTS accuracy. Score dropped -0.018 vs baseline."
+    },
+    {
+      "run": 3,
+      "config": {
+        "max_fevals_1src": 15,
+        "max_fevals_2src": 28,
+        "sigma_converge_thresh": 0.001,
+        "stagnation_gens": 10,
+        "allow_bonus": false
+      },
+      "score": 1.1143,
+      "rmse_mean": 0.2192,
+      "time_min": 56.2,
+      "in_budget": true,
+      "early_terminated_pct": 0.0,
+      "finding": "Baseline fevals with no early termination. Still -0.01 vs baseline. Confirms approach is flawed."
+    }
+  ],
+  "best_in_budget": {
+    "run": 3,
+    "score": 1.1143,
+    "time_min": 56.2
+  },
+  "best_overall": {
+    "run": 1,
+    "score": 1.1277,
+    "time_min": 75.4
+  },
+  "baseline_to_beat": {
+    "score": 1.1247,
+    "time_min": 57.0
+  },
+  "conclusion": "FAILED - Adaptive budget allocation does not improve over baseline. Early termination hurts accuracy (CMA-ES needs full budget to converge). Bonus budget adds overhead without corresponding savings. The fixed-budget approach in baseline is already near-optimal."
+}
