@@ -23,27 +23,114 @@
       "mlflow_run": "run1_sigma_025_030",
       "timestamp": "2026-01-19T06:45:00Z",
       "finding": "Higher sigma improves score (+0.0057 vs W2) but 3 min over budget"
+    },
+    {
+      "run": 2,
+      "config": {
+        "sigma0_1src": 0.25,
+        "sigma0_2src": 0.30,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 5,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "score": 1.1584,
+      "rmse_mean": 0.1506,
+      "rmse_mean_1src": 0.1166,
+      "rmse_mean_2src": 0.1733,
+      "time_min": 52.1,
+      "in_budget": true,
+      "mlflow_run": "run2_sigma_025_030_polish5",
+      "timestamp": "2026-01-19T07:15:00Z",
+      "finding": "5 polish saves 11 min but loses 0.016 score vs Run 1. In budget but below W2 baseline"
+    },
+    {
+      "run": 3,
+      "config": {
+        "sigma0_1src": 0.25,
+        "sigma0_2src": 0.30,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 7,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "score": 1.1690,
+      "rmse_mean": 0.1437,
+      "rmse_mean_1src": 0.1103,
+      "rmse_mean_2src": 0.1660,
+      "time_min": 68.8,
+      "in_budget": false,
+      "mlflow_run": "run3_sigma_025_030_polish7",
+      "timestamp": "2026-01-19T08:00:00Z",
+      "finding": "Score matches W2 but time way over budget. High variance in 2-src times (75-194s). Higher sigma slows convergence"
+    },
+    {
+      "run": 4,
+      "config": {
+        "sigma0_1src": 0.25,
+        "sigma0_2src": 0.30,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 6,
+        "max_fevals_1src": 16,
+        "max_fevals_2src": 28
+      },
+      "score": 1.1594,
+      "rmse_mean": 0.1603,
+      "rmse_mean_1src": 0.1120,
+      "rmse_mean_2src": 0.1925,
+      "time_min": 60.1,
+      "in_budget": false,
+      "mlflow_run": "run4_reduced_fevals",
+      "timestamp": "2026-01-19T08:45:00Z",
+      "finding": "Reduced fevals hurt accuracy without significant time savings. 4 high RMSE samples (>0.4)"
+    },
+    {
+      "run": 5,
+      "config": {
+        "sigma0_1src": 0.20,
+        "sigma0_2src": 0.24,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "score": 1.1590,
+      "rmse_mean": 0.1514,
+      "rmse_mean_1src": 0.1124,
+      "rmse_mean_2src": 0.1774,
+      "time_min": 68.5,
+      "in_budget": false,
+      "mlflow_run": "run5_intermediate_sigma",
+      "timestamp": "2026-01-19T09:30:00Z",
+      "finding": "Intermediate sigma worse than both W2 and high sigma. 1 sample took 237s. High variance in timing"
     }
   ],
-  "next_config_to_try": {
-    "run": 2,
-    "config": {
-      "sigma0_1src": 0.25,
-      "sigma0_2src": 0.30,
-      "timestep_fraction": 0.40,
-      "final_polish_maxiter": 5
-    },
-    "rationale": "Keep sigma high but reduce polish from 8 to 5 to save ~5 min"
-  },
+  "status": "completed",
+  "completed_at": "2026-01-19T09:35:00Z",
+  "outcome": "FAILED",
+  "conclusion": "Higher sigma increases exploration but disproportionately increases time. Cannot beat W2 baseline (1.1688 @ 58.4 min) within budget. Best in-budget score was Run 2 (1.1584 @ 52.1 min) which is below W2.",
   "baseline_to_beat": {
     "score": 1.1688,
     "time_min": 58.4,
     "config": "40% temporal + 8 NM polish (W2 best)"
   },
-  "success_criteria": {
-    "score_min": 1.17,
-    "time_max_min": 60,
-    "note": "Beat W2's 1.1688 while staying in budget"
+  "best_result": {
+    "run": 1,
+    "score": 1.1745,
+    "time_min": 63.0,
+    "note": "Best score achieved but over budget by 3 min"
   },
-  "abort_criteria": "Higher sigma doesn't improve score or pushes over 60 min budget"
+  "best_in_budget": {
+    "run": 2,
+    "score": 1.1584,
+    "time_min": 52.1,
+    "note": "Below W2 baseline, not an improvement"
+  },
+  "key_findings": [
+    "Higher sigma (0.25/0.30) improves score by +0.0057 but adds 5+ min to runtime",
+    "Reducing polish to stay in budget loses most of the accuracy gain",
+    "2-source samples show high variance with higher sigma (75-237s)",
+    "Intermediate sigma (0.20/0.24) performed worse than both extremes",
+    "W2's sigma 0.18/0.22 is near-optimal for the time-accuracy trade-off"
+  ]
 }

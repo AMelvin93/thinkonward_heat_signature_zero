@@ -1,0 +1,101 @@
+
+Temporal Fidelity with Polish
+============================================================
+Samples: 80, Workers: 7
+Timestep fraction: 40%
+Final polish: 12 NM iters on best (full timesteps)
+============================================================
+[  1/80] Sample   1: 1-src RMSE=0.1023 cands=3 time=39.7s [OK] [P]
+[  2/80] Sample   4: 1-src RMSE=0.1508 cands=3 time=40.9s [OK] [P]
+[  3/80] Sample   2: 1-src RMSE=0.0041 cands=3 time=42.7s [OK] [P]
+[  4/80] Sample   6: 1-src RMSE=0.0990 cands=3 time=44.6s [OK] [P]
+[  5/80] Sample   5: 1-src RMSE=0.1484 cands=2 time=50.8s [OK] [P]
+[  6/80] Sample   0: 1-src RMSE=0.1018 cands=3 time=52.1s [OK] [P]
+[  7/80] Sample   3: 1-src RMSE=0.0308 cands=3 time=52.6s [OK] [P]
+[  8/80] Sample   8: 1-src RMSE=0.1022 cands=3 time=39.4s [OK] [P]
+[  9/80] Sample  12: 1-src RMSE=0.1843 cands=3 time=29.7s [OK] [P]
+[ 10/80] Sample   9: 1-src RMSE=0.1460 cands=3 time=48.6s [OK] [P]
+[ 11/80] Sample   7: 1-src RMSE=0.2124 cands=3 time=60.3s [OK] [P]
+[ 12/80] Sample  10: 1-src RMSE=0.1546 cands=3 time=65.0s [OK] [P]
+[ 13/80] Sample  11: 1-src RMSE=0.0008 cands=3 time=61.2s [OK] [P]
+[ 14/80] Sample  13: 1-src RMSE=0.0254 cands=1 time=63.1s [OK] [P]
+[ 15/80] Sample  16: 1-src RMSE=0.1518 cands=1 time=42.4s [OK] [P]
+[ 16/80] Sample  14: 1-src RMSE=0.1498 cands=2 time=54.2s [OK] [P]
+[ 17/80] Sample  15: 1-src RMSE=0.0146 cands=3 time=65.1s [OK] [P]
+[ 18/80] Sample  17: 1-src RMSE=0.0998 cands=2 time=56.6s [OK] [P]
+[ 19/80] Sample  20: 1-src RMSE=0.0072 cands=2 time=43.0s [OK] [P]
+[ 20/80] Sample  19: 1-src RMSE=0.0988 cands=2 time=56.2s [OK] [P]
+[ 21/80] Sample  18: 1-src RMSE=0.1014 cands=3 time=63.0s [OK] [P]
+[ 22/80] Sample  21: 1-src RMSE=0.0111 cands=3 time=42.9s [OK] [P]
+[ 23/80] Sample  22: 1-src RMSE=0.1012 cands=3 time=61.9s [OK] [P]
+[ 24/80] Sample  24: 1-src RMSE=0.1016 cands=3 time=42.4s [OK] [P]
+[ 25/80] Sample  25: 1-src RMSE=0.1000 cands=3 time=42.5s [OK] [P]
+[ 26/80] Sample  23: 1-src RMSE=0.1008 cands=3 time=61.8s [OK] [P]
+[ 27/80] Sample  26: 1-src RMSE=0.1521 cands=2 time=41.9s [OK] [P]
+[ 28/80] Sample  28: 1-src RMSE=0.1016 cands=3 time=42.2s [OK] [P]
+[ 29/80] Sample  27: 1-src RMSE=0.1507 cands=1 time=64.4s [OK] [P]
+[ 30/80] Sample  29: 1-src RMSE=0.0991 cands=2 time=43.9s [OK] [P]
+[ 31/80] Sample  31: 1-src RMSE=0.0999 cands=3 time=39.7s [OK] [P]
+[ 32/80] Sample  30: 1-src RMSE=0.1036 cands=3 time=51.7s [OK] [P]
+[ 33/80] Sample  33: 2-src RMSE=0.1750 cands=3 time=92.3s [OK] [P]
+[ 34/80] Sample  32: 2-src RMSE=0.0516 cands=3 time=112.0s [OK] [P]
+[ 35/80] Sample  35: 2-src RMSE=0.1046 cands=3 time=86.8s [OK] [P]
+[ 36/80] Sample  37: 2-src RMSE=0.1533 cands=3 time=89.6s [OK] [P]
+[ 37/80] Sample  34: 2-src RMSE=0.1284 cands=3 time=116.4s [OK] [P]
+[ 38/80] Sample  36: 2-src RMSE=0.1201 cands=1 time=138.2s [OK] [P]
+[ 39/80] Sample  38: 2-src RMSE=0.1510 cands=3 time=135.0s [OK] [P]
+[ 40/80] Sample  39: 2-src RMSE=0.1181 cands=3 time=90.9s [OK] [P]
+[ 41/80] Sample  40: 2-src RMSE=0.1913 cands=3 time=87.3s [OK] [P]
+[ 42/80] Sample  41: 2-src RMSE=0.1027 cands=3 time=88.3s [OK] [P]
+[ 43/80] Sample  43: 2-src RMSE=0.1742 cands=3 time=89.0s [OK] [P]
+[ 44/80] Sample  42: 2-src RMSE=0.1263 cands=3 time=124.9s [OK] [P]
+[ 45/80] Sample  45: 2-src RMSE=0.1963 cands=3 time=75.2s [OK] [P]
+[ 46/80] Sample  44: 2-src RMSE=0.0989 cands=3 time=82.7s [OK] [P]
+[ 47/80] Sample  47: 2-src RMSE=0.1073 cands=3 time=78.4s [OK] [P]
+[ 48/80] Sample  48: 2-src RMSE=0.2505 cands=3 time=78.2s [OK] [P]
+[ 49/80] Sample  49: 2-src RMSE=0.1626 cands=3 time=76.7s [OK] [P]
+[ 50/80] Sample  46: 2-src RMSE=0.2138 cands=3 time=111.4s [OK] [P]
+[ 51/80] Sample  50: 2-src RMSE=0.1932 cands=3 time=77.2s [OK] [P]
+[ 52/80] Sample  51: 2-src RMSE=0.1510 cands=3 time=79.5s [OK] [P]
+[ 53/80] Sample  54: 2-src RMSE=0.1020 cands=3 time=81.5s [OK] [P]
+[ 54/80] Sample  53: 2-src RMSE=0.1112 cands=3 time=85.8s [OK] [P]
+[ 55/80] Sample  52: 2-src RMSE=0.2121 cands=3 time=127.6s [OK] [P]
+[ 56/80] Sample  55: 2-src RMSE=0.0390 cands=3 time=90.4s [OK] [P]
+[ 57/80] Sample  56: 2-src RMSE=0.1193 cands=3 time=132.9s [OK] [P]
+[ 58/80] Sample  57: 2-src RMSE=0.1842 cands=3 time=115.8s [OK] [P]
+[ 59/80] Sample  59: 2-src RMSE=0.0123 cands=3 time=84.7s [OK] [P]
+[ 60/80] Sample  60: 2-src RMSE=0.1000 cands=3 time=95.9s [OK] [P]
+[ 61/80] Sample  58: 2-src RMSE=0.0993 cands=3 time=140.9s [OK] [P]
+[ 62/80] Sample  61: 2-src RMSE=0.0125 cands=3 time=98.1s [OK] [P]
+[ 63/80] Sample  63: 2-src RMSE=0.2176 cands=3 time=86.2s [OK] [P]
+[ 64/80] Sample  62: 2-src RMSE=0.1314 cands=3 time=144.6s [OK] [P]
+[ 65/80] Sample  64: 2-src RMSE=0.1010 cands=3 time=98.0s [OK] [P]
+[ 66/80] Sample  66: 2-src RMSE=0.0677 cands=3 time=100.1s [OK] [P]
+[ 67/80] Sample  68: 2-src RMSE=0.1117 cands=3 time=96.2s [OK] [P]
+[ 68/80] Sample  65: 2-src RMSE=0.3828 cands=3 time=139.3s [OK] [P]
+[ 69/80] Sample  67: 2-src RMSE=0.1809 cands=3 time=138.3s [OK] [P]
+[ 70/80] Sample  70: 2-src RMSE=0.1254 cands=3 time=91.4s [OK] [P]
+[ 71/80] Sample  71: 2-src RMSE=0.1673 cands=3 time=92.7s [OK] [P]
+[ 72/80] Sample  72: 2-src RMSE=0.2023 cands=3 time=91.1s [OK] [P]
+[ 73/80] Sample  69: 2-src RMSE=0.3636 cands=3 time=140.6s [OK] [P]
+[ 74/80] Sample  74: 2-src RMSE=0.1589 cands=3 time=91.4s [OK] [P]
+[ 75/80] Sample  73: 2-src RMSE=0.1584 cands=3 time=116.1s [OK] [P]
+[ 76/80] Sample  77: 2-src RMSE=0.1579 cands=3 time=94.2s [OK] [P]
+[ 77/80] Sample  75: 2-src RMSE=0.1020 cands=3 time=120.8s [OK] [P]
+[ 78/80] Sample  79: 2-src RMSE=0.1120 cands=3 time=91.5s [OK] [P]
+[ 79/80] Sample  76: 2-src RMSE=0.1781 cands=3 time=131.0s [OK] [P]
+[ 80/80] Sample  78: 2-src RMSE=0.2186 cands=3 time=128.3s [OK] [P]
+
+======================================================================
+RESULTS - Temporal Fidelity with Polish (40% + 12 NM)
+======================================================================
+Submission Score: 1.1703
+Projected (400):  82.3 min
+  1-source: RMSE=0.1002 (n=32)
+  2-source: RMSE=0.1479 (n=48)
+
+Best w/o polish: 1.1362 @ 39 min
+This run:        1.1703 @ 82.3 min
+Delta:           +0.0341 score, +43.3 min
+======================================================================
+

@@ -1,0 +1,23 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_TIMESTEP_001",
+  "worker": "W2",
+  "status": "in_progress",
+  "started_at": "2026-01-19T10:00:00Z",
+  "family": "temporal_fidelity_extended",
+  "hypothesis": "Early CMA-ES iterations need rough landscape estimate (25% timesteps). Later iterations benefit from more accurate signal (40% timesteps). Variable fidelity may save time while maintaining accuracy.",
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES + 40% temporal fidelity + 8 NM polish",
+    "note": "80 samples"
+  },
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": {
+    "low_fidelity": 0.25,
+    "high_fidelity": 0.40,
+    "switch_at": 0.50,
+    "note": "Multi-fidelity: 25% timesteps first half, 40% second half"
+  },
+  "summary_written": false
+}

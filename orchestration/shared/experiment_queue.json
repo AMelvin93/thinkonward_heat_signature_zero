@@ -123,24 +123,18 @@
     },
     {
       "id": "EXP_TEMPORAL_HIGHER_SIGMA_001",
-      "priority": 1,
+      "priority": 99,
       "family": "temporal_fidelity_extended",
-      "status": "claimed_by_W1",
-      "claimed_at": "2026-01-19T06:00:00Z",
+      "status": "completed",
+      "result": "FAILED - Higher sigma increases time disproportionately. Cannot beat W2 baseline within budget.",
+      "score": 1.1745,
+      "time_min": 63.0,
+      "best_in_budget_score": 1.1584,
+      "best_in_budget_time": 52.1,
+      "worker": "W1",
       "name": "temporal_40pct_higher_sigma",
       "description": "Combine 40% temporal fidelity with higher sigma (0.25/0.30) for better accuracy",
-      "hypothesis": "We have 18 min headroom (39 min vs 57 min budget). Higher sigma takes more time but gets better accuracy. Combining with temporal fidelity may achieve both.",
-      "research_source": "Previous finding: adaptive_sigma achieved best-ever score 1.1396 but at 68.3 min (over budget). With 40% timesteps, we may fit in budget.",
-      "why_different": "Leverages temporal fidelity speedup to enable higher sigma that was previously over-budget",
-      "implementation": [
-        "1. Start with early_timestep_filtering optimizer (40% timesteps)",
-        "2. Increase sigma from baseline (0.17/0.21) to (0.25/0.30)",
-        "3. May need to reduce fevals slightly to stay in budget",
-        "4. Test sigma values: 0.22/0.27, 0.25/0.30, 0.28/0.33",
-        "5. Target: Score >= 1.14 @ <= 55 min"
-      ],
-      "success_criteria": "Score >= 1.14 AND time <= 55 min",
-      "abort_criteria": "Higher sigma doesn't improve score or pushes over budget"
+      "finding": "Higher sigma (0.25/0.30) improves score by +0.0057 but adds 5+ min. Reducing polish to stay in budget loses the accuracy gain. W2's sigma 0.18/0.22 is optimal."
     },
     {
       "id": "EXP_NICHING_CMAES_001",
@@ -157,29 +151,23 @@
     },
     {
       "id": "EXP_IPOP_TEMPORAL_001",
-      "priority": 3,
+      "priority": 99,
       "family": "temporal_fidelity_extended",
-      "status": "available",
+      "status": "completed",
+      "result": "FAILED - IPOP adds time overhead (75.7 min) without improving accuracy. Splitting fevals across restarts reduces convergence.",
+      "score": 1.1687,
+      "time_min": 75.7,
+      "worker": "W2",
       "name": "ipop_cmaes_temporal",
       "description": "IPOP-CMA-ES (increasing population) with 40% temporal fidelity",
-      "hypothesis": "IPOP-CMA-ES restarts with larger populations to escape local optima. Combined with temporal fidelity speedup, can explore more thoroughly.",
-      "research_source": "IPOP-CMA-ES is standard restart strategy in pycma. Has shown benefits for multimodal functions.",
-      "why_different": "Current baseline uses fixed population. IPOP may find better solutions with larger populations enabled by temporal speedup.",
-      "implementation": [
-        "1. Enable IPOP in CMA-ES (restart with 2x population)",
-        "2. Use 40% temporal fidelity for evaluation",
-        "3. Set max_restarts = 2-3 (within time budget)",
-        "4. Track improvement per restart",
-        "5. Compare diversity of solutions across restarts"
-      ],
-      "success_criteria": "Score >= 1.14 AND time <= 55 min",
-      "abort_criteria": "Restarts don't improve solution quality"
+      "finding": "IPOP divides feval budget across restarts, each restart gets insufficient fevals. Problem doesn't have local optima - restarts don't help."
     },
     {
       "id": "EXP_PHYSICS_INIT_001",
       "priority": 4,
       "family": "initialization",
-      "status": "available",
+      "status": "claimed_by_W1",
+      "claimed_at": "2026-01-19T09:40:00Z",
       "name": "physics_informed_init",
       "description": "Use sensor temperature gradients to initialize source location estimates",
       "hypothesis": "High temperature sensors likely near heat sources. Gradient analysis can provide better initial guesses than random initialization.",
@@ -200,7 +188,8 @@
       "id": "EXP_ADAPTIVE_TIMESTEP_001",
       "priority": 5,
       "family": "temporal_fidelity_extended",
-      "status": "available",
+      "status": "claimed_by_W2",
+      "claimed_at": "2026-01-19T10:00:00Z",
       "name": "adaptive_timestep_fraction",
       "description": "Start with 25% timesteps, increase to 40% as CMA-ES converges",
       "hypothesis": "Early CMA-ES iterations need rough landscape estimate (25% timesteps fine). Later iterations benefit from more accurate signal (40% timesteps).",
@@ -238,6 +227,99 @@
       "abort_criteria": "POD fails to capture 2-source thermal fields accurately",
       "complexity": "HIGH - requires collecting and processing snapshot data",
       "note": "Re-enabled from paused status. Temporal fidelity success shows cheap surrogates can work."
+    },
+    {
+      "id": "EXP_EXTENDED_POLISH_001",
+      "priority": 99,
+      "family": "refinement",
+      "status": "completed",
+      "result": "FAILED - 12 iterations takes 82.3 min (37% over budget) for only +0.0015 score. 8 iterations is optimal.",
+      "score": 1.1703,
+      "time_min": 82.3,
+      "worker": "W2",
+      "name": "extended_nm_polish",
+      "description": "Increase NM polish iterations from 8 to 12-16 for better accuracy",
+      "finding": "More polish iterations exceeds time budget. Each additional iteration adds ~6 min on 80 samples. 8 is already optimal."
+    },
+    {
+      "id": "EXP_LARGER_POPSIZE_001",
+      "priority": 7,
+      "family": "cmaes_accuracy",
+      "status": "available",
+      "name": "larger_cmaes_population",
+      "description": "Use larger CMA-ES population size for better accuracy in inverse problem",
+      "hypothesis": "Research shows larger populations improve convergence quality in inverse problems. With temporal fidelity speedup, we can afford larger populations.",
+      "research_source": "Oxford Academic: 'convergence can be further improved by using larger population sizes' for inverse problems",
+      "why_different": "Default population=4+floor(3*ln(n)) may be too small. Larger population = better covariance estimation.",
+      "implementation": [
+        "1. Start with temporal fidelity optimizer (40% timesteps)",
+        "2. Increase popsize from default (~8) to 12, 16, 20",
+        "3. May need to reduce fevals to stay in budget",
+        "4. Monitor accuracy vs time tradeoff",
+        "5. Combine with NM polish (full timesteps)"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 59 min",
+      "abort_criteria": "Larger population adds too much time without accuracy benefit"
+    },
+    {
+      "id": "EXP_2SOURCE_FOCUS_001",
+      "priority": 8,
+      "family": "source_specific",
+      "status": "available",
+      "name": "two_source_specialized",
+      "description": "Specialized optimization for 2-source samples (60% of data, higher RMSE)",
+      "hypothesis": "2-source samples have higher RMSE and dominate the score. Using different hyperparameters (more fevals, different sigma) for 2-source may improve overall accuracy.",
+      "research_source": "Extended polish showed 2-source samples are 2x slower per iteration. They need more optimization effort but also cost more time.",
+      "why_different": "Current approach treats 1-src and 2-src the same. 2-src is harder (4D vs 3D search space) and may benefit from specialized treatment.",
+      "implementation": [
+        "1. Identify 2-source samples from n_sources metadata",
+        "2. For 2-source: increase fevals by 20-30%, use higher initial sigma",
+        "3. For 1-source: reduce fevals slightly to stay in budget",
+        "4. Budget allocation: 40% time to 1-src (40% of samples), 60% to 2-src (60% of samples)",
+        "5. Measure improvement on 2-source RMSE specifically"
+      ],
+      "success_criteria": "2-source RMSE drops from 0.14 to <0.12, overall score >= 1.17",
+      "abort_criteria": "Specialized treatment doesn't improve 2-source RMSE"
+    },
+    {
+      "id": "EXP_ADAPTIVE_SIGMA_SCHEDULE_001",
+      "priority": 9,
+      "family": "sigma_scheduling",
+      "status": "available",
+      "name": "adaptive_sigma_schedule",
+      "description": "Start with higher sigma (0.25/0.30), decay to lower sigma (0.18/0.22) during optimization",
+      "hypothesis": "Higher sigma enables better exploration early. Lower sigma allows faster convergence late. Schedule combines benefits without time penalty.",
+      "research_source": "EXP_TEMPORAL_HIGHER_SIGMA_001 showed sigma 0.25/0.30 finds better solutions but takes too long. Adaptive scheduling may get best of both.",
+      "why_different": "Fixed sigma is suboptimal - high sigma is slow but accurate, low sigma is fast but may miss optima. Schedule adapts throughout.",
+      "implementation": [
+        "1. Start CMA-ES with sigma=0.25/0.30 for first 30% of fevals",
+        "2. Linear decay to sigma=0.18/0.22 for remaining fevals",
+        "3. Alternative: step-wise decay (3 stages)",
+        "4. Track convergence vs fixed baseline",
+        "5. Combine with 40% temporal fidelity and 8 NM polish"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 59 min",
+      "abort_criteria": "Adaptive schedule doesn't improve over fixed sigma 0.18/0.22"
+    },
+    {
+      "id": "EXP_PROGRESSIVE_POLISH_FIDELITY_001",
+      "priority": 10,
+      "family": "temporal_fidelity_extended",
+      "status": "available",
+      "name": "progressive_polish_fidelity",
+      "description": "Use progressive timestep fidelity during NM polish: 60% early, 100% final",
+      "hypothesis": "Early polish iterations don't need full accuracy since they'll be refined. Saving time on early polish could allow more fevals or iterations.",
+      "research_source": "Current approach: CMA-ES (40%) + NM polish (100%). Intermediate fidelity during polish may reduce overhead.",
+      "why_different": "Current baseline uses 100% timesteps for all 8 polish iterations. Progressive approach starts cheaper.",
+      "implementation": [
+        "1. CMA-ES: 40% timesteps (unchanged)",
+        "2. NM polish iterations 1-4: 60% timesteps (cheaper)",
+        "3. NM polish iterations 5-8: 100% timesteps (accuracy)",
+        "4. Alternative: 50%/75%/100% three-stage progression",
+        "5. Measure accuracy vs time tradeoff"
+      ],
+      "success_criteria": "Score >= 1.168 AND time <= 55 min (faster with same accuracy)",
+      "abort_criteria": "Progressive fidelity hurts final accuracy"
     },
     {
       "id": "EXP_COARSE_SURROGATE_001",
@@ -342,6 +424,9 @@
     "EXP_FAST_SOURCE_DETECT_001",
     "EXP_WS_CMAES_001",
     "EXP_ADAPTIVE_BUDGET_001",
-    "EXP_TEMPORAL_FIDELITY_001"
+    "EXP_TEMPORAL_FIDELITY_001",
+    "EXP_TEMPORAL_HIGHER_SIGMA_001",
+    "EXP_NICHING_CMAES_001",
+    "EXP_EXTENDED_POLISH_001"
   ]
 }

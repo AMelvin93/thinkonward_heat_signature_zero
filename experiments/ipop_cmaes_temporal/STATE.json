@@ -1,0 +1,65 @@
+{
+  "experiment_id": "EXP_IPOP_TEMPORAL_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-19T08:00:00Z",
+  "completed_at": "2026-01-19T09:00:00Z",
+  "family": "temporal_fidelity_extended",
+  "hypothesis": "IPOP-CMA-ES restarts with larger populations to escape local optima. Combined with 40% timesteps speedup, can explore more thoroughly.",
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES + 40% temporal fidelity + 8 NM polish",
+    "note": "80 samples"
+  },
+  "tuning_runs": [
+    {
+      "run_id": 1,
+      "config": {"max_restarts": 2, "popsize_factor": 2, "initial_popsize": 4, "fevals": "20/36"},
+      "score": 1.1850,
+      "time_min": 79.6,
+      "n_samples": 10,
+      "notes": "OVER BUDGET - Good score but 33% over budget"
+    },
+    {
+      "run_id": 2,
+      "config": {"max_restarts": 1, "popsize_factor": 2, "initial_popsize": 4, "fevals": "20/36"},
+      "score": 1.1668,
+      "time_min": 53.0,
+      "n_samples": 10,
+      "notes": "Slightly worse than baseline, faster"
+    },
+    {
+      "run_id": 3,
+      "config": {"max_restarts": 0, "popsize_factor": 2, "initial_popsize": 4, "fevals": "20/36"},
+      "score": 1.1475,
+      "time_min": 51.5,
+      "n_samples": 10,
+      "notes": "No IPOP - worse than baseline"
+    },
+    {
+      "run_id": 4,
+      "config": {"max_restarts": 1, "popsize_factor": 2, "initial_popsize": 4, "fevals": "25/45"},
+      "score": 1.1727,
+      "time_min": 64.9,
+      "n_samples": 80,
+      "notes": "OVER BUDGET - 80 samples, +5 min over budget"
+    },
+    {
+      "run_id": 5,
+      "config": {"max_restarts": 1, "popsize_factor": 2, "initial_popsize": 4, "fevals": "22/40"},
+      "score": 1.1687,
+      "time_min": 75.7,
+      "n_samples": 80,
+      "notes": "OVER BUDGET - 80 samples, +16 min over budget, NO improvement"
+    }
+  ],
+  "best_in_budget": {
+    "config": null,
+    "score": null,
+    "time_min": null,
+    "notes": "No IPOP configuration beats baseline within budget"
+  },
+  "summary_written": true,
+  "conclusion": "FAILED - IPOP adds time overhead without improving accuracy. Splitting fevals across restarts reduces per-run convergence."
+}

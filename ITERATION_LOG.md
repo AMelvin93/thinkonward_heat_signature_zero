@@ -1015,3 +1015,19 @@ score = (1/N) * sum(1/(1+L_i)) + 0.3 * (N/3)
 Adding diverse but worse candidates DECREASED score from 1.1 to 1.08!
 
 **Recommendation**: ABANDON diversity optimization. Focus on accuracy improvement only. Baseline is already near-optimal for diversity.
+
+---
+
+### [W2] Experiment: extended_nm_polish (EXP_EXTENDED_POLISH_001) | Score: 1.1703 @ 82.3 min | FAILED
+**Algorithm**: Extended NM polish iterations (8 -> 12)
+**Tuning Runs**: 3 runs (10 iter, 12 iter on 20 samples, 12 iter on 80 samples)
+**Result**: **FAILED** - 12 iterations exceeds budget by 37% (82.3 min vs 60 min limit)
+**Key Finding**: 8 NM iterations is already optimal. Each additional iteration adds ~6 min. +0.0015 score not worth +24 min.
+
+**Why Extended Polish Failed**:
+1. **Time cost is prohibitive**: 12 iterations = 82.3 min (37% over budget)
+2. **Marginal improvement**: Only +0.0015 score gain
+3. **2-source samples expensive**: Each NM iteration requires 2 simulations per 2-src sample
+4. **Diminishing returns**: 8 iterations already captures most of the benefit
+
+**Recommendation**: 8 NM polish iterations is optimal. Time budget is fully utilized - cannot add more refinement.
