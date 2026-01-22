@@ -1,0 +1,22 @@
+{
+  "experiment_id": "EXP_BOUNDARY_AWARE_INIT_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-20T01:00:00Z",
+  "completed_at": "2026-01-20T01:05:00Z",
+  "family": "initialization_v2",
+  "hypothesis": "Heat sources near boundaries behave differently due to BCs. Initializing away from boundaries may improve convergence.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "conclusion": "ABORTED - Data analysis shows boundary sources exist, biasing away would hurt",
+  "rationale_for_abort": [
+    "Data analysis: 23.8% (19/80) samples have hottest sensor near boundary (within 10% margin)",
+    "Hottest sensor is proxy for source location. Boundary sources EXIST in test data.",
+    "Abort criteria met: 'Boundary constraint hurts cases with actual boundary sources'",
+    "Biasing initialization AWAY from boundaries would hurt these 19 samples",
+    "EXP_PHYSICS_INIT_001 already showed initialization modifications don't help (FAILED)",
+    "Initialization family marked EXHAUSTED - smart init (hottest sensor) is optimal"
+  ],
+  "key_finding": "24% of samples have evidence of boundary sources. Biasing away would hurt accuracy. Initialization family is EXHAUSTED.",
+  "summary_written": true
+}

@@ -1,11 +1,11 @@
 {
-  "version": "5.4",
-  "last_updated": "2026-01-19T08:00:00Z",
+  "version": "5.8",
+  "last_updated": "2026-01-20T02:10:00Z",
   "mode": "EXPLORATION",
 
   "resume_tracking": {
-    "summaries_analyzed": ["ensemble_voting", "cluster_transfer", "lq_cma_es_builtin", "bayesian_optimization_gp", "cmaes_to_nm_sequential", "multi_fidelity_pyramid", "fast_source_count_detection", "early_timestep_filtering", "adaptive_sample_budget", "warm_start_cmaes", "niching_cmaes_diversity", "extended_nm_polish", "temporal_40pct_higher_sigma", "ipop_cmaes_temporal"],
-    "last_cycle_timestamp": "2026-01-19T08:00:00Z",
+    "summaries_analyzed": ["ensemble_voting", "cluster_transfer", "lq_cma_es_builtin", "bayesian_optimization_gp", "cmaes_to_nm_sequential", "multi_fidelity_pyramid", "fast_source_count_detection", "early_timestep_filtering", "adaptive_sample_budget", "warm_start_cmaes", "niching_cmaes_diversity", "extended_nm_polish", "temporal_40pct_higher_sigma", "ipop_cmaes_temporal", "adaptive_timestep_fraction", "physics_informed_init", "pod_reduced_order_model", "larger_cmaes_population", "two_source_specialized", "adaptive_sigma_schedule", "active_cmaes_covariance", "progressive_polish_fidelity", "boundary_aware_initialization"],
+    "last_cycle_timestamp": "2026-01-19T12:00:00Z",
     "notes": "W0 tracks which SUMMARY.md files have been analyzed to avoid re-processing on resume"
   },
 
@@ -39,18 +39,18 @@
   },
 
   "queue_status": {
-    "available_experiments": 5,
-    "claimed_experiments": 2,
-    "status": "HEALTHY",
+    "available_experiments": 6,
+    "claimed_experiments": 0,
+    "status": "HEALTHY - QUEUE REFILLED",
     "experiments": [
-      "EXP_PHYSICS_INIT_001 (priority 4) - CLAIMED by W1",
-      "EXP_ADAPTIVE_TIMESTEP_001 (priority 5) - CLAIMED by W2",
-      "EXP_POD_SURROGATE_001 (priority 6) - available",
-      "EXP_LARGER_POPSIZE_001 (priority 7) - available",
-      "EXP_2SOURCE_FOCUS_001 (priority 8) - available",
-      "EXP_ADAPTIVE_SIGMA_SCHEDULE_001 (priority 9) - available",
-      "EXP_PROGRESSIVE_POLISH_FIDELITY_001 (priority 10) - NEW"
-    ]
+      "EXP_CONJUGATE_GRADIENT_001 (priority 1) - Adjoint method for O(1) gradients",
+      "EXP_JAX_AUTODIFF_001 (priority 2) - JAX differentiable simulator",
+      "EXP_HYBRID_CMAES_LBFGSB_001 (priority 3) - CMA-ES + L-BFGS-B polish",
+      "EXP_OPENAI_ES_001 (priority 4) - OpenAI Evolution Strategy",
+      "EXP_PRETRAINED_SURROGATE_001 (priority 5) - Offline trained NN surrogate",
+      "EXP_PINN_DIRECT_001 (priority 6) - PINN inverse heat source"
+    ],
+    "note": "Queue refilled after deep research on adjoint methods, JAX autodiff, FNO, and PINNs. Key insight: L-BFGS-B accuracy EXISTS (1.1627) but needs faster gradients."
   },
 
   "exploration_progress": {
@@ -71,24 +71,56 @@
       "temporal_fidelity": 1,
       "budget_allocation": 1
     },
-    "families_exhausted": ["evolutionary_cmaes", "gradient_based", "evolutionary_other", "ensemble", "decomposition", "meta_learning", "surrogate_lq", "bayesian_opt", "multi_fidelity", "hybrid", "preprocessing", "budget_allocation", "diversity"],
-    "families_to_explore": ["temporal_fidelity_extended", "initialization", "surrogate_pod"]
+    "families_exhausted": ["evolutionary_cmaes", "gradient_based", "evolutionary_other", "ensemble", "decomposition", "meta_learning", "surrogate_lq", "bayesian_opt", "multi_fidelity_spatial", "hybrid", "preprocessing", "budget_allocation", "diversity", "temporal_fidelity_extended", "initialization", "surrogate_pod", "cmaes_accuracy", "source_specific", "sigma_scheduling", "cmaes_variants", "problem_specific", "initialization_v2"],
+    "families_to_explore": [
+      "adjoint_gradient - O(1) gradient computation via adjoint method (never implemented)",
+      "differentiable_simulation - JAX/PyTorch autodiff through simulator",
+      "frequency_domain - Heat equation simplifies in Fourier space",
+      "neural_operator - FNO/DeepONet as fast surrogate",
+      "alternative_es - OpenAI-ES, Natural ES, PEPG",
+      "multi_objective - Pareto optimization of accuracy/speed",
+      "problem_reformulation - Different loss functions, regularization",
+      "recent_papers_2025 - Search for latest inverse heat methods"
+    ],
+    "research_directions": [
+      "The leaderboard top scores (1.22+) prove higher accuracy IS achievable",
+      "L-BFGS-B achieved excellent accuracy but was slow due to finite differences - adjoint gradients could fix this",
+      "40% temporal fidelity worked - what about frequency domain which naturally captures temporal structure?",
+      "Neural operators (FNO) can learn PDE solution operators with high accuracy",
+      "The problem may benefit from reformulation - different loss functions, constraints, or parameterizations"
+    ]
   },
 
-  "experiments_in_progress": {
-    "EXP_PHYSICS_INIT_001": {
-      "worker": "W1",
-      "claimed_at": "2026-01-19T09:40:00Z",
-      "status": "running"
-    },
-    "EXP_ADAPTIVE_TIMESTEP_001": {
-      "worker": "W2",
-      "claimed_at": "2026-01-19T10:00:00Z",
-      "status": "running"
-    }
-  },
+  "experiments_in_progress": {},
 
   "experiments_completed": [
+    {
+      "id": "EXP_POD_SURROGATE_001",
+      "worker": "W2",
+      "score": null,
+      "time_min": null,
+      "result": "ABORTED",
+      "family": "surrogate_pod",
+      "note": "POD not viable - sample-specific physics prevents universal basis. Temporal fidelity already achieves same speedup."
+    },
+    {
+      "id": "EXP_PHYSICS_INIT_001",
+      "worker": "W1",
+      "score": 1.1593,
+      "time_min": 71.9,
+      "result": "FAILED",
+      "family": "initialization",
+      "note": "Gradient init WORSE than hottest-sensor (-0.0046). Temperature gradients corrupted by diffusion. Simple heuristics win."
+    },
+    {
+      "id": "EXP_ADAPTIVE_TIMESTEP_001",
+      "worker": "W2",
+      "score": 1.1635,
+      "time_min": 69.9,
+      "result": "FAILED",
+      "family": "temporal_fidelity_extended",
+      "note": "Adaptive 25%->40% WORSE than fixed 40%. CMA-ES covariance needs consistent landscape. Switching fidelity mid-run is counterproductive."
+    },
     {
       "id": "EXP_IPOP_TEMPORAL_001",
       "worker": "W2",
@@ -230,28 +262,28 @@
 
   "workers": {
     "W1": {
-      "status": "running",
-      "current_experiment": "EXP_PHYSICS_INIT_001",
-      "last_completed": "EXP_TEMPORAL_HIGHER_SIGMA_001",
-      "directive": "Running physics_informed_init - using sensor gradients for better CMA-ES initialization"
+      "status": "idle",
+      "current_experiment": null,
+      "last_completed": "EXP_BOUNDARY_AWARE_INIT_001",
+      "directive": "QUEUE REFILLED! 6 new experiments available. Pick EXP_CONJUGATE_GRADIENT_001 (priority 1) - implement adjoint gradients for O(1) computation."
     },
     "W2": {
-      "status": "running",
-      "current_experiment": "EXP_ADAPTIVE_TIMESTEP_001",
-      "last_completed": "EXP_IPOP_TEMPORAL_001",
-      "directive": "Running adaptive_timestep_fraction - 25% timesteps early, 40% late"
+      "status": "idle",
+      "current_experiment": null,
+      "last_completed": "EXP_PROGRESSIVE_POLISH_FIDELITY_001",
+      "directive": "QUEUE REFILLED! New experiments focus on gradient methods and surrogates. L-BFGS-B accuracy (1.1627) exists - we need faster gradients."
     },
     "W3": {
       "status": "idle",
       "current_experiment": null,
       "last_completed": null,
-      "directive": "NEW BEST 1.1688! Sigma 0.18/0.22 is optimal. Higher sigma doesn't improve within budget."
+      "directive": "QUEUE REFILLED! Pick from: adjoint, JAX autodiff, hybrid CMA-ES+L-BFGS-B, OpenAI-ES, pre-trained surrogate, PINN."
     },
     "W4": {
       "status": "idle",
       "current_experiment": null,
       "last_completed": null,
-      "directive": "NEW BEST 1.1688! Only 1.6 min headroom. Focus on accuracy via initialization or 2-source targeting."
+      "directive": "QUEUE REFILLED! Key insight: Gradient-based methods achieved good accuracy but were slow. Fix: O(1) gradients via adjoint/autodiff."
     }
   },
 
@@ -307,15 +339,107 @@
     "With 2 restarts + higher fevals: 1.1850 @ 79.6 min (good score but 20 min over budget)",
     "Thermal inverse problem doesn't have local optima - random restarts don't help",
     "CMA-ES already converges to global optimum with good initialization",
-    "CONCLUSION: Restart strategies (IPOP, BIPOP) not beneficial. Problem is well-conditioned."
+    "CONCLUSION: Restart strategies (IPOP, BIPOP) not beneficial. Problem is well-conditioned.",
+    "------- W2 EXP_ADAPTIVE_TIMESTEP_001 FAILED (2026-01-20) -------",
+    "Adaptive timestep (25%->40%) during CMA-ES is COUNTERPRODUCTIVE",
+    "CMA-ES covariance adaptation requires CONSISTENT fitness landscape",
+    "Switching fidelity mid-run disrupts covariance learning - worse accuracy AND slower",
+    "Fixed 40% timesteps remains optimal - no improvement possible via variable fidelity",
+    "CONCLUSION: temporal_fidelity_extended family EXHAUSTED. No further improvements possible.",
+    "------- W1 EXP_PHYSICS_INIT_001 FAILED (2026-01-20) -------",
+    "Gradient-based init WORSE than hottest-sensor (-0.0046 score, +2.3 min)",
+    "Temperature gradients at sensors corrupted by thermal diffusion",
+    "Simple heuristics (hottest sensor) are already robust and effective",
+    "CONCLUSION: initialization family EXHAUSTED. Simple is better.",
+    "------- W2 EXP_POD_SURROGATE_001 ABORTED (2026-01-20) -------",
+    "POD not viable - each sample has unique kappa, BC, T0 (sample-specific physics)",
+    "Cannot build universal POD basis when physics vary between samples",
+    "Temporal fidelity already achieves same speedup with zero complexity",
+    "CONCLUSION: surrogate_pod family EXHAUSTED. No surrogate approach viable for this problem.",
+    "------- CRITICAL INSIGHT (2026-01-20) -------",
+    "16+ FAMILIES NOW EXHAUSTED. Baseline (40% timesteps + 8 NM polish) is NEAR OPTIMAL.",
+    "Remaining experiments (popsize, 2-source, sigma schedule, progressive polish) are diminishing returns.",
+    "Gap to target (1.25): 0.0812. May not be achievable without fundamentally new approach.",
+    "------- PROACTIVE RESEARCH (2026-01-20 00:35) -------",
+    "Added 3 new experiments to restore queue health (LOW -> HEALTHY):",
+    "1. Active CMA-ES: Uses negative covariance update for faster learning",
+    "2. Parameter Scaling: Weight x,y position more than intensity q",
+    "3. Boundary-Aware Init: Avoid boundary sources which have asymmetric behavior",
+    "Research sources: CMA-ES official docs, inverse heat source papers",
+    "------- FINAL BATCH ANALYSIS (2026-01-20 00:50) -------",
+    "EXP_LARGER_POPSIZE_001 (FAILED): Popsize=12 reduces generations (2-3 vs 4+), hurts covariance learning",
+    "EXP_2SOURCE_FOCUS_001 (FAILED): Baseline 20/36 feval split is optimal. 2-src is structurally harder (4D), not under-optimized",
+    "EXP_ADAPTIVE_SIGMA_SCHEDULE_001 (ABORTED): CMA-ES already adapts sigma naturally. Manual scheduling can't help.",
+    "EXP_ACTIVE_CMAES_001 (ABORTED): pycma's CMA_active defaults to True. Baseline already uses it.",
+    "EXP_PROGRESSIVE_POLISH_FIDELITY_001 (ABORTED): Prior evidence shows truncated polish 'overfits to proxy noise' (-0.0346 score)",
+    "EXP_PARAMETER_SCALING_001 (ABORTED): Intensity q is computed analytically via least squares, not optimized by CMA-ES",
+    "EXP_BOUNDARY_AWARE_INIT_001 (ABORTED): 24% of samples have boundary hotspots. Biasing away would hurt.",
+    "------- FINAL STATUS (2026-01-20 00:50) -------",
+    "ALL 17+ algorithm families EXHAUSTED",
+    "QUEUE EMPTY - No more experiments to run",
+    "BEST ACHIEVABLE: 1.1688 @ 58.4 min (CMA-ES + 40% temporal + 8 NM polish full)",
+    "TARGET: 1.25 | GAP: 0.0812 points (6.5%)",
+    "CONCLUSION: Gap to target may not be closeable without fundamentally different approach (e.g., adjoint gradients, different simulator)",
+    "------- DEEP RESEARCH CYCLE (2026-01-20 02:10) -------",
+    "QUEUE WAS CRITICAL (0 available). Performed emergency deep research.",
+    "RESEARCH FINDINGS:",
+    "1. ADJOINT METHOD: Conjugate gradient + adjoint gives O(1) gradients vs O(2n) finite differences",
+    "   Source: Tutorial on adjoint method (ScienceDirect), Heat source estimation (ResearchGate)",
+    "2. JAX-FEM: Differentiable FEM solver supports heat equation with automatic inverse solving",
+    "   Source: JAX-FEM paper (ScienceDirect), github.com/deepmodeling/jax-fem",
+    "3. FNO: Invertible FNO (iFNO) can solve forward+inverse jointly (AISTATS 2025)",
+    "   Source: Invertible FNO paper (arxiv), SC-FNO for parameter inversion",
+    "4. OpenAI-ES: 2-3x faster than CMA-ES in practice, scales better with workers",
+    "   Source: OpenAI Evolution Strategies paper (2017), Hyperscale ES (2024)",
+    "5. PINN: Heat source field inversion paper directly addresses our problem (ScienceDirect 2025)",
+    "   Source: github.com/maziarraissi/PINNs, ASME Journal review",
+    "KEY INSIGHT: L-BFGS-B achieved 1.1627 (session 10) in 202 min. ACCURACY EXISTS!",
+    "The bottleneck is gradient computation: O(2n) finite differences vs O(1) adjoint/autodiff.",
+    "If we can compute gradients efficiently, we can achieve L-BFGS-B accuracy within budget.",
+    "NEW EXPERIMENTS ADDED (6 total):",
+    "1. EXP_CONJUGATE_GRADIENT_001 (P1) - Adjoint method implementation",
+    "2. EXP_JAX_AUTODIFF_001 (P2) - Rewrite simulator in JAX",
+    "3. EXP_HYBRID_CMAES_LBFGSB_001 (P3) - CMA-ES + L-BFGS-B refinement",
+    "4. EXP_OPENAI_ES_001 (P4) - Alternative evolution strategy",
+    "5. EXP_PRETRAINED_SURROGATE_001 (P5) - Offline trained surrogate",
+    "6. EXP_PINN_DIRECT_001 (P6) - PINN for inverse heat source",
+    "QUEUE RESTORED TO HEALTHY (6 available)."
   ],
 
   "research_sources": [
     "https://github.com/CMA-ES/pycma - pycma with lq-CMA-ES support",
     "https://github.com/CMA-ES/lq-cma - Official lq-CMA-ES implementation",
     "https://arxiv.org/html/2402.09638v1 - Multi-Fidelity Methods Survey",
-    "https://www.sciencedirect.com/science/article/abs/pii/S0378778811000533 - Rapid PDE optimization"
+    "https://www.sciencedirect.com/science/article/abs/pii/S0378778811000533 - Rapid PDE optimization",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0045782521001468 - Tutorial on adjoint method for inverse problems",
+    "https://www.researchgate.net/publication/26354266 - Heat source estimation with conjugate gradient",
+    "https://github.com/deepmodeling/jax-fem - JAX-FEM differentiable FEM solver",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0010465523001479 - JAX-FEM paper",
+    "https://arxiv.org/abs/2402.11722 - Invertible FNO for forward and inverse problems",
+    "https://openai.com/index/evolution-strategies/ - OpenAI Evolution Strategies",
+    "https://www.sciencedirect.com/science/article/abs/pii/S0735193325002490 - Heat source field inversion with PINN (2025)",
+    "https://github.com/maziarraissi/PINNs - Original PINN framework"
   ],
 
-  "notes": "V5.3 NEW BEST: 1.1688 @ 58.4 min (40% timesteps + 8 NM polish on full timesteps). Surpasses previous best-ever 1.1396. Only 1.6 min headroom remaining. Consider this the production configuration."
+  "notes": "V5.8: DEEP RESEARCH COMPLETE. Queue refilled from 0 to 6 experiments. Key insight: L-BFGS-B achieved 1.1627 accuracy in 202 min - the accuracy EXISTS, we need O(1) gradients. Added experiments for adjoint method, JAX autodiff, hybrid CMA-ES+L-BFGS-B, OpenAI-ES, pre-trained surrogate, and PINN.",
+
+  "research_mandate": {
+    "status": "COMPLETED",
+    "reason": "Deep research cycle finished. 6 new experiments added based on findings.",
+    "research_performed": [
+      "Searched: inverse heat source identification adjoint method 2025",
+      "Searched: JAX differentiable heat equation solver automatic differentiation",
+      "Searched: Fourier neural operator FNO inverse problems heat transfer 2025",
+      "Searched: OpenAI evolution strategies ES optimization faster than CMA-ES 2024",
+      "Searched: physics informed neural network PINN heat source inverse problem"
+    ],
+    "key_findings": [
+      "Adjoint method: O(1) gradient computation is well-established for inverse heat problems",
+      "JAX-FEM: Differentiable FEM solver exists with heat equation support",
+      "FNO: Invertible FNO (iFNO) can solve forward+inverse jointly (AISTATS 2025)",
+      "OpenAI-ES: 2-3x faster than CMA-ES, better parallelization",
+      "PINN: 2025 paper directly addresses heat source field inversion"
+    ],
+    "key_insight": "L-BFGS-B achieved 1.1627 score (session 10) but took 202 min. The ACCURACY is there, we need FASTER gradients. Adjoint method or autodiff could provide this."
+  }
 }

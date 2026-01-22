@@ -1,10 +1,10 @@
 {
   "experiment_id": "EXP_POD_SURROGATE_001",
   "worker": "W2",
-  "status": "paused",
-  "pause_reason": "Pivoting to higher-priority EXP_TEMPORAL_FIDELITY_001. POD feasibility confirmed but implementation complexity is high. Temporal fidelity is simpler and more likely to succeed.",
+  "status": "done",
   "started_at": "2026-01-19T02:35:00Z",
-  "tuning_runs": [],
+  "completed_at": "2026-01-19T12:30:00Z",
+  "family": "surrogate_pod",
   "feasibility_check": {
     "completed": true,
     "results": {
@@ -21,10 +21,29 @@
         "20_modes_error": "2.9%"
       }
     },
-    "conclusion": "POD CAN capture temperature fields, but coefficient mapping is complex. Implementation would require either solving reduced systems or learning a mapping."
+    "conclusion": "POD CAN capture temperature fields mathematically, but the approach is fundamentally unsuitable for this problem."
   },
+  "tuning_runs": [],
   "best_in_budget": null,
-  "next_config_to_try": null,
-  "decision_point": "W0 added EXP_TEMPORAL_FIDELITY_001 (priority 1) which is simpler and more promising. Should pivot?",
-  "summary_written": false
+  "result": "ABORTED - POD not viable for this problem due to sample-specific physics",
+  "key_findings": [
+    "POD requires pre-computed snapshots from the SAME physical system",
+    "Each sample has unique physics (kappa, bc, T0) - no universal basis possible",
+    "Building sample-specific POD during optimization requires simulations - defeats purpose",
+    "Temporal fidelity (40% timesteps) already provides similar speedup (2.5x) without this complexity"
+  ],
+  "comparison_to_temporal_fidelity": {
+    "temporal_fidelity": {
+      "speedup": "2.5x",
+      "accuracy_loss": "~5%",
+      "implementation": "Simple - just truncate simulation"
+    },
+    "pod_approach": {
+      "potential_speedup": "Maybe 2-3x (if it worked)",
+      "accuracy_loss": "5-10%",
+      "implementation": "Complex - requires snapshot collection, SVD, coefficient mapping",
+      "fatal_flaw": "Each sample has different physics - can't pre-build universal basis"
+    }
+  },
+  "summary_written": true
 }

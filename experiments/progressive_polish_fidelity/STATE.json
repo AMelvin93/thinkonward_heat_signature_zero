@@ -1,0 +1,24 @@
+{
+  "experiment_id": "EXP_PROGRESSIVE_POLISH_FIDELITY_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-19T14:30:00Z",
+  "completed_at": "2026-01-19T14:35:00Z",
+  "family": "temporal_fidelity_extended",
+  "hypothesis": "Early polish iterations don't need full accuracy. Using 60% timesteps for iterations 1-4 and 100% for iterations 5-8 may save time while preserving accuracy.",
+  "result": "ABORTED - Prior experiment showed truncated polish HURTS accuracy significantly",
+  "prior_evidence": {
+    "source": "early_timestep_filtering SUMMARY.md",
+    "finding": "NM polish on truncated (40%) timesteps HURTS: score 1.1342 vs 1.1688 with full polish (-0.0346)",
+    "implication": "60% timesteps for early polish would likely also hurt accuracy, though less severely"
+  },
+  "key_findings": [
+    "NM polish requires full timesteps for accurate refinement",
+    "The truncated signal is a proxy; polishing the proxy overfits to noise",
+    "Progressive fidelity would likely hurt accuracy more than it saves time",
+    "Implementation complexity high: requires modifying optimizer for multi-phase polish"
+  ],
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

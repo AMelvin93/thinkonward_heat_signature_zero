@@ -1,0 +1,19 @@
+{
+  "experiment_id": "EXP_ACTIVE_CMAES_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-19T14:00:00Z",
+  "completed_at": "2026-01-19T14:05:00Z",
+  "family": "cmaes_variants",
+  "hypothesis": "Active CMA-ES uses information from unsuccessful steps to improve covariance learning. May converge faster or more accurately.",
+  "result": "ABORTED - Wrong premise. CMA_active is already True by default in pycma. Baseline already uses active CMA-ES.",
+  "key_findings": [
+    "pycma's CMA_active option defaults to True",
+    "This means active covariance update is already enabled in baseline",
+    "No experiment needed - we're already using active CMA-ES",
+    "Verified via: cma.CMAOptions()['CMA_active'] returns 'True'"
+  ],
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

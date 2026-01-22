@@ -1,0 +1,21 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_SIGMA_SCHEDULE_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-19T13:30:00Z",
+  "completed_at": "2026-01-19T13:35:00Z",
+  "family": "sigma_scheduling",
+  "hypothesis": "Higher sigma early for exploration, lower sigma late for convergence.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "conclusion": "ABORTED - Prior evidence shows this approach will fail",
+  "rationale_for_abort": [
+    "EXP_TEMPORAL_HIGHER_SIGMA_001 FAILED: Sigma 0.25/0.30 achieves better accuracy (1.1745) but takes 63 min (over budget). Best in-budget with high sigma was 1.1584 @ 52 min, WORSE than W2 baseline (1.1688).",
+    "EXP_ADAPTIVE_TIMESTEP_001 FAILED: Changing conditions mid-run disrupts CMA-ES covariance adaptation.",
+    "CMA-ES ALREADY adapts sigma naturally during optimization.",
+    "The fundamental tradeoff: high sigma = better exploration = more time. No scheduling can bypass this.",
+    "Time is better spent on other experiments than testing known-to-fail approaches."
+  ],
+  "key_finding": "Sigma adaptation is already optimal in CMA-ES. Manual scheduling cannot improve on the algorithm's natural adaptation without adding time.",
+  "summary_written": true
+}

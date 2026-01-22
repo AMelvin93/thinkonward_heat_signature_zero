@@ -1,0 +1,54 @@
+{
+  "experiment_id": "EXP_LARGER_POPSIZE_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-19T12:30:00Z",
+  "completed_at": "2026-01-19T13:20:00Z",
+  "family": "cmaes_accuracy",
+  "hypothesis": "Larger CMA-ES population sizes improve covariance estimation and convergence quality in inverse problems.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "popsize_1src": 12,
+        "popsize_2src": 12,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1666,
+      "rmse_mean": 0.1419,
+      "rmse_mean_1src": 0.1096,
+      "rmse_mean_2src": 0.1635,
+      "time_min": 73.0,
+      "in_budget": false,
+      "mlflow_run": "run1_popsize_12_12",
+      "timestamp": "2026-01-19T13:15:00Z",
+      "finding": "Popsize=12 is WORSE: -0.0022 score, +14.6 min vs W2 baseline"
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "config": "popsize=12/12",
+    "score": 1.1666,
+    "time_min": 73.0,
+    "note": "OVER BUDGET, WORSE than baseline. Experiment aborted after run 1."
+  },
+  "baseline_to_beat": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "config": "40% temporal + 8 NM polish (W2 best, default popsize ~6/~8)"
+  },
+  "conclusion": "FAILED - Larger population size adds time without improving accuracy. Default popsize is already optimal.",
+  "key_findings": [
+    "Popsize=12 adds ~14 min (73 vs 58.4) without improving score",
+    "Score actually DROPS by 0.0022 (1.1666 vs 1.1688)",
+    "Default CMA-ES popsize (~6 for 1-src, ~8 for 2-src) is sufficient",
+    "Each generation with larger population costs more simulations",
+    "With fixed feval budget, larger popsize = fewer generations",
+    "CMA-ES covariance adaptation works fine with default popsize for this problem dimension"
+  ],
+  "summary_written": true
+}

@@ -1,8 +1,9 @@
 {
   "experiment_id": "EXP_ADAPTIVE_TIMESTEP_001",
   "worker": "W2",
-  "status": "in_progress",
+  "status": "done",
   "started_at": "2026-01-19T10:00:00Z",
+  "completed_at": "2026-01-19T11:30:00Z",
   "family": "temporal_fidelity_extended",
   "hypothesis": "Early CMA-ES iterations need rough landscape estimate (25% timesteps). Later iterations benefit from more accurate signal (40% timesteps). Variable fidelity may save time while maintaining accuracy.",
   "baseline": {
@@ -11,13 +12,36 @@
     "algorithm": "CMA-ES + 40% temporal fidelity + 8 NM polish",
     "note": "80 samples"
   },
-  "tuning_runs": [],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "low_fidelity": 0.25,
+        "high_fidelity": 0.40,
+        "switch_at": 0.50
+      },
+      "score": 1.1473,
+      "time_min": 66.0,
+      "in_budget": false,
+      "mlflow_id": "357d73dc2f0f4b2f9eb640b4a8348434",
+      "notes": "FAILED - 25% early timesteps mislead CMA-ES. Score -0.0215 vs baseline, time +7.6 min over budget."
+    },
+    {
+      "run": 2,
+      "config": {
+        "low_fidelity": 0.35,
+        "high_fidelity": 0.40,
+        "switch_at": 0.50
+      },
+      "score": 1.1635,
+      "time_min": 69.9,
+      "in_budget": false,
+      "mlflow_id": "385d6e0a12874c4ea28a85e9645181d3",
+      "notes": "FAILED - 35% early is better than 25% but still worse than fixed 40%. Score -0.0053, time +11.5 min."
+    }
+  ],
   "best_in_budget": null,
-  "next_config_to_try": {
-    "low_fidelity": 0.25,
-    "high_fidelity": 0.40,
-    "switch_at": 0.50,
-    "note": "Multi-fidelity: 25% timesteps first half, 40% second half"
-  },
-  "summary_written": false
+  "result": "FAILED - Adaptive timestep switching during CMA-ES is counterproductive",
+  "key_finding": "CMA-ES covariance adaptation requires consistent fitness landscape. Switching fidelity mid-run disrupts learning and leads to WORSE performance (both time and accuracy) than fixed fidelity.",
+  "summary_written": true
 }

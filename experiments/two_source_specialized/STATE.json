@@ -1,0 +1,50 @@
+{
+  "experiment_id": "EXP_2SOURCE_FOCUS_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-19T13:00:00Z",
+  "completed_at": "2026-01-19T13:45:00Z",
+  "family": "source_specific",
+  "hypothesis": "2-source samples have higher RMSE (0.138 vs 0.104). Giving them more optimization effort (fevals, sigma) could improve overall accuracy.",
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "1src_rmse": 0.104,
+    "2src_rmse": 0.138,
+    "algorithm": "CMA-ES + 40% temporal fidelity + 8 NM polish",
+    "params": {
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 36,
+      "sigma0_1src": 0.15,
+      "sigma0_2src": 0.20
+    }
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "max_fevals_1src": 16,
+        "max_fevals_2src": 42,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.20
+      },
+      "score": 1.1620,
+      "time_min": 69.3,
+      "rmse_1src": 0.1157,
+      "rmse_2src": 0.1558,
+      "in_budget": false,
+      "mlflow_id": "a9907f63abb74d6aab31cf5798264333",
+      "notes": "FAILED - Reducing 1-src fevals hurt accuracy (-0.012). Increasing 2-src fevals didn't help (+0.018). Worse on all metrics."
+    }
+  ],
+  "best_in_budget": null,
+  "result": "FAILED - Specialized allocation hurts performance. Baseline is already well-balanced.",
+  "key_findings": [
+    "Reducing 1-source fevals from 20 to 16 significantly hurts 1-source accuracy (0.1157 vs 0.104)",
+    "Increasing 2-source fevals from 36 to 42 doesn't improve 2-source accuracy (0.1558 vs 0.138)",
+    "The 2-source problem is fundamentally harder (4D search space), not just under-optimized",
+    "Baseline 20/36 feval split is already near-optimal",
+    "Time overhead (+10.9 min) is not worth pursuing"
+  ],
+  "summary_written": true
+}

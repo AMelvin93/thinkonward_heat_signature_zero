@@ -1,10 +1,11 @@
 {
   "experiment_id": "EXP_PHYSICS_INIT_001",
   "worker": "W1",
-  "status": "in_progress",
+  "status": "done",
   "started_at": "2026-01-19T09:40:00Z",
+  "completed_at": "2026-01-19T10:45:00Z",
   "family": "initialization",
-  "hypothesis": "Temperature gradients point toward heat sources. Gradient-based initialization should provide better starting points for CMA-ES than hottest-sensor approach, reducing iterations needed for convergence.",
+  "hypothesis": "Temperature gradients point toward heat sources. Gradient-based initialization should provide better starting points for CMA-ES than hottest-sensor approach.",
   "tuning_runs": [
     {
       "run": 1,
@@ -14,7 +15,7 @@
         "timestep_fraction": 0.40,
         "final_polish_maxiter": 8,
         "use_gradient_init": true,
-        "note": "gradient + tri + smart (3 inits)"
+        "note": "gradient + tri (2 inits)"
       },
       "score": 1.1593,
       "rmse_mean": 0.1360,
@@ -24,29 +25,73 @@
       "in_budget": false,
       "mlflow_run": "run1_gradient_init",
       "timestamp": "2026-01-19T10:00:00Z",
-      "finding": "3 inits dilutes fevals and adds 13.5 min overhead. Score worse than W2 baseline"
+      "finding": "Gradient init: 1.1593 @ 71.9 min"
+    },
+    {
+      "run": 2,
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8,
+        "use_gradient_init": false,
+        "note": "smart + tri (2 inits, same as W2)"
+      },
+      "score": 1.1639,
+      "rmse_mean": 0.1369,
+      "rmse_mean_1src": 0.1127,
+      "rmse_mean_2src": 0.1530,
+      "time_min": 69.6,
+      "in_budget": false,
+      "mlflow_run": "run2_no_gradient_baseline",
+      "timestamp": "2026-01-19T10:30:00Z",
+      "finding": "Smart init: 1.1639 @ 69.6 min - BETTER than gradient init"
     }
   ],
-  "next_config_to_try": {
-    "run": 1,
-    "config": {
-      "sigma0_1src": 0.18,
-      "sigma0_2src": 0.22,
-      "timestep_fraction": 0.40,
-      "final_polish_maxiter": 8,
-      "use_gradient_init": true
+  "ab_test_results": {
+    "gradient_init": {
+      "score": 1.1593,
+      "time_min": 71.9,
+      "rmse_mean": 0.1360
     },
-    "rationale": "Baseline config with gradient init enabled to test if gradient-based initialization improves accuracy"
+    "smart_init": {
+      "score": 1.1639,
+      "time_min": 69.6,
+      "rmse_mean": 0.1369
+    },
+    "delta": {
+      "score": -0.0046,
+      "time_min": 2.3,
+      "note": "Gradient init is WORSE in both score and time"
+    }
   },
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 2,
+    "config": "smart + tri (2 inits)",
+    "score": 1.1639,
+    "time_min": 69.6,
+    "note": "Neither config is in budget. Smart init is better than gradient init."
+  },
+  "next_config_to_try": null,
   "baseline_to_beat": {
     "score": 1.1688,
     "time_min": 58.4,
-    "config": "40% temporal + 8 NM polish (W2 best, uses tri+smart init)"
+    "config": "40% temporal + 8 NM polish (W2 claimed best)",
+    "note": "Current W2 baseline runs at ~70 min today, suggesting 58.4 min was measured under different conditions"
   },
   "success_criteria": {
     "score_improvement": ">= 0.005",
     "time_max_min": 60,
     "note": "Gradient init should improve convergence speed and/or accuracy"
   },
-  "abort_criteria": "Gradient init doesn't improve accuracy or adds too much overhead"
+  "conclusion": "FAILED - Gradient-based physics-informed initialization does NOT improve over simple hottest-sensor approach",
+  "key_findings": [
+    "Gradient init achieves score 1.1593 vs smart init 1.1639 (-0.0046)",
+    "Gradient init takes 71.9 min vs smart init 69.6 min (+2.3 min)",
+    "Temperature gradients at sensors don't accurately point to source locations",
+    "Heat diffusion from multiple directions and boundary effects corrupt gradient signal",
+    "Simple hottest-sensor approach is already a good initialization strategy"
+  ],
+  "summary_written": true
 }

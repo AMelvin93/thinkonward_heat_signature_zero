@@ -1,0 +1,12 @@
+{
+  "experiment_id": "EXP_CONJUGATE_GRADIENT_001",
+  "worker": "W2",
+  "status": "in_progress",
+  "started_at": "2026-01-20T02:15:00Z",
+  "family": "adjoint_gradient",
+  "hypothesis": "L-BFGS-B achieved 1.1627 accuracy but took 202 min due to finite differences. Adjoint method computes gradients in O(1) forward + O(1) adjoint solve, enabling gradient-based optimization within budget.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": "initial_adjoint_implementation",
+  "summary_written": false
+}
