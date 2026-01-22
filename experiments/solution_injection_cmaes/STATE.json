@@ -1,0 +1,31 @@
+{
+  "experiment_id": "EXP_SOLUTION_INJECTION_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-22T16:00:00Z",
+  "completed_at": "2026-01-22T17:00:00Z",
+  "hypothesis": "Inject best solutions from early CMA-ES inits into later inits using pycma's inject() API. Share information between inits to improve convergence.",
+  "tuning_runs": [
+    {
+      "config": {
+        "inject_best_n": 1,
+        "timestep_fraction": 0.40,
+        "sigma_1src": 0.18,
+        "sigma_2src": 0.22,
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "refine_maxiter": 8
+      },
+      "score": 0.9929,
+      "projected_400_min": 122.5,
+      "rmse_mean": 0.1705,
+      "rmse_1src": 0.1275,
+      "rmse_2src": 0.1992,
+      "mlflow_run_id": "792a5bcdba6b4e42bbcadf2a21b67a28"
+    }
+  ],
+  "best_in_budget": null,
+  "conclusion": "FAILED",
+  "reason": "Sequential execution required for solution injection makes algorithm 2x+ slower than baseline. Score also worse (0.9929 vs 1.1688). Fundamental tradeoff: injection needs sequential run but parallelism is critical for speed.",
+  "summary_written": true
+}

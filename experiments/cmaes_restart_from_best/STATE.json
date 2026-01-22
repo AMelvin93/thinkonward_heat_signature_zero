@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP_CMAES_RESTART_BEST_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-22T13:00:00Z",
+  "completed_at": "2026-01-22T14:00:00Z",
+  "tuning_runs": [
+    {
+      "config": {
+        "phase1_sigma_1src": 0.25,
+        "phase1_sigma_2src": 0.30,
+        "phase1_fevals_1src": 12,
+        "phase1_fevals_2src": 22,
+        "phase2_sigma_1src": 0.05,
+        "phase2_sigma_2src": 0.08,
+        "phase2_fevals_1src": 8,
+        "phase2_fevals_2src": 14,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8
+      },
+      "score": 1.0986,
+      "projected_400_min": 175.7,
+      "rmse_mean": 0.1403,
+      "rmse_1src": 0.1034,
+      "rmse_2src": 0.1650,
+      "mlflow_run_id": "668b9e23840c4c5fb9fa11cb60b2a24e"
+    }
+  ],
+  "best_in_budget": null,
+  "conclusion": "FAILED - Two-phase restart approach is fundamentally flawed. Score WORSE (1.0986 vs 1.1688) and timing OVER BUDGET (175.7 vs 60 min). Phase 2 refinement adds overhead without improving accuracy, and small sigma reduces diversity.",
+  "recommendation": "ABANDON - Do not pursue further tuning. Restart strategies don't help when CMA-ES already converges well in single phase.",
+  "summary_written": true
+}

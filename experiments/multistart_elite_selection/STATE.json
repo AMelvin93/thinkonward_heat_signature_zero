@@ -1,0 +1,77 @@
+{
+  "experiment_id": "EXP_MULTISTART_ELITE_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-22T12:45:00Z",
+  "completed_at": "2026-01-22T14:30:00Z",
+  "experiment_info": {
+    "name": "multistart_elite_selection",
+    "family": "multi_start",
+    "description": "Run multiple short CMA-ES from different inits, continue only the best 1-2",
+    "hypothesis": "Instead of running N full optimizations, run N short ones and continue only the most promising. More efficient budget allocation."
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "n_initial_runs": 4,
+        "eval_generations": 3,
+        "top_n_continue": 2,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1422,
+      "time_min": 84.4,
+      "in_budget": false,
+      "mlflow_id": "8760276b84e447278c32a0437f08a57c",
+      "notes": "FAILED - worse than baseline on BOTH metrics. Multi-start overhead dominates any early-selection benefit.",
+      "analysis": {
+        "rmse_1src": 0.1050,
+        "rmse_2src": 0.1469,
+        "total_sims_1src": 111,
+        "total_sims_2src": 280
+      }
+    },
+    {
+      "run": 2,
+      "config": {
+        "n_initial_runs": 2,
+        "eval_generations": 3,
+        "top_n_continue": 1,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1529,
+      "time_min": 67.0,
+      "in_budget": false,
+      "mlflow_id": "d42755b437a641d28d357c4f6efb8b91",
+      "notes": "FAILED - minimal multi-start (2 runs, keep 1) still worse than baseline. Score lower AND over budget.",
+      "analysis": {
+        "rmse_1src": 0.1073,
+        "rmse_2src": 0.1587,
+        "total_sims_1src": 76,
+        "total_sims_2src": 184
+      }
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "baseline_to_beat": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES + 40% temporal + 8 NM polish (fixed)"
+  },
+  "conclusion": {
+    "status": "FAILED",
+    "reason": "Multi-start elite selection does NOT improve over single-start baseline",
+    "key_findings": [
+      "1. 4 runs, keep 2: Score=1.1422 @ 84.4 min - MUCH worse (overhead dominates)",
+      "2. 2 runs, keep 1: Score=1.1529 @ 67.0 min - still worse (even minimal multi-start fails)",
+      "3. Early generation fitness is NOT predictive of final solution quality",
+      "4. Multi-start overhead (spawning/evaluating parallel runs) outweighs any early-selection benefit",
+      "5. The baseline single-start approach with good initialization is already optimal"
+    ],
+    "recommendation": "ABANDON multi-start elite selection family. Focus on improving single-start optimization quality instead."
+  }
+}

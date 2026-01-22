@@ -1397,3 +1397,17 @@ See `experiments/pinn_inverse_heat_source/SUMMARY.md` for details.
 1. ADI solver blocks autodiff
 2. Manual adjoint derivation is error-prone
 3. RMSE landscapes are sample-specific (no universal surrogate)
+
+### [W1] Experiment: early_rejection_partial_sim | Score: 1.1598 @ 146.7 min
+**Algorithm**: Two-stage CMA-ES evaluation - 10% timestep filter + 40% timestep main evaluation
+**Tuning Runs**: 1 run
+**Result**: **FAILED** vs baseline (1.1688 @ 58.4 min) - 2.5x OVER BUDGET
+**Key Finding**: Two-stage evaluation ADDS overhead rather than saving time. Each candidate gets BOTH 10% filter + 40% evaluation. Only 8.6% rejection rate - not enough to offset the 10% filter cost. The baseline single-stage 40% evaluation is already optimal. **The efficiency family (early rejection) should be marked FAILED.**
+
+See `experiments/early_rejection_partial_sim/SUMMARY.md` for details.
+
+### [W2] Experiment: adaptive_nm_iterations | Score: 1.1607 @ 78.3 min
+**Algorithm**: Adaptive NM polish iterations (4-12 iters based on convergence)
+**Tuning Runs**: 4 runs (adaptive batched, source-count 6/10, fixed 8/8, baseline verification)
+**Result**: **FAILED** vs baseline (1.1688 @ 58.4 min documented, 1.1580 @ 88.6 min reproduced)
+**Key Finding**: Fixed 8 NM iterations is already optimal. Adaptive batching adds overhead from multiple minimize() calls. Source-count based (6/10) is worse - more 2-src iters adds time without accuracy. `refinement` family EXHAUSTED. See `experiments/adaptive_nm_iterations/SUMMARY.md` for details.

@@ -1,0 +1,54 @@
+{
+  "experiment_id": "EXP_LOG_RMSE_LOSS_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-22T17:00:00Z",
+  "completed_at": "2026-01-22T18:30:00Z",
+  "experiment_info": {
+    "name": "log_rmse_loss",
+    "family": "loss_reformulation",
+    "description": "Use log(1+RMSE) instead of RMSE as optimization objective",
+    "hypothesis": "Log-RMSE compresses large errors and amplifies small differences. Since log is monotonic, minimizing log(1+RMSE) gives the same optimum as minimizing RMSE."
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "objective": "log(1+RMSE)",
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1677,
+      "time_min": 70.5,
+      "in_budget": false,
+      "mlflow_id": "c2e12a3215c541e994d7c747d556bb08",
+      "notes": "FAILED - Same accuracy as baseline but 12 min over budget. Log transformation doesn't help CMA-ES.",
+      "analysis": {
+        "rmse_1src": 0.1049,
+        "rmse_2src": 0.1520
+      }
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "baseline_to_beat": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES + 40% temporal + 8 NM polish (RMSE objective)"
+  },
+  "conclusion": {
+    "status": "FAILED",
+    "reason": "Log(1+RMSE) objective does NOT improve CMA-ES performance",
+    "key_findings": [
+      "1. Score is essentially unchanged: 1.1677 vs baseline 1.1688 (-0.0011)",
+      "2. Time is worse: 70.5 min vs baseline 58.4 min (+12.1 min, 21% over budget)",
+      "3. Log transformation preserves the optimum (monotonic) but doesn't help convergence",
+      "4. CMA-ES already handles fitness ranking well - log scaling adds no value",
+      "5. The extra computation (log, exp conversions) adds overhead without benefit"
+    ],
+    "recommendation": "ABANDON loss_reformulation family. Standard RMSE is optimal objective for CMA-ES."
+  }
+}

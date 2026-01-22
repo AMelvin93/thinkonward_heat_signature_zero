@@ -1,0 +1,105 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_NM_POLISH_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-22T11:10:00Z",
+  "completed_at": "2026-01-22T12:30:00Z",
+  "experiment_info": {
+    "name": "adaptive_nm_iterations",
+    "family": "refinement",
+    "description": "Dynamically adjust NM polish iterations based on convergence rate",
+    "hypothesis": "Some samples converge quickly (4-5 NM iters), others need more (10+). Fixed 8 iters is wasteful for easy samples, insufficient for hard ones."
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "min_polish_iters": 4,
+        "max_polish_iters": 12,
+        "polish_batch_size": 2,
+        "convergence_threshold": 0.001,
+        "approach": "adaptive_batched"
+      },
+      "score": 1.1545,
+      "time_min": 78.7,
+      "in_budget": false,
+      "mlflow_id": "964170f4334845189937ffe2e2c864b4",
+      "notes": "Adaptive batched approach - stops early based on convergence. Similar time to fixed 8 but lower score.",
+      "analysis": {
+        "rmse_1src": 0.1123,
+        "rmse_2src": 0.1552,
+        "avg_polish_1src": 6.7,
+        "avg_polish_2src": 8.0
+      }
+    },
+    {
+      "run": 2,
+      "config": {
+        "polish_iters_1src": 6,
+        "polish_iters_2src": 10,
+        "approach": "source_count_based"
+      },
+      "score": 1.1551,
+      "time_min": 94.5,
+      "in_budget": false,
+      "mlflow_id": "5e1ae1e6861a4aef88e34d77022ed7e8",
+      "notes": "Source-count based: fewer iters for 1-src, more for 2-src. WORST result - more 2-src iters adds significant time.",
+      "analysis": {
+        "rmse_1src": 0.1173,
+        "rmse_2src": 0.1602
+      }
+    },
+    {
+      "run": 3,
+      "config": {
+        "polish_iters_1src": 8,
+        "polish_iters_2src": 8,
+        "approach": "source_count_based_fixed"
+      },
+      "score": 1.1607,
+      "time_min": 78.3,
+      "in_budget": false,
+      "mlflow_id": "f1260e3e27144e0c845c8e972f60a396",
+      "notes": "Fixed 8/8 with my optimizer - BEST of my runs. Similar to baseline but cannot beat documented baseline (1.1688 @ 58.4 min).",
+      "analysis": {
+        "rmse_1src": 0.1046,
+        "rmse_2src": 0.1550
+      }
+    },
+    {
+      "run": "baseline_verification",
+      "config": {
+        "optimizer": "TemporalFidelityWithPolishOptimizer",
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1580,
+      "time_min": 88.6,
+      "in_budget": false,
+      "mlflow_id": null,
+      "notes": "Ran original baseline for comparison. Also OVER BUDGET and different from documented 1.1688 @ 58.4 min.",
+      "analysis": {
+        "rmse_1src": 0.1019,
+        "rmse_2src": 0.1815
+      }
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "baseline_to_beat": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES + 40% temporal + 8 NM polish (fixed)",
+    "note": "DOCUMENTED baseline. Cannot reproduce - current runs get ~1.16 @ 78-88 min."
+  },
+  "conclusion": {
+    "status": "FAILED",
+    "reason": "Adaptive NM iterations does NOT improve over fixed 8 iterations",
+    "key_findings": [
+      "1. Adaptive batched approach adds overhead from multiple minimize() calls",
+      "2. Source-count based (6/10) is WORSE - more 2-src iters adds time without accuracy gain",
+      "3. Fixed 8 iterations is already optimal",
+      "4. Cannot reproduce documented baseline (1.1688 @ 58.4 min) - current hardware/conditions give ~1.16 @ 80 min"
+    ]
+  }
+}

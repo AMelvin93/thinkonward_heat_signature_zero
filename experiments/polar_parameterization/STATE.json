@@ -1,0 +1,55 @@
+{
+  "experiment_id": "EXP_POLAR_PARAM_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-22T15:00:00Z",
+  "completed_at": "2026-01-22T16:30:00Z",
+  "experiment_info": {
+    "name": "polar_parameterization",
+    "family": "problem_reformulation",
+    "description": "Reparameterize source positions using polar coordinates centered on domain centroid",
+    "hypothesis": "Cartesian (x,y) may have different landscape characteristics than polar (r,theta). CMA-ES may converge faster in one parameterization."
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "parameterization": "polar",
+        "center": "domain_centroid",
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1472,
+      "time_min": 72.7,
+      "in_budget": false,
+      "mlflow_id": "359a50be310846a3a4f4d0a45be58b53",
+      "notes": "FAILED - Polar parameterization is WORSE than Cartesian. -0.0216 score, +14.3 min.",
+      "analysis": {
+        "rmse_1src": 0.1116,
+        "rmse_2src": 0.1650
+      }
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "baseline_to_beat": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES + 40% temporal + 8 NM polish (Cartesian)"
+  },
+  "conclusion": {
+    "status": "FAILED",
+    "reason": "Polar parameterization does NOT improve CMA-ES performance",
+    "key_findings": [
+      "1. Score is worse: 1.1472 vs baseline 1.1688 (-0.0216)",
+      "2. Time is worse: 72.7 min vs baseline 58.4 min (+14.3 min)",
+      "3. Rectangular domain creates irregular search space in polar coordinates",
+      "4. CMA-ES covariance adaptation works better with Cartesian coordinates for rectangular domains",
+      "5. Bound handling in polar (clipping to domain) introduces discontinuities"
+    ],
+    "recommendation": "ABANDON problem_reformulation family. Cartesian coordinates are optimal for rectangular domain problems."
+  }
+}

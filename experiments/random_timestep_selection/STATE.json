@@ -1,0 +1,27 @@
+{
+  "experiment_id": "EXP_RANDOM_TIMESTEPS_001",
+  "worker": "W2",
+  "status": "running",
+  "started_at": "2026-01-22T19:00:00Z",
+  "experiment_info": {
+    "name": "random_timestep_selection",
+    "family": "temporal_sampling",
+    "description": "Use random 40% of timesteps instead of first 40% for CMA-ES evaluation",
+    "hypothesis": "First 40% timesteps may miss important late-time dynamics. Random sampling captures different parts of temporal evolution, potentially providing more informative RMSE signal."
+  },
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": {
+    "run": 1,
+    "config": {
+      "timestep_selection": "random",
+      "timestep_fraction": 0.40,
+      "note": "Run full simulation, select random 40% of timesteps for RMSE"
+    }
+  },
+  "baseline_to_beat": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES + first 40% timesteps + 8 NM polish (RMSE objective)"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "experiment_id": "EXP_EARLY_REJECTION_001",
+  "worker": "W1",
+  "status": "tuning_complete",
+  "started_at": "2026-01-22T12:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "filter_timestep_fraction": 0.10,
+        "filter_threshold_multiplier": 2.0,
+        "cmaes_timestep_fraction": 0.40,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "refine_maxiter": 8,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1598,
+      "time_min": 146.7,
+      "rmse_mean": 0.1419,
+      "rejection_rate": 0.086,
+      "in_budget": false,
+      "mlflow_id": "15fb3f3cf033439ba98b2ccc4c51636e",
+      "notes": "MASSIVE FAILURE. Two-stage evaluation adds overhead. Only 8.6% rejection rate - not enough to offset cost of 10% filter."
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1598,
+    "time_min": 146.7
+  },
+  "next_config_to_try": null,
+  "tuning_abort_reason": "FUNDAMENTAL FLAW: Two-stage evaluation approach ADDS overhead rather than saving time. Each candidate requires BOTH 10% filter + 40% evaluation. Rejection rate too low (8.6%) to offset overhead. No tuning can fix this - approach is fundamentally broken.",
+  "summary_written": true
+}

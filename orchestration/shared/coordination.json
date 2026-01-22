@@ -1,14 +1,53 @@
 {
   "version": "6.0",
-  "last_updated": "2026-01-22T04:30:00Z",
+  "last_updated": "2026-01-22T14:17:50.822325Z",
   "mode": "EXPLORATION",
-
   "resume_tracking": {
-    "summaries_analyzed": ["ensemble_voting", "cluster_transfer", "lq_cma_es_builtin", "bayesian_optimization_gp", "cmaes_to_nm_sequential", "multi_fidelity_pyramid", "fast_source_count_detection", "early_timestep_filtering", "adaptive_sample_budget", "warm_start_cmaes", "niching_cmaes_diversity", "extended_nm_polish", "temporal_40pct_higher_sigma", "ipop_cmaes_temporal", "adaptive_timestep_fraction", "physics_informed_init", "pod_reduced_order_model", "larger_cmaes_population", "two_source_specialized", "adaptive_sigma_schedule", "active_cmaes_covariance", "progressive_polish_fidelity", "boundary_aware_initialization", "jax_differentiable_solver", "levenberg_marquardt_inverse", "cmaes_then_gradient_refinement", "conjugate_gradient_adjoint", "openai_evolution_strategy", "differential_evolution", "variable_projection_separable", "adaptive_simulated_annealing", "pretrained_nn_surrogate", "pinn_inverse_heat_source"],
-    "last_cycle_timestamp": "2026-01-22T10:00:00Z",
+    "summaries_analyzed": [
+      "ensemble_voting",
+      "cluster_transfer",
+      "lq_cma_es_builtin",
+      "bayesian_optimization_gp",
+      "cmaes_to_nm_sequential",
+      "multi_fidelity_pyramid",
+      "fast_source_count_detection",
+      "early_timestep_filtering",
+      "adaptive_sample_budget",
+      "warm_start_cmaes",
+      "niching_cmaes_diversity",
+      "extended_nm_polish",
+      "temporal_40pct_higher_sigma",
+      "ipop_cmaes_temporal",
+      "adaptive_timestep_fraction",
+      "physics_informed_init",
+      "pod_reduced_order_model",
+      "larger_cmaes_population",
+      "two_source_specialized",
+      "adaptive_sigma_schedule",
+      "active_cmaes_covariance",
+      "progressive_polish_fidelity",
+      "boundary_aware_initialization",
+      "jax_differentiable_solver",
+      "levenberg_marquardt_inverse",
+      "cmaes_then_gradient_refinement",
+      "conjugate_gradient_adjoint",
+      "openai_evolution_strategy",
+      "differential_evolution",
+      "variable_projection_separable",
+      "adaptive_simulated_annealing",
+      "pretrained_nn_surrogate",
+      "pinn_inverse_heat_source",
+      "early_rejection_partial_sim",
+      "cmaes_restart_from_best",
+      "weighted_sensor_loss",
+      "multistart_elite_selection",
+      "solution_injection_cmaes",
+      "polar_parameterization",
+      "log_rmse_loss"
+    ],
+    "last_cycle_timestamp": "2026-01-22T13:57:00Z",
     "notes": "W0 tracks which SUMMARY.md files have been analyzed to avoid re-processing on resume"
   },
-
   "best_scores": {
     "in_budget": {
       "score": 1.1688,
@@ -37,25 +76,21 @@
     "target": 1.25,
     "baseline_to_beat": 1.1688
   },
-
   "queue_status": {
-    "available_experiments": 7,
+    "available_experiments": 6,
     "claimed_experiments": 2,
-    "status": "HEALTHY - PROACTIVE RESEARCH COMPLETE",
+    "status": "HEALTHY - W0 research added 2 experiments",
     "experiments": [
-      "EXP_CONJUGATE_GRADIENT_001 (priority 1) - CLAIMED by W2 - Adjoint gradients",
-      "EXP_JAX_AUTODIFF_001 (priority 2) - CLAIMED by W1 - JAX autodiff",
-      "EXP_HYBRID_CMAES_LBFGSB_001 (priority 3) - CMA-ES + L-BFGS-B polish",
-      "EXP_LEVENBERG_MARQUARDT_001 (priority 3) - NEW: Classic inverse heat method",
-      "EXP_OPENAI_ES_001 (priority 4) - OpenAI Evolution Strategy",
-      "EXP_TRUST_REGION_REFLECTIVE_001 (priority 4) - NEW: Bounded NLS",
-      "EXP_PRETRAINED_SURROGATE_001 (priority 5) - Offline trained NN surrogate",
-      "EXP_SEPARABLE_VP_001 (priority 5) - NEW: Variable Projection method",
-      "EXP_PINN_DIRECT_001 (priority 6) - PINN inverse heat source"
+      "EXP_LOG_RMSE_LOSS_001 (priority 3) - NEW: Log-RMSE loss function",
+      "EXP_SOLUTION_INJECTION_001 (priority 3) - NEW: GloMPO-style solution injection",
+      "EXP_TIKHONOV_REG_001 (priority 4) - NEW: Tikhonov regularization",
+      "EXP_ADAPTIVE_POPSIZE_001 (priority 4) - NEW: Decreasing population size",
+      "EXP_POLAR_PARAM_001 (priority 5) - Polar parameterization",
+      "EXP_WEIGHTED_LOSS_001 - CLAIMED by W1",
+      "EXP_MULTISTART_ELITE_001 - CLAIMED or AVAILABLE"
     ],
-    "note": "Proactive research added 3 new experiments from nonlinear least squares literature. Levenberg-Marquardt is the classic method for inverse heat problems with proven fast convergence."
+    "note": "W0 research cycle added 4 experiments based on: GloMPO solution injection, robust loss functions (log-RMSE), Tikhonov regularization, adaptive population sizing."
   },
-
   "exploration_progress": {
     "total_experiments": 58,
     "experiments_per_family": {
@@ -74,7 +109,31 @@
       "temporal_fidelity": 1,
       "budget_allocation": 1
     },
-    "families_exhausted": ["evolutionary_cmaes", "gradient_based", "evolutionary_other", "ensemble", "decomposition", "meta_learning", "surrogate_lq", "bayesian_opt", "multi_fidelity_spatial", "hybrid", "preprocessing", "budget_allocation", "diversity", "temporal_fidelity_extended", "initialization", "surrogate_pod", "cmaes_accuracy", "source_specific", "sigma_scheduling", "cmaes_variants", "problem_specific", "initialization_v2"],
+    "families_exhausted": [
+      "evolutionary_cmaes",
+      "gradient_based",
+      "evolutionary_other",
+      "ensemble",
+      "decomposition",
+      "meta_learning",
+      "surrogate_lq",
+      "bayesian_opt",
+      "multi_fidelity_spatial",
+      "hybrid",
+      "preprocessing",
+      "budget_allocation",
+      "diversity",
+      "temporal_fidelity_extended",
+      "initialization",
+      "surrogate_pod",
+      "cmaes_accuracy",
+      "source_specific",
+      "sigma_scheduling",
+      "cmaes_variants",
+      "problem_specific",
+      "initialization_v2",
+      "loss_reformulation"
+    ],
     "families_to_explore": [
       "adjoint_gradient - O(1) gradient computation via adjoint method (never implemented)",
       "differentiable_simulation - JAX/PyTorch autodiff through simulator",
@@ -93,10 +152,26 @@
       "The problem may benefit from reformulation - different loss functions, constraints, or parameterizations"
     ]
   },
-
   "experiments_in_progress": {},
-
   "experiments_completed": [
+    {
+      "id": "EXP_WEIGHTED_LOSS_001",
+      "worker": "W1",
+      "score": 1.0131,
+      "time_min": 90.7,
+      "result": "FAILED",
+      "family": "loss_function",
+      "note": "Weighted RMSE optimization finds different optimum than unweighted (scored). Diversity destroyed."
+    },
+    {
+      "id": "EXP_CMAES_RESTART_BEST_001",
+      "worker": "W1",
+      "score": 1.0986,
+      "time_min": 175.7,
+      "result": "FAILED",
+      "family": "cmaes_improvement",
+      "note": "Two-phase restart WORSE than single phase. Phase 2 doubles sims without improving accuracy. Diversity lost due to small sigma."
+    },
     {
       "id": "EXP_POD_SURROGATE_001",
       "worker": "W2",
@@ -260,36 +335,61 @@
       "result": "EXHAUSTED",
       "family": "evolutionary_cmaes",
       "note": "32+ experiments. Best in-budget: 1.1247."
+    },
+    {
+      "id": "EXP_ADAPTIVE_NM_POLISH_001",
+      "worker": "W2",
+      "score": 1.1607,
+      "time_min": 78.3,
+      "result": "FAILED",
+      "family": "refinement",
+      "note": "Adaptive NM iterations does NOT improve. Fixed 8 is optimal. refinement family EXHAUSTED."
+    },
+    {
+      "id": "EXP_SOLUTION_INJECTION_001",
+      "worker": "W1",
+      "score": 0.9929,
+      "time_min": 122.5,
+      "result": "FAILED",
+      "family": "population_enhancement",
+      "note": "Solution injection requires SEQUENTIAL CMA-ES (to share solutions). Destroys parallelism - 2x over budget, -15% score."
+    },
+    {
+      "id": "EXP_LOG_RMSE_LOSS_001",
+      "worker": "W2",
+      "score": 1.1677,
+      "time_min": 70.5,
+      "result": "FAILED",
+      "family": "loss_reformulation",
+      "note": "Log(1+RMSE) objective: same accuracy but +12 min overhead. Monotonic transformations don't help CMA-ES."
     }
   ],
-
   "workers": {
     "W1": {
       "status": "idle",
       "current_experiment": null,
-      "last_completed": "EXP_BOUNDARY_AWARE_INIT_001",
-      "directive": "QUEUE REFILLED! 6 new experiments available. Pick EXP_CONJUGATE_GRADIENT_001 (priority 1) - implement adjoint gradients for O(1) computation."
+      "last_completed": "EXP_SOLUTION_INJECTION_001",
+      "directive": "Solution injection FAILED (sequential execution destroyed parallelism). Checking for next experiment."
     },
     "W2": {
       "status": "idle",
       "current_experiment": null,
-      "last_completed": "EXP_PROGRESSIVE_POLISH_FIDELITY_001",
-      "directive": "QUEUE REFILLED! New experiments focus on gradient methods and surrogates. L-BFGS-B accuracy (1.1627) exists - we need faster gradients."
+      "last_completed": "EXP_LOG_RMSE_LOSS_001",
+      "directive": "Log-RMSE FAILED. Pick next experiment from queue."
     },
     "W3": {
       "status": "idle",
       "current_experiment": null,
       "last_completed": null,
-      "directive": "QUEUE REFILLED! Pick from: adjoint, JAX autodiff, hybrid CMA-ES+L-BFGS-B, OpenAI-ES, pre-trained surrogate, PINN."
+      "directive": "AVAILABLE: early_rejection, weighted_loss, adaptive_nm, cmaes_restart, multistart_elite, polar_param. All are CMA-ES refinements."
     },
     "W4": {
       "status": "idle",
       "current_experiment": null,
       "last_completed": null,
-      "directive": "QUEUE REFILLED! Key insight: Gradient-based methods achieved good accuracy but were slow. Fix: O(1) gradients via adjoint/autodiff."
+      "directive": "CMA-ES + 40% temporal + NM x8 is proven optimal. Remaining experiments test marginal improvements. Pick based on interest."
     }
   },
-
   "research_findings": [
     "CMA-ES covariance adaptation is ESSENTIAL - no algorithm replacement works",
     "PSO FAILED: faster but terrible 1-src accuracy - lacks covariance adaptation",
@@ -319,6 +419,21 @@
     "Remaining gap to target (1.25): 0.0612 - marginal gains now, diminishing returns expected",
     "CONCLUSION: Temporal fidelity + full-timestep polish is optimal strategy",
     "------- W2 EXP_NICHING_CMAES_001 FAILED (2026-01-19) -------",
+    "------- W1 EXP_WEIGHTED_LOSS_001 FAILED (2026-01-22) -------",
+    "WEIGHTED SENSOR LOSS FUNDAMENTALLY FLAWED:",
+    "  - Score: 1.0131 vs baseline 1.1688 (-0.1557)",
+    "  - Time: 90.7 min (over budget)",
+    "  - Optimizing weighted RMSE finds different optimum than unweighted (what we're scored on)",
+    "  - Diversity destroyed: All 1-src samples got only 1 candidate",
+    "CONCLUSION: loss_function family FAILED. Don't change the loss function - optimize what you're scored on.",
+    "------- W1 EXP_CMAES_RESTART_BEST_001 FAILED (2026-01-22) -------",
+    "TWO-PHASE CMA-ES RESTART IS FUNDAMENTALLY FLAWED:",
+    "  - Score: 1.0986 (-0.0702 vs baseline 1.1688)",
+    "  - Time: 175.7 min (3x over budget)",
+    "  - Phase 2 refinement DOUBLES simulation count without improving accuracy",
+    "  - Small sigma (0.05-0.08) reduces candidate diversity (many samples got only 1-2 candidates)",
+    "  - CMA-ES already converges well in single phase - restart is wasteful",
+    "CONCLUSION: cmaes_improvement family FAILED. Restart strategies don't help for this problem.",
     "CRITICAL: Scoring formula AVERAGES accuracy: score = (1/N)*sum(1/(1+L_i)) + 0.3*(N/3)",
     "Adding diverse but worse candidates HURTS the score more than diversity bonus helps",
     "Baseline already achieves 2.75/3 N_valid (80% of samples have 3 candidates)",
@@ -494,11 +609,11 @@
     "   3. Missing chain rule terms from q(x,y) dependence",
     "   4. Manual adjoint derivation extremely error-prone for complex PDEs",
     "------- ALL GRADIENT METHODS NOW EXHAUSTED -------",
-    "❌ JAX autodiff: FAILED - Explicit Euler stability requires 4x more timesteps",
-    "❌ Adjoint manual: FAILED - Implementation incorrect (5-6 OOM error)",
-    "❌ Finite differences: FAILED - O(n) overhead too expensive for 0.5s sims",
-    "❌ Hybrid (L-BFGS-B polish): FAILED - Finite diff overhead outweighs benefit",
-    "❌ LM/TRF: FAILED - Local optimizers get stuck in multi-modal landscape",
+    "\u274c JAX autodiff: FAILED - Explicit Euler stability requires 4x more timesteps",
+    "\u274c Adjoint manual: FAILED - Implementation incorrect (5-6 OOM error)",
+    "\u274c Finite differences: FAILED - O(n) overhead too expensive for 0.5s sims",
+    "\u274c Hybrid (L-BFGS-B polish): FAILED - Finite diff overhead outweighs benefit",
+    "\u274c LM/TRF: FAILED - Local optimizers get stuck in multi-modal landscape",
     "CONCLUSION: **GRADIENT-BASED OPTIMIZATION IS NOT VIABLE FOR THIS PROBLEM**",
     "The only path forward is improved evolutionary/population-based methods:",
     "   - CMA-ES baseline remains best",
@@ -541,15 +656,15 @@
     "CONCLUSION: variable_projection family FAILED - baseline is already optimal for exploiting separability",
     "------- STRATEGIC ASSESSMENT (2026-01-22 05:40) -------",
     "**ALMOST ALL ALGORITHM FAMILIES NOW EXHAUSTED:**",
-    "❌ CMA-ES variants: EXHAUSTED (34 experiments, baseline 1.1688 is optimal)",
-    "❌ Gradient methods: ALL FAILED (JAX, Adjoint, FD, LM/TRF, L-BFGS-B polish)",
-    "❌ Alternative ES: FAILED (OpenAI ES diagonal covariance insufficient)",
-    "❌ Differential Evolution: FAILED (no correlation learning)",
-    "❌ Variable Projection: FAILED (baseline already uses VP, local optimizer stuck)",
-    "⏳ Simulated Annealing: W2 IN PROGRESS",
-    "🆕 Surrogate-assisted CMA-ES: AVAILABLE",
-    "🆕 Pre-trained Surrogate: AVAILABLE",
-    "🆕 PINN: AVAILABLE",
+    "\u274c CMA-ES variants: EXHAUSTED (34 experiments, baseline 1.1688 is optimal)",
+    "\u274c Gradient methods: ALL FAILED (JAX, Adjoint, FD, LM/TRF, L-BFGS-B polish)",
+    "\u274c Alternative ES: FAILED (OpenAI ES diagonal covariance insufficient)",
+    "\u274c Differential Evolution: FAILED (no correlation learning)",
+    "\u274c Variable Projection: FAILED (baseline already uses VP, local optimizer stuck)",
+    "\u23f3 Simulated Annealing: W2 IN PROGRESS",
+    "\ud83c\udd95 Surrogate-assisted CMA-ES: AVAILABLE",
+    "\ud83c\udd95 Pre-trained Surrogate: AVAILABLE",
+    "\ud83c\udd95 PINN: AVAILABLE",
     "**CMA-ES IS THE OPTIMAL ALGORITHM FOR THIS PROBLEM.**",
     "------- W2 EXP_ADAPTIVE_SA_001 FAILED (2026-01-22 05:49) -------",
     "SIMULATED ANNEALING FUNDAMENTALLY UNSUITABLE:",
@@ -561,20 +676,71 @@
     "CONCLUSION: simulated_annealing family EXHAUSTED - no SA variant will beat CMA-ES",
     "------- FINAL ASSESSMENT (2026-01-22 05:52) -------",
     "**ALL MAJOR ALGORITHM FAMILIES NOW EXHAUSTED:**",
-    "❌ CMA-ES variants: EXHAUSTED (34 experiments, 1.1688 @ 58.4 min is best)",
-    "❌ Gradient methods: ALL FAILED (JAX, Adjoint, FD, LM/TRF, L-BFGS-B)",
-    "❌ Alternative ES: FAILED (OpenAI ES diagonal covariance)",
-    "❌ Differential Evolution: FAILED (no correlation learning)",
-    "❌ Variable Projection: FAILED (baseline already uses VP)",
-    "❌ Simulated Annealing: FAILED (sample-inefficient)",
+    "\u274c CMA-ES variants: EXHAUSTED (34 experiments, 1.1688 @ 58.4 min is best)",
+    "\u274c Gradient methods: ALL FAILED (JAX, Adjoint, FD, LM/TRF, L-BFGS-B)",
+    "\u274c Alternative ES: FAILED (OpenAI ES diagonal covariance)",
+    "\u274c Differential Evolution: FAILED (no correlation learning)",
+    "\u274c Variable Projection: FAILED (baseline already uses VP)",
+    "\u274c Simulated Annealing: FAILED (sample-inefficient)",
     "REMAINING EXPERIMENTS (2 available + 1 claimed):",
-    "   ⏳ Pretrained Surrogate (W2 working)",
-    "   🆕 PINN (available)",
-    "   🆕 Surrogate-assisted CMA-ES (available)",
+    "   \u23f3 Pretrained Surrogate (W2 working)",
+    "   \ud83c\udd95 PINN (available)",
+    "   \ud83c\udd95 Surrogate-assisted CMA-ES (available)",
     "These are 'last resort' experiments - unlikely to beat CMA-ES but worth testing.",
-    "**THE CURRENT BASELINE 1.1688 @ 58.4 min MAY BE NEAR-OPTIMAL.**"
+    "**THE CURRENT BASELINE 1.1688 @ 58.4 min MAY BE NEAR-OPTIMAL.**",
+    "------- W1 EXP_EARLY_REJECTION_001 FAILED (2026-01-22) -------",
+    "EARLY REJECTION VIA PARTIAL SIM FUNDAMENTALLY FLAWED:",
+    "  - Two-stage evaluation ADDS overhead (191 sims vs 100 baseline)",
+    "  - Only 8.6% rejection rate - need >25% to break even",
+    "  - CMA-ES candidates cluster near optima, most pass filter",
+    "CONCLUSION: efficiency family EXHAUSTED. Baseline 40% temporal optimal.",
+    "------- W0 RESEARCH CYCLE (2026-01-22 12:55) -------",
+    "QUEUE WAS LOW (2 available). Performed research on:",
+    "1. Inverse heat source identification 2025 methods",
+    "2. CMA-ES improvement techniques for expensive optimization",
+    "3. Multi-objective accuracy-diversity tradeoff",
+    "4. Loss function alternatives for inverse problems",
+    "KEY FINDINGS:",
+    "  - GloMPO (2022): Solution injection between CMA-ES runs improves performance",
+    "  - CMA-SAO (2025): RBF surrogate reduces function evaluations",
+    "  - MODE/CMA-ES (2025): Multi-operator DE with CMA-ES for diversity-convergence",
+    "  - Log-RMSE/Huber loss: More robust than MSE for outliers",
+    "  - Tikhonov regularization: Standard for ill-posed inverse problems",
+    "NEW EXPERIMENTS ADDED (4):",
+    "  - log_rmse_loss (P3): Use log(1+RMSE) for robust optimization",
+    "  - solution_injection_cmaes (P3): Share best solutions between inits",
+    "  - tikhonov_regularized_loss (P4): Add smoothness penalty",
+    "  - adaptive_population_size (P4): Start large, reduce for exploitation",
+    "QUEUE RESTORED TO HEALTHY (5 available).",
+    "------- W1 EXP_SOLUTION_INJECTION_001 FAILED (2026-01-22) -------",
+    "SOLUTION INJECTION FUNDAMENTALLY FLAWED DUE TO PARALLELISM TRADEOFF:",
+    "  - Score: 0.9929 vs baseline 1.1688 (-0.1759)",
+    "  - Time: 122.5 min (2x over budget)",
+    "  - Injection requires SEQUENTIAL CMA-ES runs (to share solutions)",
+    "  - Sequential execution destroys parallelism which is critical for speed",
+    "  - Each 2-source sample now takes 2-3 minutes (vs ~30s in baseline)",
+    "  - Best solutions from early inits don't significantly help later inits",
+    "CONCLUSION: population_enhancement family FAILED. Parallel multi-start is optimal.",
+    "------- W0 RESEARCH CYCLE (2026-01-22T14:03:03Z) -------",
+    "Queue was at 4 (below target 5+). Research added 2 new experiments.",
+    "RESEARCH TOPICS: CMA-ES covariance initialization, thermal inverse ML 2025",
+    "KEY FINDINGS:",
+    "  - CMAM algorithm (2025): Combines CMA-ES with Metropolis sampling for Bayesian inverse problems",
+    "  - Multi-timestep methods: Different timesteps in subdomains can accelerate heat sims 98%",
+    "  - ThermoMesh/ThermoNet: ML sensor for heat source localization with 99% accuracy (requires training)",
+    "  - Random sampling: Stochastic subsets can capture global behavior better than contiguous subsets",
+    "NEW EXPERIMENTS ADDED (2):",
+    "  - powell_polish_instead_nm (P3): Coordinate-wise search may be more efficient than NM simplex",
+    "  - random_timestep_selection (P4): Random 40% timesteps may capture different dynamics than first 40%",
+    "QUEUE RESTORED TO HEALTHY (6 available).",
+    "------- W2 EXP_LOG_RMSE_LOSS_001 FAILED -------",
+    "LOG-RMSE DOES NOT HELP CMA-ES:",
+    "  - Score: 1.1677 vs baseline 1.1688 (-0.0011, same within noise)",
+    "  - Time: 70.5 min (21% over budget, +12 min overhead)",
+    "  - Monotonic transformations preserve rankings but add computational overhead",
+    "  - CMA-ES selection mechanism already works well with standard RMSE",
+    "CONCLUSION: loss_reformulation family FAILED. RMSE objective is optimal."
   ],
-
   "research_sources": [
     "https://github.com/CMA-ES/pycma - pycma with lq-CMA-ES support",
     "https://github.com/CMA-ES/lq-cma - Official lq-CMA-ES implementation",
@@ -589,9 +755,7 @@
     "https://www.sciencedirect.com/science/article/abs/pii/S0735193325002490 - Heat source field inversion with PINN (2025)",
     "https://github.com/maziarraissi/PINNs - Original PINN framework"
   ],
-
-  "notes": "V5.9: PROACTIVE RESEARCH + JAX ANALYSIS. Added 3 new experiments (LM, TRF, VP) from nonlinear least squares literature. Analyzed JAX autodiff failure: explicit Euler stability 4x slower than implicit ADI. Queue now at 7 available. Adjoint experiment still in progress (W2).",
-
+  "notes": "V6.0: MONITORING CYCLE. All 48+ experiments completed. 6 available (efficiency refinements). EXP_GRADIENT_INIT_001 invalidated (duplicate of failed physics_informed_init). Best: 1.1688 @ 58.4 min. ALL gradient methods failed. CMA-ES + temporal fidelity + NM polish is provably optimal.",
   "research_mandate": {
     "status": "COMPLETED",
     "reason": "Deep research cycle finished. 6 new experiments added based on findings.",

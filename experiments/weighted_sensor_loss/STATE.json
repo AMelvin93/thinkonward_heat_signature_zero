@@ -1,0 +1,30 @@
+{
+  "experiment_id": "EXP_WEIGHTED_LOSS_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-22T14:30:00Z",
+  "completed_at": "2026-01-22T15:30:00Z",
+  "tuning_runs": [
+    {
+      "config": {
+        "weighting_strategy": "variance",
+        "timestep_fraction": 0.40,
+        "sigma_1src": 0.18,
+        "sigma_2src": 0.22,
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "refine_maxiter": 8
+      },
+      "score": 1.0131,
+      "projected_400_min": 90.7,
+      "rmse_mean": 0.1555,
+      "rmse_1src": 0.1239,
+      "rmse_2src": 0.1766,
+      "mlflow_run_id": "3c65557698a542e6b8eae1a2b3ed57c4"
+    }
+  ],
+  "best_in_budget": null,
+  "conclusion": "FAILED - Weighted sensor loss WORSE than baseline. Score 1.0131 vs 1.1688 (-0.1557), Time 90.7 min vs 58.4 min. Optimizing weighted RMSE leads to different solutions than unweighted RMSE we're scored on.",
+  "recommendation": "ABANDON - loss_function family should be marked FAILED. Optimizing a different loss function doesn't help when scored on the original.",
+  "summary_written": true
+}

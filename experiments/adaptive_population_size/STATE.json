@@ -1,0 +1,21 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_POPSIZE_001",
+  "worker": "W1",
+  "status": "in_progress",
+  "started_at": "2026-01-22T17:30:00Z",
+  "hypothesis": "Start with large popsize (12) for exploration in first 60% of feval budget, then reduce to default (6) for exploitation. Inverse of IPOP.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": {
+    "popsize_phase1": 12,
+    "popsize_phase2": 6,
+    "phase1_fraction": 0.60,
+    "timestep_fraction": 0.40,
+    "sigma_1src": 0.18,
+    "sigma_2src": 0.22,
+    "fevals_1src": 20,
+    "fevals_2src": 36,
+    "refine_maxiter": 8
+  },
+  "summary_written": false
+}

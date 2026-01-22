@@ -1,7 +1,7 @@
 {
   "version": "5.5",
   "last_updated": "2026-01-22T10:00:00Z",
-  "notes": "PROACTIVE RESEARCH: Added 3 new experiments (Levenberg-Marquardt, Trust-Region Reflective, Variable Projection) based on nonlinear least squares literature. LM is the classic method for inverse heat problems with fast convergence. Total available: 7 experiments.",
+  "notes": "V5.7: Added 3 focused CMA-ES tuning experiments (2026-01-22T13:59:17.573458). coord_sigma, early_stopping, noise_injection.",
   "queue_status": "HEALTHY",
   "experiment_queue": [
     {
@@ -546,69 +546,48 @@
     },
     {
       "id": "EXP_WEIGHTED_LOSS_001",
-      "priority": 4,
+      "priority": 99,
       "family": "loss_function",
-      "status": "available",
+      "status": "completed",
+      "result": "FAILED - Optimizing weighted RMSE finds different optimum than unweighted (scored). Score 1.0131 (-0.1557). Diversity destroyed.",
+      "score": 1.0131,
+      "time_min": 90.7,
+      "worker": "W1",
       "name": "weighted_sensor_loss",
       "description": "Weight sensor contributions by their informativeness or reliability",
-      "hypothesis": "Not all sensors equally informative. Sensors closer to sources have stronger signal. Weighting by signal-to-noise or gradient magnitude may improve optimization.",
-      "research_source": "Optimal sensor weighting for inverse problems (general principle). FEM-based optimal sensor placement (arXiv 2509.19679).",
-      "why_different": "Current baseline weights all sensors equally. Adaptive weighting may help optimizer focus on informative measurements.",
-      "implementation": [
-        "1. Compute sensor weights based on temperature variance across solutions",
-        "2. Or use gradient magnitude at sensor locations",
-        "3. Modify RMSE computation: weighted_rmse = sqrt(sum(w_i * (y_i - pred_i)^2))",
-        "4. Test if weighted loss improves convergence or accuracy",
-        "5. Compare with uniform weighting baseline"
-      ],
-      "success_criteria": "Score >= 1.17 AND time <= 55 min",
-      "abort_criteria": "Weighting doesn't improve or makes optimization harder"
+      "finding": "CRITICAL: Do NOT change loss function - optimize exactly what you are scored on. loss_function family FAILED."
     },
     {
       "id": "EXP_POLAR_PARAM_001",
-      "priority": 5,
+      "priority": 99,
       "family": "problem_reformulation",
-      "status": "available",
+      "status": "completed",
+      "result": "FAILED - Rectangular domain incompatible with polar coords. Score 1.1472 @ 72.7 min vs baseline.",
+      "score": 1.1472,
+      "time_min": 72.7,
+      "worker": "W2",
       "name": "polar_parameterization",
       "description": "Reparameterize source positions using polar coordinates centered on domain centroid",
-      "hypothesis": "Cartesian (x,y) may have different landscape characteristics than polar (r,theta). CMA-ES may converge faster in one parameterization.",
-      "research_source": "Reparameterization can change optimization landscape characteristics. Used successfully in robotics/control.",
-      "why_different": "All experiments used Cartesian coordinates. Polar may have different curvature structure.",
-      "implementation": [
-        "1. Convert source positions to polar: r = sqrt((x-cx)^2 + (y-cy)^2), theta = atan2(y-cy, x-cx)",
-        "2. CMA-ES optimizes (r, theta) instead of (x, y)",
-        "3. Transform back to Cartesian for simulation",
-        "4. Handle bounds in polar coordinates",
-        "5. Compare convergence speed and accuracy"
-      ],
-      "success_criteria": "Score >= 1.17 AND time <= 55 min",
-      "abort_criteria": "Polar coordinates don't improve convergence or complicate boundary handling"
+      "finding": "Cartesian is optimal for rectangular domains. problem_reformulation family FAILED."
     },
     {
       "id": "EXP_EARLY_REJECTION_001",
-      "priority": 3,
+      "priority": 99,
       "family": "efficiency",
-      "status": "available",
+      "status": "completed",
+      "result": "FAILED - Two-stage evaluation ADDS overhead (191 sims vs 100 baseline). Only 8.6% rejection rate - need >25% to break even. Efficiency family EXHAUSTED.",
+      "score": 1.1598,
+      "time_min": 146.7,
+      "worker": "W1",
       "name": "early_rejection_partial_sim",
       "description": "Reject clearly bad candidates early using partial simulation (first 10% timesteps)",
-      "hypothesis": "If a candidate is very poor, this will be evident even with partial simulation. Rejecting early saves compute.",
-      "research_source": "Early rejection strategies common in optimization. Multi-fidelity approaches use coarse evaluations for filtering.",
-      "why_different": "Previous multi-fidelity used coarse GRID. This uses coarse TIME - same grid, fewer timesteps.",
-      "implementation": [
-        "1. Run first 10% timesteps (~100 steps) for each CMA-ES candidate",
-        "2. Compute partial RMSE from early temperature profile",
-        "3. Reject candidates with partial RMSE > 2x current best",
-        "4. Run full simulation only for promising candidates",
-        "5. Track time savings vs accuracy trade-off"
-      ],
-      "success_criteria": "Reduce simulation time by 20%+ while maintaining score >= 1.16",
-      "abort_criteria": "Early rejection eliminates good candidates OR overhead exceeds savings"
+      "finding": "Early rejection fundamentally flawed: filter cost not offset by savings. CMA-ES candidates cluster near optima, most pass filter. Baseline 40% temporal is optimal."
     },
     {
       "id": "EXP_ADAPTIVE_NM_POLISH_001",
       "priority": 4,
       "family": "refinement",
-      "status": "available",
+      "status": "completed",
       "name": "adaptive_nm_iterations",
       "description": "Dynamically adjust NM polish iterations based on convergence rate",
       "hypothesis": "Some samples converge quickly (4-5 NM iters), others need more (10+). Fixed 8 iters is wasteful for easy samples, insufficient for hard ones.",
@@ -622,33 +601,31 @@
         "5. Track time savings and accuracy"
       ],
       "success_criteria": "Score >= 1.17 AND time <= 50 min (save time on easy samples)",
-      "abort_criteria": "Adaptive logic overhead exceeds savings OR accuracy drops"
+      "abort_criteria": "Adaptive logic overhead exceeds savings OR accuracy drops",
+      "worker": "W2",
+      "result": "FAILED - Adaptive NM iterations does NOT improve. Best: 1.1607 @ 78.3 min (-0.0081 score, +19.9 min vs baseline).",
+      "score": 1.1607,
+      "time_min": 78.3,
+      "finding": "Fixed 8 NM iterations is already optimal. Adaptive batching adds overhead. Source-count based (6/10) is worse. refinement family EXHAUSTED."
     },
     {
       "id": "EXP_CMAES_RESTART_BEST_001",
-      "priority": 4,
+      "priority": 99,
       "family": "cmaes_improvement",
-      "status": "available",
+      "status": "completed",
+      "result": "FAILED - Two-phase restart doubles sims (175.7 min), causes diversity loss (1.7 vs 3 candidates), no accuracy improvement. Score 1.0986 vs baseline 1.1688.",
+      "score": 1.0986,
+      "time_min": 175.7,
+      "worker": "W1",
       "name": "cmaes_restart_from_best",
       "description": "Run short CMA-ES, restart from best solution found with tighter sigma",
-      "hypothesis": "Two-phase approach: broad search with large sigma, then focused search with small sigma around best. May improve final accuracy.",
-      "research_source": "Restart strategies in CMA-ES (IPOP, BIPOP). Hansen et al.",
-      "why_different": "Previous IPOP/BIPOP tested but increased population. This restarts with SAME population but tighter sigma around best.",
-      "implementation": [
-        "1. Run CMA-ES phase 1: sigma=0.25, 15-20 generations",
-        "2. Extract best solution found",
-        "3. Restart CMA-ES from best: sigma=0.05, 10-15 generations",
-        "4. Compare with single-phase baseline",
-        "5. Track time vs accuracy trade-off"
-      ],
-      "success_criteria": "Score >= 1.18 AND time <= 55 min",
-      "abort_criteria": "Two-phase doesn't improve over single-phase"
+      "finding": "CMA-ES converges well in single phase. Restart wastes budget re-converging to same solutions. Small sigma in phase 2 destroys diversity."
     },
     {
       "id": "EXP_GRADIENT_INIT_001",
-      "priority": 5,
+      "priority": 99,
       "family": "initialization",
-      "status": "available",
+      "status": "invalid",
       "name": "gradient_informed_init",
       "description": "Use temperature gradient direction to inform initial source position guess",
       "hypothesis": "Heat sources create temperature gradients pointing away from them. Tracing gradient backward could give better init than just hottest sensor.",
@@ -662,13 +639,14 @@
         "5. Compare with hottest-sensor init"
       ],
       "success_criteria": "Score >= 1.17 AND time <= 55 min",
-      "abort_criteria": "Gradient-based init is not consistently better than hottest-sensor"
+      "abort_criteria": "Gradient-based init is not consistently better than hottest-sensor",
+      "invalidation_reason": "DUPLICATE of EXP_PHYSICS_INIT_001 which FAILED. That experiment tested 'sensor temperature gradients to initialize source location estimates' and found gradient init WORSE than hottest-sensor (-0.0046 score, +2.3 min). This experiment proposes essentially the same thing. initialization family already marked EXHAUSTED."
     },
     {
       "id": "EXP_MULTISTART_ELITE_001",
-      "priority": 4,
+      "priority": 99,
       "family": "multi_start",
-      "status": "available",
+      "status": "completed",
       "name": "multistart_elite_selection",
       "description": "Run multiple short CMA-ES from different inits, continue only the best 1-2",
       "hypothesis": "Instead of running N full optimizations, run N short ones and continue only the most promising. More efficient budget allocation.",
@@ -682,7 +660,173 @@
         "5. Compare with baseline multi-start"
       ],
       "success_criteria": "Score >= 1.17 AND time <= 50 min (better budget allocation)",
-      "abort_criteria": "Elite selection kills good runs OR overhead exceeds savings"
+      "abort_criteria": "Elite selection kills good runs OR overhead exceeds savings",
+      "worker": "W2",
+      "result": "FAILED - Multi-start overhead dominates. Early fitness not predictive. Score 1.1529 @ 67 min vs baseline 1.1688 @ 58.4 min.",
+      "score": 1.1529,
+      "time_min": 67.0,
+      "finding": "Single-start with good initialization is already optimal. multi_start family FAILED."
+    },
+    {
+      "id": "EXP_LOG_RMSE_LOSS_001",
+      "priority": 99,
+      "family": "loss_reformulation",
+      "status": "completed",
+      "result": "FAILED - Monotonic transformation adds overhead without benefit. Score 1.1677 @ 70.5 min vs baseline.",
+      "score": 1.1677,
+      "time_min": 70.5,
+      "worker": "W2",
+      "name": "log_rmse_loss",
+      "description": "Use log(1+RMSE) instead of RMSE as optimization objective",
+      "finding": "loss_reformulation family FAILED. RMSE is optimal objective."
+    },
+    {
+      "id": "EXP_SOLUTION_INJECTION_001",
+      "priority": 99,
+      "family": "population_enhancement",
+      "status": "completed",
+      "result": "FAILED - Sequential execution kills parallelism. Score 0.9929 @ 122.5 min vs baseline 1.1688 @ 58.4 min.",
+      "score": 0.9929,
+      "time_min": 122.5,
+      "worker": "W1",
+      "name": "solution_injection_cmaes",
+      "description": "Inject best solutions from early inits into later CMA-ES populations (GloMPO-inspired)",
+      "finding": "Information sharing between inits not worth losing parallelism. population_enhancement family FAILED."
+    },
+    {
+      "id": "EXP_TIKHONOV_REG_001",
+      "priority": 4,
+      "family": "regularization",
+      "status": "available",
+      "name": "tikhonov_regularized_loss",
+      "description": "Add Tikhonov regularization penalty to RMSE for smoother solutions",
+      "hypothesis": "Regularization is standard for ill-posed inverse problems. Penalizing extreme source positions/intensities may improve robustness. WARNING: Adding any penalty term changes the optimum. Must verify regularized optimum still has good unweighted RMSE.",
+      "research_source": "Modern regularization methods for inverse problems (Acta Numerica). SpanReg (Nature 2022). Tikhonov widely used.",
+      "why_different": "Current baseline uses pure RMSE. Adding regularization may stabilize optimization.",
+      "implementation": [
+        "1. Modified objective: RMSE + lambda * ||params - prior||^2",
+        "2. Prior = domain center for positions, 1.0 for intensity",
+        "3. Tune lambda on small subset first",
+        "4. Compare solution quality and robustness"
+      ],
+      "success_criteria": "Score >= 1.17 AND more robust (lower variance across samples)",
+      "abort_criteria": "Regularization biases solutions away from true optima (same issue as weighted_sensor_loss)"
+    },
+    {
+      "id": "EXP_ADAPTIVE_POPSIZE_001",
+      "priority": 4,
+      "family": "cmaes_enhancement",
+      "status": "claimed_by_W1",
+      "worker": "W1",
+      "name": "adaptive_population_size",
+      "description": "Start with larger population for exploration, reduce for exploitation",
+      "hypothesis": "Different from IPOP (which increases). Start large (popsize=12) for first 60% of fevals, then reduce to default (6-8) for fine-tuning.",
+      "research_source": "CMA-ES with adaptive population (Hansen). Inverse of IPOP logic may work for expensive functions.",
+      "why_different": "IPOP failed (more restarts hurt). This is single-run with decreasing population.",
+      "implementation": [
+        "1. Phase 1 (60% fevals): popsize=12, broader exploration",
+        "2. Phase 2 (40% fevals): popsize=default, focused convergence",
+        "3. No restart - single continuous run",
+        "4. Compare with fixed popsize baseline"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "abort_criteria": "Large popsize wastes budget without improving exploration"
+    },
+    {
+      "id": "EXP_COORD_SIGMA_001",
+      "priority": 3,
+      "family": "cmaes_tuning",
+      "status": "available",
+      "name": "coordinate_wise_sigma",
+      "description": "Use different initial sigma for positions (x,y) vs intensity (q)",
+      "hypothesis": "Positions are bounded [0,2]x[0,1] but intensity is [0.5,2.0]. Different scales suggest different exploration rates. CMA-ES sigma0 applies uniformly - coordinate-specific may help.",
+      "research_source": "CMA-ES supports csigma parameter for coordinate-wise sigma. Low-dimensional tuning.",
+      "why_different": "Baseline uses uniform sigma. Position errors are larger impact than intensity errors for RMSE.",
+      "implementation": [
+        "1. Use sigma_x=sigma_y=0.15 for positions (tight)",
+        "2. Use sigma_q=0.30 for intensity (looser)",
+        "3. Implement via initial covariance matrix scaling",
+        "4. Compare with uniform sigma baseline"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "abort_criteria": "Coordinate-wise sigma doesn't improve or complicates convergence"
+    },
+    {
+      "id": "EXP_EARLY_STOP_CMA_001",
+      "priority": 3,
+      "family": "efficiency",
+      "status": "available",
+      "name": "cmaes_early_stopping",
+      "description": "Stop CMA-ES early if best solution hasn't improved for K generations",
+      "hypothesis": "Many samples converge quickly (5-8 gens) but baseline runs full budget. Early stopping could save time on easy samples for more polish.",
+      "research_source": "CMA-ES convergence criteria. Stagnation detection.",
+      "why_different": "Baseline uses fixed fevals. Adaptive stopping based on convergence could reallocate budget.",
+      "implementation": [
+        "1. Track best fitness over last 3 generations",
+        "2. If improvement < 1% for 3 consecutive gens, stop early",
+        "3. Reallocate saved budget to NM polish (up to 12 iters)",
+        "4. Compare time savings vs accuracy impact"
+      ],
+      "success_criteria": "Score >= 1.16 AND time <= 50 min (significant time savings)",
+      "abort_criteria": "Early stopping hurts accuracy more than it saves time"
+    },
+    {
+      "id": "EXP_NOISE_INJECTION_001",
+      "priority": 4,
+      "family": "exploration",
+      "status": "available",
+      "name": "noise_injection_escape",
+      "description": "Inject small noise into CMA-ES solutions when convergence stagnates",
+      "hypothesis": "If CMA-ES converges prematurely to local optimum, small noise injection may help escape. Similar to simulated annealing restart.",
+      "research_source": "Restarting strategies for evolutionary algorithms. Noise injection for escaping local optima.",
+      "why_different": "Baseline CMA-ES has no explicit escape mechanism. Noise injection adds controlled exploration.",
+      "implementation": [
+        "1. Monitor CMA-ES sigma - if it drops below 0.01, inject noise",
+        "2. Noise: Gaussian with std=0.05 added to best solution",
+        "3. Continue CMA-ES from noisy point",
+        "4. Limit noise injections to 2 per run"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 58 min",
+      "abort_criteria": "Noise injection disrupts convergence or adds overhead without benefit"
+    },
+    {
+      "id": "EXP_POWELL_POLISH_001",
+      "priority": 3,
+      "family": "local_search",
+      "status": "available",
+      "name": "powell_polish_instead_nm",
+      "description": "Use Powell's method (coordinate-wise search) instead of Nelder-Mead for final polish",
+      "hypothesis": "Powell's method performs coordinate-wise line searches which may be more efficient for the 2-4D search space than NM's simplex operations. Could converge faster or to better optima.",
+      "research_source": "scipy.optimize.minimize(method='powell'). Coordinate descent methods popular for low-dimensional problems.",
+      "why_different": "Baseline uses NM which moves simplex vertices. Powell moves along coordinate axes independently.",
+      "implementation": [
+        "1. Replace NM polish with scipy.optimize.minimize(method='powell')",
+        "2. Same maxiter setting (8) for fair comparison",
+        "3. Compare convergence rate and final RMSE",
+        "4. Check if coordinate independence helps or hurts"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "abort_criteria": "Powell converges slower than NM or gets stuck in saddle points"
+    },
+    {
+      "id": "EXP_RANDOM_TIMESTEPS_001",
+      "priority": 4,
+      "family": "temporal_sampling",
+      "status": "claimed_by_W2",
+      "worker": "W2",
+      "name": "random_timestep_selection",
+      "description": "Use random 40% of timesteps instead of first 40% for CMA-ES evaluation",
+      "hypothesis": "First 40% timesteps may miss important late-time dynamics. Random sampling captures different parts of temporal evolution, potentially providing more informative RMSE signal.",
+      "research_source": "Stochastic sampling in reduced-order models. Random subsets can capture global behavior better than contiguous subsets.",
+      "why_different": "Baseline uses first 40% timesteps (early dynamics only). Random samples entire time window.",
+      "implementation": [
+        "1. Pre-select random 40% of timestep indices (once per sample)",
+        "2. Use same indices for all CMA-ES candidates in that sample",
+        "3. Compare RMSE correlation with full-timestep RMSE",
+        "4. Compare final optimization quality"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "abort_criteria": "Random timesteps give worse RMSE correlation than contiguous (current method)"
     }
   ],
   "algorithm_families": {
@@ -717,11 +861,19 @@
     "alternative_es": "FAILED - OpenAI ES's diagonal covariance loses correlations. CMA-ES optimal for low-dim expensive problems. Do not pursue Natural ES/PEPG.",
     "differential_evolution": "FAILED - DE's mutation/crossover less efficient than CMA-ES covariance adaptation. Best 1.1325 @ 35.2 min (-0.0037 score). CMA-ES is optimal.",
     "multi_objective": "NOT TRIED - Pareto optimization of accuracy/speed jointly.",
-    "problem_reformulation": "NOT TRIED - Different loss functions, regularization, parameterizations.",
+    "problem_reformulation": "FAILED - Polar parameterization is WORSE than Cartesian (-0.0216 score, +14.3 min). Rectangular domain incompatible with polar coords. Don't change coordinate systems.",
     "simulated_annealing": "EXHAUSTED - SA is 2-5x slower than CMA-ES with local search, 23% worse without. Do NOT retry.",
-    "surrogate_assisted": "ABORTED - RMSE landscapes are sample-specific. Surrogates from some samples don't generalize to others."
+    "surrogate_assisted": "ABORTED - RMSE landscapes are sample-specific. Surrogates from some samples don't generalize to others.",
+    "cmaes_improvement": "FAILED - Two-phase restart (large sigma then small sigma) doesn't improve. Phase 2 adds overhead without accuracy gain, reduces diversity.",
+    "loss_function": "FAILED - Optimizing weighted RMSE finds different optimum than unweighted (scored). Score 1.0131 vs 1.1688. Don't change the loss function.",
+    "multi_start": "FAILED - Multi-start elite selection adds overhead without improving accuracy. Early generation fitness NOT predictive of final quality. Single-start with smart init is optimal.",
+    "refinement": "EXHAUSTED - Adaptive NM iterations does NOT improve. Fixed 8 NM is optimal. Adaptive batching adds overhead. Source-count based (6/10) worse.",
+    "efficiency": "EXHAUSTED - Early rejection adds overhead (191 sims vs 100 baseline). 8.6% rejection rate not enough to break even. 40% temporal is optimal efficiency.",
+    "loss_reformulation": "FAILED - Both weighted RMSE and log-RMSE failed. RMSE is optimal objective."
   },
   "completed_experiments": [
+    "EXP_WEIGHTED_LOSS_001",
+    "EXP_CMAES_RESTART_BEST_001",
     "CMAES_TUNING_BATCH",
     "EXP_PSO_001",
     "EXP_BASINHOPPING_001",
@@ -769,6 +921,12 @@
     "EXP_ADAPTIVE_SA_001",
     "EXP_PRETRAINED_SURROGATE_001",
     "EXP_SURROGATE_CMAES_001",
-    "EXP_PINN_DIRECT_001"
+    "EXP_PINN_DIRECT_001",
+    "EXP_MULTISTART_ELITE_001",
+    "EXP_ADAPTIVE_NM_POLISH_001",
+    "EXP_EARLY_REJECTION_001",
+    "EXP_POLAR_PARAM_001",
+    "EXP_SOLUTION_INJECTION_001",
+    "EXP_LOG_RMSE_LOSS_001"
   ]
 }
