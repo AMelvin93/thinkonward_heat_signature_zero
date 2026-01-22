@@ -2,6 +2,19 @@
 
 Run 3 parallel Claude Code instances to 3x your experiment throughput.
 
+## Context-Clearing Mode (v4)
+
+Workers now **exit after each experiment** instead of running an infinite loop. This clears the context window between experiments, preventing context accumulation. The orchestrator automatically restarts workers, and the resume logic ensures no work is lost.
+
+**How it works:**
+1. Worker picks an experiment, executes it, writes STATE.json and SUMMARY.md
+2. Worker **exits cleanly** (not a crash - intentional exit)
+3. Orchestrator detects exit and restarts Claude Code
+4. Fresh Claude Code instance starts with empty context
+5. Worker checks for incomplete work (resume logic), finds none
+6. Worker picks next experiment from queue
+7. Loop continues...
+
 ## Quick Start (Recommended)
 
 ### Option 1: Interactive Mode (Easiest)

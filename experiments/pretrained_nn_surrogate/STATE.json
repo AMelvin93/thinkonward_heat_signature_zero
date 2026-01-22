@@ -1,0 +1,22 @@
+{
+  "experiment_id": "EXP_PRETRAINED_SURROGATE_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-22T05:15:00Z",
+  "completed_at": "2026-01-22T05:20:00Z",
+  "family": "neural_operator",
+  "hypothesis": "Pre-training OFFLINE on 10K+ simulations creates a fixed surrogate that works with parallel processing.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "type": "feasibility_check",
+      "result": "ABORTED - Universal surrogate not feasible",
+      "correlation": -0.167,
+      "notes": "Tested RMSE landscape correlation across 5 samples. Average Spearman r = -0.167. Many pairs negatively correlated. RMSE landscape is completely sample-specific."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "final_result": "ABORTED - RMSE landscape is sample-specific (kappa, bc, Y_observed vary). Average correlation -0.167 across samples. Universal surrogate cannot predict RMSE without sample information."
+}

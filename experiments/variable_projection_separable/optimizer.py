@@ -1,13 +1,22 @@
 """
-Differential Evolution Optimizer with Temporal Fidelity.
+Variable Projection (VP) Optimizer for Inverse Heat Source Problem.
 
-Uses scipy.optimize.differential_evolution as an alternative to CMA-ES,
-with the same temporal fidelity approach as the baseline (40% timesteps).
+Our problem is naturally separable:
+- Nonlinear parameters: positions (x, y) for each source
+- Linear parameters: intensities (q) for each source
 
-Key differences from CMA-ES:
-- Uses mutation and crossover instead of covariance adaptation
-- Population-based like CMA-ES
-- Potentially faster convergence on simpler landscapes
+VP (Golub-Pereyra, 1973) eliminates linear parameters analytically:
+1. For given positions, solve for optimal q via least squares
+2. Optimize positions using Gauss-Newton on the "reduced residual"
+
+Key insight: The baseline ALREADY uses VP implicitly (computes q analytically).
+This experiment tests whether explicit Gauss-Newton on the reduced residual
+converges faster than CMA-ES.
+
+Expected outcome: LIKELY TO FAIL
+- Previous gradient-based approaches (LM, L-BFGS-B) failed due to local minima
+- Gauss-Newton is a local optimizer, unsuitable for multi-modal RMSE landscape
+- But worth testing to confirm
 """
 
 import os
@@ -17,7 +26,7 @@ from typing import List, Tuple
 from itertools import permutations
 
 import numpy as np
-from scipy.optimize import differential_evolution, minimize
+from scipy.optimize import least_squares, minimize
 
 _project_root = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, _project_root)
@@ -83,6 +92,7 @@ def simulate_unit_source(x, y, solver, dt, nt, T0, sensors_xy):
 
 def compute_optimal_intensity_1src(x, y, Y_observed, solver, dt, nt, T0, sensors_xy,
                                     q_range=(0.5, 2.0)):
+    """VP step: solve for optimal q given (x, y)."""
     Y_unit = simulate_unit_source(x, y, solver, dt, nt, T0, sensors_xy)
     n_steps = len(Y_unit)
     Y_obs_trunc = Y_observed[:n_steps]
@@ -95,12 +105,14 @@ def compute_optimal_intensity_1src(x, y, Y_observed, solver, dt, nt, T0, sensors
         q_optimal = np.dot(Y_unit_flat, Y_obs_flat) / denominator
     q_optimal = np.clip(q_optimal, q_range[0], q_range[1])
     Y_pred = q_optimal * Y_unit
-    rmse = np.sqrt(np.mean((Y_pred - Y_obs_trunc) ** 2))
-    return q_optimal, Y_pred, rmse
+    residual = (Y_pred - Y_obs_trunc).flatten()
+    rmse = np.sqrt(np.mean(residual ** 2))
+    return q_optimal, residual, rmse
 
 
 def compute_optimal_intensity_2src(x1, y1, x2, y2, Y_observed, solver, dt, nt, T0, sensors_xy,
                                     q_range=(0.5, 2.0)):
+    """VP step: solve for optimal (q1, q2) given (x1, y1, x2, y2)."""
     Y1 = simulate_unit_source(x1, y1, solver, dt, nt, T0, sensors_xy)
     Y2 = simulate_unit_source(x2, y2, solver, dt, nt, T0, sensors_xy)
     n_steps = len(Y1)
@@ -120,15 +132,22 @@ def compute_optimal_intensity_2src(x1, y1, x2, y2, Y_observed, solver, dt, nt, T
     q1 = np.clip(q1, q_range[0], q_range[1])
     q2 = np.clip(q2, q_range[0], q_range[1])
     Y_pred = q1 * Y1 + q2 * Y2
-    rmse = np.sqrt(np.mean((Y_pred - Y_obs_trunc) ** 2))
-    return (q1, q2), Y_pred, rmse
+    residual = (Y_pred - Y_obs_trunc).flatten()
+    rmse = np.sqrt(np.mean(residual ** 2))
+    return (q1, q2), residual, rmse
 
 
-class DifferentialEvolutionOptimizer:
+class VariableProjectionOptimizer:
     """
-    Differential Evolution optimizer with temporal fidelity.
-    Uses coarse grid (50x25) with reduced timesteps (40%) for fast optimization,
-    then evaluates final candidates on fine grid (100x50) with full timesteps.
+    Variable Projection optimizer using Gauss-Newton on the reduced residual.
+
+    The VP approach:
+    1. For each position (x, y), compute optimal q analytically (least squares)
+    2. Compute reduced residual r(x, y) = A(x,y)*q_opt - b
+    3. Minimize ||r(x, y)||^2 using Gauss-Newton (via scipy.least_squares)
+
+    Note: scipy.least_squares uses Levenberg-Marquardt or Trust-Region Reflective,
+    both are local methods that may get stuck in local minima.
     """
 
     def __init__(
@@ -139,21 +158,14 @@ class DifferentialEvolutionOptimizer:
         ny_fine: int = 50,
         nx_coarse: int = 50,
         ny_coarse: int = 25,
-        strategy: str = 'best1bin',
-        maxiter_1src: int = 15,
-        maxiter_2src: int = 20,
-        popsize: int = 5,
-        mutation: tuple = (0.5, 1.0),
-        recombination: float = 0.7,
+        n_multi_starts: int = 5,
+        max_nfev: int = 30,
         use_triangulation: bool = True,
         n_candidates: int = N_MAX,
-        candidate_pool_size: int = 10,
         refine_maxiter: int = 8,
-        refine_top_n: int = 2,
         rmse_threshold_1src: float = 0.40,
         rmse_threshold_2src: float = 0.50,
         timestep_fraction: float = 0.40,
-        tol: float = 0.01,
     ):
         self.Lx = Lx
         self.Ly = Ly
@@ -161,21 +173,14 @@ class DifferentialEvolutionOptimizer:
         self.ny_fine = ny_fine
         self.nx_coarse = nx_coarse
         self.ny_coarse = ny_coarse
-        self.strategy = strategy
-        self.maxiter_1src = maxiter_1src
-        self.maxiter_2src = maxiter_2src
-        self.popsize = popsize
-        self.mutation = mutation
-        self.recombination = recombination
+        self.n_multi_starts = n_multi_starts
+        self.max_nfev = max_nfev
         self.use_triangulation = use_triangulation
         self.n_candidates = min(n_candidates, N_MAX)
-        self.candidate_pool_size = candidate_pool_size
         self.refine_maxiter = refine_maxiter
-        self.refine_top_n = refine_top_n
         self.rmse_threshold_1src = rmse_threshold_1src
         self.rmse_threshold_2src = rmse_threshold_2src
         self.timestep_fraction = timestep_fraction
-        self.tol = tol
 
     def _create_solver(self, kappa, bc, coarse=False):
         if coarse:
@@ -183,11 +188,11 @@ class DifferentialEvolutionOptimizer:
         return Heat2D(self.Lx, self.Ly, self.nx_fine, self.ny_fine, kappa, bc=bc)
 
     def _get_position_bounds(self, n_sources, margin=0.05):
-        bounds = []
+        lb, ub = [], []
         for _ in range(n_sources):
-            bounds.append((margin * self.Lx, (1 - margin) * self.Lx))
-            bounds.append((margin * self.Ly, (1 - margin) * self.Ly))
-        return bounds
+            lb.extend([margin * self.Lx, margin * self.Ly])
+            ub.extend([(1 - margin) * self.Lx, (1 - margin) * self.Ly])
+        return np.array(lb), np.array(ub)
 
     def _smart_init_positions(self, sample, n_sources):
         readings = sample['Y_noisy']
@@ -251,22 +256,9 @@ class DifferentialEvolutionOptimizer:
         except:
             return None
 
-    def _create_initial_population(self, bounds, init_points, ndim, popsize_actual):
-        pop = []
-        for init_params in init_points:
-            if len(pop) < popsize_actual:
-                normalized = []
-                for i, (lo, hi) in enumerate(bounds):
-                    val = (init_params[i] - lo) / (hi - lo)
-                    normalized.append(np.clip(val, 0, 1))
-                pop.append(normalized)
-        while len(pop) < popsize_actual:
-            pop.append(np.random.random(ndim))
-        return np.array(pop)
-
-    def _run_de_optimization(self, sample, meta, q_range, solver_coarse, solver_fine,
+    def _run_vp_optimization(self, sample, meta, q_range, solver_coarse, solver_fine,
                               initializations, n_sources, nt_reduced):
-        """Run DE optimization with candidate collection."""
+        """Run VP optimization using least_squares (Gauss-Newton/LM)."""
         sensors_xy = np.array(sample['sensors_xy'])
         Y_observed = sample['Y_noisy']
         dt = meta['dt']
@@ -274,64 +266,86 @@ class DifferentialEvolutionOptimizer:
         T0 = sample['sample_metadata']['T0']
 
         n_sims = [0]
-        bounds = self._get_position_bounds(n_sources)
-        ndim = n_sources * 2
-        maxiter = self.maxiter_1src if n_sources == 1 else self.maxiter_2src
+        lb, ub = self._get_position_bounds(n_sources)
 
-        # Collect all evaluated solutions during DE
-        all_solutions = []
-
+        # Define the residual function for VP
         if n_sources == 1:
-            def objective_coarse(xy_params):
+            def residual_fn(xy_params):
                 x, y = xy_params
                 n_sims[0] += 1
-                q, Y_pred, rmse = compute_optimal_intensity_1src(
+                q, residual, rmse = compute_optimal_intensity_1src(
                     x, y, Y_observed, solver_coarse, dt, nt_reduced, T0, sensors_xy, q_range)
-                all_solutions.append((np.array([x, y]), rmse, 'de'))
-                return rmse
+                return residual
         else:
-            def objective_coarse(xy_params):
+            def residual_fn(xy_params):
                 x1, y1, x2, y2 = xy_params
                 n_sims[0] += 2
-                (q1, q2), Y_pred, rmse = compute_optimal_intensity_2src(
+                (q1, q2), residual, rmse = compute_optimal_intensity_2src(
                     x1, y1, x2, y2, Y_observed, solver_coarse, dt, nt_reduced, T0, sensors_xy, q_range)
-                all_solutions.append((np.array([x1, y1, x2, y2]), rmse, 'de'))
+                return residual
+
+        # Define RMSE objective for NM polish
+        if n_sources == 1:
+            def objective_fn(xy_params):
+                x, y = xy_params
+                n_sims[0] += 1
+                q, _, rmse = compute_optimal_intensity_1src(
+                    x, y, Y_observed, solver_coarse, dt, nt_reduced, T0, sensors_xy, q_range)
+                return rmse
+        else:
+            def objective_fn(xy_params):
+                x1, y1, x2, y2 = xy_params
+                n_sims[0] += 2
+                (q1, q2), _, rmse = compute_optimal_intensity_2src(
+                    x1, y1, x2, y2, Y_observed, solver_coarse, dt, nt_reduced, T0, sensors_xy, q_range)
                 return rmse
 
-        # Prepare initial population from initializations
-        init_points = [init_params for init_params, init_type in initializations]
-        popsize_actual = max(self.popsize * (ndim + 1), len(init_points) + 2)
-        init_pop = self._create_initial_population(bounds, init_points, ndim, popsize_actual)
+        all_solutions = []
 
-        # Run DE
-        try:
-            result = differential_evolution(
-                objective_coarse,
-                bounds,
-                strategy=self.strategy,
-                maxiter=maxiter,
-                popsize=self.popsize,
-                mutation=self.mutation,
-                recombination=self.recombination,
-                polish=False,
-                init=init_pop,
-                tol=self.tol,
-                seed=np.random.randint(0, 10000),
-                workers=1,
-                updating='deferred',
-            )
-        except Exception as e:
-            pass
+        # Multi-start: run VP from each initialization
+        for init_params, init_type in initializations:
+            try:
+                # Use Trust-Region Reflective for bounded optimization
+                result = least_squares(
+                    residual_fn,
+                    init_params,
+                    bounds=(lb, ub),
+                    method='trf',  # Trust-Region Reflective
+                    ftol=1e-4,
+                    xtol=1e-4,
+                    max_nfev=self.max_nfev,
+                    verbose=0
+                )
+                rmse = np.sqrt(np.mean(result.fun ** 2))
+                all_solutions.append((result.x, rmse, f'vp_{init_type}'))
+            except Exception as e:
+                # Fallback to Nelder-Mead
+                try:
+                    result = minimize(
+                        objective_fn,
+                        init_params,
+                        method='Nelder-Mead',
+                        options={'maxiter': 20}
+                    )
+                    all_solutions.append((result.x, result.fun, f'nm_{init_type}'))
+                except:
+                    pass
 
-        # Sort and take top solutions
+        if not all_solutions:
+            # Emergency fallback
+            init_params = self._smart_init_positions(sample, n_sources)
+            rmse = objective_fn(init_params)
+            all_solutions.append((init_params, rmse, 'fallback'))
+
+        # Sort by RMSE
         all_solutions.sort(key=lambda x: x[1])
 
-        # Refine top N solutions with NM polish
+        # NM polish on top solutions
         refined_solutions = []
-        for i, (pos_params, rmse_coarse, init_type) in enumerate(all_solutions[:self.refine_top_n]):
+        for pos_params, rmse_coarse, init_type in all_solutions[:2]:
             if self.refine_maxiter > 0:
                 result = minimize(
-                    objective_coarse,
+                    objective_fn,
                     pos_params,
                     method='Nelder-Mead',
                     options={
@@ -347,11 +361,11 @@ class DifferentialEvolutionOptimizer:
             else:
                 refined_solutions.append((pos_params, rmse_coarse, init_type))
 
-        # Add remaining top solutions
-        for pos_params, rmse_coarse, init_type in all_solutions[self.refine_top_n:self.candidate_pool_size]:
-            refined_solutions.append((pos_params, rmse_coarse, init_type))
+        # Add remaining solutions
+        for sol in all_solutions[2:5]:
+            refined_solutions.append(sol)
 
-        # Evaluate candidates on FINE grid with FULL timesteps
+        # Evaluate on fine grid with full timesteps
         candidates_raw = []
         for pos_params, rmse_coarse, init_type in refined_solutions:
             if n_sources == 1:
@@ -386,40 +400,44 @@ class DifferentialEvolutionOptimizer:
         nt_reduced = max(10, int(nt_full * self.timestep_fraction))
 
         if verbose:
-            print(f"  Using {nt_reduced}/{nt_full} timesteps ({self.timestep_fraction*100:.0f}%) for DE")
+            print(f"  Using {nt_reduced}/{nt_full} timesteps for VP")
 
-        # Primary initializations
-        primary_inits = []
+        # Prepare initializations
+        initializations = []
         tri_init = self._triangulation_init_positions(sample, meta, n_sources, q_range)
         if tri_init is not None:
-            primary_inits.append((tri_init, 'triangulation'))
+            initializations.append((tri_init, 'triangulation'))
         smart_init = self._smart_init_positions(sample, n_sources)
-        primary_inits.append((smart_init, 'smart'))
+        initializations.append((smart_init, 'smart'))
+        centroid_init = self._weighted_centroid_init(sample, n_sources)
+        initializations.append((centroid_init, 'centroid'))
 
-        # Run primary optimization
-        candidates_raw, n_sims = self._run_de_optimization(
+        # Add random inits
+        for i in range(self.n_multi_starts - 3):
+            random_init = self._random_init_positions(n_sources)
+            initializations.append((random_init, f'random_{i}'))
+
+        # Run VP optimization
+        candidates_raw, n_sims = self._run_vp_optimization(
             sample, meta, q_range, solver_coarse, solver_fine,
-            primary_inits, n_sources, nt_reduced
+            initializations, n_sources, nt_reduced
         )
 
-        # Check if result is bad
+        # Check if result is bad - add more inits
         best_rmse_initial = min(c[2] for c in candidates_raw) if candidates_raw else float('inf')
         threshold = self.rmse_threshold_1src if n_sources == 1 else self.rmse_threshold_2src
 
         if best_rmse_initial > threshold:
-            # Fallback: try alternative initializations
-            fallback_inits = []
-            centroid_init = self._weighted_centroid_init(sample, n_sources)
-            fallback_inits.append((centroid_init, 'centroid'))
-            random_init = self._random_init_positions(n_sources)
-            fallback_inits.append((random_init, 'random'))
+            extra_inits = []
+            for i in range(3):
+                extra_inits.append((self._random_init_positions(n_sources), f'extra_{i}'))
 
-            fallback_candidates, fallback_sims = self._run_de_optimization(
+            extra_candidates, extra_sims = self._run_vp_optimization(
                 sample, meta, q_range, solver_coarse, solver_fine,
-                fallback_inits, n_sources, nt_reduced
+                extra_inits, n_sources, nt_reduced
             )
-            n_sims += fallback_sims
-            candidates_raw.extend(fallback_candidates)
+            n_sims += extra_sims
+            candidates_raw.extend(extra_candidates)
 
         # Dissimilarity filtering
         filtered = filter_dissimilar([(c[0], c[2]) for c in candidates_raw], tau=TAU)

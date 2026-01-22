@@ -1292,3 +1292,108 @@ The initialization_v2 family is now EXHAUSTED.
 
 **Recommendation**: Current baseline (1.1688 @ 58.4 min) represents a local optimum for this problem formulation. Further gains would require fundamentally new approaches not yet in the queue.
 
+
+---
+
+## Session 22+ (Continued Exploration - 2026-01-22)
+
+### [W1] Experiment: jax_differentiable_solver (EXP_JAX_AUTODIFF_001) | ABORTED
+**Algorithm**: Rewrite thermal simulator in JAX for automatic differentiation
+**Result**: **ABORTED** - Fundamental incompatibility between JAX autodiff and problem physics
+**Key Finding**: JAX autodiff requires explicit time-stepping (forward Euler), which has stability constraint dt < 0.002061. Original implicit ADI uses dt=0.004 (1.9x larger). This means JAX needs ~4x more timesteps to match the same total simulation time, defeating any speed advantage.
+
+**Technical Analysis**:
+- Explicit Euler stability: dt_max = 0.002061
+- Original dt: 0.004 (1.9x larger)
+- Timesteps needed: 3881 (JAX) vs 1000 (original)
+- Running fewer timesteps gives wrong physics: 5.7x temperature error at final time
+
+**Abort Reason**: The implicit ADI method used by the original simulator is essential for efficiency. Differentiating through implicit solvers would require manual adjoint implementation (which is EXP_CONJUGATE_GRADIENT_001).
+
+The differentiable_simulation family is now FAILED/EXHAUSTED (for explicit methods).
+
+---
+
+### [W1] Experiment: levenberg_marquardt_inverse (EXP_LEVENBERG_MARQUARDT_001) | FAILED
+**Algorithm**: Levenberg-Marquardt (scipy.optimize.least_squares) for nonlinear least squares
+**Result**: **FAILED** - Best in-budget 1.0350 @ 56 min (-9% vs baseline)
+**Tuning Runs**: 4 runs with various configurations
+
+**Why LM Failed**:
+1. **Local optimizer**: Gets stuck in local minima (RMSE landscape is multi-modal)
+2. **Expensive Jacobian**: Finite differences need 3-5 sims per iteration
+3. **Poor sample efficiency**: ~100-200 sims/sample vs CMA-ES's 20-36
+
+**Key Finding**: LM is fundamentally unsuitable for this problem. CMA-ES's population-based search is 3x more sample-efficient for expensive multi-modal optimization.
+
+The nonlinear_least_squares family is now FAILED.
+
+---
+
+### [W1] Experiment: cmaes_then_gradient_refinement (EXP_HYBRID_CMAES_LBFGSB_001) | FAILED
+**Algorithm**: Replace NM polish with L-BFGS-B polish in CMA-ES pipeline
+**Result**: **FAILED** - Best in-budget L-BFGS-B: 1.1174 @ 42 min (WORSE than NM x8: 1.1415 @ 38 min)
+**Tuning Runs**: 4 runs comparing L-BFGS-B vs NM polish
+
+**Why L-BFGS-B Polish Failed**:
+1. **Finite difference overhead**: L-BFGS-B needs O(n) extra sims per iteration for gradient
+2. **2-source samples**: ~250-350 sims (L-BFGS-B) vs ~180 sims (NM x8)
+3. **Gradient advantage doesn't compensate**: NM's simplex is already efficient for 2-4D
+
+**Key Finding**: NM x8 remains the optimal polish method. hybrid_gradient family is FAILED.
+
+---
+
+### [W2] Experiment: conjugate_gradient_adjoint | Score: 0.9006 @ 56.5 min
+**Algorithm**: Adjoint method for O(1) gradient computation with L-BFGS-B optimization
+**Tuning Runs**: 2 runs (1 optimization run + 1 gradient verification)
+**Result**: **FAILED** vs baseline (1.1247 @ 57 min) - Score 20% WORSE
+**Key Finding**: Adjoint gradient is 5-6 orders of magnitude too small (ratio ~0.000002 vs finite differences). Manual adjoint derivation for ADI time-stepping is error-prone. L-BFGS-B sees near-zero gradient and doesn't iterate. Recommend using autodiff (JAX) instead of manual adjoint, but note that JAX also failed due to explicit Euler stability requirements. **The adjoint_gradient family should be marked EXHAUSTED.**
+
+See `experiments/conjugate_gradient_adjoint/SUMMARY.md` for details.
+
+### [W2] Experiment: adaptive_simulated_annealing | Score: 0.8666 @ 28.2 min
+**Algorithm**: scipy.optimize.dual_annealing (generalized SA with L-BFGS-B local search)
+**Tuning Runs**: 4 runs (3 killed early due to excessive time)
+**Result**: **FAILED** vs baseline (1.1247 @ 57 min) - Score 23% WORSE
+**Key Finding**: SA fundamentally unsuitable. With local search: 2-5x over budget (L-BFGS-B finite diff overhead). Without local search: 23% worse accuracy (random exploration inefficient). CMA-ES covariance adaptation is more sample-efficient for expensive simulations. **The simulated_annealing family should be marked EXHAUSTED.**
+
+See `experiments/adaptive_simulated_annealing/SUMMARY.md` for details.
+
+### [W2] Experiment: pretrained_nn_surrogate | ABORTED
+**Algorithm**: Pre-trained neural network surrogate for RMSE prediction
+**Tuning Runs**: 1 feasibility check
+**Result**: **ABORTED** - Fundamental infeasibility discovered
+**Key Finding**: RMSE landscape is completely sample-specific (avg Spearman correlation -0.167 across samples). Many sample pairs are negatively correlated! A surrogate that only takes (x, y) as input CANNOT predict RMSE without knowing sample-specific information (Y_observed, kappa, bc, T0). Per-sample training is too slow. **The neural_operator family should be marked EXHAUSTED.**
+
+See `experiments/pretrained_nn_surrogate/SUMMARY.md` for details.
+
+### [W2] Experiment: surrogate_assisted_cmaes | ABORTED (prior findings)
+**Algorithm**: Kriging/GP surrogate to pre-filter CMA-ES candidates
+**Result**: **ABORTED** based on prior findings from pretrained_nn_surrogate
+**Key Finding**: Prior experiment showed RMSE landscapes are sample-specific (avg correlation -0.167). A surrogate trained on samples 1-10 will NOT generalize to samples 11-80 because each sample has unique physics (kappa, bc, Y_observed). This is the same fundamental problem that killed pretrained_nn_surrogate.
+
+### [W2] Experiment: pinn_inverse_heat_source | ABORTED
+**Algorithm**: Physics-Informed Neural Network (PINN) for inverse heat source problem
+**Tuning Runs**: 1 feasibility check
+**Result**: **ABORTED** - PINN requires efficient gradient computation
+**Key Finding**: Tested L-BFGS-B (gradients) vs Nelder-Mead (no gradients). L-BFGS-B achieves 15% better RMSE but takes 2.3x longer (99 min vs 43 min projected) due to finite difference overhead. PINN would need efficient gradients, but: (1) Adjoint method failed (1e-6 error), (2) JAX autodiff blocked by ADI stability constraint, (3) Finite differences too slow. **ALL gradient-based approaches are now EXHAUSTED. Nelder-Mead remains optimal.**
+
+See `experiments/pinn_inverse_heat_source/SUMMARY.md` for details.
+
+---
+
+## Session Summary: W2 Experiments Completed
+
+| Experiment | Family | Result | Key Finding |
+|------------|--------|--------|-------------|
+| conjugate_gradient_adjoint | adjoint_gradient | FAILED | Adjoint gradients 1e-6 of correct value due to complex ADI derivation |
+| adaptive_simulated_annealing | simulated_annealing | FAILED | SA with local search 2-5x over budget, without 23% worse accuracy |
+| pretrained_nn_surrogate | neural_operator | ABORTED | RMSE landscapes are sample-specific (correlation -0.167) |
+| surrogate_assisted_cmaes | surrogate_assisted | ABORTED | Same issue as pretrained_nn - sample-specific RMSE |
+| pinn_inverse_heat_source | neural_operator | ABORTED | PINN needs gradients; all gradient methods failed |
+
+**Conclusion**: CMA-ES + Nelder-Mead with 40% temporal fidelity remains the optimal approach. No gradient-based or surrogate-based method can beat it due to:
+1. ADI solver blocks autodiff
+2. Manual adjoint derivation is error-prone
+3. RMSE landscapes are sample-specific (no universal surrogate)

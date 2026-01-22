@@ -1,12 +1,50 @@
 {
   "experiment_id": "EXP_CONJUGATE_GRADIENT_001",
   "worker": "W2",
-  "status": "in_progress",
+  "status": "done",
   "started_at": "2026-01-20T02:15:00Z",
+  "completed_at": "2026-01-22T04:00:00Z",
   "family": "adjoint_gradient",
   "hypothesis": "L-BFGS-B achieved 1.1627 accuracy but took 202 min due to finite differences. Adjoint method computes gradients in O(1) forward + O(1) adjoint solve, enabling gradient-based optimization within budget.",
-  "tuning_runs": [],
-  "best_in_budget": null,
-  "next_config_to_try": "initial_adjoint_implementation",
-  "summary_written": false
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "n_restarts_1src": 2,
+        "n_restarts_2src": 3,
+        "max_iter": 10,
+        "timestep_fraction": 0.4
+      },
+      "score": 0.9006,
+      "time_min": 56.5,
+      "in_budget": true,
+      "rmse_mean": 0.5737,
+      "total_simulations": 966,
+      "mlflow_run_id": "6e1f20e9be72493eb414d38add47423f",
+      "notes": "FAILURE - Score 0.9006 is 20% worse than baseline 1.1247. RMSE 0.5737 is 3-4x worse than baseline ~0.15. Most L-BFGS-B runs show 0 iterations - gradient appears inaccurate."
+    },
+    {
+      "run": 2,
+      "type": "gradient_verification",
+      "result": "FAILED - Adjoint gradient is 5-6 orders of magnitude smaller than finite differences",
+      "adjoint_gradient": [-0.000017, 0.000004],
+      "finite_diff_gradient": [-9.079144, 1.979771],
+      "ratio": "~0.000002",
+      "notes": "Implementation is fundamentally incorrect. The adjoint PDE solver or gradient computation has errors."
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "score": 0.9006,
+    "time_min": 56.5,
+    "config": {
+      "n_restarts_1src": 2,
+      "n_restarts_2src": 3,
+      "max_iter": 10,
+      "timestep_fraction": 0.4
+    }
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "final_result": "FAILED - Adjoint gradient implementation is incorrect. Gradients are 5-6 orders of magnitude too small, causing L-BFGS-B to not iterate. Manual adjoint derivation is error-prone for complex PDEs with ADI time-stepping."
 }

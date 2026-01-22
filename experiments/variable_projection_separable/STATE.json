@@ -1,0 +1,34 @@
+{
+  "experiment_id": "EXP_SEPARABLE_VP_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-22T07:35:00Z",
+  "completed_at": "2026-01-22T08:00:00Z",
+  "family": "variable_projection",
+  "hypothesis": "VP with Gauss-Newton may converge faster than CMA-ES since it exploits the separable structure (positions vs intensity).",
+  "result": "FAILED",
+  "tuning_runs": [
+    {
+      "config": "Default: 5 multi-starts, 30 max_nfev, 8 polish",
+      "samples": 20,
+      "score": 1.0025,
+      "time_min": 54.3,
+      "notes": "Local optimizer gets stuck (samples 10, 13). Low diversity (mostly 1 candidate)."
+    },
+    {
+      "config": "Reduced: 3 multi-starts, 15 max_nfev, 5 polish",
+      "samples": 20,
+      "score": 0.9888,
+      "time_min": 32.9,
+      "notes": "Faster but worse accuracy. Same samples stuck in local minima."
+    }
+  ],
+  "best_in_budget": {
+    "config": "5 multi-starts, 30 max_nfev, 8 polish",
+    "score": 1.0025,
+    "time_min": 54.3,
+    "comparison_to_baseline": "-0.1337 score, +15.3 min vs 1.1362 @ 39 min"
+  },
+  "key_finding": "VP with Trust-Region Reflective is a local optimizer that gets stuck in local minima. The baseline already uses VP implicitly (computes q analytically), but CMA-ES is needed to escape local minima in the multi-modal RMSE landscape.",
+  "summary_written": true
+}

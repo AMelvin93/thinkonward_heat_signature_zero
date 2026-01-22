@@ -41,7 +41,7 @@ def run_experiment(
 
     samples = data['samples']
     meta = data['meta']
-    q_range = (meta['q_min'], meta['q_max'])
+    q_range = meta['q_range']
 
     if shuffle:
         indices = np.random.permutation(len(samples))
@@ -98,19 +98,18 @@ def run_experiment(
 
     total_time = time.time() - start_time
 
-    # Calculate score
-    pred_dataset = []
-    for i, sample in enumerate(samples):
-        pred_dataset.append({
-            'sample_id': sample['sample_id'],
-            'sources': [{'x': s[0], 'y': s[1], 'q': s[2]} for s in predictions[i]]
-        })
+    # Calculate score (simplified formula - same as baseline)
+    def calculate_sample_score(rmse, n_candidates, lambda_=0.3, n_max=3):
+        if n_candidates == 0:
+            return 0.0
+        return 1.0 / (1.0 + rmse) + lambda_ * (n_candidates / n_max)
 
-    score = score_submission(
-        data, pred_dataset, N_max=3, lambda_=0.3, tau=0.2,
-        scale_factors=(2.0, 1.0, 2.0), forward_loss="rmse",
-        solver_kwargs={"Lx": 2.0, "Ly": 1.0, "nx": 100, "ny": 50}
-    )
+    # predictions[i] is a list of candidates, each candidate is a list of (x, y, q) tuples
+    sample_scores = []
+    for i in range(len(samples)):
+        n_cands = len(predictions[i]) if predictions[i] else 0
+        sample_scores.append(calculate_sample_score(rmses[i], n_cands))
+    score = np.mean(sample_scores)
 
     # Calculate metrics
     n_samples = len(samples)

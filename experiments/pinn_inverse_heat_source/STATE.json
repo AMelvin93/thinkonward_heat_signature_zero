@@ -1,0 +1,26 @@
+{
+  "experiment_id": "EXP_PINN_DIRECT_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-22T05:30:00Z",
+  "completed_at": "2026-01-22T05:45:00Z",
+  "family": "neural_operator",
+  "hypothesis": "PINNs can directly optimize for heat source parameters by encoding physics constraints in the loss.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "type": "feasibility_check",
+      "result": "ABORTED - PINN requires efficient gradients which we can't obtain",
+      "findings": {
+        "lbfgsb_test": "0.0988 RMSE, 74.5s per sample, 99.4 min projected for 80 samples (over budget)",
+        "nm_test": "0.1155 RMSE, 32.6s per sample, 43.5 min projected (within budget)",
+        "gradient_problem": "Finite differences require O(2n) sims per gradient, 2.3x slower than NM"
+      },
+      "notes": "PINN would need efficient gradients. Three approaches all failed: (1) Adjoint - wrong gradients, (2) JAX autodiff - stability constraint, (3) Finite differences - too slow"
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "final_result": "ABORTED - PINN requires efficient gradient computation. Adjoint method failed (gradients 1e-6 wrong). JAX autodiff failed (explicit Euler stability). Finite differences too slow (99 min vs 60 min budget). Nelder-Mead remains optimal for this problem."
+}

@@ -1,0 +1,52 @@
+{
+  "experiment_id": "EXP_HYBRID_CMAES_LBFGSB_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-22T05:00:00Z",
+  "completed_at": "2026-01-22T05:30:00Z",
+  "family": "hybrid_gradient",
+  "hypothesis": "CMA-ES finds good basin quickly. L-BFGS-B with few iterations can refine within the basin faster than NM. Even with finite differences, 2-3 L-BFGS-B iterations may beat 8 NM iterations.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"polish_method": "L-BFGS-B", "polish_maxiter": 3},
+      "n_samples": 10,
+      "score": 1.1721,
+      "time_min": 60.3,
+      "in_budget": false,
+      "finding": "Better accuracy (+0.036) but 60 min (over budget)"
+    },
+    {
+      "run": 2,
+      "config": {"polish_method": "Nelder-Mead", "polish_maxiter": 8},
+      "n_samples": 10,
+      "score": 1.1652,
+      "time_min": 45.7,
+      "in_budget": true,
+      "finding": "Baseline comparison: NM is faster"
+    },
+    {
+      "run": 3,
+      "config": {"polish_method": "L-BFGS-B", "polish_maxiter": 2},
+      "n_samples": 20,
+      "score": 1.1174,
+      "time_min": 42.4,
+      "in_budget": true,
+      "finding": "Time OK but score WORSE (-0.019 vs baseline)"
+    },
+    {
+      "run": 4,
+      "config": {"polish_method": "Nelder-Mead", "polish_maxiter": 8},
+      "n_samples": 20,
+      "score": 1.1415,
+      "time_min": 38.0,
+      "in_budget": true,
+      "finding": "NM is better: +0.0241 score, -4.4 min vs L-BFGS-B x2"
+    }
+  ],
+  "best_in_budget": {"run": 4, "score": 1.1415, "time_min": 38.0, "method": "NM x8"},
+  "final_result": "FAILED - L-BFGS-B polish is NOT better than NM polish",
+  "abort_reason": "L-BFGS-B finite difference overhead (O(n) extra evals per iteration) outweighs gradient advantage. NM x8 achieves better score/time tradeoff than L-BFGS-B at any iteration count.",
+  "next_config_to_try": null,
+  "summary_written": true
+}

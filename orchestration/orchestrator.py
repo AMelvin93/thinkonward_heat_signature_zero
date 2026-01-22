@@ -23,8 +23,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from orchestration.coordinator import Coordinator, format_status_report
-# Use v3 generic executor prompts
-from orchestration.worker_prompts_v3 import get_worker_prompt_v3 as get_worker_prompt
+# Use v4 context-clearing prompts (workers exit after each experiment, orchestrator restarts)
+from orchestration.worker_prompts_v4 import get_worker_prompt_v4 as get_worker_prompt
 
 
 @dataclass
@@ -203,7 +203,14 @@ class Orchestrator:
             worker.status = "error"
 
     def _run_worker_loop(self, worker: WorkerState):
-        """Main loop for a single worker - keeps restarting until stopped."""
+        """Main loop for a single worker - keeps restarting until stopped.
+
+        Context-clearing behavior (v4):
+        - Worker executes ONE experiment then exits cleanly
+        - This loop restarts Claude Code, which clears context
+        - Resume logic in worker prompt ensures continuity
+        - Result: Fresh context for each experiment, no accumulation
+        """
         while self.running and not self.stop_requested:
             # Check if target reached
             if self.coordinator.is_target_reached():

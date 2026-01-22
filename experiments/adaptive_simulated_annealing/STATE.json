@@ -1,0 +1,77 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_SA_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-22T04:15:00Z",
+  "completed_at": "2026-01-22T05:00:00Z",
+  "family": "simulated_annealing",
+  "hypothesis": "2024 Nature paper shows ASA successfully reconstructs internal heat sources in biological tissue. ASA adaptively adjusts temperature schedule based on search state, improving global optimization for complex inverse problems.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "max_fevals": "80/150",
+        "n_restarts": 2,
+        "no_local_search": false
+      },
+      "score": "N/A (killed early)",
+      "time_min": "~320+ projected",
+      "in_budget": false,
+      "rmse_mean": 0.135,
+      "notes": "Killed at 17 min. Projected 320-350 min (5-6x over budget). RMSE comparable to baseline but way too slow."
+    },
+    {
+      "run": 2,
+      "config": {
+        "max_fevals": "20/40",
+        "n_restarts": 1,
+        "no_local_search": false
+      },
+      "score": "N/A (killed early)",
+      "time_min": "~140-177 projected",
+      "in_budget": false,
+      "rmse_mean": 0.166,
+      "notes": "Killed at 17 min. Still 140-177 min projected (2-3x over budget). Local search overhead is the bottleneck."
+    },
+    {
+      "run": 3,
+      "config": {
+        "max_fevals": "15/30",
+        "n_restarts": 1,
+        "no_local_search": true
+      },
+      "score": 0.8666,
+      "time_min": 28.2,
+      "in_budget": true,
+      "rmse_mean": 0.3625,
+      "mlflow_run_id": "6221577ac0a44e10a9e6539911cc69c5",
+      "notes": "COMPLETED - Within budget but 23% worse score than baseline. Pure SA without local search has 2.4x worse accuracy."
+    },
+    {
+      "run": 4,
+      "config": {
+        "max_fevals": "10/20",
+        "n_restarts": 1,
+        "no_local_search": false
+      },
+      "score": "N/A (killed early)",
+      "time_min": "~100-150 projected",
+      "in_budget": false,
+      "rmse_mean": 0.173,
+      "notes": "Killed at 15 min. Even minimal fevals with local search is 2x over budget."
+    }
+  ],
+  "best_in_budget": {
+    "run": 3,
+    "score": 0.8666,
+    "time_min": 28.2,
+    "config": {
+      "max_fevals": "15/30",
+      "n_restarts": 1,
+      "no_local_search": true
+    }
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "final_result": "FAILED - dual_annealing is fundamentally unsuitable. With local search: 2-5x over budget. Without: 23% worse accuracy."
+}

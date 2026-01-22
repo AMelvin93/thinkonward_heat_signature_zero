@@ -1,0 +1,48 @@
+{
+  "experiment_id": "EXP_OPENAI_ES_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-22T05:35:00Z",
+  "completed_at": "2026-01-22T06:15:00Z",
+  "family": "alternative_es",
+  "hypothesis": "OpenAI-ES uses diagonal covariance approximation, reducing overhead compared to CMA-ES's full covariance. May converge faster for low-dim problems.",
+  "result": "FAILED",
+  "tuning_runs": [
+    {
+      "config": "Initial: pop=10, gen=10, sigma=0.2, lr=0.1",
+      "samples": 20,
+      "score": 1.0688,
+      "time_min": 102.0,
+      "notes": "Much worse - too many simulations (~400+ per sample)"
+    },
+    {
+      "config": "Reduced: pop=6, gen=5, sigma=0.2, lr=0.1",
+      "samples": 20,
+      "score": 1.1293,
+      "time_min": 57.1,
+      "notes": "Better but still worse than baseline"
+    },
+    {
+      "config": "Minimal: pop=4, gen=3, sigma=0.25, lr=0.3",
+      "samples": 20,
+      "score": 1.1390,
+      "time_min": 37.7,
+      "notes": "Comparable to baseline on 20 samples"
+    },
+    {
+      "config": "Final: pop=4, gen=3, sigma=0.25, lr=0.3",
+      "samples": 40,
+      "score": 1.1204,
+      "time_min": 43.3,
+      "notes": "Worse than baseline (-0.0158 score, +4.3 min). 2-src RMSE 0.2349 still problematic."
+    }
+  ],
+  "best_in_budget": {
+    "config": "pop=4, gen=3, sigma=0.25, lr=0.3",
+    "score": 1.1204,
+    "time_min": 43.3,
+    "comparison_to_baseline": "-0.0158 score, +4.3 min vs 1.1362 @ 39 min"
+  },
+  "key_finding": "OpenAI ES cannot beat CMA-ES for this low-dimensional problem. CMA-ES's full covariance matrix adaptation is crucial for accurate convergence in 2-4D parameter space. OpenAI ES's diagonal approximation loses important correlation information.",
+  "summary_written": true
+}

@@ -1,0 +1,52 @@
+{
+  "experiment_id": "EXP_LEVENBERG_MARQUARDT_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-22T04:20:00Z",
+  "completed_at": "2026-01-22T04:50:00Z",
+  "family": "nonlinear_least_squares",
+  "hypothesis": "Levenberg-Marquardt is the classic method for inverse heat problems with fast quadratic convergence. LM is specifically designed for nonlinear least squares - exactly what our RMSE minimization is.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"n_multi_starts": 5, "max_nfev": 50, "nm_polish_iters": 8},
+      "n_samples": 5,
+      "score": 1.1172,
+      "time_min": 197.3,
+      "in_budget": false,
+      "finding": "Works but 5x slower than baseline"
+    },
+    {
+      "run": 2,
+      "config": {"n_multi_starts": 2, "max_nfev": 20, "nm_polish_iters": 3},
+      "n_samples": 10,
+      "score": 1.0350,
+      "time_min": 56.0,
+      "in_budget": true,
+      "finding": "Time OK but -0.10 score vs baseline"
+    },
+    {
+      "run": 3,
+      "config": {"n_multi_starts": 4, "max_nfev": 15, "nm_polish_iters": 5},
+      "n_samples": 10,
+      "score": 1.1210,
+      "time_min": 109.4,
+      "in_budget": false,
+      "finding": "Score improved but 2.8x over budget"
+    },
+    {
+      "run": 4,
+      "config": {"n_multi_starts": 2, "max_nfev": 10, "nm_polish_iters": 8},
+      "n_samples": 20,
+      "score": 0.9897,
+      "time_min": 71.5,
+      "in_budget": false,
+      "finding": "Minimal LM fails - local minima traps, RMSE > 1.0 on some samples"
+    }
+  ],
+  "best_in_budget": {"run": 2, "score": 1.0350, "time_min": 56.0},
+  "final_result": "FAILED - LM fundamentally unsuitable for this problem",
+  "abort_reason": "LM is a local optimizer that gets stuck in local minima. Finite difference Jacobian requires 3-5 simulations per iteration, making it less sample-efficient than CMA-ES. Cannot match baseline accuracy within time budget.",
+  "next_config_to_try": null,
+  "summary_written": true
+}

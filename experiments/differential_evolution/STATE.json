@@ -1,0 +1,69 @@
+{
+  "experiment_id": "EXP_DIFFERENTIAL_EVOLUTION_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-22T06:20:00Z",
+  "completed_at": "2026-01-22T07:30:00Z",
+  "family": "differential_evolution",
+  "hypothesis": "DE has different mutation/crossover mechanism than CMA-ES. May find optima CMA-ES misses or converge faster.",
+  "result": "FAILED",
+  "tuning_runs": [
+    {
+      "config": "Original (no temporal fidelity): maxiter 8/12, popsize 3",
+      "samples": 20,
+      "score": 1.0057,
+      "time_min": 109.6,
+      "notes": "Way too slow without temporal fidelity"
+    },
+    {
+      "config": "With temporal fidelity: maxiter 10/15, popsize 5, refine 8",
+      "samples": 20,
+      "score": 1.0229,
+      "time_min": 63.7,
+      "notes": "Still too slow and poor accuracy"
+    },
+    {
+      "config": "Reduced: maxiter 5/8, popsize 3, refine 4",
+      "samples": 20,
+      "score": 1.1177,
+      "time_min": 31.4,
+      "notes": "Better! Faster but slightly worse accuracy"
+    },
+    {
+      "config": "Same config on 40 samples",
+      "samples": 40,
+      "score": 1.0989,
+      "time_min": 44.6,
+      "notes": "2-source samples use 330+ sims, too many"
+    },
+    {
+      "config": "Minimal: maxiter 4/5, popsize 2, refine 3",
+      "samples": 40,
+      "score": 1.1250,
+      "time_min": 40.8,
+      "notes": "Close but sample 36 has RMSE 0.966 outlier"
+    },
+    {
+      "config": "BEST: maxiter 5/6, popsize 2, refine 4",
+      "samples": 40,
+      "score": 1.1325,
+      "time_min": 35.2,
+      "notes": "Best configuration: -0.0037 score, -3.8 min vs baseline"
+    },
+    {
+      "config": "More iters: maxiter 5/7, popsize 2, refine 5",
+      "samples": 40,
+      "score": 1.1241,
+      "time_min": 38.5,
+      "notes": "More iterations didn't improve score"
+    }
+  ],
+  "best_in_budget": {
+    "config": "maxiter_1src=5, maxiter_2src=6, popsize=2, refine_maxiter=4",
+    "score": 1.1325,
+    "time_min": 35.2,
+    "comparison_to_baseline": "-0.0037 score, -3.8 min vs 1.1362 @ 39 min"
+  },
+  "key_finding": "DE cannot match CMA-ES accuracy for this problem. DE's mutation/crossover mechanism is less efficient than CMA-ES's covariance adaptation for finding optimal heat source positions. DE is faster due to simpler computation but sacrifices accuracy.",
+  "summary_written": true
+}

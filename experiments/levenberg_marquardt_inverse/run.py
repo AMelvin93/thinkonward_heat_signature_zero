@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-Run script for Differential Evolution optimizer with temporal fidelity.
+Run script for Levenberg-Marquardt optimizer.
+
+Tests the hypothesis that LM can converge faster than CMA-ES for inverse heat problems
+since it's specifically designed for nonlinear least squares.
 """
 
 import argparse
@@ -9,33 +12,26 @@ import pickle
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from datetime import datetime
 
 import numpy as np
+import mlflow
 
 _project_root = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, _project_root)
 
-from optimizer import DifferentialEvolutionOptimizer
+from optimizer import LevenbergMarquardtOptimizer
 
 
 def process_single_sample(args):
     idx, sample, meta, config = args
-    optimizer = DifferentialEvolutionOptimizer(
-        nx_coarse=config.get('nx_coarse', 50),
-        ny_coarse=config.get('ny_coarse', 25),
-        strategy=config['strategy'],
-        maxiter_1src=config['maxiter_1src'],
-        maxiter_2src=config['maxiter_2src'],
-        popsize=config['popsize'],
-        mutation=config['mutation'],
-        recombination=config['recombination'],
-        candidate_pool_size=config.get('candidate_pool_size', 10),
-        refine_maxiter=config['refine_maxiter'],
-        refine_top_n=config['refine_top_n'],
+    optimizer = LevenbergMarquardtOptimizer(
+        n_multi_starts=config['n_multi_starts'],
+        max_nfev=config['max_nfev'],
         timestep_fraction=config['timestep_fraction'],
-        tol=config['tol'],
-        rmse_threshold_1src=config.get('rmse_threshold_1src', 0.40),
-        rmse_threshold_2src=config.get('rmse_threshold_2src', 0.50),
+        nm_polish_iters=config['nm_polish_iters'],
+        ftol=config.get('ftol', 1e-6),
+        xtol=config.get('xtol', 1e-6),
     )
     start = time.time()
     try:
@@ -60,32 +56,20 @@ def process_single_sample(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Run Differential Evolution optimizer')
+    parser = argparse.ArgumentParser(description='Run Levenberg-Marquardt optimizer')
     parser.add_argument('--workers', type=int, default=7)
     parser.add_argument('--max-samples', type=int, default=None)
     parser.add_argument('--shuffle', action='store_true')
-    # DE params
-    parser.add_argument('--strategy', type=str, default='best1bin')
-    parser.add_argument('--maxiter-1src', type=int, default=10)
-    parser.add_argument('--maxiter-2src', type=int, default=15)
-    parser.add_argument('--popsize', type=int, default=5)
-    parser.add_argument('--mutation-low', type=float, default=0.5)
-    parser.add_argument('--mutation-high', type=float, default=1.0)
-    parser.add_argument('--recombination', type=float, default=0.7)
-    parser.add_argument('--tol', type=float, default=0.01)
-    # Grid params
-    parser.add_argument('--nx-coarse', type=int, default=50)
-    parser.add_argument('--ny-coarse', type=int, default=25)
-    # Polish params
-    parser.add_argument('--refine-maxiter', type=int, default=8)
-    parser.add_argument('--refine-top', type=int, default=2)
-    parser.add_argument('--candidate-pool-size', type=int, default=10)
-    # Temporal fidelity
-    parser.add_argument('--timestep-fraction', type=float, default=0.40)
-    # Thresholds
-    parser.add_argument('--threshold-1src', type=float, default=0.40)
-    parser.add_argument('--threshold-2src', type=float, default=0.50)
+    parser.add_argument('--n-multi-starts', type=int, default=5,
+                        help='Number of different starting points')
+    parser.add_argument('--max-nfev', type=int, default=50,
+                        help='Max function evaluations per LM run')
+    parser.add_argument('--timestep-fraction', type=float, default=0.40,
+                        help='Fraction of timesteps to use (0.40 = baseline)')
+    parser.add_argument('--nm-polish-iters', type=int, default=8,
+                        help='Nelder-Mead polish iterations')
     parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--no-mlflow', action='store_true', help='Disable MLflow logging')
     args = parser.parse_args()
 
     data_path = os.path.join(_project_root, 'data', 'heat-signature-zero-test-data.pkl')
@@ -107,34 +91,19 @@ def main():
     samples_to_process = [samples[i] for i in indices]
     n_samples = len(samples_to_process)
 
-    print(f"\nDifferential Evolution Optimizer (with Temporal Fidelity)")
+    print(f"\nLevenberg-Marquardt Optimizer")
     print(f"=" * 60)
     print(f"Samples: {n_samples}, Workers: {args.workers}")
-    print(f"Strategy: {args.strategy}, PopSize: {args.popsize}")
-    print(f"MaxIter: 1-src={args.maxiter_1src}, 2-src={args.maxiter_2src}")
-    print(f"Mutation: [{args.mutation_low}, {args.mutation_high}]")
-    print(f"Recombination: {args.recombination}")
+    print(f"Multi-starts: {args.n_multi_starts}, Max nfev per start: {args.max_nfev}")
     print(f"Timestep fraction: {args.timestep_fraction:.0%}")
-    print(f"NM polish: {args.refine_maxiter} iters on top-{args.refine_top}")
-    print(f"Fallback thresholds: 1-src={args.threshold_1src}, 2-src={args.threshold_2src}")
+    print(f"NM polish iterations: {args.nm_polish_iters}")
     print(f"=" * 60)
 
     config = {
-        'strategy': args.strategy,
-        'maxiter_1src': args.maxiter_1src,
-        'maxiter_2src': args.maxiter_2src,
-        'popsize': args.popsize,
-        'mutation': (args.mutation_low, args.mutation_high),
-        'recombination': args.recombination,
-        'tol': args.tol,
-        'nx_coarse': args.nx_coarse,
-        'ny_coarse': args.ny_coarse,
-        'refine_maxiter': args.refine_maxiter,
-        'refine_top_n': args.refine_top,
-        'candidate_pool_size': args.candidate_pool_size,
+        'n_multi_starts': args.n_multi_starts,
+        'max_nfev': args.max_nfev,
         'timestep_fraction': args.timestep_fraction,
-        'rmse_threshold_1src': args.threshold_1src,
-        'rmse_threshold_2src': args.threshold_2src,
+        'nm_polish_iters': args.nm_polish_iters,
     }
 
     start_time = time.time()
@@ -148,15 +117,10 @@ def main():
             result = future.result()
             results.append(result)
             status = "OK" if result['success'] else "ERR"
-            flag = ""
-            if result['best_rmse'] > 0.4 and result['n_sources'] == 1:
-                flag = " [FB]"
-            elif result['best_rmse'] > 0.5 and result['n_sources'] == 2:
-                flag = " [FB]"
             print(f"[{len(results):3d}/{n_samples}] Sample {result['idx']:3d}: "
                   f"{result['n_sources']}-src RMSE={result['best_rmse']:.4f} "
-                  f"cands={result['n_candidates']} sims={result['n_sims']} "
-                  f"time={result['elapsed']:.1f}s [{status}]{flag}")
+                  f"cands={result['n_candidates']} time={result['elapsed']:.1f}s "
+                  f"sims={result['n_sims']} [{status}]")
 
     total_time = time.time() - start_time
 
@@ -172,55 +136,70 @@ def main():
     rmse_mean = np.mean(rmses)
     rmses_1src = [r['best_rmse'] for r in results if r['success'] and r['n_sources'] == 1]
     rmses_2src = [r['best_rmse'] for r in results if r['success'] and r['n_sources'] == 2]
-    n_sims_avg = np.mean([r['n_sims'] for r in results if r['success']])
     projected_400 = (total_time / n_samples) * 400 / 60
 
     print(f"\n{'='*70}")
-    print(f"RESULTS - Differential Evolution")
+    print(f"RESULTS - Levenberg-Marquardt")
     print(f"{'='*70}")
-    print(f"RMSE:             {rmse_mean:.6f}")
+    print(f"RMSE mean:        {rmse_mean:.6f}")
     print(f"Submission Score: {score:.4f}")
     print(f"Projected (400):  {projected_400:.1f} min")
-    print(f"Avg Simulations:  {n_sims_avg:.1f} per sample")
     print()
     if rmses_1src:
         print(f"  1-source: RMSE={np.mean(rmses_1src):.4f} (n={len(rmses_1src)})")
     if rmses_2src:
         print(f"  2-source: RMSE={np.mean(rmses_2src):.4f} (n={len(rmses_2src)})")
     print()
-    print(f"Baseline (CMA-ES):  1.1362 @ 39 min")
-    print(f"This run (DE):      {score:.4f} @ {projected_400:.1f} min")
+    print(f"Baseline (CMA-ES):  1.1362 @ 39 min (early_timestep_filtering)")
+    print(f"This run:           {score:.4f} @ {projected_400:.1f} min")
     print(f"Delta:              {score - 1.1362:+.4f} score, {projected_400 - 39:+.1f} min")
     print()
 
+    # Analyze success criteria
     if projected_400 > 60:
         status = "OVER BUDGET"
-    elif score >= 1.16 and projected_400 <= 50:
+    elif score >= 1.17 and projected_400 <= 55:
         status = "SUCCESS! Meets experiment criteria"
     elif score >= 1.1362 and projected_400 <= 60:
         status = "COMPARABLE to baseline"
     elif score >= 1.12:
-        status = "PARTIAL: Check accuracy vs time tradeoff"
+        status = "PARTIAL: Good score but check time"
     else:
         status = "NEEDS IMPROVEMENT"
 
     print(f"Status: {status}")
     print(f"{'='*70}\n")
 
+    # MLflow logging
+    if not args.no_mlflow:
+        mlflow.set_tracking_uri(os.path.join(_project_root, 'mlruns'))
+        mlflow.set_experiment("heat-signature-zero")
+
+        run_name = f"levenberg_marquardt_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        with mlflow.start_run(run_name=run_name) as run:
+            mlflow.log_param("experiment_id", "EXP_LEVENBERG_MARQUARDT_001")
+            mlflow.log_param("worker", "W1")
+            mlflow.log_param("optimizer", "levenberg_marquardt")
+            mlflow.log_param("n_multi_starts", args.n_multi_starts)
+            mlflow.log_param("max_nfev", args.max_nfev)
+            mlflow.log_param("timestep_fraction", args.timestep_fraction)
+            mlflow.log_param("nm_polish_iters", args.nm_polish_iters)
+            mlflow.log_param("n_samples", n_samples)
+            mlflow.log_param("workers", args.workers)
+
+            mlflow.log_metric("submission_score", score)
+            mlflow.log_metric("rmse_mean", rmse_mean)
+            mlflow.log_metric("projected_400_samples_min", projected_400)
+            mlflow.log_metric("total_time_sec", total_time)
+
+            print(f"MLflow run ID: {run.info.run_id}")
+
     # Print outliers
     high_rmse = [r for r in results if r['best_rmse'] > 0.5]
     if high_rmse:
         print(f"\nHigh RMSE samples ({len(high_rmse)}):")
         for r in sorted(high_rmse, key=lambda x: -x['best_rmse'])[:5]:
-            print(f"  Sample {r['idx']}: {r['n_sources']}-src RMSE={r['best_rmse']:.4f} "
-                  f"init={r['init_types']}")
-
-    # Print errors
-    errors = [r for r in results if not r['success']]
-    if errors:
-        print(f"\nErrors ({len(errors)}):")
-        for r in errors[:3]:
-            print(f"  Sample {r['idx']}: {r.get('error', 'Unknown')}")
+            print(f"  Sample {r['idx']}: {r['n_sources']}-src RMSE={r['best_rmse']:.4f}")
 
     return score, projected_400
 

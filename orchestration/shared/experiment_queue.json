@@ -1,9 +1,8 @@
 {
-  "version": "5.4",
-  "last_updated": "2026-01-20T02:10:00Z",
-  "notes": "QUEUE REFILLED after deep research. Added 6 NEW experiments based on: adjoint methods, JAX autodiff, hybrid CMA-ES+gradient, OpenAI-ES, pre-trained surrogate, PINN. Key insight: L-BFGS-B accuracy (1.1627) exists but needs O(1) gradients instead of O(2n) finite differences.",
+  "version": "5.5",
+  "last_updated": "2026-01-22T10:00:00Z",
+  "notes": "PROACTIVE RESEARCH: Added 3 new experiments (Levenberg-Marquardt, Trust-Region Reflective, Variable Projection) based on nonlinear least squares literature. LM is the classic method for inverse heat problems with fast convergence. Total available: 7 experiments.",
   "queue_status": "HEALTHY",
-
   "experiment_queue": [
     {
       "id": "EXP_LQ_CMAES_001",
@@ -232,7 +231,7 @@
       "family": "source_specific",
       "status": "completed",
       "result": "FAILED - Specialized feval allocation hurts performance. Reducing 1-src hurts accuracy, increasing 2-src doesn't help.",
-      "score": 1.1620,
+      "score": 1.162,
       "time_min": 69.3,
       "worker": "W2",
       "name": "two_source_specialized",
@@ -352,89 +351,59 @@
     },
     {
       "id": "EXP_CONJUGATE_GRADIENT_001",
-      "priority": 1,
+      "priority": 99,
       "family": "adjoint_gradient",
-      "status": "claimed_by_W2",
+      "status": "completed",
+      "result": "FAILED - Adjoint gradient is 5-6 orders of magnitude too small. Manual derivation errors cause L-BFGS-B to see near-zero gradient and not iterate.",
+      "score": 0.9006,
+      "time_min": 56.5,
+      "worker": "W2",
       "name": "conjugate_gradient_adjoint",
       "description": "Conjugate Gradient Method with adjoint equation for O(1) gradient computation",
-      "hypothesis": "L-BFGS-B achieved 1.1627 accuracy but took 202 min due to finite differences. Adjoint method computes gradients in O(1) forward + O(1) adjoint solve, enabling gradient-based optimization within budget.",
-      "research_source": "Tutorial on adjoint method for inverse problems (ScienceDirect). Heat source estimation with conjugate gradient (ResearchGate).",
-      "why_different": "Previous gradient methods used O(2n) finite differences. Adjoint gives EXACT gradients in O(1). This is a fundamental efficiency improvement.",
-      "implementation": [
-        "1. Implement adjoint PDE solver for heat equation",
-        "2. Compute gradient: dL/d(params) via adjoint state",
-        "3. Use scipy.optimize.minimize with 'CG' or 'L-BFGS-B' method",
-        "4. Compare accuracy and speed vs CMA-ES baseline",
-        "5. Can combine: CMA-ES for init, then gradient refinement"
-      ],
-      "success_criteria": "Score >= 1.18 AND time <= 55 min (gradient accuracy + speed)",
-      "abort_criteria": "Adjoint implementation too complex or gradients not accurate enough"
+      "finding": "Gradient verification: adjoint=[-0.000017, 0.000004], finite_diff=[-9.079, 1.980]. Ratio ~0.000002. Manual adjoint derivation for ADI time-stepping is error-prone. Use JAX autodiff instead."
     },
     {
       "id": "EXP_JAX_AUTODIFF_001",
-      "priority": 2,
+      "priority": 99,
       "family": "differentiable_simulation",
-      "status": "claimed_by_W1",
+      "status": "completed",
+      "result": "ABORTED - Fundamental incompatibility. Explicit Euler stability constraint requires 4x more timesteps than implicit ADI.",
+      "worker": "W1",
       "name": "jax_differentiable_solver",
       "description": "Rewrite thermal simulator in JAX for automatic differentiation",
-      "hypothesis": "JAX-FEM and similar tools show differentiable PDE solvers work well. Rewriting our heat solver in JAX gives exact gradients automatically via autodiff.",
-      "research_source": "JAX-FEM: Differentiable GPU-accelerated 3D FEM (ScienceDirect). Supports heat equation with automatic inverse problem solving.",
-      "why_different": "No manual adjoint derivation needed. JAX computes gradients automatically. GPU acceleration bonus.",
-      "implementation": [
-        "1. Rewrite heat equation solver using JAX primitives",
-        "2. Use jax.grad() to get gradient of RMSE w.r.t. source parameters",
-        "3. Apply L-BFGS-B or Adam optimizer with exact gradients",
-        "4. Compare speed: JAX GPU vs numpy CPU simulation",
-        "5. Profile total time including compilation overhead"
-      ],
-      "success_criteria": "Score >= 1.18 AND time <= 50 min (faster with GPU)",
-      "abort_criteria": "JAX rewrite too time-consuming or GPU overhead doesn't pay off for 80 samples"
+      "finding": "JAX autodiff requires explicit time-stepping. Stability constraint dt < 0.002061 vs original dt=0.004 means 4x more timesteps needed. Running fewer timesteps gives wrong physics (5.7x temperature error). Implicit ADI is essential for efficiency."
     },
     {
       "id": "EXP_HYBRID_CMAES_LBFGSB_001",
-      "priority": 3,
+      "priority": 99,
       "family": "hybrid_gradient",
-      "status": "available",
+      "status": "completed",
+      "result": "FAILED - L-BFGS-B polish NOT better than NM polish. Finite diff overhead (O(n) extra sims/iter) outweighs gradient advantage. Best in-budget L-BFGS-B: 1.1174 @ 42 min (WORSE than NM x8: 1.1415 @ 38 min).",
+      "score": 1.1174,
+      "time_min": 42.4,
+      "worker": "W1",
       "name": "cmaes_then_gradient_refinement",
       "description": "Use CMA-ES for global search, then L-BFGS-B with finite differences for final polish",
-      "hypothesis": "CMA-ES finds good basin quickly. L-BFGS-B with few iterations can refine within the basin faster than NM. Even with finite differences, 2-3 L-BFGS-B iterations may beat 8 NM iterations.",
-      "research_source": "Hybrid GA-CMA-ES paper (MDPI 2024) shows hybrid approaches can leverage global+local strengths.",
-      "why_different": "Previous handoff (CMA-ES to NM) failed due to overhead. L-BFGS-B may converge faster in final basin.",
-      "implementation": [
-        "1. Run CMA-ES with 40% timesteps (unchanged from baseline)",
-        "2. Take top candidates after CMA-ES converges",
-        "3. Run L-BFGS-B with maxiter=3-5 on full timesteps",
-        "4. Use finite differences with small epsilon",
-        "5. Compare total time and accuracy vs 8 NM iterations"
-      ],
-      "success_criteria": "Score >= 1.17 AND time <= 58 min",
-      "abort_criteria": "L-BFGS-B polish slower than NM polish"
+      "finding": "L-BFGS-B finite diff gradient requires O(n) extra sims per iteration. For 4D (2-src): ~250-350 sims vs NM's ~180. NM x8 is optimal polish method. hybrid_gradient family FAILED."
     },
     {
       "id": "EXP_OPENAI_ES_001",
-      "priority": 4,
+      "priority": 99,
       "family": "alternative_es",
-      "status": "available",
+      "status": "completed",
+      "result": "FAILED - OpenAI ES cannot beat CMA-ES. Diagonal covariance loses correlation information. Best: 1.1204 @ 43.3 min (-0.0158 score, +4.3 min vs baseline).",
+      "score": 1.1204,
+      "time_min": 43.3,
+      "worker": "W1",
       "name": "openai_evolution_strategy",
       "description": "Try OpenAI's Evolution Strategy as alternative to CMA-ES",
-      "hypothesis": "OpenAI-ES is 2-3x faster than CMA-ES in practice and scales better with parallel workers. Our problem has 2-4 parameters (low dim), but scalable ES may still help.",
-      "research_source": "OpenAI: Evolution Strategies as a Scalable Alternative to RL (2017). Recent hyperscale ES work (2024).",
-      "why_different": "CMA-ES computes full covariance matrix. OpenAI-ES uses diagonal approximation, reducing overhead.",
-      "implementation": [
-        "1. Install evotorch or nevergrad library for OpenAI-ES",
-        "2. Configure population size and learning rate",
-        "3. Use same 40% temporal fidelity setup",
-        "4. Compare convergence speed and final accuracy",
-        "5. Test with different noise levels (antithetic sampling)"
-      ],
-      "success_criteria": "Score >= 1.16 AND time <= 50 min (faster convergence)",
-      "abort_criteria": "OpenAI-ES sample efficiency much worse than CMA-ES for low-dim problem"
+      "finding": "OpenAI ES's diagonal covariance approximation loses critical parameter correlations that CMA-ES captures. For low-dim expensive black-box optimization, CMA-ES is optimal. alternative_es family FAILED."
     },
     {
       "id": "EXP_PRETRAINED_SURROGATE_001",
-      "priority": 5,
+      "priority": 99,
       "family": "neural_operator",
-      "status": "available",
+      "status": "completed",
       "name": "pretrained_nn_surrogate",
       "description": "Train neural network on many simulations OFFLINE, then use as fast surrogate",
       "hypothesis": "Previous NN surrogate failed due to online learning + parallel issues. Pre-training OFFLINE on 10K+ simulations creates a fixed surrogate that works with parallel processing.",
@@ -448,13 +417,16 @@
         "5. Compare total sims needed vs baseline"
       ],
       "success_criteria": "Reduce simulations by 50%+ while maintaining score >= 1.16",
-      "abort_criteria": "Surrogate accuracy too poor or training data generation too expensive"
+      "abort_criteria": "Surrogate accuracy too poor or training data generation too expensive",
+      "result": "ABORTED - RMSE landscape is sample-specific (avg correlation -0.167). Universal surrogate cannot predict RMSE without sample information.",
+      "worker": "W2",
+      "finding": "Tested RMSE landscape correlation across 5 samples. Average Spearman r = -0.167 (anti-correlated). Each sample has unique physics (kappa, bc, Y_obs). Surrogate needs sample info, defeating purpose."
     },
     {
       "id": "EXP_PINN_DIRECT_001",
-      "priority": 6,
+      "priority": 99,
       "family": "neural_operator",
-      "status": "available",
+      "status": "completed",
       "name": "pinn_inverse_heat_source",
       "description": "Use Physics-Informed Neural Network to directly solve the inverse heat source problem",
       "hypothesis": "PINNs can directly optimize for heat source parameters by encoding physics constraints in the loss. Recent 2025 paper specifically addresses heat source field inversion.",
@@ -468,14 +440,255 @@
         "5. Compare accuracy and inference speed"
       ],
       "success_criteria": "Score >= 1.15 AND inference time < 1 sec per sample",
-      "abort_criteria": "PINN requires too much training time per sample"
+      "abort_criteria": "PINN requires too much training time per sample",
+      "result": "ABORTED - PINN requires efficient gradients. Adjoint failed (1e-6 error), JAX failed (stability), finite diff too slow (99 min vs 60 budget).",
+      "worker": "W2",
+      "finding": "L-BFGS-B achieves 15% better RMSE than NM but takes 2.3x longer due to finite diff. ADI solver blocks autodiff. Gradient-free methods (CMA-ES + NM) remain optimal."
+    },
+    {
+      "id": "EXP_LEVENBERG_MARQUARDT_001",
+      "priority": 99,
+      "family": "nonlinear_least_squares",
+      "status": "completed",
+      "result": "FAILED - LM is local optimizer that gets stuck in local minima. Finite diff Jacobian needs 3-5 sims/iter. Best in-budget: 1.0350 @ 56 min (-9% vs baseline).",
+      "score": 1.035,
+      "time_min": 56.0,
+      "worker": "W1",
+      "name": "levenberg_marquardt_inverse",
+      "description": "Use Levenberg-Marquardt algorithm via scipy.optimize.least_squares for inverse heat problem",
+      "finding": "LM fundamentally unsuitable: (1) local optimizer vs multi-modal landscape, (2) expensive finite diff Jacobian (3-5 sims/iter), (3) CMA-ES is 3x more sample-efficient. nonlinear_least_squares family should be marked FAILED."
+    },
+    {
+      "id": "EXP_TRUST_REGION_REFLECTIVE_001",
+      "priority": 99,
+      "family": "nonlinear_least_squares",
+      "status": "deprioritized",
+      "name": "trust_region_reflective_bounded",
+      "description": "Use Trust-Region Reflective method for bounded inverse heat problem",
+      "deprioritize_reason": "DEPRIORITIZED based on EXP_LEVENBERG_MARQUARDT_001 results. TRF is also a local optimizer like LM - will have same local minima issues on multi-modal RMSE landscape. Same expensive finite-diff Jacobian problem. Not worth testing.",
+      "original_hypothesis": "TRF handles bounded constraints naturally (source positions have box constraints). Our x,y are bounded to domain [0,Lx]x[0,Ly]. TRF respects bounds without penalty methods, potentially more accurate."
+    },
+    {
+      "id": "EXP_SEPARABLE_VP_001",
+      "priority": 99,
+      "family": "variable_projection",
+      "status": "completed",
+      "result": "FAILED - VP's Gauss-Newton is local optimizer that gets stuck. Baseline already uses VP implicitly (analytical q). Best: 1.0025 @ 54.3 min (-0.1337 score).",
+      "score": 1.0025,
+      "time_min": 54.3,
+      "worker": "W1",
+      "name": "variable_projection_separable",
+      "description": "Exploit separable structure via Variable Projection: optimize positions, solve intensity analytically",
+      "finding": "Baseline already uses VP (analytical q for each CMA-ES candidate). Gauss-Newton on positions gets stuck in local minima. CMA-ES + analytical q is optimal for exploiting separability."
+    },
+    {
+      "id": "EXP_ADAPTIVE_SA_001",
+      "priority": 99,
+      "family": "simulated_annealing",
+      "status": "completed",
+      "name": "adaptive_simulated_annealing",
+      "description": "Use Adaptive Simulated Annealing (ASA) for heat source inverse problem",
+      "hypothesis": "2024 Nature paper shows ASA successfully reconstructs internal heat sources in biological tissue. ASA adaptively adjusts temperature schedule based on search state, improving global optimization for complex inverse problems.",
+      "research_source": "Noninvasive reconstruction of internal heat source in biological tissue using ASA (Nature Scientific Reports, July 2024). ASA avoids complex regularization by treating inverse problem as optimization.",
+      "why_different": "SA is a global optimizer like CMA-ES but with different exploration mechanism (probabilistic uphill moves). ASA adapts cooling schedule dynamically. May find different optima than CMA-ES. Very different from local methods (LM) that failed.",
+      "implementation": [
+        "1. Use scipy.optimize.dual_annealing (generalized SA with local search)",
+        "2. Set bounds for source positions",
+        "3. Use same objective function as baseline (RMSE after q optimization)",
+        "4. Compare global search efficiency vs CMA-ES",
+        "5. If promising, implement full ASA with adaptive cooling"
+      ],
+      "success_criteria": "Score >= 1.16 AND time <= 55 min",
+      "abort_criteria": "SA converges slower than CMA-ES OR gets stuck in same local minima",
+      "result": "FAILED - dual_annealing is fundamentally unsuitable. With local search: 2-5x over budget. Without: 23% worse accuracy.",
+      "score": 0.8666,
+      "time_min": 28.2,
+      "worker": "W2",
+      "finding": "SA local search uses L-BFGS-B finite differences = slow. Pure SA = fast but inaccurate. CMA-ES covariance adaptation is more sample-efficient."
+    },
+    {
+      "id": "EXP_SURROGATE_CMAES_001",
+      "priority": 99,
+      "family": "surrogate_assisted",
+      "status": "completed",
+      "name": "surrogate_assisted_cmaes",
+      "description": "Use kriging/GP surrogate to pre-filter CMA-ES candidates, reducing simulation count",
+      "hypothesis": "SCR algorithm (2025) shows surrogate-assisted CMA-ES works well for expensive black-box functions. Build kriging surrogate from initial samples, use it to filter unpromising candidates before full simulation.",
+      "research_source": "SCR: Surrogate-CMAES-RQLIF for expensive black-box optimization (Optimization and Engineering, March 2025). Automotive crashworthiness optimization with surrogate-based hyperparameter tuning.",
+      "why_different": "Previous surrogate (NN online) failed due to parallel processing. This approach: (1) builds surrogate from existing samples, (2) uses kriging not NN, (3) only filters obviously bad candidates. More conservative than full surrogate replacement.",
+      "implementation": [
+        "1. Run baseline CMA-ES on first 10 samples, collect (params, RMSE) pairs",
+        "2. Fit kriging/GP model to collected data",
+        "3. For remaining samples: use surrogate to filter CMA-ES population",
+        "4. Only simulate candidates with low predicted RMSE (top 50%)",
+        "5. Update surrogate periodically with new data"
+      ],
+      "success_criteria": "Reduce simulations by 30%+ while maintaining score >= 1.15",
+      "abort_criteria": "Surrogate filtering removes good candidates OR overhead exceeds savings",
+      "result": "ABORTED - Prior finding: RMSE landscapes are sample-specific (avg correlation -0.167). Kriging surrogate from samples 1-10 will NOT generalize to samples 11-80.",
+      "worker": "W2",
+      "finding": "Based on EXP_PRETRAINED_SURROGATE_001 results: RMSE = f(x, y, Y_obs, kappa, bc) is sample-specific. Surrogate needs sample info to work, defeating the purpose."
+    },
+    {
+      "id": "EXP_DIFFERENTIAL_EVOLUTION_001",
+      "priority": 99,
+      "family": "differential_evolution",
+      "status": "completed",
+      "result": "FAILED - DE cannot match CMA-ES accuracy. Best: 1.1325 @ 35.2 min (-0.0037 score, -3.8 min vs baseline). CMA-ES covariance adaptation is essential.",
+      "score": 1.1325,
+      "time_min": 35.2,
+      "worker": "W1",
+      "name": "differential_evolution_inverse",
+      "description": "Use scipy.optimize.differential_evolution for inverse heat problem",
+      "finding": "DE's mutation/crossover is less efficient than CMA-ES's covariance adaptation. DE is 10% faster but sacrifices accuracy. differential_evolution family FAILED.",
+      "success_criteria": "Score >= 1.16 AND time <= 55 min",
+      "abort_criteria": "DE converges slower than CMA-ES OR same local minima issue"
+    },
+    {
+      "id": "EXP_WEIGHTED_LOSS_001",
+      "priority": 4,
+      "family": "loss_function",
+      "status": "available",
+      "name": "weighted_sensor_loss",
+      "description": "Weight sensor contributions by their informativeness or reliability",
+      "hypothesis": "Not all sensors equally informative. Sensors closer to sources have stronger signal. Weighting by signal-to-noise or gradient magnitude may improve optimization.",
+      "research_source": "Optimal sensor weighting for inverse problems (general principle). FEM-based optimal sensor placement (arXiv 2509.19679).",
+      "why_different": "Current baseline weights all sensors equally. Adaptive weighting may help optimizer focus on informative measurements.",
+      "implementation": [
+        "1. Compute sensor weights based on temperature variance across solutions",
+        "2. Or use gradient magnitude at sensor locations",
+        "3. Modify RMSE computation: weighted_rmse = sqrt(sum(w_i * (y_i - pred_i)^2))",
+        "4. Test if weighted loss improves convergence or accuracy",
+        "5. Compare with uniform weighting baseline"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "abort_criteria": "Weighting doesn't improve or makes optimization harder"
+    },
+    {
+      "id": "EXP_POLAR_PARAM_001",
+      "priority": 5,
+      "family": "problem_reformulation",
+      "status": "available",
+      "name": "polar_parameterization",
+      "description": "Reparameterize source positions using polar coordinates centered on domain centroid",
+      "hypothesis": "Cartesian (x,y) may have different landscape characteristics than polar (r,theta). CMA-ES may converge faster in one parameterization.",
+      "research_source": "Reparameterization can change optimization landscape characteristics. Used successfully in robotics/control.",
+      "why_different": "All experiments used Cartesian coordinates. Polar may have different curvature structure.",
+      "implementation": [
+        "1. Convert source positions to polar: r = sqrt((x-cx)^2 + (y-cy)^2), theta = atan2(y-cy, x-cx)",
+        "2. CMA-ES optimizes (r, theta) instead of (x, y)",
+        "3. Transform back to Cartesian for simulation",
+        "4. Handle bounds in polar coordinates",
+        "5. Compare convergence speed and accuracy"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "abort_criteria": "Polar coordinates don't improve convergence or complicate boundary handling"
+    },
+    {
+      "id": "EXP_EARLY_REJECTION_001",
+      "priority": 3,
+      "family": "efficiency",
+      "status": "available",
+      "name": "early_rejection_partial_sim",
+      "description": "Reject clearly bad candidates early using partial simulation (first 10% timesteps)",
+      "hypothesis": "If a candidate is very poor, this will be evident even with partial simulation. Rejecting early saves compute.",
+      "research_source": "Early rejection strategies common in optimization. Multi-fidelity approaches use coarse evaluations for filtering.",
+      "why_different": "Previous multi-fidelity used coarse GRID. This uses coarse TIME - same grid, fewer timesteps.",
+      "implementation": [
+        "1. Run first 10% timesteps (~100 steps) for each CMA-ES candidate",
+        "2. Compute partial RMSE from early temperature profile",
+        "3. Reject candidates with partial RMSE > 2x current best",
+        "4. Run full simulation only for promising candidates",
+        "5. Track time savings vs accuracy trade-off"
+      ],
+      "success_criteria": "Reduce simulation time by 20%+ while maintaining score >= 1.16",
+      "abort_criteria": "Early rejection eliminates good candidates OR overhead exceeds savings"
+    },
+    {
+      "id": "EXP_ADAPTIVE_NM_POLISH_001",
+      "priority": 4,
+      "family": "refinement",
+      "status": "available",
+      "name": "adaptive_nm_iterations",
+      "description": "Dynamically adjust NM polish iterations based on convergence rate",
+      "hypothesis": "Some samples converge quickly (4-5 NM iters), others need more (10+). Fixed 8 iters is wasteful for easy samples, insufficient for hard ones.",
+      "research_source": "Adaptive algorithms adjust parameters based on progress. Early stopping when converged saves compute.",
+      "why_different": "Current baseline uses fixed 8 NM iterations. Adaptive could be more efficient.",
+      "implementation": [
+        "1. Start NM polish with initial iterations (e.g., 4)",
+        "2. Check convergence: delta_rmse < threshold?",
+        "3. If not converged and iterations < max (e.g., 12), continue",
+        "4. If converged early, stop and save time",
+        "5. Track time savings and accuracy"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 50 min (save time on easy samples)",
+      "abort_criteria": "Adaptive logic overhead exceeds savings OR accuracy drops"
+    },
+    {
+      "id": "EXP_CMAES_RESTART_BEST_001",
+      "priority": 4,
+      "family": "cmaes_improvement",
+      "status": "available",
+      "name": "cmaes_restart_from_best",
+      "description": "Run short CMA-ES, restart from best solution found with tighter sigma",
+      "hypothesis": "Two-phase approach: broad search with large sigma, then focused search with small sigma around best. May improve final accuracy.",
+      "research_source": "Restart strategies in CMA-ES (IPOP, BIPOP). Hansen et al.",
+      "why_different": "Previous IPOP/BIPOP tested but increased population. This restarts with SAME population but tighter sigma around best.",
+      "implementation": [
+        "1. Run CMA-ES phase 1: sigma=0.25, 15-20 generations",
+        "2. Extract best solution found",
+        "3. Restart CMA-ES from best: sigma=0.05, 10-15 generations",
+        "4. Compare with single-phase baseline",
+        "5. Track time vs accuracy trade-off"
+      ],
+      "success_criteria": "Score >= 1.18 AND time <= 55 min",
+      "abort_criteria": "Two-phase doesn't improve over single-phase"
+    },
+    {
+      "id": "EXP_GRADIENT_INIT_001",
+      "priority": 5,
+      "family": "initialization",
+      "status": "available",
+      "name": "gradient_informed_init",
+      "description": "Use temperature gradient direction to inform initial source position guess",
+      "hypothesis": "Heat sources create temperature gradients pointing away from them. Tracing gradient backward could give better init than just hottest sensor.",
+      "research_source": "Physics-based initialization. Heat equation has predictable gradient structure.",
+      "why_different": "Current smart init uses hottest sensor position. Gradient-informed could be more accurate.",
+      "implementation": [
+        "1. Compute temperature gradient at each sensor location",
+        "2. Trace gradient backward (uphill in temp) from hot sensors",
+        "3. Estimate source position as intersection point or max temp region",
+        "4. Use as initial guess for CMA-ES",
+        "5. Compare with hottest-sensor init"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "abort_criteria": "Gradient-based init is not consistently better than hottest-sensor"
+    },
+    {
+      "id": "EXP_MULTISTART_ELITE_001",
+      "priority": 4,
+      "family": "multi_start",
+      "status": "available",
+      "name": "multistart_elite_selection",
+      "description": "Run multiple short CMA-ES from different inits, continue only the best 1-2",
+      "hypothesis": "Instead of running N full optimizations, run N short ones and continue only the most promising. More efficient budget allocation.",
+      "research_source": "Elite selection in multi-start optimization. Racing algorithms.",
+      "why_different": "Current approach runs all inits to completion. Elite selection may be more efficient.",
+      "implementation": [
+        "1. Start 4-5 CMA-ES runs from different smart inits",
+        "2. After 5 generations, evaluate all",
+        "3. Continue only top 1-2 performers",
+        "4. Run to full convergence",
+        "5. Compare with baseline multi-start"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 50 min (better budget allocation)",
+      "abort_criteria": "Elite selection kills good runs OR overhead exceeds savings"
     }
   ],
-
   "algorithm_families": {
     "evolutionary_cmaes": "EXHAUSTED - 34 experiments, no more tuning",
     "evolutionary_other": "PSO failed, may try genetic algorithms",
-    "gradient_based": "REVISIT WITH ADJOINT - finite differences too slow but adjoint gives O(1) gradients",
+    "gradient_based": "EXHAUSTED - Adjoint wrong (1e-6 error), JAX blocked (ADI stability), finite diff too slow (99 min). NM is optimal.",
     "gradient_free_local": "Nelder-Mead OK for refinement, COBYLA too slow",
     "surrogate": "Custom NN failed. lq-CMA-ES FAILED (API mismatch). POD re-enabled.",
     "surrogate_lq": "FAILED - fmin_lq_surr returns ONE solution, we need MULTIPLE candidates",
@@ -494,15 +707,20 @@
     "initialization": "EXHAUSTED - Gradient-based init WORSE than simple hottest-sensor. Smart init is optimal.",
     "initialization_v2": "EXHAUSTED - 24% samples have boundary sources. Biasing away hurts. Smart init is optimal.",
     "---NEW FAMILIES TO RESEARCH---": "========================================",
-    "adjoint_gradient": "NOT TRIED - O(1) gradient computation via adjoint method. Could enable fast L-BFGS-B.",
-    "differentiable_simulation": "NOT TRIED - JAX/PyTorch autodiff through simulator. Exact gradients for free.",
+    "adjoint_gradient": "FAILED - Manual adjoint derivation is error-prone for ADI time-stepping. Gradient 1e-6 of correct value. Do NOT retry manual adjoint.",
+    "differentiable_simulation": "FAILED - Explicit Euler stability requires 4x more timesteps than implicit ADI. JAX autodiff incompatible.",
+    "nonlinear_least_squares": "FAILED - LM is local optimizer that gets stuck in local minima. Finite diff Jacobian too expensive. TRF likely same issue.",
+    "hybrid_gradient": "FAILED - L-BFGS-B polish NOT better than NM. Finite diff overhead outweighs gradient advantage. NM x8 is optimal.",
+    "variable_projection": "FAILED - Baseline already uses VP (analytical q). Gauss-Newton on positions gets stuck in local minima. CMA-ES + analytical q is optimal.",
     "frequency_domain": "NOT TRIED - Heat equation simplifies in Fourier space. May be faster/more accurate.",
-    "neural_operator": "NOT TRIED - FNO/DeepONet as fast surrogate. Can learn PDE solution operator.",
-    "alternative_es": "NOT TRIED - OpenAI-ES, Natural ES, PEPG. Different tradeoffs than CMA-ES.",
+    "neural_operator": "EXHAUSTED - Surrogates fail (sample-specific RMSE). PINN fails (needs gradients). No NN approach viable.",
+    "alternative_es": "FAILED - OpenAI ES's diagonal covariance loses correlations. CMA-ES optimal for low-dim expensive problems. Do not pursue Natural ES/PEPG.",
+    "differential_evolution": "FAILED - DE's mutation/crossover less efficient than CMA-ES covariance adaptation. Best 1.1325 @ 35.2 min (-0.0037 score). CMA-ES is optimal.",
     "multi_objective": "NOT TRIED - Pareto optimization of accuracy/speed jointly.",
-    "problem_reformulation": "NOT TRIED - Different loss functions, regularization, parameterizations."
+    "problem_reformulation": "NOT TRIED - Different loss functions, regularization, parameterizations.",
+    "simulated_annealing": "EXHAUSTED - SA is 2-5x slower than CMA-ES with local search, 23% worse without. Do NOT retry.",
+    "surrogate_assisted": "ABORTED - RMSE landscapes are sample-specific. Surrogates from some samples don't generalize to others."
   },
-
   "completed_experiments": [
     "CMAES_TUNING_BATCH",
     "EXP_PSO_001",
@@ -540,6 +758,17 @@
     "EXP_LARGER_POPSIZE_001",
     "EXP_ADAPTIVE_SIGMA_SCHEDULE_001",
     "EXP_PARAMETER_SCALING_001",
-    "EXP_BOUNDARY_AWARE_INIT_001"
+    "EXP_BOUNDARY_AWARE_INIT_001",
+    "EXP_JAX_AUTODIFF_001",
+    "EXP_LEVENBERG_MARQUARDT_001",
+    "EXP_HYBRID_CMAES_LBFGSB_001",
+    "EXP_CONJUGATE_GRADIENT_001",
+    "EXP_OPENAI_ES_001",
+    "EXP_DIFFERENTIAL_EVOLUTION_001",
+    "EXP_SEPARABLE_VP_001",
+    "EXP_ADAPTIVE_SA_001",
+    "EXP_PRETRAINED_SURROGATE_001",
+    "EXP_SURROGATE_CMAES_001",
+    "EXP_PINN_DIRECT_001"
   ]
 }

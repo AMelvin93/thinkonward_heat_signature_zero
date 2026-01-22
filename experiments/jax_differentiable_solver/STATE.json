@@ -1,12 +1,22 @@
 {
   "experiment_id": "EXP_JAX_AUTODIFF_001",
   "worker": "W1",
-  "status": "in_progress",
+  "status": "done",
   "started_at": "2026-01-20T02:15:00Z",
+  "completed_at": "2026-01-22T04:10:00Z",
   "family": "differentiable_simulation",
   "hypothesis": "JAX autodiff enables exact gradients through the heat equation solver, allowing L-BFGS-B or Adam to optimize source parameters efficiently.",
-  "tuning_runs": [],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "Initial JAX explicit Euler implementation",
+      "status": "analysis",
+      "finding": "Explicit Euler requires dt < 0.002061 for stability, but original implicit ADI uses dt=0.004. JAX needs 3881 timesteps vs 1000 original to match physics."
+    }
+  ],
   "best_in_budget": null,
-  "next_config_to_try": "Initial JAX implementation with L-BFGS-B",
-  "summary_written": false
+  "final_result": "ABORTED - Fundamental incompatibility",
+  "abort_reason": "JAX autodiff requires explicit time-stepping which has stability constraints incompatible with the problem's time scale. Explicit Euler needs 4x more timesteps to match implicit ADI accuracy, defeating any speed advantage.",
+  "next_config_to_try": null,
+  "summary_written": true
 }
