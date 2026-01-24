@@ -1,0 +1,41 @@
+{
+  "experiment_id": "EXP_LANDSCAPE_ADAPTIVE_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T17:45:00Z",
+  "completed_at": "2026-01-24T18:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Analyze ELA probing cost",
+        "test_type": "timing_analysis"
+      },
+      "result": "FAILED - ELA probing (10 evals × 1 sec) exceeds per-sample budget (9 sec)",
+      "notes": "Single evaluation takes 985ms. Even minimal ELA probing is 1.1x over budget."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Check if samples share landscape features",
+        "test_type": "landscape_analysis"
+      },
+      "result": "FAILED - 100% unique sensor positions mean unique landscapes",
+      "notes": "ELA features from one sample cannot transfer to another. Must probe every sample individually."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Review prior adaptive CMA-ES experiments",
+        "test_type": "prior_evidence"
+      },
+      "result": "FAILED - All adaptation strategies have failed in prior experiments",
+      "notes": "Adaptive popsize, sigma, LRA, BIPOP all failed. Default CMA-ES config is optimal."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "ELA probing (10 evals × 1 sec = 10 sec) exceeds per-sample budget (9 sec). 100% unique sensors mean no transfer. Prior experiments show adaptation doesn't help. meta_optimization family EXHAUSTED."
+}

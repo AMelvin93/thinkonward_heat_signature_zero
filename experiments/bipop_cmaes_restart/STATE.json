@@ -1,0 +1,68 @@
+{
+  "experiment_id": "EXP_BIPOP_CMAES_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-24T15:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Initial BIPOP test with 2 restarts",
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "max_restarts": 2,
+        "use_bipop": true
+      },
+      "score": 1.1632,
+      "time_min": 62.6,
+      "rmse_mean": 0.159175,
+      "in_budget": false,
+      "mlflow_id": "7835f2c2f24b46159031e3d14c0697e5",
+      "notes": "OVER BUDGET by 2.6 min. Score worse than baseline (1.1688)."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Reduced to 1 BIPOP restart",
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "max_restarts": 1,
+        "use_bipop": true
+      },
+      "score": 1.1724,
+      "time_min": 62.6,
+      "rmse_mean": 0.144997,
+      "in_budget": false,
+      "mlflow_id": "8e787a1c28304228886a762de75ebad0",
+      "notes": "Score +0.0036 vs baseline but still OVER BUDGET by 2.6 min."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Standard CMA-ES (no restarts)",
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "max_restarts": 0,
+        "use_bipop": false
+      },
+      "score": 1.1609,
+      "time_min": 54.9,
+      "rmse_mean": 0.163742,
+      "in_budget": true,
+      "mlflow_id": "0681bb0e13614a39b9dce6c5adef9ddb",
+      "notes": "Within budget but score -0.0079 vs baseline (1.1688). Restarts OFF saves 8 min but loses accuracy."
+    }
+  ],
+  "best_in_budget": {
+    "run": 3,
+    "score": 1.1609,
+    "time_min": 54.9,
+    "config": {
+      "max_restarts": 0,
+      "use_bipop": false
+    }
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - BIPOP restarts add 8 min overhead without sufficient accuracy improvement. Best in-budget (1.1609 @ 54.9 min) is WORSE than baseline (1.1688 @ 58.4 min). Confirms IPOP finding: problem doesn't have local optima where restarts help."
+}

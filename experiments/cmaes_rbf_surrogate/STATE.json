@@ -1,0 +1,50 @@
+{
+  "experiment_id": "EXP_CMAES_RBF_SURROGATE_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T18:28:00Z",
+  "completed_at": "2026-01-24T18:45:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Analyze RBF overhead vs simulation time",
+        "test_type": "timing_analysis"
+      },
+      "result": "PASSED - RBF overhead negligible (0.03ms vs 375ms simulation)",
+      "notes": "Overhead is not the blocker."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Analyze training data availability",
+        "test_type": "feasibility_analysis"
+      },
+      "result": "MARGINAL - Only 6-16 points available from CMA-ES generations",
+      "notes": "Limited training data restricts surrogate accuracy."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Estimate rejection rate from prior experiments",
+        "test_type": "prior_evidence"
+      },
+      "result": "FAILED - Expected ~10% rejection rate (same as early rejection)",
+      "notes": "CMA-ES candidates cluster near optima. Most pass any filter."
+    },
+    {
+      "run": 4,
+      "config": {
+        "description": "Break-even analysis",
+        "test_type": "calculation"
+      },
+      "result": "FAILED - Best case: 3 sims saved (~6% reduction), not worth complexity",
+      "notes": "CMA-ES covariance adaptation is already implicit surrogate modeling."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "CMA-ES covariance adaptation is already implicit surrogate modeling. Low rejection rate (~10%) and small population (6-8) mean minimal benefit (~6% sim reduction). surrogate_hybrid family EXHAUSTED."
+}

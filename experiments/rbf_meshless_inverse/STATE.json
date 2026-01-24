@@ -1,0 +1,52 @@
+{
+  "experiment_id": "EXP_RBF_MESHLESS_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T18:05:00Z",
+  "completed_at": "2026-01-24T18:20:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Analyze RBF matrix A computation cost",
+        "test_type": "timing_analysis",
+        "rbf_grid": "20x10"
+      },
+      "result": "FAILED - 200 simulations needed = 200 sec >> 9 sec budget",
+      "notes": "Each RBF collocation point requires one simulation to compute its column in matrix A."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Test coarser RBF grids",
+        "test_type": "timing_analysis",
+        "grids_tested": ["5x3", "10x5", "20x10"]
+      },
+      "result": "FAILED - Even coarsest 5x3=15 pts exceeds budget (15 sec vs 9 sec)",
+      "notes": "5x3=15 pts: 15 sec (1.7x over), 10x5=50 pts: 50 sec (5.6x over), 20x10=200 pts: 200 sec (22x over)"
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Check if matrix A can be pre-computed",
+        "test_type": "uniqueness_analysis"
+      },
+      "result": "FAILED - 100% unique sensor positions prevent pre-computation",
+      "notes": "80 unique sensor configurations across 80 samples. Matrix A depends on sensor positions, so cannot be shared."
+    },
+    {
+      "run": 4,
+      "config": {
+        "description": "Compare to prior direct inversion attempts",
+        "test_type": "prior_evidence"
+      },
+      "result": "FAILED - Same fundamental issue as D-PBCS and Green's function",
+      "notes": "D-PBCS: 646x over budget. Green's function: 4.3x slower than ADI. All require building observation matrices."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "RBF meshless requires n_rbf_points simulations to build matrix A. Even coarsest grid (5×3=15 pts = 15 sec) exceeds budget (9 sec) by 1.7x. 100% unique sensors prevent pre-computation. meshless_direct family EXHAUSTED."
+}

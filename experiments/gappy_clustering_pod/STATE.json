@@ -1,0 +1,32 @@
+{
+  "experiment_id": "EXP_GAPPY_CPOD_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T15:30:00Z",
+  "completed_at": "2026-01-24T15:45:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Analyze physics parameter distribution",
+        "test_type": "feasibility_check"
+      },
+      "result": "PASSED - Physics params cluster well: only 4 clusters (kappa x n_sources)",
+      "notes": "kappa: 2 values (0.05, 0.1), T0: all 0.0, BC: 2 types. Cluster sizes: [25, 23, 19, 13]"
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Check sensor location consistency within clusters",
+        "test_type": "sensor_feasibility"
+      },
+      "result": "FAILED - Every sample has UNIQUE sensor locations (80 unique configs for 80 samples)",
+      "notes": "Gappy POD requires consistent observation locations. Unique sensors defeat the purpose."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "Physics clustering is feasible (only 4 clusters), BUT every sample has unique sensor locations (80 unique configs). Gappy C-POD requires consistent observation points to transfer POD bases. Unique sensors mean each sample needs individual treatment, defeating the purpose."
+}

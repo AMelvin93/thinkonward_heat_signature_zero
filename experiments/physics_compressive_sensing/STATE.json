@@ -1,0 +1,41 @@
+{
+  "experiment_id": "EXP_PHYSICS_CS_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T15:50:00Z",
+  "completed_at": "2026-01-24T16:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Analyze observation matrix construction cost",
+        "test_type": "feasibility_check"
+      },
+      "result": "FAILED - Building A requires 97 min/sample (budget is 9 sec)",
+      "notes": "5000 grid cells x 1.16 sec/sim = 97 min per sample. Budget is 60 min / 400 samples = 9 sec/sample. Exceeds budget by 646x."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Check coarse grid alternative",
+        "test_type": "coarse_grid_feasibility"
+      },
+      "result": "FAILED - Even 10x5 grid exceeds budget by 6x",
+      "notes": "Coarse 10x5 grid (50 cells) needs ~1 min/sample. Still 6x over budget."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Check pre-computation feasibility",
+        "test_type": "precompute_feasibility"
+      },
+      "result": "FAILED - Sample-specific sensors prevent pre-computation",
+      "notes": "Each sample has unique sensor locations. Cannot pre-compute A once and reuse."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "D-PBCS requires building observation matrix A (5000 simulations). At 1.16 sec/sim, this takes 97 min/sample - budget is 9 sec/sample (646x over). Coarse grids still 6x over budget. Sample-specific sensors prevent pre-computation. inverse_method family EXHAUSTED."
+}

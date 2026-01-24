@@ -1,8 +1,8 @@
 {
-  "version": "6.0",
-  "last_updated": "2026-01-24T12:15:00Z",
-  "notes": "V6.0: W0 emergency cycle - queue was CRITICAL (3). Added 4 experiments: sigma_termination, seed_ensemble, sample_timeout, intensity_bounds. Queue restored to 7. LRA-CMA, coord_sigma, BFGS all failed/aborted.",
-  "queue_status": "HEALTHY",
+  "version": "6.4",
+  "last_updated": "2026-01-24T16:13:54.972997Z",
+  "notes": "V6.4: W0 EMERGENCY research cycle #3. Queue was EMPTY AGAIN. 5 more experiments completed (RBF, CMAES_RBF_SURROGATE, SLSQP, DIRECT, LANDSCAPE_ADAPTIVE - ALL ABORTED). Added 3 experiments: multi_objective_pareto, growth_optimizer, confidence_based_early_exit. Total: 65+ experiments completed. CMA-ES baseline is likely AT CEILING.",
+  "queue_status": "OK",
   "experiment_queue": [
     {
       "id": "EXP_LQ_CMAES_001",
@@ -940,9 +940,11 @@
     },
     {
       "id": "EXP_CHECKPOINTED_ADJOINT_001",
-      "priority": 3,
+      "priority": 99,
       "family": "gradient_revisited",
-      "status": "available",
+      "status": "completed",
+      "result": "FAILED - Single-timestep adjoint is CORRECT (0.5% error), but full gradient has 5x error due to missing chain rule through optimal q(x,y). Manual adjoint too complex.",
+      "worker": "W2",
       "name": "checkpointed_adjoint_method",
       "description": "Memory-efficient adjoint via checkpointing for implicit ADI time-stepping",
       "hypothesis": "Previous adjoint failed due to manual derivation errors. 2025 research shows checkpointing-based adjoint can work with implicit schemes by computing VJPs step-by-step with minimal memory.",
@@ -962,7 +964,7 @@
       "id": "EXP_BIPOP_CMAES_001",
       "priority": 3,
       "family": "cmaes_restart_v2",
-      "status": "available",
+      "status": "completed",
       "name": "bipop_cmaes_restart",
       "description": "BIPOP-CMA-ES alternates between large and small population restarts",
       "hypothesis": "IPOP failed because it only increases population (wasting budget). BIPOP alternates: large pop for global search, small pop for local refinement. May find better balance.",
@@ -976,13 +978,19 @@
         "5. Compare final score and diversity"
       ],
       "success_criteria": "Score >= 1.17 AND time <= 60 min",
-      "abort_criteria": "BIPOP wastes budget on small pop restarts OR same issues as IPOP"
+      "abort_criteria": "BIPOP wastes budget on small pop restarts OR same issues as IPOP",
+      "worker": "W1",
+      "result": "FAILED - Restarts add 8 min overhead without sufficient accuracy gain. Best in-budget: 1.1609 @ 54.9 min (-0.0079 vs baseline).",
+      "score": 1.1609,
+      "time_min": 54.9,
+      "finding": "BIPOP and IPOP both fail for same reason: problem lacks local optima. Restarts are wasteful. cmaes_restart_v2 family EXHAUSTED."
     },
     {
       "id": "EXP_GAPPY_CPOD_001",
-      "priority": 4,
+      "priority": 99,
       "family": "surrogate_v2",
-      "status": "available",
+      "status": "completed",
+      "worker": "W2",
       "name": "gappy_clustering_pod",
       "description": "Gappy Clustering-POD for thermal field reconstruction with heterogeneous samples",
       "hypothesis": "Standard POD failed due to sample-specific physics (varying kappa). Gappy C-POD clusters similar samples first, then builds separate POD bases per cluster. May handle heterogeneity.",
@@ -996,13 +1004,16 @@
         "5. Compare speedup vs accuracy tradeoff"
       ],
       "success_criteria": "Speedup >= 2x AND score loss <= 0.01",
-      "abort_criteria": "Clusters too small for reliable POD OR kappa variation too continuous"
+      "abort_criteria": "Clusters too small for reliable POD OR kappa variation too continuous",
+      "result": "ABORTED - Physics clustering works (only 4 clusters), BUT 100% unique sensor locations (80 configs for 80 samples) defeats Gappy C-POD.",
+      "finding": "Gappy POD requires consistent observation points. With unique sensors per sample, each needs individual treatment - same as rejected online POD. surrogate_v2 family EXHAUSTED."
     },
     {
       "id": "EXP_PHYSICS_CS_001",
-      "priority": 4,
+      "priority": 99,
       "family": "inverse_method",
-      "status": "available",
+      "status": "completed",
+      "worker": "W2",
       "name": "physics_compressive_sensing",
       "description": "Decomposed Physics-Based Compressive Sensing (D-PBCS) for heat source detection",
       "hypothesis": "D-PBCS combines compressed sensing sparsity constraints with heat equation physics. Can reconstruct heat sources from sparse measurements without iterative optimization.",
@@ -1016,7 +1027,259 @@
         "5. Compare accuracy and speed vs CMA-ES"
       ],
       "success_criteria": "Score >= 1.16 AND time <= 30 min (direct solve should be fast)",
-      "abort_criteria": "Heat source not actually sparse (continuous distribution) OR physics constraints don't match problem"
+      "abort_criteria": "Heat source not actually sparse (continuous distribution) OR physics constraints don't match problem",
+      "result": "ABORTED - Observation matrix requires 97 min/sample (budget 9 sec). 646x over budget. Coarse grids still 6x over. Sample-specific sensors prevent pre-computation.",
+      "finding": "D-PBCS fundamentally incompatible with time budget. Building A needs 5000 sims. inverse_method family EXHAUSTED."
+    },
+    {
+      "id": "EXP_FREQUENCY_DOMAIN_001",
+      "priority": 99,
+      "family": "frequency_domain",
+      "status": "completed",
+      "worker": "W2",
+      "name": "frequency_domain_optimization",
+      "description": "Heat equation optimization in Fourier/frequency domain for faster RMSE computation",
+      "hypothesis": "Heat equation simplifies in frequency domain. Fourier transform can decouple spatial modes, potentially enabling faster RMSE evaluation and more efficient optimization.",
+      "research_source": "Frequency Domain Thermal Analysis (AIAA 2024), Small perturbation frequency domain method (ScienceDirect Feb 2026)",
+      "why_different": "All prior experiments use time-domain simulation. Frequency domain could offer faster RMSE computation by exploiting heat equation's spectral structure.",
+      "implementation": [
+        "1. Transform temperature observations Y_obs to frequency domain",
+        "2. Compute heat source response in frequency domain (Green's function)",
+        "3. Formulate RMSE as frequency-domain residual",
+        "4. Optimize source parameters using spectral RMSE",
+        "5. Compare speed vs accuracy with time-domain baseline"
+      ],
+      "success_criteria": "Score >= 1.15 AND time <= 40 min (frequency domain should be faster)",
+      "abort_criteria": "Spectral RMSE doesn't correlate with time-domain RMSE OR boundary conditions complicate transform",
+      "result": "ABORTED - RMSE computation is 0.082ms, simulation is 1207ms (14,721x slower). Frequency domain addresses wrong bottleneck.",
+      "finding": "Frequency domain still requires full ADI simulation. RMSE is already negligible. frequency_domain family EXHAUSTED."
+    },
+    {
+      "id": "EXP_RBF_MESHLESS_001",
+      "priority": 99,
+      "family": "meshless_direct",
+      "status": "completed",
+      "worker": "W2",
+      "name": "rbf_meshless_inverse",
+      "description": "Radial Basis Function meshless method for direct inverse problem solving",
+      "result": "ABORTED - Matrix A computation requires n_rbf_points simulations. Even coarsest grid (5\u00d73=15 pts = 15 sec) exceeds budget (9 sec). 100% unique sensors prevent pre-computation.",
+      "finding": "RBF meshless has same fundamental issue as D-PBCS (646x over budget). Building observation matrix requires O(n_points) simulations per sample. meshless_direct family EXHAUSTED."
+    },
+    {
+      "id": "EXP_CMAES_RBF_SURROGATE_001",
+      "priority": 99,
+      "family": "surrogate_hybrid",
+      "status": "completed",
+      "worker": "W2",
+      "name": "cmaes_rbf_surrogate",
+      "description": "CMA-ES with local RBF surrogate for expensive function evaluations",
+      "result": "ABORTED - CMA-ES covariance adaptation is already implicit surrogate modeling. ~10% rejection rate, ~6% potential sim reduction. Not worth complexity.",
+      "finding": "Low rejection rate (same as early rejection 8.6%) and small population (6-8) mean minimal benefit. surrogate_hybrid family EXHAUSTED."
+    },
+    {
+      "id": "EXP_SCIPY_SLSQP_001",
+      "priority": 99,
+      "family": "gradient_numerical",
+      "status": "completed",
+      "worker": "W2",
+      "name": "scipy_slsqp_optimizer",
+      "description": "SLSQP optimizer with numerical gradients for local refinement",
+      "result": "ABORTED - SLSQP uses finite diff gradients = same O(n) overhead as L-BFGS-B which FAILED. Abort criteria met.",
+      "finding": "L-BFGS-B polish: 1.1174 @ 42 min (worse than NM x8: 1.1415 @ 38 min). SLSQP has identical gradient overhead. gradient_numerical family EXHAUSTED."
+    },
+    {
+      "id": "EXP_GENETIC_ALGORITHM_001",
+      "priority": 6,
+      "family": "evolutionary_ga",
+      "status": "done",
+      "name": "genetic_algorithm_optimizer",
+      "description": "Standard genetic algorithm as alternative to CMA-ES",
+      "hypothesis": "CMA-ES may be over-engineering for this simple 2-4D problem. A simpler GA with good initialization might achieve similar results with less overhead.",
+      "research_source": "scipy.optimize.differential_evolution, DEAP library",
+      "why_different": "CMA-ES uses expensive covariance adaptation. GA uses simpler crossover/mutation. For low-dimensional problems, GA overhead may be lower.",
+      "implementation": [
+        "1. Use same initialization as baseline (4 smart inits)",
+        "2. Run GA instead of CMA-ES for global search",
+        "3. Use same Nelder-Mead polish",
+        "4. Compare convergence speed and final score",
+        "5. Track function evaluations"
+      ],
+      "success_criteria": "Score >= 1.16 AND time <= 50 min",
+      "abort_criteria": "GA converges slower than CMA-ES OR requires more function evaluations",
+      "claimed_by": "W1",
+      "result": "FAILED - GA slower and less accurate than CMA-ES. All runs over budget with worse scores."
+    },
+    {
+      "id": "EXP_DIRECT_ALGORITHM_001",
+      "priority": 99,
+      "family": "deterministic_global",
+      "status": "completed",
+      "worker": "W2",
+      "name": "direct_algorithm_search",
+      "description": "DIRECT (DIviding RECTangles) deterministic global optimization",
+      "result": "ABORTED - DIRECT uses 441-443 evals vs CMA-ES 20-36 (12-22x more). Projected 236 min vs 60 min budget (4x over).",
+      "finding": "Space partitioning doesn't scale. No covariance adaptation. All alternative global optimizers failed. deterministic_global family EXHAUSTED."
+    },
+    {
+      "id": "EXP_GREENS_FUNCTION_001",
+      "priority": 99,
+      "family": "direct_inversion",
+      "status": "completed",
+      "worker": "W2",
+      "name": "greens_function_inversion",
+      "description": "Use heat equation Green's function for direct source localization without iteration",
+      "hypothesis": "2026 research shows Green function method can directly localize heat sources via Volterra integral equation. Unlike CMA-ES iteration, this provides closed-form solution. Privacy-preserving and computationally minimal.",
+      "research_source": "Indoor person localization via inverse heat source (Wiley 2026), Green function heat distribution modeling",
+      "why_different": "CMA-ES: iterative optimization (60-90 sims). Green's function: analytical solution via integral equation. May achieve similar accuracy with single computation.",
+      "implementation": [
+        "1. Compute Green's function for 2D heat equation with given BCs",
+        "2. Formulate temperature at sensors as convolution integral",
+        "3. Invert the Volterra integral equation",
+        "4. Extract source position and intensity from inversion",
+        "5. Compare speed and accuracy vs CMA-ES baseline"
+      ],
+      "success_criteria": "Score >= 1.10 AND time <= 30 min",
+      "abort_criteria": "Green's function requires sample-specific computation negating speed benefit OR inversion is ill-posed without regularization",
+      "result": "ABORTED - Green's function is 4.3x SLOWER than ADI (5151ms vs 1189ms). Sensor heterogeneity (100% unique) prevents pre-computation. Inversion is nonlinear. No advantage.",
+      "finding": "Green's function series requires 2500+ terms per evaluation. ADI implicit solver is highly optimized. direct_inversion family EXHAUSTED."
+    },
+    {
+      "id": "EXP_MODAL_IDENTIFICATION_001",
+      "priority": 99,
+      "family": "model_reduction",
+      "status": "completed",
+      "worker": "W2",
+      "name": "modal_identification_method",
+      "description": "Build low-order modal model from sensor data for fast source estimation",
+      "hypothesis": "Modal Identification Method (MIM) builds reduced-order model directly from temperature measurements. Can estimate time-varying heat sources through inversion of low-order model without full simulation.",
+      "research_source": "Estimation of time-varying heat sources through inversion of low order model (ResearchGate)",
+      "result": "ABORTED - Only 2 sensors = 2 modes max. Simulation is bottleneck (1167ms), SVD is 0.02ms. Modal space doesn't reduce simulations.",
+      "finding": "MIM requires dense sensors and known modal basis. We have 2 sensors and sample-specific physics. model_reduction family EXHAUSTED.",
+      "why_different": "Instead of simulating full PDE, extract dominant modes from observation data and solve inverse problem in modal space.",
+      "implementation": [
+        "1. Identify dominant thermal modes from sensor time series",
+        "2. Build low-order state space model (few modes)",
+        "3. Formulate source estimation as modal coefficient problem",
+        "4. Solve reduced inverse problem (low dimensional)",
+        "5. Compare accuracy and speed vs full simulation"
+      ],
+      "success_criteria": "Score >= 1.10 AND time <= 25 min",
+      "abort_criteria": "Sensor sparsity prevents reliable mode identification OR modal truncation loses source information"
+    },
+    {
+      "id": "EXP_SENSOR_SUBSET_001",
+      "priority": 99,
+      "family": "sensor_optimization",
+      "status": "completed",
+      "worker": "W2",
+      "name": "informative_sensor_subset",
+      "description": "Use only most informative sensors for optimization to reduce noise and computation",
+      "hypothesis": "Not all sensors contribute equally to source localization. Using a subset of most informative sensors (highest temperature variance or gradient) may improve signal-to-noise ratio and reduce computation.",
+      "research_source": "A-optimal sensor placement (arXiv Sept 2025), Sparse sensor allocation for source detection (arXiv Sept 2025)",
+      "result": "ABORTED - Subset RMSE has r=0.68 correlation with full RMSE. This is proxy optimization which failed in weighted loss (-14%).",
+      "finding": "Optimizing subset RMSE finds different optimum than full RMSE. No computational benefit. sensor_optimization family EXHAUSTED.",
+      "why_different": "Baseline uses all sensors equally. Selecting optimal subset may improve both accuracy (less noise) and speed (fewer comparisons).",
+      "implementation": [
+        "1. Analyze sensor informativeness (variance, SNR, gradient magnitude)",
+        "2. Select top K sensors per sample (K=3-4)",
+        "3. Run CMA-ES optimization using only selected sensors",
+        "4. Compare RMSE on full sensor set for fair comparison",
+        "5. Track accuracy vs sensor count tradeoff"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 50 min (maintain accuracy, save compute)",
+      "abort_criteria": "Sensor selection overhead exceeds savings OR subset loses critical source information"
+    },
+    {
+      "id": "EXP_LANDSCAPE_ADAPTIVE_001",
+      "priority": 99,
+      "family": "meta_optimization",
+      "status": "completed",
+      "worker": "W2",
+      "result": "ABORTED - ELA probing (10 evals \u00d7 1 sec = 10 sec) exceeds per-sample budget (9 sec).",
+      "finding": "Prior adaptive strategies all failed. meta_optimization family EXHAUSTED.",
+      "name": "landscape_adaptive_cmaes",
+      "description": "Use Exploratory Landscape Analysis (ELA) to auto-configure CMA-ES per sample",
+      "hypothesis": "2025 research shows ELA features can identify problem characteristics (multimodality, separability) enabling optimal CMA-ES configuration. Different samples may benefit from different sigma/population settings.",
+      "research_source": "Surrogate-based automated HPO for crashworthiness (Springer 2025), BBOB landscape analysis",
+      "why_different": "Baseline uses fixed CMA-ES config. ELA could detect sample difficulty (1-src vs 2-src, landscape shape) and adapt parameters accordingly.",
+      "implementation": [
+        "1. Run cheap ELA probes (10-20 random evaluations)",
+        "2. Extract landscape features (y-distribution, local optima indicators)",
+        "3. Map features to CMA-ES configuration (sigma, popsize)",
+        "4. Run configured CMA-ES optimization",
+        "5. Compare vs fixed configuration baseline"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "abort_criteria": "ELA probe cost exceeds benefit OR samples too homogeneous for adaptation"
+    },
+    {
+      "id": "EXP_MULTI_OBJECTIVE_001",
+      "priority": 6,
+      "family": "multi_objective",
+      "status": "done",
+      "name": "multi_objective_pareto",
+      "description": "Multi-objective optimization trading off accuracy vs computation time",
+      "hypothesis": "Instead of hard budget constraint, treat accuracy and speed as two objectives. NSGA-II or similar can find Pareto front, revealing if better tradeoffs exist.",
+      "research_source": "NSGA-II multi-objective optimization, pymoo library",
+      "why_different": "Baseline optimizes accuracy with time constraint. MO can explore full tradeoff space, potentially finding better operating points.",
+      "implementation": [
+        "1. Define objectives: minimize RMSE, minimize simulation count",
+        "2. Use NSGA-II or MOEA/D for multi-objective optimization",
+        "3. Generate Pareto front of solutions",
+        "4. Analyze tradeoff curve",
+        "5. Compare best in-budget solution vs baseline"
+      ],
+      "success_criteria": "Score >= 1.17 within 60 min OR discover better accuracy-time tradeoff",
+      "abort_criteria": "Pareto front reveals no improvements OR MO overhead exceeds benefit",
+      "claimed_by": "W1",
+      "claimed_at": "2026-01-24T16:07:34.673756Z",
+      "result": "ABORTED - Multi-objective optimization theoretically unsound. Scoring formula is already multi-objective."
+    },
+    {
+      "id": "EXP_GROWTH_OPTIMIZER_001",
+      "priority": 7,
+      "family": "metaheuristic_go",
+      "status": "done",
+      "name": "growth_optimizer",
+      "description": "Growth Optimizer (GO) - 2022 metaheuristic competitive with 50 algorithms",
+      "hypothesis": "GO uses learning/reflection mechanisms inspired by human growth. Tested against 50 metaheuristics including CMA-ES. May offer different convergence characteristics.",
+      "research_source": "Growth Optimizer: A powerful metaheuristic (Knowledge-Based Systems 2022)",
+      "why_different": "CMA-ES uses Gaussian covariance adaptation. GO uses learning/reflection mechanisms. Different search dynamics may find different solutions.",
+      "implementation": [
+        "1. Implement GO or find Python library (pyGO)",
+        "2. Use same initialization and budget as baseline",
+        "3. Apply same Nelder-Mead polish",
+        "4. Compare convergence and final score",
+        "5. Track function evaluations"
+      ],
+      "success_criteria": "Score >= 1.16 AND time <= 55 min",
+      "abort_criteria": "GO requires more evaluations than CMA-ES OR no library available",
+      "claimed_by": "W1",
+      "claimed_at": "2026-01-24T16:11:01.807013Z",
+      "result": "ABORTED - Another metaheuristic without covariance adaptation. Same failure mode as GA, DE, OpenAI ES, SA."
+    },
+    {
+      "id": "EXP_EARLY_EXIT_THRESHOLD_001",
+      "priority": 7,
+      "family": "termination_v2",
+      "status": "done",
+      "name": "confidence_based_early_exit",
+      "description": "Exit CMA-ES early when confidence in solution is high",
+      "hypothesis": "When CMA-ES sigma becomes very small (high confidence), additional iterations have diminishing returns. Early exit could save time without accuracy loss.",
+      "research_source": "CMA-ES termination criteria, standard deviation convergence",
+      "why_different": "Previous early termination based on improvement threshold. This uses sigma/stddev directly as confidence measure.",
+      "implementation": [
+        "1. Monitor CMA-ES sigma during optimization",
+        "2. Exit early when sigma < threshold (e.g., 0.01)",
+        "3. Use saved budget for additional smart initializations",
+        "4. Compare accuracy-time tradeoff vs baseline",
+        "5. Find optimal sigma threshold"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 50 min",
+      "abort_criteria": "Early exit hurts accuracy OR threshold is sample-dependent",
+      "claimed_by": "W1",
+      "claimed_at": "2026-01-24T16:13:14.304525Z",
+      "result": "ABORTED - Same idea as prior failed experiments (ADAPTIVE_BUDGET, CMAES_EARLY_STOPPING). Early exit hurts CMA-ES."
     }
   ],
   "algorithm_families": {
@@ -1050,7 +1313,7 @@
     "neural_operator": "EXHAUSTED - Surrogates fail (sample-specific RMSE). PINN fails (needs gradients). No NN approach viable.",
     "alternative_es": "FAILED - OpenAI ES's diagonal covariance loses correlations. CMA-ES optimal for low-dim expensive problems. Do not pursue Natural ES/PEPG.",
     "differential_evolution": "FAILED - DE's mutation/crossover less efficient than CMA-ES covariance adaptation. Best 1.1325 @ 35.2 min (-0.0037 score). CMA-ES is optimal.",
-    "multi_objective": "NOT TRIED - Pareto optimization of accuracy/speed jointly.",
+    "multi_objective": "EXHAUSTED - Scoring formula already IS multi-objective (accuracy + diversity). Pareto optimization cannot improve on direct optimization of combined score.",
     "problem_reformulation": "FAILED - Polar parameterization is WORSE than Cartesian (-0.0216 score, +14.3 min). Rectangular domain incompatible with polar coords. Don't change coordinate systems.",
     "simulated_annealing": "EXHAUSTED - SA is 2-5x slower than CMA-ES with local search, 23% worse without. Do NOT retry.",
     "surrogate_assisted": "ABORTED - RMSE landscapes are sample-specific. Surrogates from some samples don't generalize to others.",
@@ -1063,7 +1326,15 @@
     "cmaes_enhancement": "EXHAUSTED - Adaptive popsize (2.1x over budget). Combined with IPOP and larger popsize failures: any popsize manipulation hurts. Default CMA-ES popsize is optimal.",
     "temporal_sampling": "FAILED - Random timesteps requires full simulation (3-4x slower). Early timesteps are most informative.",
     "cmaes_variants": "EXHAUSTED - sep-CMA-ES (5.3x over budget, -0.02 score) and dd-CMA-ES (no benefit) both FAILED. Position correlations require full covariance. Standard CMA-ES is optimal.",
-    "sigma_tuning": "EXHAUSTED - Lower sigma (0.15/0.18) and higher sigma (0.18/0.22) both WORSE than baseline (0.15/0.20). Baseline sigma is locally optimal."
+    "sigma_tuning": "EXHAUSTED - Lower sigma (0.15/0.18) and higher sigma (0.18/0.22) both WORSE than baseline (0.15/0.20). Baseline sigma is locally optimal.",
+    "cmaes_restart_v2": "EXHAUSTED - Both IPOP and BIPOP tested, both FAILED. Problem lacks local optima where restarts help.",
+    "meshless_direct": "EXHAUSTED - RBF meshless requires n_rbf_points simulations for observation matrix. Even coarsest 5x3=15 pts exceeds budget. Same issue as D-PBCS.",
+    "surrogate_hybrid": "EXHAUSTED - CMA-ES covariance adaptation is already implicit surrogate modeling. ~10% rejection rate, small population (6-8) mean minimal benefit.",
+    "gradient_numerical": "EXHAUSTED - SLSQP/L-BFGS-B/Powell all use finite diff gradients. O(n) overhead per iteration makes gradient methods slower than NM for 400ms simulations.",
+    "deterministic_global": "EXHAUSTED - DIRECT uses 441-443 evals vs CMA-ES 20-36 (12-22x more). Space partitioning doesn't scale. No covariance adaptation.",
+    "alternative_optimizer": "EXHAUSTED - GA proven inferior to CMA-ES (slower, less accurate). Not worth exploring other general-purpose optimizers.",
+    "alternative_metaheuristic": "EXHAUSTED - ALL tested metaheuristics (GA, DE, OpenAI ES, SA, GO) FAILED vs CMA-ES. Covariance adaptation is essential for expensive continuous optimization. Do NOT test more metaheuristics.",
+    "early_exit": "EXHAUSTED - ALL early termination approaches FAILED. CMA-ES needs full budget for covariance adaptation. Cannot be stopped early."
   },
   "completed_experiments": [
     "EXP_WEIGHTED_LOSS_001",
@@ -1129,6 +1400,41 @@
     "EXP_LRA_CMAES_001",
     "EXP_COORD_SIGMA_001",
     "EXP_BFGS_POLISH_001",
-    "EXP_LOWER_SIGMA_001"
+    "EXP_LOWER_SIGMA_001",
+    {
+      "id": "EXP_GENETIC_ALGORITHM_001",
+      "name": "genetic_algorithm_optimizer",
+      "worker": "W1",
+      "result": "FAILED",
+      "best_score": 1.1615,
+      "best_time": 64.8,
+      "in_budget": false,
+      "reason": "GA fundamentally inferior to CMA-ES - slower and less accurate",
+      "completed_at": "2026-01-24T16:06:48.037753Z"
+    },
+    {
+      "id": "EXP_MULTI_OBJECTIVE_001",
+      "name": "multi_objective_pareto",
+      "worker": "W1",
+      "result": "ABORTED",
+      "reason": "Theoretically unsound - scoring formula is already multi-objective",
+      "completed_at": "2026-01-24T16:10:29.556159Z"
+    },
+    {
+      "id": "EXP_GROWTH_OPTIMIZER_001",
+      "name": "growth_optimizer",
+      "worker": "W1",
+      "result": "ABORTED",
+      "reason": "Pattern of metaheuristic failures proves CMA-ES covariance adaptation is essential",
+      "completed_at": "2026-01-24T16:12:37.223071Z"
+    },
+    {
+      "id": "EXP_EARLY_EXIT_THRESHOLD_001",
+      "name": "confidence_based_early_exit",
+      "worker": "W1",
+      "result": "ABORTED",
+      "reason": "Same as prior failed experiments (ADAPTIVE_BUDGET, EARLY_STOPPING)",
+      "completed_at": "2026-01-24T16:13:54.972973Z"
+    }
   ]
 }

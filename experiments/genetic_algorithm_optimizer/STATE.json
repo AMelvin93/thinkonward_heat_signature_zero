@@ -1,0 +1,66 @@
+{
+  "experiment_id": "EXP_GENETIC_ALGORITHM_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-24T15:20:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Initial GA test with pop=15, gen=10",
+        "population_size": 15,
+        "mutation_rate": 0.3,
+        "crossover_rate": 0.7,
+        "max_generations": 10,
+        "timestep_fraction": 0.4,
+        "nm_polish_iters": 8
+      },
+      "score": 1.1615,
+      "time_min": 64.8,
+      "rmse_mean": 0.167357,
+      "in_budget": false,
+      "mlflow_id": "b02f4f943bc54b50a1957d2e6ce920a6",
+      "notes": "OVER BUDGET by 4.8 min. Score -0.0073 vs baseline (1.1688). GA is slower and less accurate than CMA-ES."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Fewer generations (5 instead of 10)",
+        "population_size": 15,
+        "mutation_rate": 0.3,
+        "crossover_rate": 0.7,
+        "max_generations": 5,
+        "timestep_fraction": 0.4,
+        "nm_polish_iters": 8
+      },
+      "score": 1.1549,
+      "time_min": 61.5,
+      "rmse_mean": 0.178928,
+      "in_budget": false,
+      "mlflow_id": "b73a69e6d65447e59b4576734bb4808f",
+      "notes": "Still OVER BUDGET by 1.5 min. Score even worse -0.0139 vs baseline. Fewer generations = less convergence."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Minimal GA with small pop=8, gen=5",
+        "population_size": 8,
+        "mutation_rate": 0.3,
+        "crossover_rate": 0.7,
+        "max_generations": 5,
+        "timestep_fraction": 0.4,
+        "nm_polish_iters": 8
+      },
+      "score": 1.1225,
+      "time_min": 62.3,
+      "rmse_mean": 0.172276,
+      "in_budget": false,
+      "mlflow_id": "da962f8f915b4d8897cde45c783f5e63",
+      "notes": "OVER BUDGET by 2.3 min. Score much worse -0.0463 vs baseline. Smaller population = fewer valid candidates hurting diversity bonus."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - Genetic Algorithm is fundamentally inferior to CMA-ES for continuous optimization. All runs over budget with worse scores. GA's random crossover/mutation is less directed than CMA-ES's adaptive covariance learning. Even minimal GA configs (pop=8, gen=5) exceed budget with much worse accuracy. Mark alternative_optimizer family as EXHAUSTED."
+}

@@ -1,0 +1,50 @@
+{
+  "experiment_id": "EXP_GREENS_FUNCTION_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T16:40:00Z",
+  "completed_at": "2026-01-24T17:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Analyze boundary conditions and kappa variation",
+        "test_type": "physics_analysis"
+      },
+      "result": "PASSED - Only 4 unique (BC, kappa) combinations",
+      "notes": "Neumann: 51%, Dirichlet: 49%. Kappa: 0.05 (45%), 0.1 (55%). Pre-computation might be viable."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Check sensor position variability",
+        "test_type": "sensor_analysis"
+      },
+      "result": "FAILED - 100% unique sensor positions (80 out of 80 samples)",
+      "notes": "Sensor heterogeneity prevents pre-computation of Green's function lookup tables."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Compare Green's function vs ADI timing",
+        "test_type": "timing_analysis"
+      },
+      "result": "FAILED - Green's function is 4.3x SLOWER than ADI",
+      "notes": "ADI: 1189ms, Green's (50 terms): 5151ms. Series convergence requires many terms."
+    },
+    {
+      "run": 4,
+      "config": {
+        "description": "Check if direct inversion is possible",
+        "test_type": "inversion_analysis"
+      },
+      "result": "FAILED - Inversion is nonlinear, still requires optimization",
+      "notes": "Source position appears in sin(nπx_s/Lx) terms. No closed-form inverse exists."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "Green's function is 4.3x SLOWER than ADI (5151ms vs 1189ms). Sensor heterogeneity (100% unique) prevents pre-computation. Inversion is nonlinear (source in sin/cos terms). No advantage over ADI + CMA-ES. direct_inversion family EXHAUSTED."
+}

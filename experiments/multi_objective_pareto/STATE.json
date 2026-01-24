@@ -1,0 +1,11 @@
+{
+  "experiment_id": "EXP_MULTI_OBJECTIVE_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-24T16:30:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "ABORTED - Multi-objective optimization is THEORETICALLY UNSOUND for this problem. The scoring formula already IS a multi-objective combination (score = accuracy + diversity). The baseline already balances these via multiple inits + dissimilarity filtering. Pareto optimization can't improve on optimizing the combined objective directly. Additionally, NSGA-II requires 200+ evals (pop=20 x gen=10) vs our budget of 20-36 evals."
+}

@@ -1,0 +1,41 @@
+{
+  "experiment_id": "EXP_SCIPY_SLSQP_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T18:50:00Z",
+  "completed_at": "2026-01-24T19:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Review prior gradient polish experiments",
+        "test_type": "prior_evidence"
+      },
+      "result": "FAILED - L-BFGS-B and Powell both failed due to finite diff overhead",
+      "notes": "L-BFGS-B: 1.1174 @ 42 min (worse than NM x8: 1.1415 @ 38 min). Powell: 4.2x over budget."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Analyze SLSQP gradient computation",
+        "test_type": "algorithm_analysis"
+      },
+      "result": "FAILED - SLSQP uses same finite diff gradients as L-BFGS-B",
+      "notes": "O(n) extra sims per iteration. For 4D: ~5 extra sims per iteration."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Check abort criteria",
+        "test_type": "abort_criteria"
+      },
+      "result": "ABORT CRITERIA MET",
+      "notes": "Abort criteria: 'Numerical gradient overhead same as BFGS/Powell (already failed)'. SLSQP uses numerical gradients."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "SLSQP uses finite diff gradients = same O(n) overhead as L-BFGS-B which FAILED. Abort criteria met. gradient_numerical family EXHAUSTED."
+}

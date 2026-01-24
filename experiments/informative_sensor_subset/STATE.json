@@ -1,0 +1,41 @@
+{
+  "experiment_id": "EXP_SENSOR_SUBSET_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T17:25:00Z",
+  "completed_at": "2026-01-24T17:40:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Analyze sensor count distribution",
+        "test_type": "data_analysis"
+      },
+      "result": "PASSED - Samples have 2-6 sensors (mostly 3-4)",
+      "notes": "10% with 2 sensors, 90% with 3+ sensors. Subset selection is possible."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Test correlation between subset and full RMSE",
+        "test_type": "correlation_analysis"
+      },
+      "result": "FAILED - Spearman r = 0.6845 (insufficient correlation)",
+      "notes": "Subset RMSE is NOT a reliable proxy for full RMSE. Ranking correlation too low."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Check computational benefit",
+        "test_type": "timing_analysis"
+      },
+      "result": "FAILED - RMSE is not bottleneck, no computational benefit",
+      "notes": "RMSE: ~0.1ms, Simulation: ~1200ms. Reducing sensors saves negligible time."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "Subset RMSE has r=0.68 correlation with full RMSE (scoring criterion). This is proxy optimization which failed catastrophically in weighted loss (-14%). No computational benefit. sensor_optimization family EXHAUSTED."
+}

@@ -1,0 +1,41 @@
+{
+  "experiment_id": "EXP_CHECKPOINTED_ADJOINT_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T14:32:33Z",
+  "completed_at": "2026-01-24T15:15:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Verify discrete adjoint against finite differences",
+        "test_type": "single_timestep_U"
+      },
+      "result": "SUCCESS - ratio 1.000000 (error 0.00%)",
+      "notes": "Single ADI timestep adjoint w.r.t. input temperature U is CORRECT"
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Verify source term adjoint",
+        "test_type": "single_timestep_S"
+      },
+      "result": "SUCCESS - ratio 0.995398 (error 0.46%)",
+      "notes": "Single ADI timestep adjoint w.r.t. source term S is CORRECT"
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Verify full gradient over all timesteps",
+        "test_type": "full_gradient"
+      },
+      "result": "FAILED - ratio 0.206 (error 79.4%), gradient is 5x too small",
+      "notes": "Single-timestep adjoints are correct but full gradient has 5x error. Likely due to missing chain rule through optimal intensity q computation."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "FAILED",
+  "finding": "Single-timestep discrete adjoint is CORRECT (verified against FD). Full gradient has 5x error due to missing chain rule through optimal q(x,y) dependency. Manual adjoint implementation for this problem is too complex."
+}

@@ -1,0 +1,41 @@
+{
+  "experiment_id": "EXP_FREQUENCY_DOMAIN_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T16:10:00Z",
+  "completed_at": "2026-01-24T16:25:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Analyze frequency content of sensor observations",
+        "test_type": "fft_analysis"
+      },
+      "result": "PASSED - 95% energy in only 5 frequency components (out of 2002)",
+      "notes": "Temperature signals are extremely low-frequency. FFT compression is theoretically possible."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Check correlation between frequency and time domain RMSE",
+        "test_type": "correlation_check"
+      },
+      "result": "PASSED - Spearman r=1.0 (perfect correlation)",
+      "notes": "Frequency RMSE is equivalent to time RMSE (Parseval's theorem). No ranking advantage."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Timing analysis: simulation vs RMSE computation",
+        "test_type": "timing_analysis"
+      },
+      "result": "FAILED - Simulation is 14,721x slower than RMSE computation",
+      "notes": "Simulation: 1207ms, RMSE: 0.082ms. Bottleneck is simulation, not RMSE. Frequency domain can't help."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "Frequency domain RMSE requires full simulation first. RMSE computation is only 0.082ms (vs 1207ms simulation). Optimizing frequency domain doesn't reduce simulation cost. frequency_domain family EXHAUSTED."
+}

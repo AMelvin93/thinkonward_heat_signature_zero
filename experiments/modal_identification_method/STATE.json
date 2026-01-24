@@ -1,0 +1,41 @@
+{
+  "experiment_id": "EXP_MODAL_IDENTIFICATION_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T17:05:00Z",
+  "completed_at": "2026-01-24T17:20:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Analyze modal content of sensor observations",
+        "test_type": "svd_analysis"
+      },
+      "result": "FAILED - Only 2 sensors = only 2 observable modes",
+      "notes": "SVD of Y_obs: 99.6% energy in first mode. Sensor sparsity limits modal content."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Compare timing: simulation vs modal extraction",
+        "test_type": "timing_analysis"
+      },
+      "result": "FAILED - Simulation is bottleneck (1167ms), SVD negligible (0.02ms)",
+      "notes": "Modal space doesn't reduce simulation cost - still need to simulate each candidate."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Check if MIM assumptions hold",
+        "test_type": "assumption_check"
+      },
+      "result": "FAILED - MIM requires known basis, dense sensors, linear source",
+      "notes": "Our problem violates all MIM assumptions: varying physics, 2 sensors, nonlinear source position."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "Only 2 sensors = 2 modes max. Simulation is bottleneck (1167ms), SVD is 0.02ms. Modal space doesn't reduce simulations. MIM assumptions don't hold. model_reduction family EXHAUSTED."
+}

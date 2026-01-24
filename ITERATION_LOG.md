@@ -1489,3 +1489,9 @@ See `experiments/coordinate_wise_sigma/SUMMARY.md` for details.
 **local_search family EXHAUSTED for polish alternatives.**
 
 See `experiments/bfgs_polish_after_cmaes/SUMMARY.md` for details.
+
+### [W1] Experiment: bipop_cmaes_restart | Score: 1.1609 @ 54.9 min
+**Algorithm**: BIPOP-CMA-ES (alternating large/small population restarts)
+**Tuning Runs**: 3 runs (see STATE.json for details)
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min)
+**Key Finding**: BIPOP restarts add ~8 min overhead without sufficient accuracy gain. Best in-budget (1.1609) is worse than baseline. Problem lacks local optima - restarts are wasteful. cmaes_restart_v2 family EXHAUSTED. See experiments/bipop_cmaes_restart/SUMMARY.md for details.

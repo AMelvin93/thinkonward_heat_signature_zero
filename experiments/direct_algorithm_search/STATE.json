@@ -1,0 +1,51 @@
+{
+  "experiment_id": "EXP_DIRECT_ALGORITHM_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-24T19:05:00Z",
+  "completed_at": "2026-01-24T19:20:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "description": "Count DIRECT evaluations on 2D problem",
+        "test_type": "evaluation_count",
+        "maxiter_values": [50, 100, 200, 500]
+      },
+      "result": "FAILED - DIRECT uses 443 evals (22x more than CMA-ES 20)",
+      "notes": "DIRECT converged at all maxiter values with 443 evaluations."
+    },
+    {
+      "run": 2,
+      "config": {
+        "description": "Count DIRECT evaluations on 4D problem",
+        "test_type": "evaluation_count"
+      },
+      "result": "FAILED - DIRECT uses 441 evals (12x more than CMA-ES 36)",
+      "notes": "Similar evaluation count regardless of dimension."
+    },
+    {
+      "run": 3,
+      "config": {
+        "description": "Project total time for 80 samples",
+        "test_type": "time_projection"
+      },
+      "result": "FAILED - 236 min projected vs 60 min budget (4x over)",
+      "notes": "1-src: 177s/sample, 2-src: 176s/sample. Total: 236 min."
+    },
+    {
+      "run": 4,
+      "config": {
+        "description": "Review prior evidence on alternative global optimizers",
+        "test_type": "prior_evidence"
+      },
+      "result": "CONFIRMED - All alternative global optimizers failed",
+      "notes": "OpenAI-ES, DE, PSO, SA all failed due to lack of covariance adaptation."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "result": "ABORTED",
+  "finding": "DIRECT uses 441-443 evals vs CMA-ES 20-36 (12-22x more). Projected 236 min vs 60 min budget. deterministic_global family EXHAUSTED. CMA-ES is proven optimal."
+}

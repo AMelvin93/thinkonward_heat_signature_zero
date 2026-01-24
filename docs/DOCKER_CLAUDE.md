@@ -148,27 +148,19 @@ docker-compose -f orchestration/docker-compose.manual.yml up -d
 
 Terminal 0 (W0 - Research Orchestrator):
 ```bash
-docker exec -it claude-orchestrator bash
-claude login          # Opens browser for auth - only needed once
-cat /workspace/orchestration/shared/prompt_W0.txt
-claude --dangerously-skip-permissions
+docker exec -it claude-orchestrator bash -c "claude --dangerously-skip-permissions"
 # Paste the prompt from the cat command above
 ```
 
 Terminal 1 (W1 - Threshold Tuning):
 ```bash
-docker exec -it claude-worker-1 bash
-claude login
-cat /workspace/orchestration/shared/prompt_W1.txt
-claude --dangerously-skip-permissions
+docker exec -it claude-worker-1 bash -c "claude --dangerously-skip-permissions"
 # Paste the prompt
 ```
 
 Terminal 2 (W2 - Init Strategies):
 ```bash
-docker exec -it claude-worker-2 bash
-claude login
-cat /workspace/orchestration/shared/prompt_W2.txt
+docker exec -it claude-worker-2 bash -c "claude --dangerously-skip-permissions"
 claude --dangerously-skip-permissions
 # Paste the prompt
 ```

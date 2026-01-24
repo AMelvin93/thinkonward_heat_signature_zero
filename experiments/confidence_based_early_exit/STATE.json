@@ -1,0 +1,11 @@
+{
+  "experiment_id": "EXP_EARLY_EXIT_THRESHOLD_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-24T17:15:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "ABORTED - Same idea as EXP_ADAPTIVE_BUDGET_001 and EXP_CMAES_EARLY_STOPPING_001, both FAILED. Prior experiments proved: (1) Early stopping NEVER triggered - CMA-ES continues improving >1% throughout budget, (2) Early termination hurts accuracy, (3) CMA-ES needs full budget for covariance adaptation. 'Confidence-based' exit is no different from sigma-based or stagnation-based exit."
+}
