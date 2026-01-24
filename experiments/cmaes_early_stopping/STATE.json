@@ -1,0 +1,52 @@
+{
+  "experiment_id": "EXP_EARLY_STOP_CMA_001",
+  "worker": "W2",
+  "status": "FAILED",
+  "started_at": "2026-01-24T15:30:00Z",
+  "completed_at": "2026-01-24T17:00:00Z",
+  "experiment_info": {
+    "name": "cmaes_early_stopping",
+    "family": "efficiency",
+    "description": "Stop CMA-ES early if converged, reallocate budget to NM polish",
+    "hypothesis": "Many samples converge quickly. Early stopping could save time for more polish iterations."
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "stagnation_threshold": 0.01,
+        "stagnation_generations": 3,
+        "extra_polish_per_saved": 0.5,
+        "max_polish_iters": 12
+      },
+      "results": {
+        "score": 1.1378,
+        "projected_400_min": 313.3,
+        "rmse_1src": 0.0979,
+        "rmse_2src": 0.1437,
+        "saved_fevals_total": 0,
+        "avg_polish_iters": 8.0
+      },
+      "notes": "Early stopping NEVER triggered - 0 saved fevals across all 80 samples"
+    }
+  ],
+  "best_result": {
+    "score": 1.1378,
+    "time_min": 313.3,
+    "config": "stagnation 1% for 3 gens"
+  },
+  "baseline_to_beat": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES (fixed budget) + 40% temporal + 8 NM polish"
+  },
+  "conclusion": "FAILED - Early stopping never triggers with 1%/3gen threshold. CMA-ES continues improving throughout its full budget. The hypothesis that 'many samples converge quickly' is NOT validated. Time is 5.4x over budget due to stagnation tracking overhead.",
+  "key_findings": [
+    "Early stopping with 1% threshold for 3 generations NEVER triggers",
+    "CMA-ES continues making >1% improvements throughout optimization",
+    "No fevals are saved, so no extra polish iterations are added",
+    "The overhead from stagnation tracking adds 5.4x to runtime",
+    "Prior evidence (EXP_ADAPTIVE_BUDGET_001) confirmed: early termination hurts"
+  ],
+  "recommendation": "ABANDON early stopping approaches. CMA-ES needs its full budget to achieve good results. The optimization landscape does not exhibit early convergence."
+}

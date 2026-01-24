@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP_FEVAL_POLISH_TRADE_001",
+  "worker": "W2",
+  "status": "in_progress",
+  "started_at": "2026-01-24T17:30:00Z",
+  "experiment_info": {
+    "name": "reduced_fevals_more_polish",
+    "family": "budget_reallocation",
+    "description": "Trade CMA-ES fevals (15/28) for extended NM polish (12 iters)",
+    "hypothesis": "Reducing CMA-ES fevals while increasing NM polish may maintain accuracy within time budget"
+  },
+  "baseline": {
+    "fevals_1src": 20,
+    "fevals_2src": 36,
+    "polish_iters": 8,
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [],
+  "next_config_to_try": {
+    "run": 1,
+    "config": {
+      "fevals_1src": 15,
+      "fevals_2src": 28,
+      "polish_iters": 12,
+      "note": "25% fewer CMA-ES fevals, 50% more polish"
+    }
+  },
+  "prior_evidence": {
+    "EXP_EARLY_STOP_CMA_001": "CMA-ES continues improving >1% throughout - reducing fevals may hurt accuracy",
+    "EXP_EXTENDED_POLISH_001": "12 polish iters = 82.3 min (+24 min) for +0.0015 score"
+  }
+}

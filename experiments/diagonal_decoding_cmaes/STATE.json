@@ -1,0 +1,79 @@
+{
+  "experiment_id": "EXP_DD_CMAES_001",
+  "worker": "W1",
+  "status": "tuning_complete",
+  "started_at": "2026-01-24T09:30:00Z",
+  "completed_at": "2026-01-24T11:00:00Z",
+  "hypothesis": "dd-CMA-ES adds diagonal decoding on top of full covariance. Lx=2.0, Ly=1.0 domain has different scales - may benefit from coordinate-wise rescaling.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "diagonal_decoding": 1.0,
+        "timestep_fraction": 0.40,
+        "sigma_1src": 0.18,
+        "sigma_2src": 0.22,
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "refine_maxiter": 8
+      },
+      "score": 1.1394,
+      "rmse": 0.169296,
+      "time_min": 51.3,
+      "in_budget": true,
+      "mlflow_id": "f9e55d458cdd4eaba90dd0a30a0c2f81"
+    },
+    {
+      "run": 2,
+      "config": {
+        "diagonal_decoding": 1.0,
+        "sigma_1src": 0.22,
+        "sigma_2src": 0.26,
+        "other": "same as run 1"
+      },
+      "score": 1.1466,
+      "rmse": 0.168831,
+      "time_min": 50.3,
+      "in_budget": true,
+      "mlflow_id": "80be1c380d4a450b82cb47fafa9b72f3",
+      "notes": "Higher sigma improved score slightly (+0.0072)"
+    },
+    {
+      "run": 3,
+      "config": {
+        "diagonal_decoding": 0.0,
+        "sigma_1src": 0.18,
+        "sigma_2src": 0.22,
+        "other": "same as run 1"
+      },
+      "score": 1.1389,
+      "rmse": 0.165035,
+      "time_min": 49.1,
+      "in_budget": true,
+      "mlflow_id": "5041edf6f98043b2b9d7897d6e5ade1a",
+      "notes": "Baseline verification (dd=0). Score similar to dd=1.0"
+    }
+  ],
+  "best_in_budget": {
+    "run": 2,
+    "score": 1.1466,
+    "time_min": 50.3,
+    "config": "dd=1.0, sigma 0.22/0.26"
+  },
+  "final_analysis": {
+    "conclusion": "FAILED - dd-CMA-ES provides no significant improvement",
+    "key_findings": [
+      "1. dd=1.0 vs dd=0: Essentially neutral (1.1394 vs 1.1389)",
+      "2. Higher sigma with dd=1.0 gave best score (1.1466) but still below documented baseline",
+      "3. 2:1 scale difference (Lx=2.0, Ly=1.0) is NOT severe enough for diagonal decoding to help",
+      "4. Low-dimensional problems (2D/4D) don't benefit from dd-CMA's coordinate rescaling"
+    ],
+    "comparison_to_baseline": {
+      "documented_baseline": "1.1688 @ 58.4 min",
+      "best_dd_cmaes": "1.1466 @ 50.3 min",
+      "delta": "-0.0222 score, -8.1 min"
+    }
+  },
+  "next_config_to_try": null,
+  "summary_written": true
+}

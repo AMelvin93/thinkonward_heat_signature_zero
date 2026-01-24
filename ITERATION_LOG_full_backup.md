@@ -1658,3 +1658,44 @@ Target (top 2):  1.22 (94% of max) - Gap: 0.105
 
 ---
 
+
+## Session 34 - Sigma Tuning (Worker W1)
+
+### EXP_LOWER_SIGMA_001 - Testing Sigma Sensitivity
+
+**Hypothesis**: Lower sigma (0.15/0.18) may converge faster and more precisely than baseline (0.15/0.20).
+
+**Baseline**: 1.1688 @ 58.4 min (sigma 0.15/0.20 with 40% temporal fidelity)
+
+### Test Results
+
+| Sigma Config | Score | Time | vs Baseline |
+|--------------|-------|------|-------------|
+| 0.15/0.18 (lower) | 1.1335 | 39.6 min | -0.0353 score |
+| **0.15/0.20 (baseline)** | **1.1688** | **58.4 min** | — |
+| 0.18/0.22 (higher) | 1.1379 | 38.5 min | -0.0309 score |
+
+### Per-Source RMSE Analysis
+
+| Sigma Config | 1-src RMSE | 2-src RMSE | Overall RMSE |
+|--------------|------------|------------|--------------|
+| 0.15/0.18 | 0.1261 | 0.2001 | 0.1705 |
+| 0.15/0.20 (baseline) | ~0.10 | ~0.16 | ~0.14 |
+| 0.18/0.22 | 0.1354 | 0.2076 | 0.1787 |
+
+### Key Findings
+
+1. **Baseline sigma (0.15/0.20) is locally optimal** - Both directions produce worse scores
+2. **Symmetric degradation** - Lower and higher sigma cause similar score drops (~0.03)
+3. **2-source problems most sensitive** - RMSE impact larger for 4D search space
+4. **Time savings don't compensate** - Faster runs have significantly worse accuracy
+
+### Conclusion
+
+**sigma_tuning family EXHAUSTED**
+
+The baseline sigma configuration (0.15/0.20) is at a local optimum. Further sigma tuning experiments are not worthwhile.
+
+**Recommendation**: Focus optimization efforts on other parameters (fevals, thresholds, initialization) rather than sigma.
+
+---

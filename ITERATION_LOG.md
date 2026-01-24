@@ -1411,3 +1411,81 @@ See `experiments/early_rejection_partial_sim/SUMMARY.md` for details.
 **Tuning Runs**: 4 runs (adaptive batched, source-count 6/10, fixed 8/8, baseline verification)
 **Result**: **FAILED** vs baseline (1.1688 @ 58.4 min documented, 1.1580 @ 88.6 min reproduced)
 **Key Finding**: Fixed 8 NM iterations is already optimal. Adaptive batching adds overhead from multiple minimize() calls. Source-count based (6/10) is worse - more 2-src iters adds time without accuracy. `refinement` family EXHAUSTED. See `experiments/adaptive_nm_iterations/SUMMARY.md` for details.
+
+### [W2] Experiment: random_timestep_selection | FAILED (5.8x over budget)
+**Algorithm**: Random 40% timesteps (runs full simulation, selects random timesteps for RMSE)
+**Tuning Runs**: 1 run (aborted at 37/80 samples)
+**Result**: FAILED - Projected 350 min (5.8x over 60 min budget)
+**Key Finding**: Efficiency comes from running FEWER simulation timesteps, not DIFFERENT timesteps. Random selection requires full simulation (3-4x slower). temporal_sampling family EXHAUSTED.
+
+### [W1] Experiment: adaptive_population_size | Score: 1.0026 @ 124.6 min
+**Algorithm**: Two-phase CMA-ES with adaptive popsize (large→small: P1=12 @ 60%, P2=6 @ 40%)
+**Tuning Runs**: 1 run
+**Result**: **FAILED** vs baseline (1.1688 @ 58.4 min) - 2.1x OVER BUDGET, -0.17 score
+**Key Finding**: Two-phase CMA-ES creates 8 CMA-ES runs per 2-source sample (4 inits × 2 phases). Simulation count: ~350 sims (2-src) vs baseline ~190. CMA-ES covariance adaptation requires continuous updates - phases discard learning. Combined with IPOP and larger_popsize failures: any popsize manipulation hurts. Default CMA-ES popsize is optimal. `cmaes_enhancement` family EXHAUSTED.
+
+See `experiments/adaptive_population_size/SUMMARY.md` for details.
+
+### [W1] Experiment: diagonal_decoding_cmaes | Score: 1.1466 @ 50.3 min
+**Algorithm**: dd-CMA-ES (CMA_diagonal_decoding=1) for coordinate-wise scaling
+**Tuning Runs**: 3 runs (dd=1.0 baseline, dd=1.0 higher sigma, dd=0 control)
+**Result**: **FAILED** vs baseline (1.1688 @ 58.4 min) - 8 min faster but -0.02 score
+**Key Finding**: dd-CMA-ES is neutral - dd=1.0 vs dd=0 gives essentially the same score (1.1394 vs 1.1389). The 2:1 domain aspect ratio (Lx=2.0, Ly=1.0) is too mild for diagonal decoding to help. Low-dimensional problems (2D/4D) don't benefit from coordinate rescaling. Standard CMA-ES remains optimal.
+
+See `experiments/diagonal_decoding_cmaes/SUMMARY.md` for details.
+
+### [W2] Experiment: separable_cmaes_diagonal | Score: 1.1501 @ 312.0 min
+**Algorithm**: Separable CMA-ES (CMA_diagonal=True)
+**Tuning Runs**: 1 run
+**Result**: FAILED - Score -0.0187 vs baseline, time 5.3x over budget
+**Key Finding**: Diagonal covariance HURTS both accuracy AND speed. Position correlations along heat gradient are essential for CMA-ES. Full covariance captures these correlations; diagonal cannot. cmaes_variants family (diagonal approaches) FAILED.
+
+### [W1] Experiment: powell_polish_instead_nm | Score: 1.1413 @ 244.9 min
+**Algorithm**: Powell's method (coordinate-wise line search) instead of Nelder-Mead for final polish
+**Tuning Runs**: 1 run
+**Result**: **FAILED** vs baseline (1.1688 @ 58.4 min) - 4.2x OVER BUDGET, -0.0275 score
+**Key Finding**: Powell's method uses dramatically more function evaluations than NM:
+- 2-source samples: 1000-3500 sims (vs ~200 for NM baseline)
+- Time per 2-src sample: 175-645 seconds (vs ~80s baseline)
+
+Root cause: Powell performs O(n) line searches per iteration where n=dimensions. For 4D 2-source problems, each polish iteration requires 4 full line searches (x1, y1, x2, y2), each needing 10-30 evaluations to bracket the minimum. NM uses a simplex that adapts all dimensions with just ~5 evaluations per iteration.
+
+**Recommendation**: DO NOT use Powell for polish. Nelder-Mead is optimal for 2-4D search space. The `local_search` family should prefer NM.
+
+See `experiments/powell_polish_instead_nm/SUMMARY.md` for details.
+
+### [W1] Experiment: learning_rate_adapted_cmaes | Score: 1.1457 @ 52.0 min
+**Algorithm**: cmaes library with lr_adapt=True option (Learning Rate Adaptation)
+**Tuning Runs**: 2 runs (lr_adapt=True, lr_adapt=False control)
+**Result**: **FAILED** vs baseline (1.1688 @ 58.4 min) - Score -0.0231, faster but less accurate
+**Key Finding**: 
+- lr_adapt=True: 1.1440 @ 53.0 min (-0.0248 vs baseline)
+- lr_adapt=False: 1.1457 @ 52.0 min (-0.0231 vs baseline)
+- LRA actually HURTS slightly: -0.0017 score
+
+The cmaes library underperforms pycma regardless of lr_adapt setting. Both run faster but with worse accuracy. The baseline pycma implementation remains optimal. **STAY with pycma. The cmaes_advanced family should be marked FAILED.**
+
+See `experiments/learning_rate_adapted_cmaes/SUMMARY.md` for details.
+
+### [W1] Experiment: coordinate_wise_sigma | ABORTED
+**Algorithm**: Different initial sigma for positions (x,y) vs intensity (q)
+**Result**: **ABORTED** - Flawed premise + prior evidence
+**Key Finding**: 
+1. CMA-ES only optimizes positions - intensity (q) is computed analytically via least squares
+2. EXP_DD_CMAES_001 already tested coordinate-wise scaling and FAILED (2:1 domain ratio too mild)
+3. Premise "different sigma for position vs intensity" is invalid since intensity is not a CMA-ES parameter
+
+See `experiments/coordinate_wise_sigma/SUMMARY.md` for details.
+
+### [W1] Experiment: bfgs_polish_after_cmaes | ABORTED
+**Algorithm**: BFGS (quasi-Newton) for final polish instead of Nelder-Mead
+**Result**: **ABORTED** - Prior evidence from L-BFGS-B and Powell polish experiments
+**Key Finding**: 
+1. EXP_HYBRID_CMAES_LBFGSB_001 tested L-BFGS-B polish and FAILED: finite diff overhead outweighs gradient advantage
+2. EXP_POWELL_POLISH_001 tested Powell polish and FAILED: 4.2x over budget, 5-17x more function evals than NM
+3. BFGS requires finite differences (2n+1 extra evals/iter) - same issue as L-BFGS-B
+4. All alternative polish methods have failed. NM is optimal for 2-4D problems.
+
+**local_search family EXHAUSTED for polish alternatives.**
+
+See `experiments/bfgs_polish_after_cmaes/SUMMARY.md` for details.

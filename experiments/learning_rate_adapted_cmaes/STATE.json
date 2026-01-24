@@ -1,0 +1,70 @@
+{
+  "experiment_id": "EXP_LRA_CMAES_001",
+  "worker": "W1",
+  "status": "tuning_complete",
+  "started_at": "2026-01-24T12:45:00Z",
+  "completed_at": "2026-01-24T14:00:00Z",
+  "hypothesis": "LRA-CMA-ES maintains constant signal-to-noise ratio in learning. May improve convergence on difficult samples where standard CMA-ES struggles.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "lr_adapt": true,
+        "timestep_fraction": 0.40,
+        "sigma_1src": 0.18,
+        "sigma_2src": 0.22,
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "refine_maxiter": 8
+      },
+      "score": 1.1440,
+      "rmse": 0.174772,
+      "rmse_1src": 0.1342,
+      "rmse_2src": 0.2018,
+      "time_min": 53.0,
+      "in_budget": true,
+      "mlflow_id": "30d0fa9276c74c5db638e0a0176980ad",
+      "notes": "lr_adapt=True: Score worse than baseline (-0.0248), faster (-5.4 min)"
+    },
+    {
+      "run": 2,
+      "config": {
+        "lr_adapt": false,
+        "other": "same as run 1"
+      },
+      "score": 1.1457,
+      "rmse": 0.164171,
+      "rmse_1src": 0.1284,
+      "rmse_2src": 0.1880,
+      "time_min": 52.0,
+      "in_budget": true,
+      "mlflow_id": "42f306a6803f47d4b5427b50a186446c",
+      "notes": "lr_adapt=False (control): Slightly better than lr_adapt=True (+0.0017), still worse than baseline (-0.0231)"
+    }
+  ],
+  "best_in_budget": {
+    "run": 2,
+    "score": 1.1457,
+    "time_min": 52.0,
+    "config": "lr_adapt=False (cmaes library)"
+  },
+  "final_analysis": {
+    "conclusion": "FAILED - cmaes library underperforms pycma baseline regardless of lr_adapt setting",
+    "key_findings": [
+      "1. lr_adapt=True: 1.1440 @ 53.0 min (-0.0248 vs baseline)",
+      "2. lr_adapt=False: 1.1457 @ 52.0 min (-0.0231 vs baseline)",
+      "3. LRA actually HURTS slightly: 1.1440 vs 1.1457 (-0.0017)",
+      "4. Main issue is cmaes library vs pycma, not LRA specifically",
+      "5. Both cmaes variants are faster but less accurate than pycma"
+    ],
+    "comparison_to_baseline": {
+      "documented_baseline": "1.1688 @ 58.4 min (pycma)",
+      "best_lra_cmaes": "1.1457 @ 52.0 min (cmaes, lr_adapt=False)",
+      "delta": "-0.0231 score, -6.4 min"
+    },
+    "root_cause": "The cmaes library likely has different default parameters or convergence behavior compared to pycma. Both run faster (fewer generations needed to converge?) but with worse final accuracy. LRA provides no benefit - it actually hurts slightly.",
+    "recommendation": "STAY with pycma. The cmaes library's implementation does not match pycma's performance for this problem."
+  },
+  "next_config_to_try": null,
+  "summary_written": true
+}

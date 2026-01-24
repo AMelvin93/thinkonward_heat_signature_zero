@@ -1,0 +1,50 @@
+{
+  "experiment_id": "EXP_SEP_CMAES_001",
+  "worker": "W2",
+  "status": "failed",
+  "started_at": "2026-01-24T13:45:00Z",
+  "completed_at": "2026-01-24T15:00:00Z",
+  "experiment_info": {
+    "name": "separable_cmaes_diagonal",
+    "family": "cmaes_variants",
+    "description": "Use Separable CMA-ES (diagonal-only covariance) for faster convergence",
+    "hypothesis": "Diagonal-only covariance may be sufficient for this 2-4D problem, enabling higher learning rates."
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "CMA_diagonal": true,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1501,
+      "time_min": 312.0,
+      "total_time_sec": 3743.7,
+      "rmse_1src": 0.1018,
+      "rmse_2src": 0.1386,
+      "in_budget": false,
+      "mlflow_run_id": "c6e4f5d256f94e1caea8fe5680176c63",
+      "notes": "Diagonal covariance WORSE on both accuracy (-0.0187) and time (5.3x over budget)"
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "baseline_to_beat": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "algorithm": "CMA-ES (full covariance) + 40% temporal + 8 NM polish"
+  },
+  "summary_written": true,
+  "key_findings": [
+    "Diagonal-only covariance HURTS both accuracy AND speed",
+    "Score: 1.1501 vs baseline 1.1688 (-0.0187, 1.6% worse)",
+    "Time: 312 min vs baseline 58.4 min (5.3x over budget)",
+    "Position correlations (x,y) ARE important for thermal source localization",
+    "CMA-ES full covariance captures heat gradient direction correlations",
+    "Removing correlations forces more iterations to converge (slower)",
+    "sep-CMA-ES is NOT suitable for this problem - cmaes_variants family FAILED for diagonal approaches"
+  ]
+}

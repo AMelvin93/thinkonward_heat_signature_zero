@@ -1,0 +1,57 @@
+{
+  "experiment_id": "EXP_LOWER_SIGMA_001",
+  "worker": "W1",
+  "status": "tuning_complete",
+  "started_at": "2026-01-24T14:30:00Z",
+  "completed_at": "2026-01-24T15:10:00Z",
+  "hypothesis": "Lower sigma (0.15/0.18) may converge faster and more precisely than baseline (0.15/0.20).",
+  "tuning_runs": [
+    {
+      "run_id": 1,
+      "config": {
+        "timestep_fraction": 0.40,
+        "sigma_1src": 0.15,
+        "sigma_2src": 0.18,
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "refine_maxiter": 8
+      },
+      "result": {
+        "score": 1.1335,
+        "projected_min": 39.6,
+        "rmse_1src": 0.1261,
+        "rmse_2src": 0.2001,
+        "rmse_overall": 0.1705
+      },
+      "notes": "WORSE than baseline (1.1688). Lower sigma too local, doesn't explore enough."
+    },
+    {
+      "run_id": 2,
+      "config": {
+        "timestep_fraction": 0.40,
+        "sigma_1src": 0.18,
+        "sigma_2src": 0.22,
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "refine_maxiter": 8
+      },
+      "result": {
+        "score": 1.1379,
+        "projected_min": 38.5,
+        "rmse_1src": 0.1354,
+        "rmse_2src": 0.2076,
+        "rmse_overall": 0.1787
+      },
+      "notes": "WORSE than baseline (1.1688). Higher sigma also fails - too much exploration, less precise."
+    }
+  ],
+  "best_in_budget": null,
+  "conclusion": "FAILED - Baseline sigma (0.15/0.20) is optimal. Both lower (0.15/0.18) and higher (0.18/0.22) sigma perform worse.",
+  "key_findings": [
+    "Lower sigma (0.15/0.18): score 1.1335 vs baseline 1.1688 (-0.0353)",
+    "Higher sigma (0.18/0.22): score 1.1379 vs baseline 1.1688 (-0.0309)",
+    "Baseline sigma 0.15/0.20 is locally optimal in sigma space",
+    "2-source problems particularly sensitive to sigma (RMSE ~0.20 vs baseline ~0.16)"
+  ],
+  "summary_written": true
+}

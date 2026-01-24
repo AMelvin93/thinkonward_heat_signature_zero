@@ -1,0 +1,20 @@
+{
+  "experiment_id": "EXP_BFGS_POLISH_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-24T14:20:00Z",
+  "completed_at": "2026-01-24T14:20:00Z",
+  "hypothesis": "BFGS may converge faster than NM for final polishing from good CMA-ES starting point.",
+  "abort_reason": "PRIOR EVIDENCE - Both gradient-based and coordinate-wise polish methods have failed",
+  "abort_details": [
+    "1. EXP_HYBRID_CMAES_LBFGSB_001 tested L-BFGS-B polish and FAILED: 'Finite diff overhead (O(n) extra sims/iter) outweighs gradient advantage. Best L-BFGS-B: 1.1174 @ 42 min (WORSE than NM x8: 1.1415 @ 38 min)'",
+    "2. EXP_POWELL_POLISH_001 tested Powell polish and FAILED: 4.2x over budget (244.9 min), score 1.1413 (worse than baseline). Coordinate-wise line search uses 5-17x more function evaluations than NM.",
+    "3. BFGS requires finite differences for gradient (2n+1 extra evals per iteration for n-D problem).",
+    "4. All alternative polish methods have failed. NM's simplex approach is optimal for 2-4D problems."
+  ],
+  "prior_experiment_references": ["EXP_HYBRID_CMAES_LBFGSB_001", "EXP_POWELL_POLISH_001"],
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true
+}

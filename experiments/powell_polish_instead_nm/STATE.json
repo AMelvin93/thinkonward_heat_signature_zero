@@ -1,0 +1,51 @@
+{
+  "experiment_id": "EXP_POWELL_POLISH_001",
+  "worker": "W1",
+  "status": "tuning_complete",
+  "started_at": "2026-01-24T11:15:00Z",
+  "completed_at": "2026-01-24T12:30:00Z",
+  "hypothesis": "Powell's method performs coordinate-wise line searches which may be more efficient for 2-4D search space than NM's simplex operations.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "polish_method": "powell",
+        "timestep_fraction": 0.40,
+        "sigma_1src": 0.18,
+        "sigma_2src": 0.22,
+        "fevals_1src": 20,
+        "fevals_2src": 36,
+        "refine_maxiter": 8
+      },
+      "score": 1.1413,
+      "rmse": 0.174606,
+      "rmse_1src": 0.1334,
+      "rmse_2src": 0.2021,
+      "time_min": 244.9,
+      "in_budget": false,
+      "mlflow_id": "8df835f50b164be6bd6e6d50fe4422ba",
+      "notes": "MASSIVE FAILURE: 4.2x over budget, worse score than baseline"
+    }
+  ],
+  "best_in_budget": null,
+  "final_analysis": {
+    "conclusion": "FAILED - Powell's method is dramatically worse than Nelder-Mead",
+    "key_findings": [
+      "1. Powell uses 1000-3500 sims for 2-source samples vs ~200 for NM baseline",
+      "2. 4.2x over time budget (244.9 min vs 60 min limit)",
+      "3. Score WORSE than baseline: 1.1413 vs 1.1688 (-0.0275)",
+      "4. Coordinate-wise line searches require many 1D optimizations",
+      "5. For 4D problems, Powell explores each dimension sequentially - inefficient",
+      "6. NM simplex adapts all dimensions simultaneously - much faster for low-D"
+    ],
+    "comparison_to_baseline": {
+      "documented_baseline": "1.1688 @ 58.4 min",
+      "best_powell": "1.1413 @ 244.9 min",
+      "delta": "-0.0275 score, +186.5 min"
+    },
+    "root_cause": "Powell performs O(n) line searches per iteration where n=dimensions. For 4D 2-source problems, each polish iteration requires 4 full line searches (x1, y1, x2, y2), each needing many function evaluations to find the minimum. NM uses a simplex that adapts all dimensions with just ~5 evaluations per iteration (reflect, expand, contract, shrink).",
+    "recommendation": "DO NOT use Powell for polish. Nelder-Mead is optimal for this 2-4D search space."
+  },
+  "next_config_to_try": null,
+  "summary_written": true
+}

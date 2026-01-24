@@ -1,0 +1,20 @@
+{
+  "experiment_id": "EXP_COORD_SIGMA_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-24T14:15:00Z",
+  "completed_at": "2026-01-24T14:15:00Z",
+  "hypothesis": "Different initial sigma for positions (x,y) vs intensity (q) may improve optimization.",
+  "abort_reason": "FLAWED PREMISE + PRIOR EVIDENCE",
+  "abort_details": [
+    "1. CMA-ES only optimizes positions (x,y). Intensity (q) is computed analytically via least squares - NOT optimized by CMA-ES.",
+    "2. EXP_DD_CMAES_001 already tested coordinate-wise scaling (dd-CMA-ES) and FAILED. The 2:1 domain ratio (Lx=2.0, Ly=1.0) is too mild for coordinate-wise approaches to help.",
+    "3. Low-dimensional problems (2D/4D) don't benefit from coordinate rescaling.",
+    "4. The premise 'different sigma for position vs intensity' is invalid since intensity is not a CMA-ES parameter."
+  ],
+  "prior_experiment_reference": "EXP_DD_CMAES_001",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true
+}

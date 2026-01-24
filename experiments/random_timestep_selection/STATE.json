@@ -1,27 +1,59 @@
 {
   "experiment_id": "EXP_RANDOM_TIMESTEPS_001",
   "worker": "W2",
-  "status": "running",
+  "status": "failed",
   "started_at": "2026-01-22T19:00:00Z",
+  "completed_at": "2026-01-24T13:30:00Z",
   "experiment_info": {
     "name": "random_timestep_selection",
     "family": "temporal_sampling",
     "description": "Use random 40% of timesteps instead of first 40% for CMA-ES evaluation",
     "hypothesis": "First 40% timesteps may miss important late-time dynamics. Random sampling captures different parts of temporal evolution, potentially providing more informative RMSE signal."
   },
-  "tuning_runs": [],
-  "best_in_budget": null,
-  "next_config_to_try": {
-    "run": 1,
-    "config": {
-      "timestep_selection": "random",
-      "timestep_fraction": 0.40,
-      "note": "Run full simulation, select random 40% of timesteps for RMSE"
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "timestep_selection": "random",
+        "timestep_fraction": 0.40,
+        "simulation": "full (100% timesteps)",
+        "rmse_calculation": "random 40% of timesteps",
+        "final_polish_maxiter": 8,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "status": "aborted_early",
+      "samples_completed": 37,
+      "samples_total": 80,
+      "partial_results": {
+        "n_1src_samples": 32,
+        "n_2src_samples": 5,
+        "avg_time_1src_sec": 220,
+        "avg_time_2src_sec": 416,
+        "rmse_1src_avg": 0.091,
+        "rmse_2src_avg": 0.129
+      },
+      "projected_time_80_samples_min": 70,
+      "projected_time_400_samples_min": 350,
+      "in_budget": false,
+      "reason_for_abort": "Projected 350 min (5.8x over 60 min budget). Full simulation per evaluation is 3-4x slower than baseline which only simulates 40% of timesteps.",
+      "mlflow_id": null
     }
-  },
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
   "baseline_to_beat": {
     "score": 1.1688,
     "time_min": 58.4,
     "algorithm": "CMA-ES + first 40% timesteps + 8 NM polish (RMSE objective)"
-  }
+  },
+  "summary_written": true,
+  "key_findings": [
+    "Random timesteps as implemented requires FULL simulation (100% timesteps) then selecting 40% for RMSE",
+    "Baseline runs only 40% of simulation timesteps - this is the efficiency source, not which timesteps are used",
+    "Full simulation is 3-4x slower per sample (220s vs ~70s for 1-src, 416s vs ~120s for 2-src)",
+    "Projected 400 samples: 350 min (5.8x over budget)",
+    "No accuracy benefit observed - RMSE values similar to baseline",
+    "temporal_sampling family should be marked FAILED"
+  ]
 }
