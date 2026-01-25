@@ -1,0 +1,11 @@
+{
+  "experiment_id": "EXP_SPLIT_POLISH_FINE_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-25T03:10:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "ABORTED - Same as progressive_polish_fidelity. Prior evidence shows truncated polish overfits to proxy noise (-0.0346 score). Full timesteps REQUIRED for polish."
+}

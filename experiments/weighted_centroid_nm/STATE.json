@@ -1,0 +1,42 @@
+{
+  "experiment_id": "EXP_WEIGHTED_CENTROID_NM_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-24T23:20:00Z",
+  "completed_at": "2026-01-24T23:35:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "use_weighted_nm": true,
+        "weight_power": 2.0,
+        "timestep_fraction": 0.40,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.20,
+        "final_polish_maxiter": 8
+      },
+      "score": 0.9608,
+      "time_min": 52.3,
+      "in_budget": true,
+      "rmse_1src": 0.1214,
+      "rmse_2src": 0.2056,
+      "notes": "WITHIN BUDGET but MUCH WORSE score (-0.2080). Only 1 candidate/sample (diversity penalty). 2-src RMSE 45% worse than baseline."
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "score": 0.9608,
+    "time_min": 52.3,
+    "config": {
+      "use_weighted_nm": true,
+      "weight_power": 2.0
+    }
+  },
+  "best_overall": null,
+  "next_config_to_try": null,
+  "baseline_score": 1.1688,
+  "baseline_time": 58.4,
+  "hypothesis": "2023 paper: Weighted centroid in NM accelerates convergence for heat source localization. Weights inverse to function value bias search towards better regions.",
+  "key_finding": "Weighted centroid NM HURTS both accuracy AND diversity. Custom NM implementation produced only 1 candidate per sample. Standard scipy NM is more robust and produces better results.",
+  "summary_written": true
+}

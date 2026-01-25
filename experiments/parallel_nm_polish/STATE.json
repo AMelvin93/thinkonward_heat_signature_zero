@@ -1,0 +1,16 @@
+{
+  "experiment_id": "EXP_PARALLEL_NM_POLISH_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-24T23:42:00Z",
+  "completed_at": "2026-01-24T23:43:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "best_overall": null,
+  "next_config_to_try": null,
+  "baseline_score": 1.1688,
+  "baseline_time": 58.4,
+  "hypothesis": "Parallelizing NM polish across candidates could reduce wall-clock time.",
+  "key_finding": "ABORTED - No parallelization opportunity exists. Baseline NM polish only runs on BEST candidate (1 call per sample). Sample-level parallelization already achieved via ProcessPoolExecutor (7 workers). NM itself is inherently sequential (each iteration depends on previous).",
+  "summary_written": true
+}

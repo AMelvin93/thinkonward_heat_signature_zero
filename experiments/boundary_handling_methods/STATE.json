@@ -1,0 +1,37 @@
+{
+  "experiment_id": "EXP_BOUNDARY_HANDLING_001",
+  "worker": "W2",
+  "status": "tuning_complete",
+  "started_at": "2026-01-24T23:35:00Z",
+  "completed_at": "2026-01-24T23:55:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"boundary_handler": "BoundTransform"},
+      "score": 1.1727,
+      "time_min": 68.1,
+      "in_budget": false,
+      "notes": "Default handler - over budget (68.1 min vs 60 min limit)"
+    },
+    {
+      "run": 2,
+      "config": {"boundary_handler": "BoundPenalty"},
+      "score": 0.0,
+      "time_min": 0.1,
+      "in_budget": false,
+      "notes": "FAILED - 'BoundPenalty' is not a valid pycma option string. All samples returned errors."
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1727,
+    "time_min": 68.1,
+    "config": {"boundary_handler": "BoundTransform"}
+  },
+  "next_config_to_try": null,
+  "baseline_score": 1.1688,
+  "baseline_time": 58.4,
+  "key_finding": "BoundTransform is the only valid string option for pycma BoundaryHandler. BoundPenalty requires class instantiation. Baseline already uses BoundTransform (default). No improvement possible via boundary handling changes.",
+  "summary_written": true
+}

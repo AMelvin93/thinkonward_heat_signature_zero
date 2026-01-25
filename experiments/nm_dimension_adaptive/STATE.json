@@ -1,0 +1,16 @@
+{
+  "experiment_id": "EXP_NM_DIM_ADAPTIVE_001",
+  "worker": "W3",
+  "status": "in_progress",
+  "started_at": "2026-01-25T03:16:34.060200Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": {
+    "description": "Initial: Dimension-dependent NM expansion/contraction params",
+    "nm_expansion_1src": 1.5,
+    "nm_contraction_1src": 0.6,
+    "nm_expansion_2src": 1.3,
+    "nm_contraction_2src": 0.7
+  },
+  "summary_written": false
+}

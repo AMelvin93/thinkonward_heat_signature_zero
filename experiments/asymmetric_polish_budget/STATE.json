@@ -1,0 +1,51 @@
+{
+  "experiment_id": "EXP_ASYMMETRIC_POLISH_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-25T02:32:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "polish_1src": 6,
+        "polish_2src": 10,
+        "sigma_1src": 0.15,
+        "sigma_2src": 0.2,
+        "fevals_1src": 20,
+        "fevals_2src": 36
+      },
+      "score": 1.1608,
+      "time_min": 92.2,
+      "in_budget": false,
+      "mlflow_id": "1d2b297647c442af84bca839ba7c380e",
+      "notes": "6/10 polish is WORSE: 10 iters for 2-src adds ~39s per 2-src sample. Over budget by 33.8 min."
+    },
+    {
+      "run": 2,
+      "config": {
+        "polish_1src": 4,
+        "polish_2src": 8
+      },
+      "score": 1.1551,
+      "time_min": 72.3,
+      "in_budget": false,
+      "mlflow_id": "8cc9078336024b13ac589338e1c4b3a7",
+      "notes": "4/8 polish is WORSE than baseline. Reducing 1-src polish from 8 to 4 hurts accuracy. Time still over budget (72.3 min)."
+    },
+    {
+      "run": 3,
+      "config": {
+        "polish_1src": 8,
+        "polish_2src": 8
+      },
+      "score": 1.1639,
+      "time_min": 79.3,
+      "in_budget": false,
+      "mlflow_id": "6a04cab019374355a01b9529a31880d0",
+      "notes": "8/8 (same as 'baseline' config) is STILL 20.9 min slower. Implementation overhead detected."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true
+}

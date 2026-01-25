@@ -1,0 +1,16 @@
+{
+  "experiment_id": "EXP_MAE_POLISH_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-24T23:40:00Z",
+  "completed_at": "2026-01-24T23:41:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "best_overall": null,
+  "next_config_to_try": null,
+  "baseline_score": 1.1688,
+  "baseline_time": 58.4,
+  "hypothesis": "RMSE emphasizes large errors. MAE might be more robust to outliers and lead to better overall fit.",
+  "key_finding": "ABORTED based on prior evidence. EXP_LOG_RMSE_LOSS_001 and EXP_WEIGHTED_SENSOR_LOSS_001 both FAILED when changing the loss function. MAE minimizer != RMSE minimizer. Optimizing MAE while being scored on RMSE finds wrong solution.",
+  "summary_written": true
+}

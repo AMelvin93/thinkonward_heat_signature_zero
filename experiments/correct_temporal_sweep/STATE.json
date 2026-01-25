@@ -1,0 +1,91 @@
+{
+  "experiment_id": "EXP_CORRECT_TEMPORAL_SWEEP_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-24T21:55:00Z",
+  "completed_at": "2026-01-24T22:53:04.230548Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "timestep_fraction": 0.35,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1601,
+      "time_min": 67.9,
+      "in_budget": false,
+      "rmse_1src": 0.1064,
+      "rmse_2src": 0.1644,
+      "notes": "OVER BUDGET by 7.9 min. Score -0.0087 vs baseline."
+    },
+    {
+      "run": 2,
+      "config": {
+        "timestep_fraction": 0.38,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1629,
+      "time_min": 68.5,
+      "in_budget": false,
+      "rmse_1src": 0.1117,
+      "rmse_2src": 0.1551,
+      "notes": "OVER BUDGET by 8.5 min. Score -0.0059 vs baseline."
+    },
+    {
+      "run": 3,
+      "config": {
+        "timestep_fraction": 0.42,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1641,
+      "time_min": 71.2,
+      "in_budget": false,
+      "rmse_1src": 0.1023,
+      "rmse_2src": 0.1528,
+      "notes": "OVER BUDGET by 11.2 min. Score -0.0047 vs baseline. Closest to baseline."
+    },
+    {
+      "run": 4,
+      "config": {
+        "timestep_fraction": 0.45,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.163,
+      "time_min": 73.3,
+      "in_budget": false,
+      "rmse_1src": 0.1028,
+      "rmse_2src": 0.1605,
+      "notes": "OVER BUDGET by 13.3 min. Score -0.0058 vs baseline."
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 3,
+    "score": 1.1641,
+    "time_min": 71.2,
+    "config": {
+      "timestep_fraction": 0.42,
+      "sigma0_1src": 0.15,
+      "sigma0_2src": 0.2
+    }
+  },
+  "next_config_to_try": null,
+  "configs_to_sweep": [
+    0.35,
+    0.38,
+    0.42,
+    0.45
+  ],
+  "baseline_score": 1.1688,
+  "baseline_time": 58.4,
+  "key_finding": "40% timesteps is confirmed OPTIMAL. All other fractions (35%, 38%, 42%, 45%) have WORSE scores AND take longer. No improvement possible via temporal fraction tuning.",
+  "summary_written": true
+}

@@ -1,0 +1,28 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_NM_COEFFICIENTS_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-25T03:30:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "nm_adaptive": true,
+        "final_polish_maxiter": 8,
+        "timestep_fraction": 0.4,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "score": 1.1493,
+      "time_min": 85.0,
+      "in_budget": false,
+      "mlflow_id": "06b77c51ac96465e988e0c0a191fce82"
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - Adaptive NM coefficients: -0.0195 score, +45% time. Default NM coefficients are optimal."
+}

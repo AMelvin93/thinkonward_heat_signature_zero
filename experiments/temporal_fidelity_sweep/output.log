@@ -1,0 +1,71 @@
+/workspace/.venv/lib/python3.11/site-packages/mlflow/tracking/_tracking_service/utils.py:177: FutureWarning: The filesystem tracking backend (e.g., './mlruns') will be deprecated in February 2026. Consider transitioning to a database backend (e.g., 'sqlite:///mlflow.db') to take advantage of the latest MLflow features. See https://github.com/mlflow/mlflow/issues/18534 for more details and migration guidance.
+  return FileStore(store_uri, store_uri)
+
+Temporal Fidelity Sweep Experiment
+======================================================================
+Samples: 80, Workers: 7
+Timestep fractions to test: [0.35, 0.38, 0.4, 0.42, 0.45]
+Polish: 8 NM iters, Sigma: 0.18/0.22
+======================================================================
+
+======================================================================
+Running timestep_fraction=35%
+======================================================================
+[ 10/80] 1-src RMSE=0.1478 cands=3 [OK]
+[ 20/80] 1-src RMSE=0.0697 cands=2 [OK]
+[ 30/80] 1-src RMSE=0.0991 cands=1 [OK]
+[ 40/80] 2-src RMSE=0.1811 cands=3 [OK]
+[ 50/80] 2-src RMSE=0.1027 cands=3 [OK]
+[ 60/80] 2-src RMSE=0.1234 cands=3 [OK]
+[ 70/80] 2-src RMSE=0.1737 cands=3 [OK]
+[ 80/80] 2-src RMSE=0.1651 cands=3 [OK]
+
+Results for timestep_fraction=35%:
+  Score: 1.1656, Time: 67.4 min
+  1-src RMSE: 0.1059 (n=32)
+  2-src RMSE: 0.1646 (n=48)
+
+======================================================================
+Running timestep_fraction=38%
+======================================================================
+[ 10/80] 1-src RMSE=0.1602 cands=3 [OK]
+[ 20/80] 1-src RMSE=0.0465 cands=2 [OK]
+[ 30/80] 1-src RMSE=0.1507 cands=1 [OK]
+[ 40/80] 2-src RMSE=0.1539 cands=3 [OK]
+[ 50/80] 2-src RMSE=0.1032 cands=3 [OK]
+[ 60/80] 2-src RMSE=0.0993 cands=3 [OK]
+[ 70/80] 2-src RMSE=0.2277 cands=3 [OK]
+[ 80/80] 2-src RMSE=0.1779 cands=3 [OK]
+
+Results for timestep_fraction=38%:
+  Score: 1.1637, Time: 69.7 min
+  1-src RMSE: 0.1040 (n=32)
+  2-src RMSE: 0.1595 (n=48)
+
+======================================================================
+Running timestep_fraction=40%
+======================================================================
+[ 10/80] 1-src RMSE=0.1813 cands=2 [OK]
+[ 20/80] 1-src RMSE=0.1266 cands=3 [OK]
+[ 30/80] 1-src RMSE=0.1000 cands=3 [OK]
+[ 40/80] 2-src RMSE=0.1947 cands=3 [OK]
+[ 50/80] 2-src RMSE=0.1433 cands=3 [OK]
+[ 60/80] 2-src RMSE=0.1836 cands=3 [OK]
+[ 70/80] 2-src RMSE=0.1209 cands=3 [OK]
+[ 80/80] 2-src RMSE=0.3697 cands=3 [OK]
+
+Results for timestep_fraction=40%:
+  Score: 1.1541, Time: 71.8 min
+  1-src RMSE: 0.1201 (n=32)
+  2-src RMSE: 0.1736 (n=48)
+
+======================================================================
+Running timestep_fraction=42%
+======================================================================
+[ 10/80] 1-src RMSE=0.1956 cands=2 [OK]
+[ 20/80] 1-src RMSE=0.1013 cands=3 [OK]
+[ 30/80] 1-src RMSE=0.0999 cands=3 [OK]
+[ 40/80] 2-src RMSE=0.1047 cands=3 [OK]
+[ 50/80] 2-src RMSE=0.1166 cands=3 [OK]
+[ 60/80] 2-src RMSE=0.1243 cands=3 [OK]
+[ 70/80] 2-src RMSE=0.1314 cands=3 [OK]

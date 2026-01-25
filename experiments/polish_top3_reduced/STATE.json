@@ -1,0 +1,28 @@
+{
+  "experiment_id": "EXP_POLISH_TOP3_001",
+  "worker": "W3",
+  "status": "done",
+  "started_at": "2026-01-25T02:25:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "polish_iters_per_candidate": 4,
+        "n_candidates_to_polish": 3,
+        "total_polish_iters": 12,
+        "timestep_fraction": 0.4
+      },
+      "score": 1.0743,
+      "time_min": 114.2,
+      "in_budget": false,
+      "rmse_mean": 0.145992,
+      "mlflow_id": "a9f603923c694cdea9fc4360bfc1481c",
+      "notes": "FAILED: 12 polish iters on 3 candidates is 1.9x over budget and worse accuracy"
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "last_updated": "2026-01-25T02:53:54.187125Z",
+  "conclusion": "FAILED - Polishing multiple candidates spreads budget thin and adds overhead without improving accuracy"
+}

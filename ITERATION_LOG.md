@@ -1495,3 +1495,183 @@ See `experiments/bfgs_polish_after_cmaes/SUMMARY.md` for details.
 **Tuning Runs**: 3 runs (see STATE.json for details)
 **Result**: FAILED vs baseline (1.1688 @ 58.4 min)
 **Key Finding**: BIPOP restarts add ~8 min overhead without sufficient accuracy gain. Best in-budget (1.1609) is worse than baseline. Problem lacks local optima - restarts are wasteful. cmaes_restart_v2 family EXHAUSTED. See experiments/bipop_cmaes_restart/SUMMARY.md for details.
+
+### [W2] Experiment: temporal_fidelity_sweep | Score: 1.1656 @ 67.4 min
+**Algorithm**: Temporal fidelity sweep (35%, 38%, 40%, 42%, 45%) with sigma 0.18/0.22
+**Tuning Runs**: 4 runs (1 incomplete)
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min)
+**Key Finding**: Sigma 0.18/0.22 is WORSE than 0.15/0.20. All runs over budget with worse scores. See experiments/temporal_fidelity_sweep/SUMMARY.md for details.
+
+### [W1] Experiment: temporal_fidelity_sweep | Score: 1.1671 @ 68.7 min
+**Algorithm**: Temporal fidelity sweep (35%, 38%, 40%, 42%, 45%) with sigma 0.18/0.22
+**Tuning Runs**: 5 fractions tested, all OVER BUDGET (67-73 min vs 60 min limit)
+**Result**: FAILED - All runs worse than baseline 1.1688 @ 58.4 min
+**Key Finding**: Sigma 0.18/0.22 is WORSE than baseline 0.15/0.20 - baseline is confirmed optimal. See experiments/temporal_fidelity_sweep/SUMMARY.md
+
+
+### [W2] Experiment: more_inits_select_best | Score: 1.1590 @ 66.9 min
+**Algorithm**: More CMA-ES initializations (6 vs 2), select best 3 by RMSE
+**Tuning Runs**: 3 runs (all over budget)
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min)
+**Key Finding**: More initializations add overhead that outweighs any accuracy benefit. Baseline 2-init strategy is already optimal. See experiments/more_inits_select_best/SUMMARY.md for details.
+
+### [W1] Experiment: correct_temporal_sweep | Score: 1.1641 @ 71.2 min
+**Algorithm**: Temporal sweep (35%, 38%, 42%, 45%) with correct sigma 0.15/0.20
+**Tuning Runs**: 4 fractions tested (35%, 38%, 42%, 45%), all over budget
+**Result**: FAILED - All fractions WORSE than 40% baseline (1.1688 @ 58.4 min)
+**Key Finding**: 40% timesteps is CONFIRMED OPTIMAL. temporal_tuning family EXHAUSTED. See experiments/correct_temporal_sweep/SUMMARY.md
+
+
+### [W2] Experiment: reduced_cmaes_more_nm | Score: 1.1584 @ 71.1 min
+**Algorithm**: Trade CMA-ES budget for more NM polish (15/30 fevals + 10 NM vs 20/36 + 8 NM)
+**Tuning Runs**: 1 run
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min) - OVER BUDGET by 11.1 min, score -0.0104
+**Key Finding**: Budget reallocation does NOT help:
+- Reducing CMA-ES fevals hurts global search convergence
+- NM polish iterations are MORE expensive per-iteration than CMA-ES fevals (fine grid vs coarse)
+- Cannot trade cheap fevals for expensive polish and save time
+- Baseline budget allocation (20/36 fevals + 8 NM) is OPTIMAL
+
+**budget_reallocation family EXHAUSTED.** See experiments/reduced_cmaes_more_nm/SUMMARY.md for details.
+
+
+### [W1] Experiment: ica_seeded_init | Score: 1.1601 @ 69.2 min
+**Algorithm**: FastICA initialization for 2-source problems + baseline CMA-ES
+**Tuning Runs**: 1 run
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min) - OVER BUDGET by 9.2 min, score -0.0087
+**Key Finding**: ICA initialization adds significant overhead without improving accuracy:
+- ICA used on 22 out of 48 2-source samples (~7.5s per sample)
+- ICA-derived positions are NOT better than random/grid initialization
+- CMA-ES is robust enough to find good solutions from any starting point
+- ICA assumes linear mixing which violates heat diffusion physics
+
+**initialization_v3 family EXHAUSTED.** Baseline init strategy (triangulation + hotspot) is OPTIMAL. See experiments/ica_seeded_init/SUMMARY.md for details.
+
+### [W2] Experiment: sigma_ladder | Score: 1.1658 @ 70.0 min
+**Algorithm**: Sigma ladder - start with high sigma (0.30/0.35), reduce to low sigma (0.15/0.20) during optimization
+**Tuning Runs**: 1 run
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min) - OVER BUDGET by 11.6 min, score -0.0030
+**Key Finding**: Sigma ladder does NOT help:
+- Manual sigma scheduling interferes with CMA-ES covariance learning
+- CMA-ES has built-in principled sigma adaptation via cumulative step size adaptation
+- Overriding sigma externally breaks the coupling between sigma and covariance matrix
+- Baseline sigma 0.15/0.20 is already OPTIMAL
+
+**sigma_scheduling_v2 family EXHAUSTED.** See experiments/sigma_ladder/SUMMARY.md for details.
+
+
+### [W1] Experiment: weighted_centroid_nm | Score: 0.9608 @ 52.3 min
+**Algorithm**: Weighted Centroid NM for polish (based on 2023 paper)
+**Tuning Runs**: 1 run
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min) - Within budget but MUCH WORSE score (-0.2080)
+**Key Finding**: Weighted centroid NM HURTS both accuracy AND diversity:
+- Only 1 candidate per sample (vs ~3 for baseline) - lost diversity bonus
+- 1-src RMSE 10% worse (0.1214 vs 0.11)
+- 2-src RMSE 45% worse (0.2056 vs 0.14)
+- Weighted centroid biased search towards single local minimum
+
+**polish_improvement family EXHAUSTED.** Standard scipy NM is OPTIMAL for 2-4D polish. See experiments/weighted_centroid_nm/SUMMARY.md for details.
+
+### [W2] Experiment: boundary_handling_methods | ABORTED
+**Algorithm**: Test different CMA-ES boundary constraint handling methods (BoundTransform vs BoundPenalty)
+**Tuning Runs**: 2 runs (1 default, 1 failed)
+**Result**: ABORTED due to implementation issues
+**Key Finding**: 
+- BoundPenalty is NOT a valid string option for pycma's BoundaryHandler
+- Only 'BoundTransform' is recognized as a safe string
+- Baseline already uses BoundTransform (default)
+- No alternative boundary handlers are easily available
+
+**constraint_handling family EXHAUSTED.** See experiments/boundary_handling_methods/SUMMARY.md for details.
+
+
+### [W1] Experiment: mae_polish_loss | ABORTED
+**Algorithm**: Use MAE instead of RMSE for NM polish objective
+**Tuning Runs**: 0 runs (aborted before execution)
+**Result**: ABORTED based on prior evidence
+**Key Finding**: MAE polish would fail for the same reason as other loss function changes:
+- EXP_LOG_RMSE_LOSS_001 FAILED - monotonic transformations don't help
+- EXP_WEIGHTED_SENSOR_LOSS_001 FAILED - changing loss finds different (wrong) optimum
+- MAE minimizer != RMSE minimizer - would optimize wrong objective
+
+**polish_loss family EXHAUSTED.** RMSE is the only valid loss function since that's what we're scored on. See experiments/mae_polish_loss/SUMMARY.md for details.
+
+
+### [W1] Experiment: parallel_nm_polish | ABORTED
+**Algorithm**: Parallelize NM polish across candidates
+**Tuning Runs**: 0 runs (aborted before execution)
+**Result**: ABORTED - No parallelization opportunity exists
+**Key Finding**: 
+- Baseline NM polish only runs on BEST candidate (1 call per sample)
+- Sample-level parallelization already achieved via ProcessPoolExecutor (7 workers)
+- NM is inherently sequential (each iteration depends on previous)
+- Cannot parallelize within a single NM run
+
+**parallelization family EXHAUSTED.** Maximum parallelization already achieved. See experiments/parallel_nm_polish/SUMMARY.md for details.
+
+### [W2] Session Summary - 2026-01-24
+
+**Experiments Run:**
+1. **reduced_cmaes_more_nm**: FAILED (1.1584 @ 71.1 min) - Budget reallocation doesn't help. Baseline (20/36 fevals + 8 NM) is optimal.
+2. **sigma_ladder**: FAILED (1.1658 @ 70.0 min) - Sigma scheduling interferes with CMA-ES covariance learning.
+3. **boundary_handling_methods**: ABORTED - BoundPenalty not valid pycma option. BoundTransform is default and optimal.
+
+**Experiments Aborted (Prior Evidence):**
+4. two_source_sequential - Already tested as sequential_2src (high variance)
+5. parallel_nm_polish - Invalid premise (NM only on best candidate)
+6. nm_multi_start - 8 NM iters optimal, more adds time
+7. random_seed_ensemble - Same as more_inits_select_best (FAILED)
+8. covariance_init - CMA-ES designed to learn covariance, pre-init interferes
+
+**Status**: QUEUE EXHAUSTED. Baseline 1.1688 @ 58.4 min is **PROVEN OPTIMAL**.
+
+
+### [W3] Experiment: polish_top3_reduced | Score: 1.0743 @ 114.2 min
+**Algorithm**: Polish ALL top-3 candidates (4 NM iterations each) instead of just best (8 NM)
+**Tuning Runs**: 1 run (see STATE.json for details)
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min) - 1.9x over budget, 8% worse score
+**Key Finding**: 
+- Polishing multiple candidates spreads budget thin: 4 iters × 3 candidates = 12 total vs baseline 8
+- Fine-grid full-timestep polish is expensive - doing it 3× tripled the overhead
+- 2nd/3rd candidates have fundamentally higher base RMSE (0.29 avg vs 0.15 best) that polish can't fix
+- Concentrating all polish on BEST candidate is optimal
+
+**polish_strategy_v2 family EXHAUSTED.** Baseline strategy (8 NM on best candidate only) is provably optimal. See experiments/polish_top3_reduced/SUMMARY.md for details.
+
+### [W2] Experiment: coordinate_descent_polish | FAILED
+**Algorithm**: Powell's coordinate descent instead of Nelder-Mead for polish step
+**Tuning Runs**: 1 run (killed at 39/80 samples - 5-8x over budget)
+**Result**: FAILED - Powell is 5-8x slower than NM due to line search overhead
+**Key Finding**: Line search methods (Powell, L-BFGS-B, CG) require too many function evaluations for expensive simulations. NM x8 is optimal for polish. See experiments/coordinate_descent_polish/SUMMARY.md for details.
+
+
+
+### [W3] Experiment: tv_regularization_sparse | Score: 1.1614 @ 83.7 min
+**Algorithm**: TV regularization on RMSE objective (objective = RMSE + lambda * sum(|q_i|))
+**Tuning Runs**: 1 run with lambda=0.01 (see STATE.json for details)
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min) - 43% over budget, 0.6% worse score
+**Key Finding**: 
+- TV regularization biases optimization away from pure RMSE optimum
+- We're scored on RMSE, so any penalty added to objective function hurts
+- Referenced paper (arxiv 2507.02677) addresses sparsity recovery - our n_sources is given
+- Pattern of failures: log_rmse, weighted_rmse, TV_regularization all FAILED
+
+**regularization family EXHAUSTED.** Any modification to the RMSE objective function biases optimization away from the true optimum. See experiments/tv_regularization_sparse/SUMMARY.md for details.
+
+### [W2] Experiment: adaptive_nm_coefficients | Score: 1.1493 @ 85.0 min | FAILED
+**Algorithm**: Scipy NM with adaptive=True for dimension-dependent coefficients
+**Tuning Runs**: 1 run (OVER BUDGET)
+**Result**: FAILED - -0.0195 score, +45% time vs baseline (1.1688 @ 58.4 min)
+**Key Finding**: Adaptive NM coefficients designed for high-D optimization. For 2-4D, aggressive default coefficients (r=1.0, e=2.0, c=0.5) are optimal. polish_tuning family EXHAUSTED. See experiments/adaptive_nm_coefficients/SUMMARY.md for details.
+
+
+### [W1] Experiment: asymmetric_polish_budget | Score: 1.1639 @ 79.3 min
+**Algorithm**: Different NM polish iterations for 1-src vs 2-src problems
+**Tuning Runs**: 3 runs (6/10, 4/8, 8/8 polish configs)
+**Result**: FAILED vs baseline (1.1688 @ 58.4 min)
+**Key Finding**: Implementation overhead prevents hypothesis testing. Even 8/8 config (same as baseline) runs 35% slower. Baseline optimizer is highly optimized and shouldn't be reimplemented. See experiments/asymmetric_polish_budget/SUMMARY.md for details.
+
+### [W1] Experiment: moment_based_inversion | Status: ABORTED
+**Algorithm**: Moment-based direct inversion for heat source identification
+**Result**: ABORTED (Feasibility Analysis)
+**Key Finding**: Sparse sensors (2-6 per sample) insufficient for moment computation. Prior direct inversion methods (Green's function, compressive sensing, modal, RBF) all failed for same reasons. Baseline triangulation is already the best direct approach. direct_inversion_v2 family EXHAUSTED. See experiments/moment_based_inversion/SUMMARY.md for details.

@@ -1,0 +1,37 @@
+{
+  "experiment_id": "EXP_SIGMA_LADDER_001",
+  "worker": "W2",
+  "status": "tuning_complete",
+  "started_at": "2026-01-24T23:10:00Z",
+  "completed_at": "2026-01-24T23:25:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "sigma_start_1src": 0.30,
+        "sigma_start_2src": 0.35,
+        "sigma_end_1src": 0.15,
+        "sigma_end_2src": 0.20,
+        "schedule": "linear_decay"
+      },
+      "score": 1.1658,
+      "time_min": 70.0,
+      "in_budget": false,
+      "rmse_1src": 0.0971,
+      "rmse_2src": 0.1780,
+      "notes": "OVER BUDGET by 10 min. Score -0.0030 vs baseline. Sigma scheduling interferes with CMA-ES covariance learning."
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1658,
+    "time_min": 70.0,
+    "config": {"sigma_start": "0.30/0.35", "sigma_end": "0.15/0.20"}
+  },
+  "next_config_to_try": null,
+  "baseline_score": 1.1688,
+  "baseline_time": 58.4,
+  "key_finding": "Sigma ladder (high->low) does NOT help. CMA-ES's natural sigma adaptation is optimal. Manual scheduling adds overhead and interferes with covariance learning. sigma_scheduling_v2 family FAILED.",
+  "summary_written": true
+}

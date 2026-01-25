@@ -1,0 +1,43 @@
+{
+  "experiment_id": "EXP_ICA_SEEDED_INIT_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-24T22:55:00Z",
+  "completed_at": "2026-01-24T23:15:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "use_ica": true,
+        "ica_max_iter": 50,
+        "timestep_fraction": 0.40,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.20,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1601,
+      "time_min": 69.2,
+      "in_budget": false,
+      "rmse_1src": 0.1130,
+      "rmse_2src": 0.1582,
+      "ica_used_count": 22,
+      "notes": "OVER BUDGET by 9.2 min. Score -0.0087 vs baseline. ICA adds ~10+ sec/sample overhead."
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1601,
+    "time_min": 69.2,
+    "config": {
+      "use_ica": true,
+      "ica_max_iter": 50
+    }
+  },
+  "next_config_to_try": null,
+  "baseline_score": 1.1688,
+  "baseline_time": 58.4,
+  "hypothesis": "ICA achieved best accuracy (1.0422) at 87 min. Using ICA only for initialization (~5-10s) should provide better starting positions for CMA-ES while staying within budget.",
+  "key_finding": "ICA initialization adds significant overhead (~10 min for 80 samples) without improving accuracy. The ICA-derived source positions are NOT better starting points than random initialization. Baseline CMA-ES is sufficient.",
+  "summary_written": true
+}

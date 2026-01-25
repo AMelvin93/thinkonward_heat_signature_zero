@@ -1,0 +1,34 @@
+
+More Inits Select Best Optimizer
+============================================================
+Samples: 80, Workers: 7
+N Inits: 4, Fevals: 20/36
+Keep Top N: 4, Polish: 8 iters
+Sigma: 0.15/0.2, Timestep: 40%
+============================================================
+/workspace/.venv/lib/python3.11/site-packages/mlflow/tracking/_tracking_service/utils.py:177: FutureWarning: The filesystem tracking backend (e.g., './mlruns') will be deprecated in February 2026. Consider transitioning to a database backend (e.g., 'sqlite:///mlflow.db') to take advantage of the latest MLflow features. See https://github.com/mlflow/mlflow/issues/18534 for more details and migration guidance.
+  return FileStore(store_uri, store_uri)
+[ 10/80] 1-src RMSE=0.1616 cands=3 [OK]
+[ 20/80] 1-src RMSE=0.1023 cands=3 [OK]
+[ 30/80] 1-src RMSE=0.0999 cands=3 [OK]
+[ 40/80] 2-src RMSE=0.1504 cands=3 [OK]
+[ 50/80] 2-src RMSE=0.1213 cands=3 [OK]
+[ 60/80] 2-src RMSE=0.1284 cands=3 [OK]
+[ 70/80] 2-src RMSE=0.1357 cands=3 [OK]
+[ 80/80] 2-src RMSE=0.2539 cands=2 [OK]
+
+======================================================================
+RESULTS - More Inits (4 inits)
+======================================================================
+Score:      1.1447
+Time:       69.8 min (projected for 400 samples)
+RMSE:       0.1465
+  1-source: 0.1066 (n=32)
+  2-source: 0.1730 (n=48)
+
+Baseline:   1.1688 @ 58.4 min
+Delta:      -0.0241 score, +11.4 min
+
+OVER BUDGET
+======================================================================
+

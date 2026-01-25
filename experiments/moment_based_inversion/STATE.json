@@ -1,0 +1,11 @@
+{
+  "experiment_id": "EXP_MOMENT_INVERSION_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-25T03:30:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "abort_reason": "Feasibility analysis: Sparse sensors (2-6) insufficient for moment computation. Prior direct inversion methods all failed for same reasons."
+}

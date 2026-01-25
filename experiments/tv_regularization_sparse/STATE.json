@@ -1,0 +1,27 @@
+{
+  "experiment_id": "EXP_TV_REGULARIZATION_001",
+  "worker": "W3",
+  "status": "done",
+  "started_at": "2026-01-25T02:54:54.438505Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "lambda_tv": 0.01,
+        "timestep_fraction": 0.4,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1614,
+      "time_min": 83.7,
+      "in_budget": false,
+      "rmse_mean": 0.133832,
+      "mlflow_id": "2b50846f08724b6aa93bb16105078255",
+      "notes": "FAILED: TV regularization biases optimization away from RMSE optimum. Score worse and 43% over budget."
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - Any regularization biases optimization away from the pure RMSE optimum we're scored on",
+  "last_updated": "2026-01-25T03:15:42.926850Z"
+}

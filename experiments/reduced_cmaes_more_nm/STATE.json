@@ -1,0 +1,31 @@
+{
+  "experiment_id": "EXP_REDUCED_CMAES_MORE_NM_001",
+  "worker": "W2",
+  "status": "tuning_complete",
+  "started_at": "2026-01-24T22:15:00Z",
+  "completed_at": "2026-01-24T22:47:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"fevals_1src": 15, "fevals_2src": 30, "polish": 10},
+      "score": 1.1584,
+      "time_min": 71.1,
+      "in_budget": false,
+      "rmse_1src": 0.1005,
+      "rmse_2src": 0.1711,
+      "notes": "OVER BUDGET by 11.1 min. Score -0.0104 vs baseline. NM polish added more time than CMA-ES saved."
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1584,
+    "time_min": 71.1,
+    "config": {"fevals_1src": 15, "fevals_2src": 30, "polish": 10}
+  },
+  "next_config_to_try": null,
+  "baseline_score": 1.1688,
+  "baseline_time": 58.4,
+  "key_finding": "Reducing CMA-ES fevals to add more NM polish is NOT beneficial. CMA-ES convergence suffers with fewer fevals, and NM polish adds more time than CMA-ES saves. Baseline (20/36 fevals + 8 NM) is optimal budget allocation.",
+  "summary_written": true
+}

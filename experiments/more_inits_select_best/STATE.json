@@ -1,0 +1,45 @@
+{
+  "experiment_id": "EXP_MORE_INITS_SELECT_BEST_001",
+  "worker": "W2",
+  "status": "tuning_complete",
+  "started_at": "2026-01-24T21:40:00Z",
+  "completed_at": "2026-01-24T22:10:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"n_inits": 6, "fevals_1src": 20, "fevals_2src": 36, "keep_top_n": 5},
+      "score": 1.1590,
+      "time_min": 66.9,
+      "in_budget": false,
+      "notes": "OVER BUDGET by 6.9 min. Score -0.0098 vs baseline."
+    },
+    {
+      "run": 2,
+      "config": {"n_inits": 6, "fevals_1src": 12, "fevals_2src": 20, "keep_top_n": 5},
+      "score": 1.1499,
+      "time_min": 71.0,
+      "in_budget": false,
+      "notes": "OVER BUDGET by 11 min. Score -0.0189 vs baseline. Fewer fevals = worse score + more time (overhead dominated)."
+    },
+    {
+      "run": 3,
+      "config": {"n_inits": 4, "fevals_1src": 20, "fevals_2src": 36, "keep_top_n": 4},
+      "score": 1.1447,
+      "time_min": 69.8,
+      "in_budget": false,
+      "notes": "OVER BUDGET by 9.8 min. Score -0.0241 vs baseline. Even 4 inits is too many."
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1590,
+    "time_min": 66.9,
+    "config": {"n_inits": 6, "fevals_1src": 20, "fevals_2src": 36}
+  },
+  "next_config_to_try": null,
+  "baseline_score": 1.1688,
+  "baseline_time": 58.4,
+  "key_finding": "More initializations DO NOT help. Each additional init adds overhead (more CMA-ES instances, more fine-grid evaluations) that outweighs any benefit. Baseline (2 inits with smart+triangulation) is already optimal.",
+  "summary_written": true
+}

@@ -1,0 +1,33 @@
+{
+  "experiment_id": "EXP_COORDINATE_POLISH_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-25T02:28:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "polish_method": "Powell",
+        "final_polish_maxiter": 8,
+        "timestep_fraction": 0.4,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "samples_completed": 39,
+      "samples_total": 80,
+      "status": "KILLED - MASSIVELY OVER BUDGET",
+      "observations": {
+        "1src_avg_time_sec": 150,
+        "2src_avg_time_sec": 680,
+        "projected_400_min": "WAY OVER 60 min",
+        "reason": "Powell method does multiple line searches per iteration, each requiring multiple function evals. For expensive sims (0.5-1s), this adds 5-8x overhead vs NM."
+      }
+    }
+  ],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - Powell coordinate descent is fundamentally unsuitable for expensive optimization. Line searches require too many function evaluations."
+}

@@ -1,0 +1,11 @@
+{
+  "experiment_id": "EXP_HYBRID_RESTART_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-25T03:25:34.695739Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "ABORTED - ALL polish modifications have FAILED. NM x8 with defaults is OPTIMAL. restart_v3 family EXHAUSTED."
+}
