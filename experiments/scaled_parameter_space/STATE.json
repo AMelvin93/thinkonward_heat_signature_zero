@@ -1,0 +1,29 @@
+{
+  "experiment_id": "EXP_INVERSE_SCALING_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T22:10:00Z",
+  "completed_at": "2026-01-25T22:15:00Z",
+  "experiment_info": {
+    "name": "scaled_parameter_space",
+    "family": "problem_transform",
+    "description": "Scale optimization parameters to unit hypercube for more uniform CMA-ES search",
+    "hypothesis": "Uniform parameter scaling may improve CMA-ES covariance learning"
+  },
+  "reason_aborted": "COORDINATE SCALING ALREADY TESTED via dd-CMA-ES. Diagonal Decoding CMA-ES adaptively learns per-coordinate variances - MORE sophisticated than manual scaling. Result: 'dd-CMA-ES is essentially neutral - dd=1.0 vs dd=0 gives no significant difference'. The 2:1 domain ratio is TOO MILD to benefit from any scaling.",
+  "prior_evidence": {
+    "diagonal_decoding_cmaes": {
+      "result": "FAILED - Score 1.1466 @ 50.3 min (-0.0222 vs baseline)",
+      "key_finding": "2:1 scale difference is too mild for coordinate-wise optimization to help",
+      "quote": "Low-dimensional problems don't benefit from diagonal decoding"
+    },
+    "separable_cmaes": {
+      "result": "FAILED - Score 1.1278 @ 47.8 min",
+      "key_finding": "Separable (coordinate-wise) search is WORSE than full covariance"
+    }
+  },
+  "key_insight": "Manual parameter rescaling to [0,1] x [0,1] is LESS sophisticated than dd-CMA-ES which adaptively learns optimal per-coordinate variances. Since dd-CMA-ES found no benefit, manual rescaling will also fail. The problem is not ill-conditioned enough for any scaling approach to help.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

@@ -1,0 +1,29 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_TEMPORAL_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T18:10:00Z",
+  "completed_at": "2026-01-25T18:15:00Z",
+  "experiment_info": {
+    "name": "adaptive_temporal_fidelity",
+    "family": "temporal_fidelity_v2",
+    "description": "Start CMA-ES with 20% timestep fidelity, increase to 40% when fitness variance drops",
+    "hypothesis": "Early exploration can use lower fidelity (faster), high fidelity only needed for final convergence"
+  },
+  "baseline": {
+    "timestep_fraction": 0.40,
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "duplicate_of": "adaptive_timestep_fraction (EXP_ADAPTIVE_TIMESTEP_001)",
+  "reason_aborted": "This experiment is a duplicate of experiments/adaptive_timestep_fraction which already tested variable timestep fidelity during CMA-ES and FAILED. Key finding: CMA-ES covariance adaptation requires consistent fitness landscape - switching fidelity mid-run disrupts learning and leads to WORSE results.",
+  "previous_results": {
+    "score": 1.1635,
+    "time_min": 69.9,
+    "delta_vs_baseline": -0.0053,
+    "conclusion": "FAILED - Both worse score AND more time than fixed 40% baseline"
+  },
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

@@ -1,0 +1,26 @@
+{
+  "experiment_id": "EXP_MINI_BATCH_SENSORS_001",
+  "worker": "W2",
+  "status": "in_progress",
+  "started_at": "2026-01-25T20:47:00Z",
+  "experiment_info": {
+    "name": "mini_batch_sensor_eval",
+    "family": "evaluation_v2",
+    "description": "Use random 50% of sensors for CMA-ES screening, full sensors for final polish",
+    "hypothesis": "A random 50% of sensors may be sufficient to estimate candidate quality during exploration"
+  },
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": {
+    "run": 1,
+    "config": {
+      "sensor_fraction": 0.5,
+      "note": "Use 50% of sensors during CMA-ES"
+    }
+  },
+  "summary_written": false
+}

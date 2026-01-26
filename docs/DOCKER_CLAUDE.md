@@ -142,6 +142,9 @@ Run 4 Claude Code instances in parallel: 1 Research Orchestrator (W0) + 3 Experi
 **Step 1: Start all 4 containers**
 ```bash
 docker-compose -f orchestration/docker-compose.manual.yml up -d
+
+# Now start the orchestrator agent in an interactive shell:
+docker exec -it claude-orchestrator bash -c "claude --dangerously-skip-permissions"
 ```
 
 **Step 2: Open 4 terminal windows and set up each agent**

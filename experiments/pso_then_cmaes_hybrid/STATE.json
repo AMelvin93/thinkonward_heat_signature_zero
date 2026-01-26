@@ -1,0 +1,36 @@
+{
+  "experiment_id": "EXP_HYBRID_PSO_CMAES_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T20:05:00Z",
+  "completed_at": "2026-01-25T20:10:00Z",
+  "experiment_info": {
+    "name": "pso_then_cmaes_hybrid",
+    "family": "hybrid_v2",
+    "description": "Run PSO for global exploration, then CMA-ES for convergence",
+    "hypothesis": "PSO may explore globally more efficiently in early generations"
+  },
+  "reason_aborted": "HYBRID AND ALTERNATIVE_ES FAMILIES EXHAUSTED. Multiple experiments prove: (1) PSO: FAILED - 'No covariance'. (2) DE: FAILED - 'CMA-ES Covariance Adaptation is Superior'. (3) OpenAI ES: FAILED - 'diagonal covariance loses critical correlation information'. (4) cmaes_to_nm_sequential: FAILED - sequential handoff doesn't fit budget.",
+  "prior_evidence": {
+    "pso": {
+      "result": "FAILED",
+      "finding": "No covariance learning"
+    },
+    "differential_evolution": {
+      "result": "FAILED - -0.0037 score",
+      "finding": "CMA-ES Covariance Adaptation is Superior. DE cannot match CMA-ES."
+    },
+    "openai_evolution_strategy": {
+      "result": "FAILED - -0.0158 score",
+      "finding": "Diagonal covariance loses critical correlation information"
+    },
+    "cmaes_to_nm_sequential": {
+      "result": "FAILED",
+      "finding": "Sequential handoff doesn't fit budget"
+    }
+  },
+  "key_insight": "CMA-ES's power comes from covariance adaptation which requires its full budget. PSO has no covariance learning. Splitting budget between PSO and CMA-ES would give: (1) PSO without enough iterations to converge, (2) CMA-ES without enough budget for covariance adaptation. Both would underperform.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

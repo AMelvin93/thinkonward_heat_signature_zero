@@ -1,0 +1,32 @@
+{
+  "experiment_id": "EXP_COORDINATE_TRANSFORM_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T22:30:00Z",
+  "completed_at": "2026-01-25T22:35:00Z",
+  "experiment_info": {
+    "name": "center_spread_parameterization",
+    "family": "parameterization_v2",
+    "description": "Parameterize 2-source as (center_x, center_y, spread_x, spread_y) instead of (x1, y1, x2, y2)",
+    "hypothesis": "Center-spread removes permutation ambiguity, improving CMA-ES convergence"
+  },
+  "reason_aborted": "PARAMETERIZATION CHANGES DON'T HELP. (1) polar_parameterization FAILED with -0.0216 score, +14.3 min. Quote: 'ABANDON the problem_reformulation family'. (2) Permutation ambiguity is NOT a problem - RMSE is symmetric in source ordering. (3) Scoring system already handles permutation invariance.",
+  "prior_evidence": {
+    "polar_parameterization": {
+      "result": "FAILED (-0.0216 score, +14.3 min)",
+      "conclusion": "ABANDON the problem_reformulation family",
+      "key_finding": "Coordinate transformations hurt CMA-ES: 'CMA-ES covariance learns wrong correlations' and 'Bound clipping introduces discontinuities'"
+    },
+    "scoring_system": {
+      "note": "Permutation Invariance: Two source candidates with same source tuples in different orders are considered identical",
+      "source": "starter_notebook.ipynb"
+    },
+    "cmaes_behavior": {
+      "note": "CMA-ES evaluates solutions by fitness (RMSE), not source labels. Both orderings give same RMSE - no ambiguity problem."
+    }
+  },
+  "key_insight": "Permutation ambiguity is NOT a problem for CMA-ES optimization because RMSE is symmetric in source ordering. The polar parameterization experiment proved coordinate transformations HURT performance. Center-spread would have similar issues: non-linear transformation, complex constraints, and CMA-ES learning inappropriate correlations.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

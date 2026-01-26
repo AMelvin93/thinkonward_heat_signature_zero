@@ -1,0 +1,35 @@
+{
+  "experiment_id": "EXP_CANDIDATE_ENSEMBLE_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T19:20:00Z",
+  "completed_at": "2026-01-25T19:25:00Z",
+  "experiment_info": {
+    "name": "candidate_weighted_ensemble",
+    "family": "ensemble_final",
+    "description": "Create weighted ensemble of top-3 candidates to exploit diversity bonus",
+    "hypothesis": "Weighted combination of candidates could better exploit diversity bonus"
+  },
+  "reason_aborted": "DIVERSITY IS ALREADY SATURATED. niching_cmaes_diversity experiment proved: (1) Baseline already achieves 2.75/3 candidates (80% of samples get 3), (2) Adding diverse but worse candidates HURTS score due to averaging, (3) Accuracy is the bottleneck, not diversity.",
+  "prior_evidence": {
+    "niching_cmaes_diversity": {
+      "result": "FAILED - score 1.0622 vs baseline 1.1688 (-0.1066)",
+      "finding_1": "Baseline already achieves near-maximum diversity: ~80% of samples get 3 candidates, avg N_valid = 2.75",
+      "finding_2": "The scoring formula penalizes diverse but worse candidates more than the diversity bonus helps",
+      "finding_3": "Improving diversity can only gain ~0.025 in score (diversity is saturated)",
+      "quote": "Diversity optimization is NOT a viable path"
+    },
+    "scoring_formula_analysis": {
+      "formula": "score = (1/N) * sum(1/(1+L_i)) + 0.3 * (N/3)",
+      "insight": "The first term AVERAGES accuracy over ALL candidates. Adding worse candidates hurts the average more than the 0.1 diversity bonus per candidate helps."
+    },
+    "cmaes_restart_from_best": {
+      "result": "FAILED - diversity loss hurt score",
+      "finding": "Diversity is critical for scoring: The scoring formula heavily weights candidate diversity (0.3 * N_valid/3)"
+    }
+  },
+  "key_insight": "The weighted ensemble approach would either (1) produce the same result as taking the best candidate if weights favor low-RMSE, or (2) hurt accuracy if trying to increase diversity. There is no path to improvement here.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

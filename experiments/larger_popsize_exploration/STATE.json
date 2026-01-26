@@ -1,0 +1,31 @@
+{
+  "experiment_id": "EXP_POPSIZE_DIVERSITY_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T18:40:00Z",
+  "completed_at": "2026-01-25T18:45:00Z",
+  "experiment_info": {
+    "name": "larger_popsize_exploration",
+    "family": "cmaes_tuning_v2",
+    "description": "Use popsize=8 (vs default ~4-5) for better exploration, with fewer generations",
+    "hypothesis": "Larger population might provide better exploration"
+  },
+  "reason_aborted": "DUPLICATE of larger_cmaes_population (EXP_LARGER_POPSIZE_001) which already tested this. Additionally, default popsize for 2-source is already ~8, so popsize=8 is NOT larger than default.",
+  "prior_evidence": {
+    "larger_cmaes_population": {
+      "popsize_tested": 12,
+      "result": "FAILED - -0.0022 score, +14.6 min vs baseline",
+      "finding": "Larger popsize is WORSE in both accuracy and time. Reduces number of generations.",
+      "conclusion": "cmaes_accuracy family marked EXHAUSTED"
+    },
+    "default_popsize_values": {
+      "formula": "4 + floor(3*ln(n))",
+      "1_source_dim2": "popsize ≈ 6",
+      "2_source_dim4": "popsize ≈ 8",
+      "note": "Proposed popsize=8 is already the default for 2-source problems"
+    }
+  },
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

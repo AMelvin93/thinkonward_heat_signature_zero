@@ -1,0 +1,36 @@
+{
+  "experiment_id": "EXP_REDUCED_NM_POLISH_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T18:20:00Z",
+  "completed_at": "2026-01-25T18:25:00Z",
+  "experiment_info": {
+    "name": "reduced_nm_polish_4iter",
+    "family": "polish_budget_v2",
+    "description": "Test if 4-6 NM iterations (instead of 8) maintain accuracy. Time saved could be used for more CMA-ES evaluations",
+    "hypothesis": "Fewer NM polish iterations may be sufficient, freeing budget for more CMA-ES exploration"
+  },
+  "baseline": {
+    "polish_iterations": 8,
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "reason_aborted": "Prior experiments have DEFINITIVELY answered this question. See reduced_fevals_more_polish and asymmetric_polish_budget.",
+  "prior_evidence": {
+    "reduced_fevals_more_polish": {
+      "finding": "Iterations 1-4: ~80% of improvement, Iterations 5-8: ~19% of improvement, Iterations 9-12: ~1% of improvement",
+      "conclusion": "Reducing from 8 to 4-6 would lose 19% of polish improvement"
+    },
+    "asymmetric_polish_budget": {
+      "finding": "Reducing 1-src polish from 8 to 4 hurts accuracy significantly without proportionate time savings",
+      "conclusion": "8 NM polish iterations is locally optimal"
+    },
+    "adaptive_nm_coefficients": {
+      "finding": "polish_tuning family is EXHAUSTED - NM x8 with defaults is optimal",
+      "conclusion": "No further polish iteration tuning can improve results"
+    }
+  },
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

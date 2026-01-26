@@ -1,8 +1,9 @@
 {
   "experiment_id": "EXP_FEVAL_POLISH_TRADE_001",
   "worker": "W2",
-  "status": "in_progress",
+  "status": "aborted",
   "started_at": "2026-01-24T17:30:00Z",
+  "completed_at": "2026-01-25T17:55:00Z",
   "experiment_info": {
     "name": "reduced_fevals_more_polish",
     "family": "budget_reallocation",
@@ -17,17 +18,12 @@
     "time_min": 58.4
   },
   "tuning_runs": [],
-  "next_config_to_try": {
-    "run": 1,
-    "config": {
-      "fevals_1src": 15,
-      "fevals_2src": 28,
-      "polish_iters": 12,
-      "note": "25% fewer CMA-ES fevals, 50% more polish"
-    }
-  },
+  "best_in_budget": null,
+  "abort_reason": "Prior evidence conclusive: (1) EXP_EARLY_STOP_CMA_001 showed CMA-ES improves >1% throughout - reducing fevals hurts accuracy. (2) EXP_EXTENDED_POLISH_001 showed 12 polish = +24 min for only +0.0015 score. Trading fevals for polish is not viable.",
+  "next_config_to_try": null,
   "prior_evidence": {
     "EXP_EARLY_STOP_CMA_001": "CMA-ES continues improving >1% throughout - reducing fevals may hurt accuracy",
     "EXP_EXTENDED_POLISH_001": "12 polish iters = 82.3 min (+24 min) for +0.0015 score"
-  }
+  },
+  "summary_written": true
 }

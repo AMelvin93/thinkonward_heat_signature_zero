@@ -1,7 +1,7 @@
 {
-  "version": "7.0",
-  "last_updated": "2026-01-25T03:29:43.328165Z",
-  "notes": "V7.3: W0 DEEP RESEARCH 2026-01-25T03:07. 3 polish experiments FAILED. Added 3 new experiments.",
+  "version": "12.0",
+  "last_updated": "2026-01-25T20:46:29.678197",
+  "notes": "V12.0: W0 EMERGENCY RESEARCH. 6 new experiments from literature: SPSA, mini-batch sensors, Laplace domain, scaling, reranking, center-spread parameterization.",
   "queue_status": "OK",
   "experiment_queue": [
     {
@@ -1791,7 +1791,7 @@
       "id": "EXP_NM_DIM_ADAPTIVE_001",
       "priority": 3,
       "family": "polish_tuning_v2",
-      "status": "claimed_by_W3",
+      "status": "completed",
       "name": "nm_dimension_adaptive",
       "description": "Use dimension-dependent NM parameters (2024 research: expansion/contraction depend on dim)",
       "hypothesis": "Standard NM params designed for general case; dimension-specific params may converge faster for 2D/4D",
@@ -1802,7 +1802,8 @@
         "Based on research showing NM becomes less stable in higher dims"
       ],
       "success_criteria": "Score >= 1.1688 AND time <= 58 min",
-      "claimed_at": "2026-01-25T03:16:34.043628Z"
+      "result": "FAILED: Score 1.1650 @ 66.5 min (0.3% worse, 14% over budget). Gao-Han adaptive NM designed for high-dim (n>10), not n=3/6. Fixed iteration budget means adaptive params can't help.",
+      "finding": "Dimension-adaptive NM provides no benefit at low dimensions (n=3-6). Standard NM params are optimal."
     },
     {
       "id": "EXP_FINAL_POP_SELECTION_001",
@@ -1867,6 +1868,423 @@
       "result": "ABORTED - All polish modifications FAIL. NM x8 defaults is OPTIMAL.",
       "score": null,
       "finding": "polish_robustness family is subset of failed polish experiments."
+    },
+    {
+      "id": "EXP_BOBYQA_POLISH_001",
+      "priority": 1,
+      "family": "local_search_v3",
+      "status": "completed",
+      "name": "bobyqa_polish",
+      "description": "Use COBYLA/BOBYQA-style bound-constrained optimizer for polish instead of NM. Unlike Powell (line search overhead) or L-BFGS-B (gradient overhead), BOBYQA uses quadratic models without line search.",
+      "hypothesis": "BOBYQA's quadratic approximation may converge faster than NM's simplex for smooth RMSE landscapes in 3-6 dimensions.",
+      "implementation": [
+        "Replace NM polish with scipy.optimize.minimize(method='trust-constr') using approximated Hessian",
+        "Or use COBYLA with maxiter=8 for fair comparison",
+        "Compare convergence rate per function evaluation",
+        "Key: must not exceed 8 simulation calls"
+      ],
+      "success_criteria": "Score >= 1.1688 AND time <= 58.4 min (match baseline with different polish)",
+      "claimed_at": "2026-01-25T17:58:57.750448",
+      "result": "FAILED - COBYLA 1.1565 @ 67.5 min, trust-constr 1.1460 @ 104.9 min. Both WORSE than NM baseline (1.1688 @ 58.4 min).",
+      "finding": "local_search_v3 family EXHAUSTED. All scipy.optimize methods require more function evaluations than NM. For expensive simulations, NM minimizes evals and is optimal.",
+      "score": 1.1565,
+      "time_min": 67.5,
+      "worker": "W2"
+    },
+    {
+      "id": "EXP_ADAPTIVE_TEMPORAL_001",
+      "priority": 1,
+      "family": "temporal_fidelity_v2",
+      "status": "completed",
+      "name": "adaptive_temporal_fidelity",
+      "description": "Start CMA-ES with 20% timestep fidelity, increase to 40% when fitness variance drops. Current fixed 40% may be sub-optimal early in optimization.",
+      "hypothesis": "Early CMA-ES generations explore coarsely - 20% fidelity sufficient. Increase fidelity only when convergence begins to identify precise optima.",
+      "implementation": [
+        "Track fitness variance across CMA-ES generations",
+        "Start at timestep_fraction=0.20 (5x speedup)",
+        "Switch to 0.40 when variance < threshold or after 50% of budget",
+        "Full simulation for final candidate evaluation (unchanged)"
+      ],
+      "success_criteria": "Score >= 1.1688 AND time < 58.4 min (same accuracy, faster)",
+      "claimed_at": "2026-01-25T18:02:48.282136Z",
+      "result": "ABORTED - Duplicate of adaptive_timestep_fraction which already FAILED. CMA-ES cannot handle mid-run fidelity switching.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T18:04:01.221750Z"
+    },
+    {
+      "id": "EXP_INTENSITY_PRIOR_001",
+      "priority": 2,
+      "family": "physics_init_v2",
+      "status": "completed",
+      "name": "intensity_prior_from_peak",
+      "description": "Use physics to bound intensity search. Heat equation: T_max at sensor \u221d q/r\u00b2. From observed max temperatures, estimate feasible (q, r) combinations to narrow search space.",
+      "hypothesis": "Narrowing intensity bounds from physics reduces CMA-ES search space and improves convergence.",
+      "implementation": [
+        "Compute T_max from sensor data",
+        "Estimate q bounds for each triangulation-based position init",
+        "Use sample-specific q_bounds instead of fixed [0.5, 2.0]",
+        "Keep analytical intensity computation but use tighter bounds"
+      ],
+      "success_criteria": "Score > 1.1688 AND time <= 60 min (better accuracy through physics)",
+      "claimed_at": "2026-01-25T18:05:33.683314Z",
+      "result": "ABORTED - Based on misunderstanding. Intensity q is NOT searched - it is computed analytically via least squares. Variable Projection already used.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T18:06:48.707745Z"
+    },
+    {
+      "id": "EXP_REDUCED_NM_POLISH_001",
+      "priority": 2,
+      "family": "polish_budget_v2",
+      "status": "completed",
+      "name": "reduced_nm_polish_4iter",
+      "description": "Test if 4-6 NM iterations (instead of 8) maintain accuracy. Time saved could be used for more CMA-ES evaluations.",
+      "hypothesis": "NM converges quickly on smooth landscapes. 4-6 iterations may achieve same accuracy as 8, freeing budget for CMA-ES.",
+      "implementation": [
+        "Run with polish_maxiter=4, add 2 extra CMA-ES fevals",
+        "Run with polish_maxiter=6, add 1 extra CMA-ES feval",
+        "Compare final RMSE vs baseline",
+        "If accuracy holds, extra CMA-ES budget may find better optima"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 58 min (slightly better through budget reallocation)",
+      "claimed_at": "2026-01-25T18:04:13.335516Z",
+      "result": "ABORTED - Prior evidence conclusive. reduced_fevals_more_polish, asymmetric_polish_budget, and adaptive_nm_coefficients all showed 8 NM iterations is optimal.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T18:05:29.359110Z"
+    },
+    {
+      "id": "EXP_POPSIZE_DIVERSITY_001",
+      "priority": 2,
+      "family": "cmaes_tuning_v2",
+      "status": "completed",
+      "name": "larger_popsize_exploration",
+      "description": "Use popsize=8 (vs default ~4-5) for better exploration, with fewer generations. CMA-ES default popsize scales with dimension but may be too small for multimodal RMSE landscape.",
+      "hypothesis": "Larger population explores more of the search space per generation, potentially finding better optima despite fewer total generations.",
+      "implementation": [
+        "Set popsize=8 for both 1-source and 2-source",
+        "Keep same max_fevals (20/36) - means fewer generations",
+        "Monitor if larger population finds better optima",
+        "Compare final RMSE distribution vs baseline"
+      ],
+      "success_criteria": "Score > 1.1688 AND time <= 60 min (better optima through exploration)",
+      "claimed_at": "2026-01-25T18:07:02.055367Z",
+      "result": "ABORTED - Duplicate of larger_cmaes_population. Also, popsize=8 IS the default for 2-source. Default popsize proven optimal.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T18:08:00.795042Z"
+    },
+    {
+      "id": "EXP_CMAES_RESTART_SIGMA_001",
+      "priority": 3,
+      "family": "restart_strategy_v2",
+      "status": "completed",
+      "name": "sigma_restart_on_stagnation",
+      "description": "If CMA-ES sigma shrinks below threshold, reset sigma and continue. Prevents premature convergence to suboptimal regions.",
+      "hypothesis": "CMA-ES can prematurely converge to local optima. Sigma reset when sigma < 0.01 may escape and find better optima.",
+      "implementation": [
+        "Monitor CMA-ES sigma during optimization",
+        "If sigma < 0.01 and fevals < budget * 0.8, reset sigma to sigma0",
+        "Continue optimization from current best",
+        "Compare with baseline that doesn't restart"
+      ],
+      "success_criteria": "Score > 1.1688 (better escape from local optima)",
+      "claimed_at": "2026-01-25T18:08:16.736191Z",
+      "result": "ABORTED - Prior evidence conclusive. Multiple restart experiments (IPOP, BIPOP, two-phase) all FAILED. Problem has NO local optima - restarts wasteful.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T18:09:19.529558Z"
+    },
+    {
+      "id": "EXP_TRIANGULATION_QUALITY_001",
+      "priority": 1,
+      "family": "initialization_final",
+      "status": "completed",
+      "name": "improved_triangulation_init",
+      "description": "The triangulation initialization uses sensor onset times to estimate source positions. Current approach may be sub-optimal. Test alternative triangulation formulas from acoustic source localization literature.",
+      "hypothesis": "Better triangulation formulas could provide higher quality initial positions, reducing CMA-ES search time and improving final accuracy.",
+      "implementation": [
+        "Research hyperbolic positioning (TDOA) algorithms from acoustic localization",
+        "Implement non-linear least squares triangulation instead of geometric mean",
+        "Test with weighted sensor contributions based on signal strength",
+        "Compare initial position quality before CMA-ES optimization"
+      ],
+      "success_criteria": "Score > 1.1688 AND time <= 58.4 min",
+      "notes": "This is one of the few initialization aspects not thoroughly tested. Current triangulation uses heuristic approach.",
+      "result": "ABORTED - Initialization family EXHAUSTED (5+ failed experiments). Acoustic triangulation formulas use WRONG physics (r=v*t) for heat diffusion (r~sqrt(t)). Current implementation already uses correct diffusion physics.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T19:15:00Z"
+    },
+    {
+      "id": "EXP_CANDIDATE_ENSEMBLE_001",
+      "priority": 2,
+      "family": "ensemble_final",
+      "status": "completed",
+      "name": "candidate_weighted_ensemble",
+      "description": "Instead of selecting the single best candidate, create a weighted ensemble of top-3 candidates. The submission score rewards diversity (0.3 * N_valid/3), but current approach may not optimize this.",
+      "hypothesis": "Weighted combination of multiple candidate predictions could better exploit the diversity bonus in the scoring formula.",
+      "implementation": [
+        "After CMA-ES, get top-5 candidates by RMSE",
+        "Weight candidates by inverse RMSE: w_i = 1/(1+RMSE_i)",
+        "Compute weighted average source parameters",
+        "Test if ensemble is more accurate than single best"
+      ],
+      "success_criteria": "Score > 1.17 (improved accuracy term)",
+      "notes": "This explores the diversity bonus in scoring formula, not tried before.",
+      "result": "ABORTED - Diversity already saturated at 2.75/3 candidates (80% of samples get 3). niching_cmaes_diversity proved: adding diverse but worse candidates HURTS score due to averaging in accuracy term.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T19:25:00Z"
+    },
+    {
+      "id": "EXP_SMART_EARLY_TERMINATION_001",
+      "priority": 2,
+      "family": "budget_final",
+      "status": "completed",
+      "name": "smart_early_termination",
+      "description": "Current approach uses fixed feval budgets (20/36). For 'easy' samples, CMA-ES may converge early. Detect convergence and save time for 'hard' samples.",
+      "hypothesis": "Some samples may be 'easy' (1-source, well-placed sensors) where CMA-ES converges quickly. Detecting this could free budget for harder samples.",
+      "implementation": [
+        "Track best fitness history during CMA-ES",
+        "If improvement < 0.1% for 3 consecutive generations, terminate early",
+        "Redistribute saved evaluations to remaining 2-source samples",
+        "Note: Different from prior failed experiments which terminated ALL samples early"
+      ],
+      "success_criteria": "Same score, faster time (< 55 min)",
+      "notes": "Prior early_stopping failed because it didn't redistribute budget. This approach does.",
+      "result": "ABORTED - Early stopping family EXHAUSTED. cmaes_early_stopping showed 1% threshold NEVER triggered. 0.1% threshold would trigger even less. CMA-ES needs full budget for covariance adaptation.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T19:25:00Z"
+    },
+    {
+      "id": "EXP_SIMULATOR_CACHING_001",
+      "priority": 1,
+      "family": "engineering",
+      "status": "completed",
+      "name": "simulation_result_caching",
+      "description": "During CMA-ES, some source positions may be evaluated multiple times (especially near optimum). Caching simulation results could save redundant computation.",
+      "hypothesis": "LRU cache on simulation results (keyed by discretized source positions) could eliminate redundant evaluations and speed up optimization.",
+      "implementation": [
+        "Add @lru_cache or simple dict cache to simulation function",
+        "Discretize source positions to 3 decimal places for cache key",
+        "Track cache hit rate during optimization",
+        "Measure actual time savings"
+      ],
+      "success_criteria": "Same score, time < 55 min (10% speedup)",
+      "notes": "Pure engineering optimization, not algorithmic. Low risk, potential for modest speedup.",
+      "claimed_at": "2026-01-25T19:02:53.502033",
+      "result": "FAILED - 10% cache hit rate, but 22% slower due to overhead. CMA-ES generates unique positions each iteration.",
+      "finding": "engineering caching is NOT viable. Caching only works for repeated evaluations; CMA-ES is designed to explore NEW positions.",
+      "score": 1.1654,
+      "time_min": 71.3,
+      "worker": "W2"
+    },
+    {
+      "id": "EXP_VECTORIZED_BATCH_EVAL_001",
+      "priority": 2,
+      "family": "engineering",
+      "status": "completed",
+      "name": "vectorized_batch_evaluation",
+      "description": "CMA-ES evaluates candidates sequentially. Vectorized batch evaluation of all population members could exploit SIMD/NumPy efficiency.",
+      "hypothesis": "Batch simulation of multiple candidates simultaneously could be faster than sequential evaluation due to NumPy vectorization.",
+      "implementation": [
+        "Modify simulator to accept multiple source configurations at once",
+        "Evaluate entire CMA-ES population in single vectorized call",
+        "Measure per-evaluation time reduction",
+        "Note: May require simulator modifications"
+      ],
+      "success_criteria": "Same score, time < 55 min",
+      "notes": "Engineering optimization. The ADI solver may not vectorize well across samples, but worth testing.",
+      "result": "ABORTED - Technically infeasible. ADI solver uses scipy.sparse.linalg.splu which doesn't support batched solving. Each candidate has different source fields. JAX explicit methods need 4x more timesteps. Current cross-sample parallelization already uses all CPUs.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T19:40:00Z"
+    },
+    {
+      "id": "EXP_KRIGING_INFILL_001",
+      "priority": 1,
+      "family": "surrogate_v2",
+      "status": "completed",
+      "name": "kriging_local_infill",
+      "description": "Use Kriging surrogate for local infill during CMA-ES. Unlike failed Bayesian Optimization (global GP), use local Kriging around current CMA-ES mean for cheaper candidate pre-screening.",
+      "hypothesis": "Local Kriging (fit only on recent CMA-ES evaluations) may predict candidate quality without full simulation, enabling pre-screening of population.",
+      "implementation": [
+        "After each CMA-ES generation, fit local Kriging on last 20 evaluations",
+        "Use Kriging to pre-screen next generation's candidates",
+        "Only simulate top 50% by Kriging prediction",
+        "This differs from failed BO which used global GP"
+      ],
+      "research_source": "https://link.springer.com/article/10.1007/s11081-024-09943-y (SCR algorithm)",
+      "success_criteria": "Same score, time < 55 min",
+      "result": "ABORTED - surrogate_v2 family EXHAUSTED. cmaes_rbf_surrogate: 'CMA-ES covariance adaptation is already implicit surrogate. ~10% rejection, ~6% sim reduction. Not worth complexity.' Kriging is same as failed GP.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T20:05:00Z"
+    },
+    {
+      "id": "EXP_HYBRID_PSO_CMAES_001",
+      "priority": 2,
+      "family": "hybrid_v2",
+      "status": "completed",
+      "name": "pso_then_cmaes_hybrid",
+      "description": "Run 5 PSO iterations for global exploration, then switch to CMA-ES for local convergence. Research shows PSO good for low budgets, CMA-ES for convergence.",
+      "hypothesis": "PSO's particle swarm may explore globally more efficiently than CMA-ES in early generations, while CMA-ES converges better in later stages.",
+      "implementation": [
+        "Run PSO with popsize=6 for 5 iterations (~30 evals)",
+        "Take best PSO position as CMA-ES starting point",
+        "Run CMA-ES with remaining budget (10-20 evals)",
+        "Compare with pure CMA-ES baseline"
+      ],
+      "research_source": "https://arxiv.org/html/2310.00077v3 (PSO best for low budgets)",
+      "success_criteria": "Score > 1.1688 (improved accuracy through better exploration)",
+      "result": "ABORTED - hybrid_v2/alternative_es EXHAUSTED. PSO 'No covariance', DE/OpenAI-ES FAILED. CMA-ES needs full budget for covariance adaptation. Budget splitting hurts both algorithms.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T20:10:00Z",
+      "claimed_at": "2026-01-25T19:21:12.764005"
+    },
+    {
+      "id": "EXP_ACTIVE_LEARNING_POLICY_001",
+      "priority": 2,
+      "family": "meta_v2",
+      "status": "completed",
+      "name": "learned_sampling_policy",
+      "description": "Instead of fixed CMA-ES sigma adaptation, learn which regions to sample next based on fitness landscape. Uses meta-learning to guide exploration.",
+      "hypothesis": "CMA-ES uses fixed adaptation rules. A learned sampling policy could reduce evaluations by 20% while maintaining accuracy.",
+      "implementation": [
+        "Track fitness history during CMA-ES",
+        "Use simple heuristic: if improvement small, increase sigma (explore)",
+        "If improvement large, decrease sigma (exploit)",
+        "This is simpler than full meta-learning but captures key insight"
+      ],
+      "research_source": "https://arxiv.org/html/2406.04261v1 (Learning policies for black-box opt)",
+      "success_criteria": "Same score, time < 55 min",
+      "result": "ABORTED - meta_v2 family EXHAUSTED. Sample RMSE landscapes have NEGATIVE correlation (-0.167). No transferable structure to learn. CMA-ES adaptation is already optimal per-sample.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T20:15:00Z"
+    },
+    {
+      "id": "EXP_CONDITION_NUMBER_INIT_001",
+      "priority": 3,
+      "family": "initialization_v4",
+      "status": "completed",
+      "name": "condition_number_init",
+      "description": "From PSPO research: sensor layout condition number correlates with reconstruction error. Use this to weight sensors during initialization.",
+      "hypothesis": "Weighting sensors by their information content (condition number contribution) may improve initialization quality.",
+      "implementation": [
+        "Compute local condition number for each sensor's contribution",
+        "Weight triangulation by inverse condition number",
+        "High-condition sensors (redundant) get low weight",
+        "Low-condition sensors (informative) get high weight"
+      ],
+      "research_source": "https://www.sciencedirect.com/science/article/abs/pii/S1359431124021446 (PSPO)",
+      "success_criteria": "Score > 1.17 (improved init quality)",
+      "result": "ABORTED - initialization_v4 AND sensor_weighting EXHAUSTED. Scoring uses UNWEIGHTED RMSE. Any weighting optimizes for different objective. Current triangulation+hotspot is optimal.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T20:20:00Z"
+    },
+    {
+      "id": "EXP_SPSA_OPTIMIZER_001",
+      "priority": 1,
+      "family": "gradient_approx_v2",
+      "status": "completed",
+      "name": "spsa_gradient_optimizer",
+      "description": "SPSA (Simultaneous Perturbation Stochastic Approximation) uses only 2 function evaluations per gradient step regardless of dimension. For 2-4D problems, this matches finite differences but with random perturbations that may escape local optima better.",
+      "hypothesis": "SPSA's dimension-independent gradient approximation with random perturbations may find good solutions faster than CMA-ES's population-based exploration.",
+      "implementation": [
+        "Implement SPSA optimizer from scipy.optimize.minimize",
+        "Use perturbation c_k = 0.1 / (k+1)^0.101",
+        "Step size a_k = 0.5 / (k+1)^0.602",
+        "Compare convergence rate vs CMA-ES",
+        "Note: This is gradient-approximation, not gradient-free like CMA-ES"
+      ],
+      "research_source": "SPSA offers dimension-independent complexity (2 evals/step vs 2d for finite differences)",
+      "success_criteria": "Score >= 1.1688 AND time <= 58.4 min",
+      "result": "ABORTED - gradient_approx_v2 EXHAUSTED. SPSA is a local gradient-following optimizer like L-BFGS-B/LM which both FAILED. Local optimizers get stuck in local minima. CMA-ES global search is required.",
+      "worker": "W1",
+      "completed_at": "2026-01-25T21:35:00Z"
+    },
+    {
+      "id": "EXP_MINI_BATCH_SENSORS_001",
+      "priority": 1,
+      "family": "evaluation_v2",
+      "status": "claimed_by_W2",
+      "name": "mini_batch_sensor_eval",
+      "description": "Instead of computing RMSE over all sensors and timesteps, use mini-batches (random subsets) for faster candidate screening. Similar to stochastic gradient descent.",
+      "hypothesis": "A random 50% of sensors may be sufficient to estimate candidate quality during CMA-ES exploration, with full evaluation only for final polish.",
+      "implementation": [
+        "During CMA-ES, randomly sample 50% of sensors for RMSE",
+        "Keep temporal fidelity at 40%",
+        "Use full sensors only for final evaluation and NM polish",
+        "Compare correlation of mini-batch RMSE vs full RMSE"
+      ],
+      "research_source": "Stochastic optimization uses mini-batches to reduce per-evaluation cost",
+      "success_criteria": "Score >= 1.17 AND time < 50 min",
+      "claimed_at": "2026-01-25T20:46:29.678114"
+    },
+    {
+      "id": "EXP_LAPLACE_DOMAIN_INIT_001",
+      "priority": 2,
+      "family": "initialization_v5",
+      "status": "completed",
+      "name": "laplace_domain_initialization",
+      "description": "Transform sensor time series to Laplace domain where heat diffusion has simpler analytical form. Use frequency content to estimate source distance and position.",
+      "hypothesis": "Laplace transform of temperature decay provides direct estimate of thermal diffusion distance r ~ sqrt(4*kappa*s) where s is Laplace variable.",
+      "implementation": [
+        "Apply Laplace transform to each sensor time series",
+        "Analyze decay constant to estimate distance to source",
+        "Use multiple sensors for triangulation in Laplace domain",
+        "Compare init quality vs time-domain triangulation"
+      ],
+      "research_source": "https://www.sciencedirect.com/science/article/abs/pii/S1290072924004575",
+      "success_criteria": "Faster init with same or better CMA-ES starting point",
+      "result": "ABORTED - initialization_v5 EXHAUSTED. 5+ prior experiments prove triangulation+hotspot is optimal. physics_informed_init: 'Simple is better'. All init improvements have failed."
+    },
+    {
+      "id": "EXP_INVERSE_SCALING_001",
+      "priority": 2,
+      "family": "problem_transform",
+      "status": "completed",
+      "name": "scaled_parameter_space",
+      "description": "Scale optimization parameters to have similar sensitivity. Currently x in [0,2], y in [0,1], potentially causing anisotropic search. Rescale to unit hypercube.",
+      "hypothesis": "Uniform parameter scaling may improve CMA-ES covariance learning by making all directions equally important.",
+      "implementation": [
+        "Transform: x' = x/2, y' = y/1 (both in [0,1])",
+        "Run CMA-ES in scaled space",
+        "Transform back for simulation",
+        "Compare covariance matrix diagonal entries"
+      ],
+      "research_source": "Standard practice for optimization algorithms",
+      "success_criteria": "Score > 1.1688 (better covariance adaptation)",
+      "result": "ABORTED - dd-CMA-ES already tested adaptive coordinate scaling and found 2:1 ratio 'too mild'. Manual rescaling is LESS sophisticated than adaptive dd-CMA and would also fail."
+    },
+    {
+      "id": "EXP_CANDIDATE_RERANKING_001",
+      "priority": 2,
+      "family": "candidate_selection_v2",
+      "status": "completed",
+      "name": "full_sim_reranking",
+      "description": "After CMA-ES (40% fidelity), re-evaluate top-5 candidates with full simulation to select true best for polish. Current approach polishes based on 40%-fidelity ranking.",
+      "hypothesis": "40% temporal fidelity ranking may occasionally select wrong candidate for polish. Full-sim reranking ensures best candidate is polished.",
+      "implementation": [
+        "Get top-5 candidates from CMA-ES (40% fidelity)",
+        "Re-evaluate all 5 with full simulation (~5 extra sim calls)",
+        "Polish the true best by full-RMSE",
+        "Compare with current approach"
+      ],
+      "research_source": "Multi-fidelity optimization typically re-evaluates at high fidelity",
+      "success_criteria": "Score > 1.1688 (correct candidate selection)",
+      "result": "ABORTED - ALREADY IMPLEMENTED. Baseline optimizer_with_polish.py already evaluates ALL candidates with full timesteps (lines 345-364) before selecting best for polish. This is a duplicate."
+    },
+    {
+      "id": "EXP_COORDINATE_TRANSFORM_001",
+      "priority": 3,
+      "family": "parameterization_v2",
+      "status": "completed",
+      "name": "center_spread_parameterization",
+      "description": "For 2-source problems, parameterize as (center_x, center_y, spread_x, spread_y) instead of (x1, y1, x2, y2). May reduce permutation ambiguity.",
+      "hypothesis": "Center-spread parameterization removes source labeling ambiguity, potentially improving CMA-ES convergence for 2-source problems.",
+      "implementation": [
+        "Transform: center = (s1 + s2)/2, spread = s1 - s2",
+        "Optimize in center-spread space",
+        "Transform back: s1 = center + spread/2, s2 = center - spread/2",
+        "Enforce spread > 0 to break symmetry"
+      ],
+      "research_source": "Common technique for symmetric optimization problems",
+      "success_criteria": "Better 2-source RMSE with same time",
+      "result": "ABORTED - polar_parameterization FAILED (-0.0216 score). Coordinate transforms hurt CMA-ES. Permutation ambiguity is NOT a problem - RMSE is symmetric. Cartesian is optimal."
     }
   ],
   "algorithm_families": {
@@ -2023,5 +2441,6 @@
       "reason": "Same as prior failed experiments (ADAPTIVE_BUDGET, EARLY_STOPPING)",
       "completed_at": "2026-01-24T16:13:54.972973Z"
     }
-  ]
+  ],
+  "completed_ids": []
 }

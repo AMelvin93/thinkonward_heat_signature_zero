@@ -1,0 +1,45 @@
+{
+  "experiment_id": "EXP_SIMULATOR_CACHING_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-25T19:03:00Z",
+  "completed_at": "2026-01-25T19:30:00Z",
+  "experiment_info": {
+    "name": "simulation_result_caching",
+    "family": "engineering",
+    "description": "Cache simulation results to eliminate redundant evaluations during CMA-ES",
+    "hypothesis": "LRU cache on simulation results could eliminate redundant evaluations and speed up optimization"
+  },
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "cache_enabled": true,
+        "cache_precision": 3
+      },
+      "score": 1.1654,
+      "rmse_mean": 0.1303,
+      "time_min": 71.3,
+      "in_budget": false,
+      "mlflow_id": "ab29f04c6ca242f09934833bc3b39027",
+      "cache_stats": {
+        "total_hits": 1113,
+        "total_misses": 9852,
+        "hit_rate": 0.1015
+      },
+      "vs_baseline": {
+        "score_delta": -0.0034,
+        "time_delta": "+12.9 min (+22%)"
+      },
+      "notes": "10% cache hit rate, but overhead outweighs savings - SLOWER than baseline"
+    }
+  ],
+  "best_in_budget": null,
+  "result": "FAILED - Caching overhead (22% slower) outweighs 10% cache hit savings. CMA-ES generates unique positions each iteration.",
+  "next_config_to_try": null,
+  "summary_written": true
+}

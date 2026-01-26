@@ -1,0 +1,28 @@
+{
+  "experiment_id": "EXP_INTENSITY_PRIOR_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T18:30:00Z",
+  "completed_at": "2026-01-25T18:35:00Z",
+  "experiment_info": {
+    "name": "intensity_prior_from_peak",
+    "family": "physics_init_v2",
+    "description": "Use physics to bound intensity search. Heat equation: T_max at sensor ∝ q/r². From observed max temperatures, estimate feasible (q, r) combinations to narrow search space.",
+    "hypothesis": "Physics-based bounds on q might help narrow search"
+  },
+  "reason_aborted": "Based on a misunderstanding of current approach. Intensity q is NOT searched - it's computed analytically via least squares given positions. The Variable Projection approach already optimally separates position search from intensity computation.",
+  "prior_evidence": {
+    "variable_projection_separable": {
+      "finding": "The baseline ALREADY uses Variable Projection implicitly - CMA-ES optimizes positions, q is computed analytically via least squares",
+      "conclusion": "There is no intensity search to bound"
+    },
+    "physics_informed_init": {
+      "finding": "Physics-based initialization (temperature gradients) FAILED to improve over simple hottest-sensor approach",
+      "conclusion": "initialization family EXHAUSTED for this problem"
+    }
+  },
+  "technical_explanation": "For each candidate position (x,y), the optimal intensity is computed as: q_optimal = dot(Y_unit, Y_obs) / dot(Y_unit, Y_unit). This is a closed-form solution, not a search. The q_range bounds (0.5, 2.0) are only used for clipping, not search.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

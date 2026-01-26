@@ -1,0 +1,59 @@
+{
+  "experiment_id": "EXP_BOBYQA_POLISH_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-25T17:59:00Z",
+  "completed_at": "2026-01-25T19:15:00Z",
+  "experiment_info": {
+    "name": "bobyqa_polish",
+    "family": "local_search_v3",
+    "description": "Use COBYLA/BOBYQA-style bound-constrained optimizer for polish instead of NM",
+    "hypothesis": "BOBYQA's quadratic approximation may converge faster than NM's simplex for smooth RMSE landscapes in 3-6 dimensions"
+  },
+  "baseline": {
+    "polish_method": "Nelder-Mead",
+    "polish_maxiter": 8,
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "polish_method": "COBYLA",
+        "polish_maxiter": 8
+      },
+      "score": 1.1565,
+      "rmse_mean": 0.1466,
+      "time_min": 67.5,
+      "in_budget": false,
+      "mlflow_id": "b153764813884742ad84648d6de34d2d",
+      "vs_baseline": {
+        "score_delta": -0.0123,
+        "time_delta": "+9.1 min (+16%)"
+      },
+      "notes": "COBYLA is both SLOWER and WORSE than NM baseline"
+    },
+    {
+      "run": 2,
+      "config": {
+        "polish_method": "trust-constr",
+        "polish_maxiter": 8
+      },
+      "score": 1.1460,
+      "rmse_mean": 0.1479,
+      "time_min": 104.9,
+      "in_budget": false,
+      "mlflow_id": "1256acd3f6af4236b710ccfdb79037cb",
+      "vs_baseline": {
+        "score_delta": -0.0228,
+        "time_delta": "+46.5 min (+80%)"
+      },
+      "notes": "trust-constr is MUCH SLOWER due to Hessian approximation overhead"
+    }
+  ],
+  "best_in_budget": null,
+  "result": "FAILED - Both COBYLA and trust-constr are worse than Nelder-Mead. No alternative polish method beats NM.",
+  "next_config_to_try": null,
+  "summary_written": true
+}

@@ -1,0 +1,36 @@
+{
+  "experiment_id": "EXP_CONDITION_NUMBER_INIT_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T20:15:00Z",
+  "completed_at": "2026-01-25T20:20:00Z",
+  "experiment_info": {
+    "name": "condition_number_init",
+    "family": "initialization_v4",
+    "description": "Weight sensors by condition number contribution for initialization",
+    "hypothesis": "Weighting sensors by information content may improve initialization"
+  },
+  "reason_aborted": "INITIALIZATION AND SENSOR WEIGHTING FAMILIES EXHAUSTED. (1) physics_informed_init: FAILED - 'The initialization family should be marked as EXHAUSTED'. (2) weighted_sensor_loss: FAILED - 'Optimization Target Mismatch: optimum of weighted loss differs from unweighted RMSE'. (3) informative_sensor_subset: FAILED - 'Selecting sensors HURTS accuracy vs all sensors'. (4) Current triangulation+hotspot init is already optimal.",
+  "prior_evidence": {
+    "physics_informed_init": {
+      "result": "FAILED (-0.0046 score, +2.3 min)",
+      "finding": "The initialization family should be marked as EXHAUSTED"
+    },
+    "weighted_sensor_loss": {
+      "result": "FAILED",
+      "finding": "Optimization Target Mismatch: optimum of weighted loss differs from unweighted RMSE"
+    },
+    "informative_sensor_subset": {
+      "result": "FAILED",
+      "finding": "Selecting sensors HURTS accuracy vs using all sensors"
+    },
+    "more_inits_select_best": {
+      "result": "FAILED",
+      "finding": "The baseline 2-init strategy (triangulation + hotspot) is already optimal"
+    }
+  },
+  "key_insight": "Sensor weighting was tested in multiple contexts and always failed. The key issue: the scoring formula uses UNWEIGHTED RMSE across all sensors. Any weighting scheme optimizes for a DIFFERENT objective than what we're scored on. Additionally, initialization has been thoroughly explored with no improvements found.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

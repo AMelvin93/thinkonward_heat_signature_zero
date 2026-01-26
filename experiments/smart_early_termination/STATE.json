@@ -1,0 +1,34 @@
+{
+  "experiment_id": "EXP_SMART_EARLY_TERMINATION_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T19:20:00Z",
+  "completed_at": "2026-01-25T19:25:00Z",
+  "experiment_info": {
+    "name": "smart_early_termination",
+    "family": "budget_final",
+    "description": "Detect convergence and terminate CMA-ES early to save time for hard samples",
+    "hypothesis": "Some samples may be easy where CMA-ES converges quickly"
+  },
+  "reason_aborted": "EARLY STOPPING FAMILY EXHAUSTED. Multiple prior experiments prove: (1) cmaes_early_stopping showed 1% threshold NEVER triggered - CMA-ES keeps improving >1% per generation, (2) adaptive_sample_budget showed early termination HURTS accuracy, (3) confidence_based_early_exit showed stopping early prevents covariance adaptation.",
+  "prior_evidence": {
+    "cmaes_early_stopping": {
+      "result": "FAILED - stagnation threshold was NEVER triggered",
+      "finding": "CMA-ES continues making meaningful improvements (>1%) throughout budget",
+      "quote": "The 1% threshold is too tight: CMA-ES makes >1% improvements in most generations, even near the end"
+    },
+    "adaptive_sample_budget": {
+      "result": "FAILED - early termination hurts accuracy",
+      "finding": "When CMA-ES terminates early (23.8% samples), accuracy drops significantly (-0.018 score)",
+      "quote": "Any form of early termination for CMA-ES - the algorithm needs its full budget"
+    },
+    "confidence_based_early_exit": {
+      "result": "FAILED - cannot be confident early",
+      "finding": "Stopping early means stopping before the covariance matrix is well-adapted, which always hurts accuracy"
+    }
+  },
+  "key_insight": "The proposed 0.1% threshold is even tighter than the 1% threshold that never triggered in cmaes_early_stopping. CMA-ES needs its full budget for covariance adaptation. There is NO convergence-based criterion that works for this problem.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

@@ -1,0 +1,41 @@
+{
+  "experiment_id": "EXP_TRIANGULATION_QUALITY_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T19:10:00Z",
+  "completed_at": "2026-01-25T19:15:00Z",
+  "experiment_info": {
+    "name": "improved_triangulation_init",
+    "family": "initialization_v3",
+    "description": "Test alternative triangulation formulas from acoustic source localization literature",
+    "hypothesis": "Alternative triangulation approaches might improve initialization quality"
+  },
+  "reason_aborted": "INITIALIZATION FAMILY EXHAUSTED. Multiple prior experiments conclusively show the baseline triangulation + hotspot init is already optimal. Physics-informed init, boundary-aware init, more inits, moment-based, and multistart all FAILED.",
+  "prior_evidence": {
+    "physics_informed_init": {
+      "result": "FAILED (-0.0046 score, +2.3 min)",
+      "finding": "Temperature gradients at sensors don't accurately point to source locations",
+      "conclusion": "The initialization family should be marked as EXHAUSTED"
+    },
+    "boundary_aware_initialization": {
+      "result": "ABORTED - 24% of samples have boundary sources",
+      "conclusion": "Mark initialization_v2 family as EXHAUSTED"
+    },
+    "more_inits_select_best": {
+      "result": "FAILED - More inits do NOT improve results",
+      "conclusion": "The baseline 2-init strategy (triangulation + hotspot) is already optimal"
+    },
+    "moment_based_inversion": {
+      "finding": "The triangulation initialization already exploits sensor readings to estimate initial source positions",
+      "conclusion": "direct_inversion_v2 family is EXHAUSTED"
+    },
+    "multistart_elite_selection": {
+      "result": "FAILED - Elite selection doesn't work, single-start is optimal",
+      "conclusion": "Single-start with good initialization is optimal"
+    }
+  },
+  "key_insight": "The current triangulation implementation uses physics-correct diffusion distance estimation (r ~ sqrt(4*kappa*t)) and trilateration. Acoustic localization formulas are for wave propagation (r = v*t), which is WRONG for diffusion. The current approach is already physics-optimal.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

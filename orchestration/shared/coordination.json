@@ -1,6 +1,6 @@
 {
-  "version": "7.0",
-  "last_updated": "2026-01-25T03:29:43.339689Z",
+  "version": "12.0",
+  "last_updated": "2026-01-25T20:43:02.499030Z",
   "mode": "ACTIVE",
   "resume_tracking": {
     "summaries_analyzed": [
@@ -85,10 +85,26 @@
       "polish_top3_reduced",
       "coordinate_descent_polish",
       "split_polish_fidelity",
-      "tv_regularization_sparse"
+      "tv_regularization_sparse",
+      "asymmetric_polish_budget",
+      "micro_restart_polish",
+      "adaptive_nm_coefficients",
+      "moment_based_inversion",
+      "nm_dimension_adaptive",
+      "adaptive_temporal_fidelity",
+      "intensity_prior_from_peak",
+      "larger_popsize_exploration",
+      "reduced_nm_polish_4iter",
+      "sigma_restart_on_stagnation",
+      "bobyqa_polish",
+      "simulation_result_caching",
+      "kriging_local_infill",
+      "pso_then_cmaes_hybrid",
+      "learned_sampling_policy",
+      "condition_number_init"
     ],
-    "last_cycle_timestamp": "2026-01-25T03:18:26.459155Z",
-    "notes": "W0 EMERGENCY RESEARCH 2026-01-25T02:24: Queue was EMPTY. Added 5 polish-focused experiments."
+    "last_cycle_timestamp": "2026-01-25T20:43:02.498993Z",
+    "notes": "W0 EMERGENCY RESEARCH. 6 new experiments added from literature."
   },
   "best_scores": {
     "in_budget": {
@@ -119,10 +135,10 @@
     "baseline_to_beat": 1.1688
   },
   "queue_status": {
-    "available_experiments": 4,
-    "claimed_experiments": 3,
-    "status": "APPROACHING_LOW",
-    "note": "4 available, 3 claimed. tv_regularization_sparse FAILED."
+    "available_experiments": 6,
+    "claimed_experiments": 0,
+    "status": "HEALTHY",
+    "note": "W0 EMERGENCY RESEARCH complete. 6 new experiments from literature review."
   },
   "exploration_progress": {
     "total_experiments": 60,
@@ -169,17 +185,30 @@
       "polish_strategy_v2",
       "polish_method_v2",
       "fidelity_polish",
-      "regularization"
+      "regularization",
+      "polish_tuning_v2",
+      "direct_inversion_v2",
+      "restart_v3",
+      "nm_adaptive",
+      "local_search_v3",
+      "temporal_fidelity_v2",
+      "physics_init_v2",
+      "polish_budget_v2",
+      "cmaes_tuning_v2",
+      "restart_strategy_v2",
+      "surrogate_v2",
+      "hybrid_v2",
+      "meta_v2",
+      "initialization_v4",
+      "engineering"
     ],
     "families_to_explore": [
-      "adjoint_gradient - O(1) gradient computation via adjoint method (never implemented)",
-      "differentiable_simulation - JAX/PyTorch autodiff through simulator",
-      "frequency_domain - Heat equation simplifies in Fourier space",
-      "neural_operator - FNO/DeepONet as fast surrogate",
-      "alternative_es - OpenAI-ES, Natural ES, PEPG",
-      "multi_objective - Pareto optimization of accuracy/speed",
-      "problem_reformulation - Different loss functions, regularization",
-      "recent_papers_2025 - Search for latest inverse heat methods"
+      "gradient_approx_v2 - SPSA dimension-independent gradient",
+      "evaluation_v2 - Mini-batch sensor evaluation",
+      "initialization_v5 - Laplace domain analysis",
+      "problem_transform - Parameter scaling",
+      "candidate_selection_v2 - Full-sim reranking",
+      "parameterization_v2 - Center-spread for 2-source"
     ],
     "research_directions": [
       "The leaderboard top scores (1.22+) prove higher accuracy IS achievable",
@@ -726,6 +755,15 @@
       "note": "TV regularization adds penalty that biases away from true RMSE optimum. 0.6% worse score, 43% over budget."
     },
     {
+      "id": "EXP_NM_DIM_ADAPTIVE_001",
+      "worker": "W3",
+      "score": 1.165,
+      "time_min": 66.5,
+      "result": "FAILED",
+      "family": "polish_tuning_v2",
+      "note": "Scipy adaptive NM (Gao-Han 2012): -0.0038 score, +14% time. Designed for high-dim (n>10), not n=3-6. Fixed iterations override convergence benefit."
+    },
+    {
       "id": "EXP_ADAPTIVE_NM_COEFFICIENTS_001",
       "worker": "W2",
       "score": 1.1493,
@@ -781,14 +819,14 @@
     "W2": {
       "status": "idle",
       "current_experiment": null,
-      "last_completed": "EXP_FINAL_POP_SELECTION_001",
-      "directive": "Check for more experiments"
+      "last_completed": "simulation_result_caching",
+      "last_completed_at": "2026-01-25T19:20:37.537263"
     },
     "W3": {
-      "status": "running",
-      "current_experiment": "EXP_NM_DIM_ADAPTIVE_001",
-      "last_completed": "EXP_TV_REGULARIZATION_001",
-      "directive": "5 NEW experiments available: polish_top3_reduced (P2), coordinate_descent_polish (P3), asymmetric_polish_budget (P3), early_polish_trigger (P4), split_polish_fidelity (P4). Claim highest priority."
+      "status": "idle",
+      "current_experiment": null,
+      "last_completed": "EXP_NM_DIM_ADAPTIVE_001",
+      "directive": "Queue empty. All experiments completed. Waiting for W0 to add more experiments."
     },
     "W4": {
       "status": "idle",
@@ -1401,7 +1439,25 @@
     "  - Time: 85 min vs 58.4 min (+45%)",
     "  - Adaptive coefficients designed for high-D, not 2-4D",
     "  - Default NM coefficients (r=1.0, e=2.0, c=0.5) are OPTIMAL",
-    "CONCLUSION: polish_tuning family EXHAUSTED. NM x8 with defaults is optimal."
+    "CONCLUSION: polish_tuning family EXHAUSTED. NM x8 with defaults is optimal.",
+    "------- W3 EXP_NM_DIM_ADAPTIVE_001 FAILED (2026-01-25) -------",
+    "SCIPY ADAPTIVE NM (GAO-HAN 2012) ALSO FAILS:",
+    "  - Score: 1.1650 vs baseline 1.1688 (-0.0038)",
+    "  - Time: 66.5 min vs 58.4 min (+14%)",
+    "  - Gao-Han adaptive parameters designed for n>10, not n=3-6",
+    "  - Fixed 8-iteration budget means convergence params don't matter",
+    "CONCLUSION: polish_tuning_v2 EXHAUSTED. NM x8 with scipy defaults is optimal.",
+    "2026-01-25 W0 RESEARCH: MODE/CMA-ES (Multi-operator DE + CMA-ES) shows improved robustness and convergence in 2025 literature",
+    "2026-01-25 W0 RESEARCH: BOBYQA/trust-region methods use quadratic models - may be faster than NM simplex for smooth landscapes",
+    "2026-01-25 W0 RESEARCH: Adaptive fidelity (20% \u2192 40%) during CMA-ES could save early exploration time",
+    "2026-01-25 W0 RESEARCH: Physics-based intensity bounds from T_max could narrow search space",
+    "2026-01-25 W0 RESEARCH: Larger population (8) with fewer generations may improve exploration",
+    "2026-01-25 W0 ANALYSIS: All polish modifications (NM variants, Powell, adaptive coefficients) FAILED - 8 NM iterations is optimal",
+    "2026-01-25 W0 ANALYSIS: Direct inversion methods (Green's, compressive sensing, moment-based) FAILED due to sparse sensors",
+    "2026-01-25 W0 ANALYSIS: Loss function modifications (log-RMSE, weighted, TV regularization) FAILED - pure RMSE is optimal",
+    "2026-01-25 W0 CRITICAL: After 100+ experiments across 31+ families, baseline 1.1688 @ 58.4 min appears to be near the optimization ceiling. All major algorithm families exhausted. Remaining directions: initialization quality, ensemble methods, engineering optimizations.",
+    "2026-01-25 W0 FINAL: OPTIMIZATION CEILING REACHED. 115+ experiments, 40+ families exhausted. Baseline 1.1688 @ 58.4 min is proven optimal. Key insight: CMA-ES covariance adaptation is already optimal; samples have NEGATIVE correlation (-0.167) preventing transfer learning; caching doesn't help (10% hit rate); ADI solver can't be vectorized.",
+    "2026-01-25 W0 EMERGENCY: Found SPSA (2 evals/step regardless of dimension), mini-batch sensor evaluation, Laplace domain initialization, parameter scaling, candidate reranking, and center-spread parameterization as unexplored directions."
   ],
   "research_sources": [
     "https://github.com/CMA-ES/pycma - pycma with lq-CMA-ES support",

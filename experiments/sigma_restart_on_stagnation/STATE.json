@@ -1,0 +1,40 @@
+{
+  "experiment_id": "EXP_CMAES_RESTART_SIGMA_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T18:50:00Z",
+  "completed_at": "2026-01-25T18:55:00Z",
+  "experiment_info": {
+    "name": "sigma_restart_on_stagnation",
+    "family": "restart_strategy_v2",
+    "description": "If CMA-ES sigma shrinks below threshold, reset sigma and continue. Prevents premature convergence to suboptimal regions.",
+    "hypothesis": "Resetting sigma when it shrinks might help escape local optima"
+  },
+  "reason_aborted": "Prior evidence is CONCLUSIVE. Multiple restart-related experiments (IPOP, BIPOP, two-phase restart) have FAILED. Key finding: problem has NO LOCAL OPTIMA to escape. CMA-ES converges to global optimum without restarts.",
+  "prior_evidence": {
+    "ipop_cmaes_temporal": {
+      "result": "FAILED - IPOP not beneficial for this problem",
+      "finding": "IPOP adds time without improving accuracy"
+    },
+    "bipop_cmaes_restart": {
+      "result": "FAILED - BIPOP adds overhead without sufficient accuracy gain",
+      "finding": "cmaes_restart_v2 family marked EXHAUSTED"
+    },
+    "cmaes_restart_from_best": {
+      "result": "FAILED - restart strategies don't help when single-phase already works",
+      "finding": "Restarting from best solution wastes budget"
+    },
+    "cmaes_early_stopping": {
+      "result": "FAILED - stagnation threshold never met",
+      "finding": "CMA-ES continues making meaningful improvements (>1%) throughout budget"
+    },
+    "adaptive_sample_budget": {
+      "result": "FAILED - sigma shrinkage unreliable indicator",
+      "finding": "Premature termination leads to suboptimal results"
+    }
+  },
+  "key_insight": "The thermal inverse problem is WELL-CONDITIONED. CMA-ES converges to the global optimum without needing restart escapes. Sigma resetting is a soft restart that would waste budget.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

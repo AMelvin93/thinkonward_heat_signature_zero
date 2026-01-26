@@ -1,0 +1,37 @@
+{
+  "experiment_id": "EXP_KRIGING_INFILL_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T20:00:00Z",
+  "completed_at": "2026-01-25T20:05:00Z",
+  "experiment_info": {
+    "name": "kriging_local_infill",
+    "family": "surrogate_v2",
+    "description": "Use local Kriging around CMA-ES mean for candidate pre-screening",
+    "hypothesis": "Local Kriging may predict candidate quality for pre-screening"
+  },
+  "reason_aborted": "SURROGATE FAMILY EXHAUSTED. Multiple experiments prove: (1) cmaes_rbf_surrogate: 'CMA-ES covariance adaptation is already implicit surrogate modeling. ~10% rejection rate, ~6% sim reduction. Not worth complexity.' (2) bayesian_optimization_gp: GP poorly models RMSE landscape, 91% worse accuracy. (3) lq_cma_es: With only 10-18 fevals, not enough data for surrogate. (4) gappy_cpod: 'surrogate_v2 family EXHAUSTED'.",
+  "prior_evidence": {
+    "cmaes_rbf_surrogate": {
+      "result": "ABORTED - Not worth complexity",
+      "finding": "CMA-ES covariance adaptation is already implicit surrogate modeling",
+      "metrics": "~10% rejection rate, ~6% potential sim reduction"
+    },
+    "bayesian_optimization_gp": {
+      "result": "FAILED - 91% worse accuracy",
+      "finding": "GP surrogate poorly models RMSE landscape"
+    },
+    "lq_cma_es_builtin": {
+      "result": "FAILED - 29-71% worse RMSE",
+      "finding": "With only 10-18 fevals, not enough data for surrogate"
+    },
+    "gappy_cpod": {
+      "result": "ABORTED",
+      "finding": "surrogate_v2 family EXHAUSTED"
+    }
+  },
+  "key_insight": "Kriging is a GP surrogate - same as the failed Bayesian Optimization. CMA-ES's covariance adaptation already provides implicit surrogate modeling. Adding explicit Kriging on top provides ~6% potential benefit for significant implementation complexity.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

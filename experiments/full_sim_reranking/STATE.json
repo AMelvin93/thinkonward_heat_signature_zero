@@ -1,0 +1,28 @@
+{
+  "experiment_id": "EXP_CANDIDATE_RERANKING_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T22:20:00Z",
+  "completed_at": "2026-01-25T22:25:00Z",
+  "experiment_info": {
+    "name": "full_sim_reranking",
+    "family": "candidate_selection_v2",
+    "description": "Re-evaluate top-5 candidates with full simulation to select true best for polish",
+    "hypothesis": "40% temporal fidelity ranking may select wrong candidate"
+  },
+  "reason_aborted": "ALREADY IMPLEMENTED IN BASELINE. The optimizer_with_polish.py already evaluates ALL candidates with FULL timesteps (lines 345-364) BEFORE selecting the best for polish (line 369). This experiment proposes functionality that already exists.",
+  "prior_evidence": {
+    "early_timestep_filtering": {
+      "workflow": "1. CMA-ES with 40% timesteps, 2. Evaluate top candidates on FULL timesteps, 3. NM polish on BEST candidate with full timesteps",
+      "code_location": "experiments/early_timestep_filtering/optimizer_with_polish.py lines 345-369"
+    },
+    "ranking_correlation": {
+      "result": "40% timesteps gives 0.95+ Spearman correlation with full RMSE",
+      "implication": "Even if not re-ranked, ranking would be correct 95%+ of time"
+    }
+  },
+  "key_insight": "The proposed experiment is a DUPLICATE of existing baseline functionality. The baseline already: (1) evaluates all candidates with full timesteps, (2) selects best based on full-timestep RMSE, (3) polishes the true best. No additional re-ranking is needed.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

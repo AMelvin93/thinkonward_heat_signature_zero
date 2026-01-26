@@ -1,0 +1,37 @@
+{
+  "experiment_id": "EXP_SPSA_OPTIMIZER_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T21:30:00Z",
+  "completed_at": "2026-01-25T21:35:00Z",
+  "experiment_info": {
+    "name": "spsa_gradient_optimizer",
+    "family": "gradient_approx_v2",
+    "description": "SPSA uses 2 function evaluations per gradient step regardless of dimension",
+    "hypothesis": "SPSA's dimension-independent gradient may find good solutions faster than CMA-ES"
+  },
+  "reason_aborted": "GRADIENT-BASED METHODS ARE EXHAUSTED. All gradient-based local optimizers have failed because they get stuck in local minima. Prior experiments: (1) L-BFGS-B: 'worse than NM'. (2) LM: 'local optimizer that gets stuck in local minima'. (3) SLSQP: 'same O(n) overhead as L-BFGS-B'. SPSA is also a local optimizer that follows gradient descent.",
+  "prior_evidence": {
+    "hybrid_gradient_lbfgsb": {
+      "result": "FAILED",
+      "finding": "L-BFGS-B polish NOT better than NM. Best: 1.1174 @ 42 min vs NM: 1.1415 @ 38 min",
+      "quote": "Finite diff overhead outweighs gradient advantage"
+    },
+    "levenberg_marquardt": {
+      "result": "FAILED - Score 1.035 @ 56 min (-9% vs baseline)",
+      "finding": "LM is local optimizer that gets stuck in local minima"
+    },
+    "scipy_slsqp": {
+      "result": "ABORTED",
+      "finding": "gradient_numerical family EXHAUSTED"
+    },
+    "algorithm_families": {
+      "gradient_based": "EXHAUSTED - Adjoint wrong, JAX blocked, finite diff too slow",
+      "gradient_numerical": "EXHAUSTED - O(n) overhead makes gradient methods slower than NM"
+    }
+  },
+  "key_insight": "SPSA is a LOCAL gradient-following optimizer. Like all gradient methods, it will get stuck in local minima. The thermal inverse problem requires GLOBAL exploration (CMA-ES) not local gradient following (SPSA/L-BFGS-B/LM). Even with 2 evals per step, SPSA can't compete with CMA-ES's population-based covariance-adapted search.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

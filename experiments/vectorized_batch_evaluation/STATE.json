@@ -1,0 +1,37 @@
+{
+  "experiment_id": "EXP_VECTORIZED_BATCH_EVAL_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T19:30:00Z",
+  "completed_at": "2026-01-25T19:40:00Z",
+  "experiment_info": {
+    "name": "vectorized_batch_evaluation",
+    "family": "engineering",
+    "description": "Vectorized batch evaluation of CMA-ES population to exploit NumPy SIMD efficiency",
+    "hypothesis": "Batch simulation of multiple candidates simultaneously could be faster than sequential evaluation"
+  },
+  "reason_aborted": "TECHNICALLY INFEASIBLE. The ADI solver (scipy.sparse.linalg.splu) cannot be batched. Each candidate has different source configurations requiring different forcing terms. JAX alternatives failed due to explicit Euler stability (4x more timesteps). Current parallelization across samples already uses all CPUs.",
+  "prior_evidence": {
+    "jax_differentiable_solver": {
+      "result": "ABORTED - Fundamental Incompatibility",
+      "finding_1": "Explicit methods need 4x more timesteps (stability constraint)",
+      "finding_2": "Implicit methods (ADI) are essential for efficiency",
+      "finding_3": "scipy.sparse.linalg.splu doesn't support batched solving"
+    },
+    "simulator_analysis": {
+      "solver": "ADI (Alternating Direction Implicit)",
+      "lu_factors": "scipy.sparse.linalg.splu - shared per sample",
+      "solve_calls": "~50 per half-step × 2 half-steps × nt timesteps",
+      "source_fields": "Different per candidate - cannot be batched"
+    },
+    "current_parallelization": {
+      "approach": "joblib parallel across samples",
+      "cpu_usage": "All available CPUs",
+      "constraint": "Within-sample parallelization would conflict with cross-sample parallelization"
+    }
+  },
+  "key_insight": "The ADI solver's efficiency comes from implicit time-stepping (larger dt). Vectorizing across candidates would require either: (1) modifying scipy's sparse LU solver (impossible), (2) using explicit methods (4x slower), or (3) using a GPU library (cupy/JAX with implicit solvers - complex). None of these are viable within the experiment scope.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}

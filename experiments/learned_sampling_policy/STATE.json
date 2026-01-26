@@ -1,0 +1,32 @@
+{
+  "experiment_id": "EXP_ACTIVE_LEARNING_POLICY_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-25T20:10:00Z",
+  "completed_at": "2026-01-25T20:15:00Z",
+  "experiment_info": {
+    "name": "learned_sampling_policy",
+    "family": "meta_v2",
+    "description": "Learn which regions to sample next based on fitness landscape",
+    "hypothesis": "Learned sampling policy could reduce evaluations by 20%"
+  },
+  "reason_aborted": "MULTIPLE FAMILIES EXHAUSTED. Meta-learning/active sampling was tested and failed: (1) adaptive_sigma_schedule: FAILED - sample-specific landscapes can't be learned. (2) pretrained_nn_surrogate: 'RMSE landscape is completely sample-specific' - correlation between samples is often NEGATIVE. (3) CMA-ES already has optimal adaptation rules for this problem.",
+  "prior_evidence": {
+    "pretrained_nn_surrogate": {
+      "result": "ABORTED - fundamental infeasibility",
+      "finding": "RMSE landscape is completely sample-specific",
+      "metrics": "Average correlation between samples: -0.167 (NEGATIVE)"
+    },
+    "adaptive_sigma_schedule": {
+      "result": "FAILED",
+      "finding": "Sample-specific physics (kappa varies) prevents learning universal policy"
+    },
+    "cmaes_tuning_general": {
+      "finding": "CMA-ES adaptation rules are already optimal for 2-4D expensive black-box optimization"
+    }
+  },
+  "key_insight": "Learning a sampling policy across samples is impossible because sample landscapes have NEGATIVE correlation (-0.167 average). A position that is good for one sample may be bad for another. CMA-ES's built-in adaptation rules already optimally balance exploration and exploitation for each sample independently.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "summary_written": true
+}
