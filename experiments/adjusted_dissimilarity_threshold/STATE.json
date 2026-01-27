@@ -1,0 +1,60 @@
+{
+  "experiment_id": "EXP_ADJUSTED_TAU_THRESHOLD_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T12:50:00Z",
+  "completed_at": "2026-01-26T14:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "tau": 0.15,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1741,
+      "time_min": 67.2,
+      "in_budget": false,
+      "rmse_1src": 0.1101,
+      "rmse_2src": 0.1602,
+      "candidate_distribution": {
+        "1_cand": 0,
+        "2_cand": 5,
+        "3_cand": 75
+      },
+      "mlflow_id": "f59e248951db4d92bbd8e9869225c017",
+      "notes": "Better score (+0.0053) but over budget"
+    },
+    {
+      "run": 2,
+      "config": {
+        "tau": 0.25,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1362,
+      "time_min": 73.1,
+      "in_budget": false,
+      "rmse_1src": 0.1108,
+      "rmse_2src": 0.1552,
+      "candidate_distribution": {
+        "1_cand": 8,
+        "2_cand": 21,
+        "3_cand": 51
+      },
+      "mlflow_id": "2c512ed378a749dea68d9733767c33a0",
+      "notes": "Much worse score (-0.0326) due to reduced diversity, also over budget"
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1741,
+    "time_min": 67.2,
+    "in_budget": false
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - Neither tau value beats baseline within budget. tau=0.15 gives slightly better score (+0.0053) but is over budget. tau=0.25 significantly hurts diversity score (-0.0326). Baseline tau=0.2 is already optimal.",
+  "key_finding": "The baseline tau=0.2 represents the optimal tradeoff between allowing diverse candidates and maintaining quality."
+}

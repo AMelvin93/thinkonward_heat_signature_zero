@@ -1,0 +1,9 @@
+{
+  "experiment_id": "EXP_PHYSICS_INFORMED_NN_INIT_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-26T12:00:00Z",
+  "completed_at": "2026-01-26T12:00:00Z",
+  "abort_reason": "PINN/neural_operator family exhausted",
+  "summary_written": true
+}

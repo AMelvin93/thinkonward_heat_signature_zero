@@ -1,0 +1,46 @@
+{
+  "experiment_id": "EXP_TOP3_ENSEMBLE_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-26T13:15:00Z",
+  "completed_at": "2026-01-26T13:53:00Z",
+  "experiment_info": {
+    "name": "top3_ensemble_averaging",
+    "family": "postprocessing_v2",
+    "description": "Average top-3 candidates positions to create ensemble solution",
+    "hypothesis": "Averaging top-3 candidates may create more robust solution"
+  },
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "top_k": 3,
+        "add_ensemble_as_candidate": true
+      },
+      "results": {
+        "n_samples": 80,
+        "projected_400_min": 43.4,
+        "score": 1.1129,
+        "rmse_1src": 0.1508,
+        "rmse_2src": 0.2110,
+        "mlflow_run_id": "3b6c659484494ca88badb7bff08d3169",
+        "n_ensemble_in_final": 29,
+        "outcome": "FAILED"
+      },
+      "note": "Ensemble averaging decreased score significantly"
+    }
+  ],
+  "best_in_budget": null,
+  "final_result": {
+    "outcome": "FAILED",
+    "reason": "Score 1.1129 < baseline 1.1688 (-4.8%)",
+    "score": 1.1129,
+    "time_min": 43.4,
+    "delta_vs_baseline": -0.0559
+  },
+  "summary_written": true
+}

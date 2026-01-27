@@ -1,0 +1,61 @@
+{
+  "experiment_id": "EXP_RESTARTED_NM_POLISH_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-26T12:30:00Z",
+  "completed_at": "2026-01-26T13:00:00Z",
+  "experiment_info": {
+    "name": "multi_restart_nm_polish",
+    "family": "polish_method_v3",
+    "description": "Run NM polish multiple times from slightly perturbed starting points",
+    "hypothesis": "NM may converge to different local minima from different starting points. Running 3 NM polishes from perturbed positions may find better final solution."
+  },
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "n_restarts": 3,
+        "perturbation_scale": 0.05,
+        "final_polish_maxiter": 5
+      },
+      "results": {
+        "n_samples": 5,
+        "projected_400_min": 68.9,
+        "score": null,
+        "outcome": "OVER_BUDGET"
+      },
+      "note": "Projected over 60 min budget, reduced restarts"
+    },
+    {
+      "run": 2,
+      "config": {
+        "n_restarts": 2,
+        "perturbation_scale": 0.05,
+        "final_polish_maxiter": 4
+      },
+      "results": {
+        "n_samples": 80,
+        "projected_400_min": 66.2,
+        "score": 1.1524,
+        "rmse_1src": 0.1243,
+        "rmse_2src": 0.1694,
+        "mlflow_run_id": "715149d63fb84074b52a417a73125ee7",
+        "outcome": "FAILED"
+      },
+      "note": "Still over budget and worse score than baseline"
+    }
+  ],
+  "best_in_budget": null,
+  "final_result": {
+    "outcome": "FAILED",
+    "reason": "Over budget (66.2 min > 60 min) and worse score (1.1524 < 1.1688)",
+    "score": 1.1524,
+    "time_min": 66.2,
+    "delta_vs_baseline": -0.0164
+  },
+  "summary_written": true
+}

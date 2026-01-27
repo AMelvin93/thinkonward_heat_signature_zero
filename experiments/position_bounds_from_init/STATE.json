@@ -1,0 +1,13 @@
+{
+  "experiment_id": "EXP_POSITION_BOUNDS_FROM_INIT_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T15:10:00Z",
+  "completed_at": "2026-01-26T15:15:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "NOT_FEASIBLE - Triangulation is already used for initialization. CMA-ES sigma already controls search radius. Hard bounds add failure mode without clear benefit.",
+  "key_finding": "The baseline already achieves local search via triangulation init + sigma control. Hard bounds would only add risk."
+}

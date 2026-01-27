@@ -1,0 +1,52 @@
+{
+  "experiment_id": "EXP_TIGHTER_INTENSITY_RANGE_001",
+  "worker": "W1",
+  "status": "completed",
+  "completed_at": "2026-01-26T20:00:00Z",
+  "started_at": "2026-01-26T19:30:00Z",
+  "experiment_info": {
+    "name": "tighter_intensity_range",
+    "family": "hyperparameter_v3",
+    "description": "Reduce intensity search range from [0.5, 2.0] to [0.6, 1.8] for 20% smaller search space",
+    "hypothesis": "Most true intensities are in [0.6, 1.8] range. Tighter bounds may help CMA-ES converge faster."
+  },
+  "baseline": {
+    "score": 1.1246,
+    "score_std": 0.0049,
+    "score_95ci_high": 1.1342,
+    "time_min": 32.6,
+    "note": "Corrected baseline from consistency test"
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "q_min": 0.6,
+        "q_max": 1.8,
+        "n_workers": 7
+      },
+      "results": {
+        "q_range": [
+          0.6,
+          1.8
+        ],
+        "score": 1.1121945688734638,
+        "projected_400_min": 37.14831078052521,
+        "rmse_mean": 0.20412536737592785,
+        "rmse_mean_1src": 0.148922878410796,
+        "rmse_mean_2src": 0.24092702668601573,
+        "n_bound_hits": 104,
+        "n_samples_with_bound_hits": 53,
+        "mlflow_run_id": "fe4110dd59c646ed8ce143479f5194e6"
+      }
+    }
+  ],
+  "final_result": {
+    "outcome": "FAILED",
+    "reason": "Tighter bounds hurt accuracy. 66% of samples had bound hits. Score dropped from 1.1246 to 1.1122 (-1.1%).",
+    "score": 1.1122,
+    "time_min": 37.1,
+    "delta_vs_baseline": -0.0124
+  },
+  "summary_written": true
+}

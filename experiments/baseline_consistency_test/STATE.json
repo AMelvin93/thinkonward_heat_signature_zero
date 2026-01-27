@@ -1,0 +1,59 @@
+{
+  "experiment_id": "EXP_BASELINE_CONSISTENCY_TEST_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-26T18:30:00Z",
+  "completed_at": "2026-01-26T19:00:00Z",
+  "experiment_info": {
+    "name": "baseline_consistency_test",
+    "family": "verification_v2",
+    "description": "Run baseline multiple times to measure variance and establish confidence interval",
+    "hypothesis": "Understanding baseline variance will help determine if score differences are significant"
+  },
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "note": "This was the OLD recorded baseline - found to be INCORRECT"
+  },
+  "CORRECTED_BASELINE": {
+    "score_mean": 1.1246,
+    "score_std": 0.0049,
+    "score_95ci_low": 1.1150,
+    "score_95ci_high": 1.1342,
+    "time_mean_min": 32.6,
+    "time_std_min": 1.0
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "seeds": [42, 123, 456],
+        "n_workers": 7
+      },
+      "results": {
+        "seeds": [42, 123, 456],
+        "n_runs": 3,
+        "individual_results": [
+          {"seed": 42, "score": 1.1307, "time_min": 33.4, "rmse_mean": 0.1893},
+          {"seed": 123, "score": 1.1242, "time_min": 33.2, "rmse_mean": 0.1767},
+          {"seed": 456, "score": 1.1188, "time_min": 31.2, "rmse_mean": 0.1917}
+        ],
+        "score_mean": 1.1246,
+        "score_std": 0.0049,
+        "score_min": 1.1188,
+        "score_max": 1.1307,
+        "score_range": 0.0120,
+        "time_mean": 32.6,
+        "time_std": 1.0,
+        "ci_95_low": 1.1150,
+        "ci_95_high": 1.1342,
+        "mlflow_run_id": "4bb0fb399f5b487ab9b372cd2ab53eaf"
+      }
+    }
+  ],
+  "final_result": {
+    "outcome": "SUCCESS - CRITICAL FINDING",
+    "finding": "True baseline is 1.1246 ± 0.0049, NOT 1.1688. To beat baseline with 95% confidence, need score > 1.1342."
+  },
+  "summary_written": true
+}

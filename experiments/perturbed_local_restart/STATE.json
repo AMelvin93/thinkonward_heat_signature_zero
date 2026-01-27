@@ -1,0 +1,113 @@
+{
+  "experiment": "perturbed_local_restart",
+  "experiment_id": "EXP_PERTURBED_LOCAL_RESTART_001",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-27T04:33:23.355642",
+  "status": "completed",
+  "completed_at": "2026-01-27T05:00:00Z",
+  "summary_written": true,
+  "conclusion": "SUCCESS - Perturbed local restart improves score by +0.0079 (1.1452 vs 1.1373 baseline). Best config: perturb_top_n=1, n_perturbations=2 @ 47.7 min.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 3,
+        "n_perturbations": 3,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1434329670384327,
+        "total_time_sec": 832.6074647903442,
+        "projected_400_min": 69.38395539919536,
+        "rmse_mean": 0.15733797846322978,
+        "rmse_mean_1src": 0.11821145539134693,
+        "rmse_mean_2src": 0.18342232717781834,
+        "time_mean_1src": 37.201707266271114,
+        "time_mean_2src": 90.13189695278804,
+        "n_perturbed_selected": 88,
+        "n_samples_with_perturbed": 54
+      },
+      "timestamp": "2026-01-27T04:33:23.355663"
+    },
+    {
+      "run": 2,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1452398749497656,
+        "total_time_sec": 571.9991176128387,
+        "projected_400_min": 47.66659313440323,
+        "rmse_mean": 0.16332075340554741,
+        "rmse_mean_1src": 0.12221629480836668,
+        "rmse_mean_2src": 0.19072372580366784,
+        "time_mean_1src": 23.36571256816387,
+        "time_mean_2src": 62.99885616699854,
+        "n_perturbed_selected": 20,
+        "n_samples_with_perturbed": 20
+      },
+      "timestamp": "2026-01-27T04:43:38.925215"
+    },
+    {
+      "run": 3,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 2,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.142945071905168,
+        "total_time_sec": 687.9548213481903,
+        "projected_400_min": 57.32956844568252,
+        "rmse_mean": 0.16325439494052427,
+        "rmse_mean_1src": 0.12226239533325775,
+        "rmse_mean_2src": 0.19058239467870194,
+        "time_mean_1src": 31.43275085836649,
+        "time_mean_2src": 74.63419799506664,
+        "n_perturbed_selected": 30,
+        "n_samples_with_perturbed": 27
+      },
+      "timestamp": "2026-01-27T04:55:55.676044"
+    }
+  ],
+  "best_in_budget": {
+    "run": 2,
+    "score": 1.1452398749497656,
+    "time_min": 47.66659313440323,
+    "config": {
+      "enable_perturbation": true,
+      "perturb_top_n": 1,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 36,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "refine_top_n": 2
+    }
+  }
+}

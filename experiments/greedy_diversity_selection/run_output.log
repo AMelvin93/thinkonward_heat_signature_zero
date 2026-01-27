@@ -1,0 +1,107 @@
+
+Greedy Diversity Selection Experiment
+======================================================================
+Samples: 80, Workers: 7
+Tau (dissimilarity threshold): 0.2
+Timestep fraction: 40%
+Final polish: 8 NM iters
+Selection strategy: GREEDY (maximize combined score)
+======================================================================
+[  1/80] Sample   1: 1-src RMSE=0.1022 cands=3 time=33.0s [OK] [P]
+[  2/80] Sample   4: 1-src RMSE=0.1508 cands=3 time=34.1s [OK] [P]
+[  3/80] Sample   2: 1-src RMSE=0.0209 cands=2 time=35.2s [OK] [P]
+[  4/80] Sample   6: 1-src RMSE=0.0996 cands=3 time=42.9s [OK] [P]
+[  5/80] Sample   5: 1-src RMSE=0.1540 cands=2 time=43.4s [OK] [P]
+[  6/80] Sample   0: 1-src RMSE=0.0989 cands=2 time=44.3s [OK] [P]
+[  7/80] Sample   3: 1-src RMSE=0.1926 cands=3 time=46.7s [OK] [P]
+[  8/80] Sample   8: 1-src RMSE=0.0978 cands=2 time=34.4s [OK] [P]
+[  9/80] Sample  12: 1-src RMSE=0.1490 cands=3 time=34.2s [OK] [P]
+[ 10/80] Sample   7: 1-src RMSE=0.2276 cands=3 time=47.8s [OK] [P]
+[ 11/80] Sample   9: 1-src RMSE=0.1672 cands=3 time=51.2s [OK] [P]
+[ 12/80] Sample  10: 1-src RMSE=0.1510 cands=2 time=54.0s [OK] [P]
+[ 13/80] Sample  11: 1-src RMSE=0.0332 cands=2 time=53.9s [OK] [P]
+[ 14/80] Sample  13: 1-src RMSE=0.1449 cands=1 time=51.0s [OK] [P]
+[ 15/80] Sample  16: 1-src RMSE=0.1519 cands=1 time=35.4s [OK] [P]
+[ 16/80] Sample  14: 1-src RMSE=0.1499 cands=3 time=53.5s [OK] [P]
+[ 17/80] Sample  15: 1-src RMSE=0.0558 cands=3 time=52.2s [OK] [P]
+[ 18/80] Sample  20: 1-src RMSE=0.0115 cands=3 time=36.7s [OK] [P]
+[ 19/80] Sample  17: 1-src RMSE=0.0998 cands=3 time=48.8s [OK] [P]
+[ 20/80] Sample  18: 1-src RMSE=0.1583 cands=3 time=50.7s [OK] [P]
+[ 21/80] Sample  21: 1-src RMSE=0.0617 cands=2 time=34.8s [OK] [P]
+[ 22/80] Sample  19: 1-src RMSE=0.0989 cands=2 time=55.8s [OK] [P]
+[ 23/80] Sample  25: 1-src RMSE=0.1023 cands=2 time=37.3s [OK] [P]
+[ 24/80] Sample  22: 1-src RMSE=0.1009 cands=2 time=51.8s [OK] [P]
+[ 25/80] Sample  24: 1-src RMSE=0.2366 cands=3 time=41.0s [OK] [P]
+[ 26/80] Sample  23: 1-src RMSE=0.1008 cands=3 time=49.0s [OK] [P]
+[ 27/80] Sample  26: 1-src RMSE=0.1522 cands=2 time=38.8s [OK] [P]
+[ 28/80] Sample  28: 1-src RMSE=0.1166 cands=3 time=36.7s [OK]
+[ 29/80] Sample  27: 1-src RMSE=0.1508 cands=1 time=56.7s [OK] [P]
+[ 30/80] Sample  31: 1-src RMSE=0.1000 cands=3 time=36.2s [OK] [P]
+[ 31/80] Sample  29: 1-src RMSE=0.0991 cands=2 time=44.5s [OK] [P]
+[ 32/80] Sample  30: 1-src RMSE=0.1011 cands=3 time=48.3s [OK] [P]
+[ 33/80] Sample  33: 2-src RMSE=0.1544 cands=3 time=76.9s [OK] [P]
+[ 34/80] Sample  32: 2-src RMSE=0.0307 cands=3 time=91.2s [OK] [P]
+[ 35/80] Sample  34: 2-src RMSE=0.1631 cands=3 time=85.4s [OK] [P]
+[ 36/80] Sample  35: 2-src RMSE=0.1011 cands=3 time=77.2s [OK] [P]
+[ 37/80] Sample  37: 2-src RMSE=0.1548 cands=3 time=78.0s [OK] [P]
+[ 38/80] Sample  36: 2-src RMSE=0.1259 cands=3 time=107.8s [OK] [P]
+[ 39/80] Sample  39: 2-src RMSE=0.2581 cands=3 time=64.6s [OK] [P]
+[ 40/80] Sample  38: 2-src RMSE=0.1536 cands=3 time=109.7s [OK] [P]
+[ 41/80] Sample  40: 2-src RMSE=0.3856 cands=3 time=65.7s [OK] [P]
+[ 42/80] Sample  41: 2-src RMSE=0.1340 cands=3 time=69.7s [OK] [P]
+[ 43/80] Sample  43: 2-src RMSE=0.1013 cands=3 time=68.5s [OK] [P]
+[ 44/80] Sample  42: 2-src RMSE=0.2157 cands=2 time=94.8s [OK] [P]
+[ 45/80] Sample  44: 2-src RMSE=0.1341 cands=3 time=66.1s [OK] [P]
+[ 46/80] Sample  45: 2-src RMSE=0.1608 cands=3 time=63.4s [OK] [P]
+[ 47/80] Sample  47: 2-src RMSE=0.1250 cands=3 time=71.5s [OK] [P]
+[ 48/80] Sample  48: 2-src RMSE=0.2931 cands=3 time=63.5s [OK] [P]
+[ 49/80] Sample  46: 2-src RMSE=0.1648 cands=3 time=95.3s [OK] [P]
+[ 50/80] Sample  49: 2-src RMSE=0.1567 cands=3 time=64.2s [OK] [P]
+[ 51/80] Sample  51: 2-src RMSE=0.1599 cands=3 time=64.9s [OK] [P]
+[ 52/80] Sample  50: 2-src RMSE=0.1732 cands=3 time=71.0s [OK] [P]
+[ 53/80] Sample  53: 2-src RMSE=0.1816 cands=3 time=64.3s [OK] [P]
+[ 54/80] Sample  54: 2-src RMSE=0.1158 cands=3 time=67.1s [OK] [P]
+[ 55/80] Sample  55: 2-src RMSE=0.0804 cands=3 time=68.9s [OK] [P]
+[ 56/80] Sample  52: 2-src RMSE=0.1641 cands=3 time=108.3s [OK] [P]
+[ 57/80] Sample  56: 2-src RMSE=0.0994 cands=3 time=106.0s [OK] [P]
+[ 58/80] Sample  57: 2-src RMSE=0.4200 cands=3 time=84.0s [OK] [P]
+[ 59/80] Sample  59: 2-src RMSE=0.0137 cands=3 time=70.0s [OK] [P]
+[ 60/80] Sample  60: 2-src RMSE=0.1010 cands=3 time=69.5s [OK] [P]
+[ 61/80] Sample  58: 2-src RMSE=0.0994 cands=3 time=110.6s [OK] [P]
+[ 62/80] Sample  61: 2-src RMSE=0.0996 cands=3 time=69.6s [OK] [P]
+[ 63/80] Sample  64: 2-src RMSE=0.1055 cands=3 time=72.5s [OK] [P]
+[ 64/80] Sample  62: 2-src RMSE=0.1794 cands=3 time=112.4s [OK] [P]
+[ 65/80] Sample  63: 2-src RMSE=0.2219 cands=3 time=80.3s [OK] [P]
+[ 66/80] Sample  66: 2-src RMSE=0.1002 cands=3 time=70.3s [OK] [P]
+[ 67/80] Sample  68: 2-src RMSE=0.1348 cands=3 time=74.9s [OK] [P]
+[ 68/80] Sample  65: 2-src RMSE=0.3440 cands=3 time=116.1s [OK] [P]
+[ 69/80] Sample  67: 2-src RMSE=0.1922 cands=3 time=131.2s [OK] [P]
+[ 70/80] Sample  72: 2-src RMSE=0.2155 cands=3 time=78.9s [OK] [P]
+[ 71/80] Sample  70: 2-src RMSE=0.1281 cands=3 time=87.3s [OK] [P]
+[ 72/80] Sample  71: 2-src RMSE=0.2061 cands=3 time=86.7s [OK] [P]
+[ 73/80] Sample  74: 2-src RMSE=0.1241 cands=3 time=76.7s [OK] [P]
+[ 74/80] Sample  69: 2-src RMSE=0.3830 cands=3 time=133.7s [OK] [P]
+[ 75/80] Sample  73: 2-src RMSE=0.2479 cands=3 time=105.3s [OK] [P]
+[ 76/80] Sample  77: 2-src RMSE=0.1617 cands=3 time=77.5s [OK] [P]
+[ 77/80] Sample  75: 2-src RMSE=0.1019 cands=3 time=100.6s [OK] [P]
+[ 78/80] Sample  76: 2-src RMSE=0.1538 cands=3 time=113.5s [OK] [P]
+[ 79/80] Sample  79: 2-src RMSE=0.1335 cands=3 time=76.7s [OK] [P]
+[ 80/80] Sample  78: 2-src RMSE=0.2573 cands=3 time=120.6s [OK] [P]
+
+======================================================================
+RESULTS - Greedy Diversity Selection
+======================================================================
+Submission Score: 1.1499
+Projected (400):  68.5 min
+Candidate distribution: 1-cand=3, 2-cand=13, 3-cand=64
+  1-source: RMSE=0.1199 (n=32)
+  2-source: RMSE=0.1690 (n=48)
+
+Baseline (1.1688 @ 58.4 min):
+  This run:    1.1499 @ 68.5 min
+  Delta:       -0.0189 score, +10.1 min
+======================================================================
+
+/workspace/.venv/lib/python3.11/site-packages/mlflow/tracking/_tracking_service/utils.py:177: FutureWarning: The filesystem tracking backend (e.g., './mlruns') will be deprecated in February 2026. Consider transitioning to a database backend (e.g., 'sqlite:///mlflow.db') to take advantage of the latest MLflow features. See https://github.com/mlflow/mlflow/issues/18534 for more details and migration guidance.
+  return FileStore(store_uri, store_uri)
+MLflow run ID: 8b32af3283ea465d908fff963a7d56e9

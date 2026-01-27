@@ -1,0 +1,42 @@
+{
+  "experiment_id": "EXP_LARGER_CANDIDATE_POOL_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T12:00:00Z",
+  "completed_at": "2026-01-26T12:45:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "candidate_pool_size": 15,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.1726,
+      "time_min": 85.6,
+      "in_budget": false,
+      "rmse_1src": 0.1101,
+      "rmse_2src": 0.1718,
+      "candidate_distribution": {
+        "1_cand": 0,
+        "2_cand": 3,
+        "3_cand": 77
+      },
+      "mlflow_id": "10642f66137e47428159ff399831ac68",
+      "notes": "FAILED: Score +0.0038 but time +27.2 min (85.6 vs 58.4 baseline). Massively over budget."
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1726,
+    "time_min": 85.6,
+    "in_budget": false
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - Larger pool (15 vs 10) improved score slightly (+0.0038) but increased runtime by 46% (+27.2 min). The marginal accuracy gain does not justify the massive time penalty. Baseline pool_size=10 is already optimal for the time budget.",
+  "key_finding": "Each additional candidate in the pool adds NM polish time. The baseline pool_size=10 is already at the optimal accuracy/time tradeoff."
+}

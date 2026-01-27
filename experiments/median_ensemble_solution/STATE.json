@@ -1,0 +1,9 @@
+{
+  "experiment_id": "EXP_MEDIAN_ENSEMBLE_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-26T13:55:00Z",
+  "completed_at": "2026-01-26T13:55:00Z",
+  "abort_reason": "Ensemble position averaging already failed in top3_ensemble_averaging experiment",
+  "summary_written": true
+}

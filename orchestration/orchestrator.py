@@ -23,8 +23,17 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from orchestration.coordinator import Coordinator, format_status_report
-# Use v4 context-clearing prompts (workers exit after each experiment, orchestrator restarts)
-from orchestration.worker_prompts_v4 import get_worker_prompt_v4 as get_worker_prompt
+# Use v5 enhanced tuning prompts (minimum 3 runs, time budget awareness, pivot strategy)
+from orchestration.worker_prompts_v5 import get_worker_prompt_v5 as get_worker_prompt
+
+
+# Worker configurations - defines focus areas for each worker
+WORKER_CONFIGS = [
+    {"focus_area": "Experiment Executor", "worker_id": "W1"},
+    {"focus_area": "Experiment Executor", "worker_id": "W2"},
+    {"focus_area": "Experiment Executor", "worker_id": "W3"},
+    {"focus_area": "Experiment Executor", "worker_id": "W4"},
+]
 
 
 @dataclass

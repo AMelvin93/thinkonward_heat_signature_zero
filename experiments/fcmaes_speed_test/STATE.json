@@ -1,0 +1,32 @@
+{
+  "experiment_id": "EXP_FCMAES_SPEED_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T09:00:00Z",
+  "completed_at": "2026-01-26T10:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "library": "fcmaes",
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8
+      },
+      "score": 1.0722,
+      "time_min": 57.1,
+      "in_budget": true,
+      "mlflow_id": null,
+      "notes": "FAILED: fcmaes gives worse score (1.0722 vs 1.1688) due to API differences - doesn't expose intermediate solutions for diversity"
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "score": 1.0722,
+    "time_min": 57.1,
+    "in_budget": true
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - fcmaes library provides CMA-ES speedup but this is irrelevant because simulation (200ms/call) is the bottleneck, not CMA-ES (2ms/iter). Additionally, fcmaes.minimize() doesn't expose intermediate solutions, reducing diversity score. Net result: worse accuracy with minimal time savings.",
+  "key_finding": "CMA-ES is NOT the bottleneck. Simulation time dominates (6000ms vs 10ms). Any CMA-ES optimization is pointless."
+}

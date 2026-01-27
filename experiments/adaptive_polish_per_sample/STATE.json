@@ -1,0 +1,9 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_POLISH_BUDGET_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-26T14:10:00Z",
+  "completed_at": "2026-01-26T14:10:00Z",
+  "abort_reason": "Already tested in adaptive_nm_iterations - fixed 8 iterations is optimal",
+  "summary_written": true
+}

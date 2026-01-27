@@ -1,0 +1,46 @@
+{
+  "experiment_id": "EXP_HIGHER_POPULATION_DENSITY_001",
+  "worker": "W1",
+  "status": "completed",
+  "completed_at": "2026-01-26T21:45:00Z",
+  "started_at": "2026-01-26T21:15:00Z",
+  "experiment_info": {
+    "name": "higher_population_density",
+    "family": "cmaes_tuning_v3",
+    "description": "Increase CMA-ES population size from default to 2x for more candidate diversity",
+    "hypothesis": "Larger population = more diverse search = better final candidates"
+  },
+  "baseline": {
+    "score": 1.1246,
+    "score_std": 0.0049,
+    "score_95ci_high": 1.1342,
+    "time_min": 32.6,
+    "note": "Corrected baseline from consistency test"
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "popsize_mult": 2,
+        "n_workers": 7
+      },
+      "results": {
+        "popsize_mult": 2,
+        "score": 1.1115406958646084,
+        "projected_400_min": 33.25527240832647,
+        "rmse_mean": 0.21756595954472938,
+        "rmse_mean_1src": 0.1721171306671107,
+        "rmse_mean_2src": 0.2478651787964751,
+        "mlflow_run_id": "4a59f78232f148e98c00e06404c9d17d"
+      }
+    }
+  ],
+  "final_result": {
+    "outcome": "FAILED",
+    "reason": "Larger population hurt accuracy. Same fevals budget with larger population = fewer generations = worse convergence.",
+    "score": 1.1115,
+    "time_min": 33.3,
+    "delta_vs_baseline": -0.0131
+  },
+  "summary_written": true
+}

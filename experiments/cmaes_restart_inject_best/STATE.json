@@ -1,0 +1,46 @@
+{
+  "experiment_id": "EXP_CMAES_WITH_RESTART_BEST_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-26T14:00:00Z",
+  "completed_at": "2026-01-26T14:06:00Z",
+  "experiment_info": {
+    "name": "cmaes_restart_inject_best",
+    "family": "cmaes_v4",
+    "description": "Inject best solution when restarting CMA-ES on fallback",
+    "hypothesis": "Seeding fallback population with previous best may improve search"
+  },
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "inject_best_on_fallback": true,
+        "timestep_fraction": 0.40
+      },
+      "results": {
+        "n_samples": 80,
+        "projected_400_min": 41.7,
+        "score": 1.1285,
+        "rmse_1src": 0.1366,
+        "rmse_2src": 0.2239,
+        "mlflow_run_id": "ca4d70c8acf544f48f6fe11f7b30f4dd",
+        "n_injection_used": 0,
+        "outcome": "FAILED"
+      },
+      "note": "Injection never triggered (0/80) - no samples needed fallback"
+    }
+  ],
+  "best_in_budget": null,
+  "final_result": {
+    "outcome": "FAILED",
+    "reason": "Score 1.1285 < baseline 1.1688. Injection never triggered because primary optimization succeeded for all samples.",
+    "score": 1.1285,
+    "time_min": 41.7,
+    "delta_vs_baseline": -0.0403
+  },
+  "summary_written": true
+}

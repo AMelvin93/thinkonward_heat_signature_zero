@@ -1,7 +1,7 @@
 {
-  "version": "12.0",
-  "last_updated": "2026-01-25T20:46:29.678197",
-  "notes": "V12.0: W0 EMERGENCY RESEARCH. 6 new experiments from literature: SPSA, mini-batch sensors, Laplace domain, scaling, reranking, center-spread parameterization.",
+  "version": "15.6",
+  "last_updated": "2026-01-27T04:45:06.057394",
+  "notes": "V15.6: CRITICAL - Added experiments to properly verify and extend W2's 1.1688 config. Previous experiments used WRONG baseline (25% temporal vs 40%).",
   "queue_status": "OK",
   "experiment_queue": [
     {
@@ -2200,7 +2200,7 @@
       "id": "EXP_MINI_BATCH_SENSORS_001",
       "priority": 1,
       "family": "evaluation_v2",
-      "status": "claimed_by_W2",
+      "status": "completed",
       "name": "mini_batch_sensor_eval",
       "description": "Instead of computing RMSE over all sensors and timesteps, use mini-batches (random subsets) for faster candidate screening. Similar to stochastic gradient descent.",
       "hypothesis": "A random 50% of sensors may be sufficient to estimate candidate quality during CMA-ES exploration, with full evaluation only for final polish.",
@@ -2212,7 +2212,13 @@
       ],
       "research_source": "Stochastic optimization uses mini-batches to reduce per-evaluation cost",
       "success_criteria": "Score >= 1.17 AND time < 50 min",
-      "claimed_at": "2026-01-25T20:46:29.678114"
+      "claimed_at": "2026-01-25T20:46:29.678114",
+      "result": "FAILED - Mini-batch sensor evaluation is fundamentally flawed. Sensor sampling cost is negligible (<1%); PDE simulation dominates. Approach cannot save time. Score 1.1530 @ 80.8 min (over budget).",
+      "score": 1.153,
+      "time_min": 80.8,
+      "worker": "W2",
+      "completed_at": "2026-01-26T02:00:00Z",
+      "finding": "Mini-batch sensor evaluation does NOT reduce computation time. PDE solve is the bottleneck, not sensor RMSE calculation. evaluation_v2 family EXHAUSTED."
     },
     {
       "id": "EXP_LAPLACE_DOMAIN_INIT_001",
@@ -2285,6 +2291,1047 @@
       "research_source": "Common technique for symmetric optimization problems",
       "success_criteria": "Better 2-source RMSE with same time",
       "result": "ABORTED - polar_parameterization FAILED (-0.0216 score). Coordinate transforms hurt CMA-ES. Permutation ambiguity is NOT a problem - RMSE is symmetric. Cartesian is optimal."
+    },
+    {
+      "id": "EXP_SACOBRA_RBF_001",
+      "priority": 2,
+      "family": "surrogate_v3",
+      "status": "completed",
+      "name": "sacobra_rbf_optimizer",
+      "description": "SACOBRA (Self-Adjusting COBRA) with RBF surrogates - literature shows it beats CMA-ES for <1000 evals",
+      "hypothesis": "SACOBRA uses self-adjusting parameters with RBF surrogates, claimed to outperform CMA-ES for expensive functions with low evaluation budgets",
+      "research_source": "https://arxiv.org/abs/1904.08397 - SACOBRA with Online Whitening",
+      "implementation": [
+        "1. Implement SACOBRA using COBRA algorithm with cubic RBF",
+        "2. Use distance requirement cycles (DRC) for exploration-exploitation balance",
+        "3. Apply to 3D (1-source) and 6D (2-source) parameter spaces",
+        "4. Compare against baseline CMA-ES"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "claimed_at": "2026-01-26T00:54:38.607173Z",
+      "completed_at": "2026-01-26T01:18:27.621389Z",
+      "result": "FAILED",
+      "score": 0.9921,
+      "time_min": 52.8
+    },
+    {
+      "id": "EXP_KALMAN_ESTIMATION_001",
+      "priority": 2,
+      "family": "state_estimation",
+      "status": "completed",
+      "name": "extended_kalman_filter_inversion",
+      "description": "Extended Kalman Filter for heat source state estimation - fundamentally different paradigm from optimization",
+      "hypothesis": "EKF treats source params as hidden state and temperature as observations. Literature shows EKF works for 3D heat source tracking",
+      "research_source": "https://www.sciencedirect.com/science/article/abs/pii/S0017931020333718 - Step-renewed Kalman filter",
+      "implementation": [
+        "1. Formulate source parameters (x,y,Q) as state vector",
+        "2. Heat equation as state transition (identity for static sources)",
+        "3. Temperature measurements as observations",
+        "4. Process all timesteps sequentially to update state estimate",
+        "5. Use final state as solution"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "result": "FAILED - EKF is 6.3x slower and 10.6% worse than baseline. Same issues as LM: local optimizer + expensive Jacobians. Score 1.0058 @ 357.9 min (5-sample projection).",
+      "score": 1.0058,
+      "time_min": 357.9,
+      "worker": "W2",
+      "completed_at": "2026-01-26T03:00:00Z",
+      "finding": "state_estimation family EXHAUSTED. EKF/UKF/particle filters all require expensive Jacobians or many particles. CMA-ES is 10x more sample-efficient."
+    },
+    {
+      "id": "EXP_ENSEMBLE_SOLUTION_001",
+      "priority": 3,
+      "family": "postprocessing",
+      "status": "completed",
+      "name": "ensemble_weighted_solution",
+      "description": "Ensemble top-N CMA-ES solutions using weighted average instead of just taking best",
+      "hypothesis": "Averaging multiple good solutions may smooth optimization noise and yield lower RMSE",
+      "research_source": "Ensemble methods literature - reduce variance by averaging",
+      "implementation": [
+        "1. After CMA-ES, keep top-5 candidates by RMSE",
+        "2. Compute weights inversely proportional to RMSE",
+        "3. Take weighted average of source parameters",
+        "4. Evaluate ensemble solution",
+        "5. Compare single best vs ensemble"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "result": "PARTIAL SUCCESS - Ensemble averaging improves accuracy (+0.03 score = 1.1552) and wins 90-100% of samples, but implementation has timing overhead. Best: 1.1552 @ 72.8 min (21% over budget).",
+      "score": 1.1552,
+      "time_min": 72.8,
+      "worker": "W2",
+      "completed_at": "2026-01-26T04:30:00Z",
+      "finding": "Weighted averaging of top-5 solutions IS effective. Should be integrated as lightweight postprocessing on production baseline."
+    },
+    {
+      "id": "EXP_SEPARABLE_INTENSITY_001",
+      "priority": 3,
+      "family": "problem_decomposition",
+      "status": "completed",
+      "name": "separable_position_intensity",
+      "description": "Decouple position and intensity optimization - optimize position first, then intensity analytically",
+      "hypothesis": "Given fixed positions, optimal intensity may have closed-form solution. This reduces dimensionality from 3D/6D to 2D/4D",
+      "research_source": "Variable projection method literature",
+      "implementation": [
+        "1. For fixed (x,y), solve for optimal Q analytically or via 1D search",
+        "2. CMA-ES optimizes only (x,y) in 2D/4D space",
+        "3. Intensity Q computed as inner optimization",
+        "4. Compare vs joint optimization"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "claimed_at": "2026-01-26T01:20:39.566716Z",
+      "abort_reason": "Prior evidence - see SUMMARY.md",
+      "result": "ABORTED",
+      "completed_at": "2026-01-26T01:22:07.025857Z"
+    },
+    {
+      "id": "EXP_PHYSICS_INFORMED_NN_INIT_001",
+      "priority": 3,
+      "family": "neural_init",
+      "status": "completed",
+      "name": "pinn_initialization",
+      "description": "Use lightweight PINN to provide better initialization for CMA-ES",
+      "hypothesis": "A small pre-trained PINN could provide better initial guesses than triangulation, improving CMA-ES convergence",
+      "research_source": "https://www.sciencedirect.com/science/article/abs/pii/S2352492823010279 - PINN for inverse heat",
+      "implementation": [
+        "1. Pre-train small NN (MLP) on synthetic heat source problems",
+        "2. NN input: sensor readings; output: (x,y,Q) estimate",
+        "3. Use NN output as additional initialization for CMA-ES",
+        "4. Compare vs triangulation-only initialization"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "risk": "May be classified as static ML if NN dominates - ensure simulator still used",
+      "claimed_at": "2026-01-26T01:20:39.566742Z",
+      "abort_reason": "Prior evidence - see SUMMARY.md",
+      "result": "ABORTED",
+      "completed_at": "2026-01-26T01:22:07.025887Z"
+    },
+    {
+      "id": "EXP_PARTICLE_FILTER_001",
+      "priority": 3,
+      "family": "state_estimation",
+      "status": "completed",
+      "name": "particle_filter_inversion",
+      "description": "Particle filter (Sequential Monte Carlo) for heat source parameter estimation",
+      "hypothesis": "Particle filter naturally handles non-Gaussian posteriors and can provide multiple solution candidates",
+      "research_source": "https://www.sciencedirect.com/science/article/abs/pii/S0017931012000592 - Comparison of EKF, PF, LS for heat source",
+      "implementation": [
+        "1. Initialize particles uniformly in parameter space",
+        "2. Propagate through 'time' (simulation steps)",
+        "3. Weight by likelihood (inverse RMSE)",
+        "4. Resample to focus on promising regions",
+        "5. Return best particles as candidates"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "claimed_at": "2026-01-26T01:20:39.566744Z",
+      "abort_reason": "Prior evidence - see SUMMARY.md",
+      "result": "ABORTED",
+      "completed_at": "2026-01-26T01:22:07.025888Z"
+    },
+    {
+      "id": "EXP_CMAES_QN_HYBRID_001",
+      "priority": 3,
+      "family": "hybrid_v3",
+      "status": "completed",
+      "name": "cmaes_quasi_newton_polish",
+      "description": "Hybrid CMA-ES with quasi-Newton (L-BFGS) local search polish",
+      "hypothesis": "Literature shows CMA-ES + quasi-Newton hybrid can outperform pure CMA-ES. QN provides faster local convergence after CMA-ES finds the basin.",
+      "research_source": "https://link.springer.com/chapter/10.1007/978-3-030-38364-0_6 - CMAES-APOP + Quasi-Newton",
+      "implementation": [
+        "1. Run CMA-ES with reduced feval budget (15/25 instead of 20/36)",
+        "2. Use remaining budget for L-BFGS local refinement",
+        "3. L-BFGS starts from best CMA-ES solution",
+        "4. Use finite-difference gradients (2*n+1 evals per iteration)",
+        "5. Compare vs pure CMA-ES + NM polish"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "note": "L-BFGS was tried before but with poor initialization. This uses CMA-ES to find good basin first.",
+      "claimed_at": "2026-01-26T01:20:39.566745Z",
+      "abort_reason": "Prior evidence - see SUMMARY.md",
+      "result": "ABORTED",
+      "completed_at": "2026-01-26T01:22:07.025889Z"
+    },
+    {
+      "id": "EXP_VARIANCE_REDUCED_CMAES_001",
+      "priority": 3,
+      "family": "cmaes_v3",
+      "status": "completed",
+      "name": "variance_reduced_cmaes",
+      "description": "CMA-ES with variance reduction using antithetic sampling",
+      "hypothesis": "Antithetic sampling (mirrored sampling) can reduce fitness variance and improve convergence",
+      "research_source": "CMA-ES literature on mirrored mutations",
+      "implementation": [
+        "1. Generate half the population normally",
+        "2. Mirror around mean to create antithetic samples",
+        "3. This reduces variance in fitness estimate",
+        "4. May improve convergence for noisy fitness landscapes"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "claimed_at": "2026-01-26T01:20:39.566745Z",
+      "abort_reason": "Prior evidence - see SUMMARY.md",
+      "result": "ABORTED",
+      "completed_at": "2026-01-26T01:22:07.025890Z"
+    },
+    {
+      "id": "EXP_PARALLEL_CMAES_SHARING_001",
+      "priority": 3,
+      "family": "parallel_v2",
+      "status": "completed",
+      "name": "parallel_cmaes_info_sharing",
+      "description": "Run 2 parallel CMA-ES instances that periodically share best solutions",
+      "hypothesis": "Multiple parallel CMA-ES runs with information exchange could explore more of the search space while still using covariance adaptation",
+      "implementation": [
+        "1. Run 2 CMA-ES instances with different initializations",
+        "2. Every 5 generations, share best candidate between instances",
+        "3. Inject shared solution into population via CMA-ES's inject method",
+        "4. May help escape local optima while maintaining covariance learning"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "risk": "Information sharing may disrupt covariance adaptation",
+      "result": "ABORTED - Prior evidence: ensemble_voting showed parallel optimizers cause 5.8x budget overrun. Running 2 CMA-ES instances would double simulations without meaningful accuracy gains.",
+      "worker": "W2",
+      "completed_at": "2026-01-26T02:22:19.094024"
+    },
+    {
+      "id": "EXP_GREEDY_LOCAL_SEARCH_001",
+      "priority": 3,
+      "family": "hybrid_v4",
+      "status": "completed",
+      "name": "greedy_coordinate_refinement",
+      "description": "After CMA-ES, do greedy coordinate-wise refinement instead of NM",
+      "hypothesis": "Greedy coordinate descent may be more efficient than NM simplex for final polishing in 2-4D",
+      "implementation": [
+        "1. After CMA-ES converges, extract best solution",
+        "2. For each coordinate: do binary search to find local minimum",
+        "3. Repeat until no improvement",
+        "4. Compare efficiency vs NM"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "note": "Different from coordinate_descent_polish which used scipy.optimize.minimize",
+      "result": "ABORTED - Prior evidence: coordinate_descent_polish FAILED with 5-8x slower performance. Line searches in coordinate descent are too expensive for thermal simulations.",
+      "worker": "W2",
+      "completed_at": "2026-01-26T02:22:19.094073"
+    },
+    {
+      "id": "EXP_INTENSITY_FIRST_OPTIMIZATION_001",
+      "priority": 3,
+      "family": "problem_decomposition_v2",
+      "status": "completed",
+      "name": "intensity_first_then_position",
+      "description": "First estimate intensity from temperature magnitudes, then optimize position",
+      "hypothesis": "Intensity can be estimated from peak temperatures. Pre-conditioning intensity may help CMA-ES converge faster on position",
+      "implementation": [
+        "1. Estimate initial Q from max(sensor_temps) via thermal calibration curve",
+        "2. Fix Q and optimize (x,y) position first",
+        "3. Then refine Q with fixed position",
+        "4. Alternate until convergence"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "note": "Different from separable_position_intensity which computed Q analytically inside optimizer",
+      "result": "ABORTED - Already implemented! Baseline already computes optimal intensity analytically via q = (Y_unit \u00b7 Y_obs) / (Y_unit \u00b7 Y_unit). See separable_position_intensity/SUMMARY.md which was also ABORTED for same reason.",
+      "worker": "W2",
+      "completed_at": "2026-01-26T02:23:30.106282"
+    },
+    {
+      "id": "EXP_CONFIDENCE_WEIGHTED_CANDIDATES_001",
+      "priority": 3,
+      "family": "selection_v2",
+      "status": "completed",
+      "name": "confidence_weighted_candidate_selection",
+      "description": "Select candidates for output based on both RMSE and solution confidence/stability",
+      "hypothesis": "Solutions that are stable under small perturbations may be more accurate than unstable local optima",
+      "implementation": [
+        "1. For each top-5 candidate, evaluate RMSE at small perturbations (+/- 0.01 in each coord)",
+        "2. Compute stability score = 1 / variance(perturbed RMSE)",
+        "3. Rank by combined_score = RMSE_rank * stability_rank",
+        "4. Select most stable high-quality solutions"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "result": "ABORTED - Would require 40+ extra simulations per sample for perturbation analysis. This adds ~40 min overhead, making it impossible to fit in 60-min budget.",
+      "worker": "W2",
+      "completed_at": "2026-01-26T02:23:30.106335"
+    },
+    {
+      "id": "EXP_RESTARTED_NM_POLISH_001",
+      "priority": 3,
+      "family": "polish_v3",
+      "status": "completed",
+      "name": "multi_restart_nm_polish",
+      "description": "Run NM polish multiple times from slightly perturbed starting points and select best",
+      "hypothesis": "NM may converge to different local minima from different starting points. Running 3 NM polishes from perturbed positions may find better final solution.",
+      "implementation": [
+        "1. After CMA-ES, get best candidate",
+        "2. Run NM polish 3 times from: original, +0.05 offset, -0.05 offset",
+        "3. Each NM runs for 3 iterations (total 9 iterations vs baseline 8)",
+        "4. Select best result across all 3 NM runs"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "claimed_at": "2026-01-26T02:20:17.667118Z",
+      "result": "FAILED - 1.1524 @ 66.2 min. Over budget and worse than baseline.",
+      "score": 1.1524,
+      "time_min": 66.2
+    },
+    {
+      "id": "EXP_LIGHTWEIGHT_ENSEMBLE_001",
+      "priority": 1,
+      "family": "postprocessing_v2",
+      "status": "done",
+      "name": "lightweight_ensemble_postprocessing",
+      "description": "Add minimal ensemble averaging step to production baseline - BASED ON SUCCESSFUL PARTIAL RESULT",
+      "hypothesis": "ensemble_weighted_solution showed +0.03 improvement but had implementation overhead. Integrating ensemble as lightweight postprocessing (not full optimizer rewrite) should fit in budget",
+      "implementation": [
+        "1. Use production baseline (early_timestep_filtering) as-is",
+        "2. After CMA-ES + NM polish, collect top-5 candidates",
+        "3. Compute weighted average (weights = 1/RMSE)",
+        "4. Evaluate ensemble solution (1 extra simulation)",
+        "5. Add to candidate pool if better than best individual"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "informed_by": "ensemble_weighted_solution PARTIAL SUCCESS (+0.0305 improvement)",
+      "result": {
+        "status": "NEUTRAL",
+        "best_score": 1.1542,
+        "best_time_min": 56.9,
+        "in_budget": true,
+        "verified_baseline": "1.1557 @ 49.3 min (same machine)",
+        "key_finding": "Ensemble wins only 11-15% of samples. Score matches baseline (1.154 vs 1.156), within noise.",
+        "recommendation": "No change to production. Ensemble not beneficial."
+      }
+    },
+    {
+      "id": "EXP_TOP3_ENSEMBLE_001",
+      "priority": 2,
+      "family": "postprocessing_v2",
+      "status": "aborted",
+      "name": "top3_ensemble_averaging",
+      "description": "Simpler variant: average only top-3 candidates to minimize permutation issues",
+      "abort_reason": "W1 ran this - FAILED at 1.1129 (-4.8%). lightweight_ensemble_postprocessing with weighted avg + alignment is superior (1.1542)",
+      "hypothesis": "Top-3 averaging may be more robust than top-5, and cheaper",
+      "implementation": [
+        "1. After optimization, take top-3 by RMSE",
+        "2. Simple average (equal weights) of positions",
+        "3. Intensity computed analytically",
+        "4. Single evaluation of ensemble solution"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_MEDIAN_ENSEMBLE_001",
+      "priority": 2,
+      "family": "postprocessing_v2",
+      "status": "aborted",
+      "name": "median_ensemble_solution",
+      "description": "Use coordinate-wise median instead of mean for robustness to outliers",
+      "abort_reason": "W1 already aborted based on top3 failure. lightweight_ensemble with weighted avg is superior (1.1542)",
+      "hypothesis": "Median is more robust to outliers than mean. If one candidate is in wrong basin, median will ignore it.",
+      "implementation": [
+        "1. Take top-5 candidates by RMSE",
+        "2. Compute coordinate-wise median",
+        "3. Evaluate median solution",
+        "4. Compare vs mean-based ensemble"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_CMAES_WITH_RESTART_BEST_001",
+      "priority": 3,
+      "family": "cmaes_v4",
+      "status": "aborted",
+      "name": "cmaes_restart_inject_best",
+      "description": "When restarting CMA-ES (fallback), inject previous best solution into new population",
+      "abort_reason": "W1 ran this - FAILED. Injection never triggered (0/80 fallbacks). Baseline meets thresholds easily.",
+      "hypothesis": "Instead of starting fresh on fallback, inject best solution found so far into new population",
+      "implementation": [
+        "1. On CMA-ES fallback/restart, use cma.inject() to add previous best",
+        "2. This seeds the new search with known good solution",
+        "3. May help escape local optima while retaining good solutions"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "note": "Different from solution_injection_cmaes which injected ALL solutions"
+    },
+    {
+      "id": "EXP_ADAPTIVE_POLISH_BUDGET_001",
+      "priority": 3,
+      "family": "budget_v3",
+      "status": "aborted",
+      "name": "adaptive_polish_per_sample",
+      "description": "Use more polish iterations for samples where CMA-ES converged poorly",
+      "abort_reason": "W1 aborted - Prior: adaptive_nm_iterations proved fixed iterations optimal. NM tolerance handles early termination.",
+      "hypothesis": "Samples with high RMSE after CMA-ES may benefit from more polish, while good samples need less",
+      "implementation": [
+        "1. After CMA-ES, check best RMSE",
+        "2. If RMSE > 0.15: use 10 polish iterations",
+        "3. If RMSE < 0.10: use 6 polish iterations",
+        "4. Otherwise: use 8 (baseline)",
+        "5. Adaptive budget based on difficulty"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_TEMPORAL_PLUS_ENSEMBLE_001",
+      "priority": 1,
+      "family": "combined_best",
+      "status": "aborted",
+      "name": "temporal_fidelity_plus_ensemble",
+      "description": "CRITICAL: Combine 40% temporal fidelity (1.1688) with lightweight ensemble (+0.029). Expected: potential new best ~1.17+",
+      "abort_reason": "W2 proved ensemble provides NO improvement. lightweight_ensemble vs baseline: 1.154 vs 1.156 (identical within noise). No benefit to combine.",
+      "hypothesis": "Both techniques independently improve score. Combining them should yield cumulative benefit. early_timestep_filtering + ensemble averaging",
+      "implementation": [
+        "1. Start with early_timestep_filtering optimizer (40% temporal fidelity + 8 NM polish)",
+        "2. Add lightweight ensemble postprocessing step from lightweight_ensemble_postprocessing",
+        "3. Ensemble: weighted average of top-5 candidates after CMA-ES",
+        "4. Add ensemble to candidate pool before polish",
+        "5. Measure combined improvement"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "informed_by": "early_timestep_filtering (1.1688) + lightweight_ensemble (+0.029 technique)"
+    },
+    {
+      "id": "EXP_ENSEMBLE_BEFORE_POLISH_001",
+      "priority": 2,
+      "family": "postprocessing_v3",
+      "status": "aborted",
+      "name": "ensemble_before_nm_polish",
+      "abort_reason": "W2 proved ensemble provides NO improvement. Position averaging doesn't help when NM polish is effective.",
+      "description": "Add ensemble candidate BEFORE NM polish instead of after (currently after fine-grid eval)",
+      "hypothesis": "If ensemble is added before polish, the ensemble candidate itself gets polished, potentially finding better final solution",
+      "implementation": [
+        "1. Use early_timestep_filtering baseline",
+        "2. After CMA-ES on coarse grid, create ensemble of top-5",
+        "3. Add ensemble to candidate pool BEFORE fine-grid evaluation",
+        "4. Let ensemble candidate go through fine-grid + NM polish",
+        "5. Compare vs ensemble after fine-grid"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_LARGER_ENSEMBLE_POOL_001",
+      "priority": 3,
+      "family": "postprocessing_v3",
+      "status": "aborted",
+      "name": "larger_ensemble_pool",
+      "abort_reason": "W2 proved ensemble provides NO improvement. More candidates won't help if the approach itself doesn't work.",
+      "description": "Use top-10 instead of top-5 for ensemble averaging",
+      "hypothesis": "More candidates in ensemble may provide better averaging and reduce outlier influence",
+      "implementation": [
+        "1. Use early_timestep_filtering baseline",
+        "2. Collect top-10 candidates for ensemble",
+        "3. Apply same weighted averaging",
+        "4. Compare vs top-5"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_POLISH_THEN_ENSEMBLE_001",
+      "priority": 3,
+      "family": "postprocessing_v3",
+      "status": "aborted",
+      "name": "polish_all_then_ensemble",
+      "abort_reason": "W2 proved ensemble provides NO improvement. Polishing before averaging still won't help.",
+      "description": "Polish ALL top-5 candidates first, then create ensemble from polished results",
+      "hypothesis": "Polishing all candidates before ensembling may give better ensemble since all inputs are refined",
+      "implementation": [
+        "1. Use early_timestep_filtering baseline",
+        "2. Apply NM polish to each of top-5 candidates (5*3 iterations)",
+        "3. Create ensemble from polished solutions",
+        "4. This may improve ensemble quality"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_ENSEMBLE_FINAL_POLISH_001",
+      "priority": 3,
+      "family": "postprocessing_v3",
+      "status": "aborted",
+      "name": "ensemble_with_final_polish",
+      "abort_reason": "W2 proved ensemble provides NO improvement. Polishing ensemble solution won't help if ensemble itself doesn't improve.",
+      "description": "Create ensemble, then apply NM polish to the ensemble solution itself",
+      "hypothesis": "The ensemble solution is a good starting point that can be further refined with NM polish",
+      "implementation": [
+        "1. Use early_timestep_filtering baseline",
+        "2. Create weighted ensemble from top-5",
+        "3. Apply 5 NM polish iterations to ensemble solution",
+        "4. Compare polished ensemble vs unpolished"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_ENSEMBLE_40PCT_COMBINED_001",
+      "priority": 1,
+      "family": "combined_v2",
+      "status": "completed",
+      "name": "ensemble_on_40pct_temporal_baseline",
+      "description": "EXPLICIT: Apply ensemble averaging to early_timestep_filtering optimizer (the 1.1688 baseline)",
+      "hypothesis": "ensemble averaging adds +0.029 to any baseline. Applying to 1.1688 should give ~1.17+",
+      "implementation": [
+        "1. COPY code from experiments/early_timestep_filtering/optimizer_with_polish.py",
+        "2. ADD ensemble computation from experiments/lightweight_ensemble_postprocessing/optimizer.py",
+        "3. Ensemble step goes AFTER fine-grid evaluation, BEFORE final polish",
+        "4. Use ensemble_top_n=5 (proven optimal)",
+        "5. Run on full 80 samples"
+      ],
+      "success_criteria": "Score >= 1.19 AND time <= 60 min",
+      "key_files": [
+        "experiments/early_timestep_filtering/optimizer_with_polish.py (1.1688 baseline)",
+        "experiments/lightweight_ensemble_postprocessing/optimizer.py (ensemble code)"
+      ],
+      "claimed_at": "2026-01-26T05:11:48.137513",
+      "completed_at": "2026-01-26T05:30:14.042653",
+      "result": {
+        "score": 1.1595,
+        "time_min": 68.0,
+        "in_budget": false,
+        "outcome": "FAILED",
+        "key_finding": "Ensemble averaging HURTS performance with 8-iteration NM polish. Score -0.0093 vs baseline, time +9.6 min over budget."
+      }
+    },
+    {
+      "id": "EXP_SIMPLE_POSITION_AVERAGE_001",
+      "priority": 2,
+      "family": "postprocessing_v4",
+      "status": "completed",
+      "name": "simple_position_average_best2",
+      "description": "Simplest ensemble: average position of top-2 candidates, recompute intensity",
+      "hypothesis": "Top-2 averaging is simpler and may be more robust than top-5",
+      "implementation": [
+        "1. Use early_timestep_filtering baseline",
+        "2. After CMA-ES, take top-2 candidates",
+        "3. Average their positions: (x1+x2)/2, (y1+y2)/2",
+        "4. Compute optimal intensity for averaged position",
+        "5. Add to candidate pool"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "result": "FAILED - 1.1297 @ 33.6 min. Position averaging hurts accuracy (-3.3% vs baseline).",
+      "score": 1.1297,
+      "time_min": 33.6,
+      "finding": "Position averaging doesn't help - the loss landscape is non-convex. Averaging positions moves solutions AWAY from optima."
+    },
+    {
+      "id": "EXP_SAMPLE_STRATIFIED_001",
+      "priority": 3,
+      "family": "sampling_v2",
+      "status": "completed",
+      "name": "stratified_sample_processing",
+      "description": "Process 1-source and 2-source samples with different settings",
+      "hypothesis": "1-source and 2-source problems may benefit from different optimization settings",
+      "implementation": [
+        "1. Detect source count from sample data",
+        "2. 1-source: fewer fevals (15), more polish (10 iter)",
+        "3. 2-source: more fevals (36), less polish (6 iter)",
+        "4. Rebalance budget based on problem complexity"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "claimed_at": "2026-01-26T05:42:16.445484",
+      "completed_at": "2026-01-26T06:00:15.561873",
+      "result": {
+        "score": 1.1605,
+        "time_min": 69.1,
+        "in_budget": false,
+        "outcome": "FAILED",
+        "key_finding": "Stratified settings hurt 2-source accuracy (RMSE 0.1606 vs 0.138). Baseline uniform polish is optimal."
+      }
+    },
+    {
+      "id": "EXP_INTENSITY_CLIP_RANGE_001",
+      "priority": 3,
+      "family": "hyperparameter_v2",
+      "status": "completed",
+      "name": "tighter_intensity_bounds",
+      "description": "Use tighter intensity bounds (0.6-1.8 instead of 0.5-2.0) to reduce search space",
+      "hypothesis": "Most solutions have intensity near 1.0. Tighter bounds may help convergence",
+      "implementation": [
+        "1. Change q_range from [0.5, 2.0] to [0.6, 1.8]",
+        "2. This reduces search space by 20%",
+        "3. May help CMA-ES converge faster"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_FINAL_SOLUTION_VERIFICATION_001",
+      "priority": 3,
+      "family": "verification",
+      "status": "completed",
+      "name": "solution_verification_pass",
+      "description": "After optimization, verify best candidate via gradient check and re-evaluate",
+      "hypothesis": "Some solutions may have gradient indicating better nearby solutions. Quick verification may catch these.",
+      "implementation": [
+        "1. After optimization, take best candidate",
+        "2. Compute approximate gradient at solution via finite differences",
+        "3. If gradient magnitude is large, do one step in negative gradient direction",
+        "4. Re-evaluate and use better of original vs adjusted solution"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "result": "FAILED - 1.1353 @ 44.8 min. Paradox: 48.8% 'improved' but overall score worse. Verification adds noise, not value.",
+      "score": 1.1353,
+      "time_min": 44.8,
+      "finding": "Gradient verification finds false positives. Baseline CMA-ES+NM already converges well locally. Don't add redundant verification steps."
+    },
+    {
+      "id": "EXP_FCMAES_SPEED_001",
+      "priority": 2,
+      "family": "implementation_v2",
+      "status": "completed",
+      "name": "fcmaes_speed_test",
+      "description": "Use fast-cma-es (fcmaes) library instead of pycma - claimed 8-10x speedup",
+      "hypothesis": "fcmaes library uses optimized C++ backend which may significantly reduce CMA-ES runtime",
+      "research_source": "https://github.com/dietmarwo/fast-cma-es",
+      "implementation": [
+        "1. Install fcmaes: pip install fcmaes",
+        "2. Replace 'import cma' with fcmaes equivalent",
+        "3. Benchmark against pycma on same test samples",
+        "4. If faster, use saved time for more iterations or polish"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min (speedup allows more iterations)",
+      "claimed_at": "2026-01-26T05:30:58.666851",
+      "completed_at": "2026-01-26T05:39:33.991145",
+      "result": {
+        "score": 1.0722,
+        "time_min": 57.1,
+        "in_budget": true,
+        "outcome": "FAILED",
+        "key_finding": "CMA-ES is NOT the bottleneck (10ms vs 6000ms simulation). fcmaes speedup is irrelevant. Worse score due to fewer candidates."
+      }
+    },
+    {
+      "id": "EXP_ADEI_ALGORITHM_001",
+      "priority": 2,
+      "family": "evolutionary_adei",
+      "status": "completed",
+      "name": "adei_heat_source",
+      "description": "Adaptive Differential Evolution Integration - specifically designed for inverse heat problems",
+      "hypothesis": "ADEI algorithm with leader/follower/contemplator/rationalist roles may outperform CMA-ES on heat source localization",
+      "research_source": "https://www.mdpi.com/2227-9717/13/5/1293",
+      "implementation": [
+        "1. Implement ADEI algorithm with 4 social roles",
+        "2. Leaders: top performers guide search direction",
+        "3. Followers: follow leaders with exploration",
+        "4. Contemplators: local search around good solutions",
+        "5. Rationalists: random exploration for diversity"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "claimed_at": "2026-01-26T05:40:00.997646",
+      "completed_at": "2026-01-26T05:41:51.217239",
+      "result": {
+        "outcome": "NOT_IMPLEMENTED",
+        "reason": "Deemed not feasible - optimization is only 0.2% of runtime (fcmaes profiling). ADEI requires implementing 4 population types from scratch with minimal expected benefit.",
+        "recommendation": "Mark evolutionary algorithm improvements as LOW_PRIORITY"
+      }
+    },
+    {
+      "id": "EXP_COARSE_FINE_TEMPORAL_001",
+      "priority": 2,
+      "family": "temporal_v3",
+      "status": "completed",
+      "name": "coarse_to_fine_temporal",
+      "description": "Progressive temporal fidelity: start with 20% timesteps, gradually increase to 40%",
+      "hypothesis": "Starting with very coarse temporal resolution for initial search, then refining, may be faster",
+      "implementation": [
+        "1. Initial CMA-ES: 20% timesteps (very fast)",
+        "2. Refinement: 40% timesteps on top candidates",
+        "3. Final polish: full timesteps on best",
+        "4. Budget: 40% coarse search, 30% medium, 30% polish"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "result": "FAILED - 1.1266 @ 37.6 min. 20% timesteps too coarse for accurate search.",
+      "score": 1.1266,
+      "time_min": 37.6,
+      "finding": "20% timesteps below minimum viable threshold. CMA-ES finds wrong positions that can't be recovered. Baseline 25% is optimal."
+    },
+    {
+      "id": "EXP_LARGER_CANDIDATE_POOL_001",
+      "priority": 2,
+      "family": "scoring_v2",
+      "status": "completed",
+      "result": "FAILED - Score +0.0038 but time +27.2 min (85.6 vs 58.4 baseline). Massively over budget.",
+      "score": 1.1726,
+      "time_min": 85.6,
+      "worker": "W2",
+      "name": "larger_candidate_pool",
+      "description": "Increase candidate pool size from 10 to 15 for better diversity bonus",
+      "finding": "Each additional candidate adds NM polish time. Pool_size=10 is already optimal for time budget."
+    },
+    {
+      "id": "EXP_ADJUSTED_TAU_THRESHOLD_001",
+      "priority": 2,
+      "family": "scoring_v2",
+      "status": "completed",
+      "result": "FAILED - tau=0.15: 1.1741 @ 67.2 min (over budget). tau=0.25: 1.1362 @ 73.1 min (worse score). Baseline tau=0.2 optimal.",
+      "score": 1.1741,
+      "time_min": 67.2,
+      "worker": "W2",
+      "name": "adjusted_dissimilarity_threshold",
+      "description": "Try different tau values (0.15, 0.25) for dissimilarity filtering",
+      "finding": "Baseline tau=0.2 is optimal. Lower tau gives marginal improvement but over budget. Higher tau destroys diversity score."
+    },
+    {
+      "id": "EXP_GREEDY_DIVERSITY_001",
+      "priority": 3,
+      "family": "scoring_v2",
+      "status": "completed",
+      "result": "FAILED - Score -0.0189 (worse), time +10.1 min (over budget). Fewer 3-cand samples (64 vs ~70).",
+      "score": 1.1499,
+      "time_min": 68.5,
+      "worker": "W2",
+      "name": "greedy_diversity_selection",
+      "description": "Use greedy selection algorithm to maximize diversity while maintaining accuracy",
+      "finding": "Simple sort+filter is optimal. Greedy selection hurts accuracy without improving diversity."
+    },
+    {
+      "id": "EXP_HIGHER_POPULATION_SIZE_001",
+      "priority": 3,
+      "family": "cmaes_tuning_v3",
+      "status": "completed",
+      "name": "higher_population_density",
+      "description": "Increase CMA-ES population size from default to 2x for more candidate diversity",
+      "hypothesis": "Larger population = more diverse search = better final candidates",
+      "implementation": [
+        "1. Set popsize = 2 * default (8 -> 16 for 4D, 12 -> 24 for 6D)",
+        "2. Reduce maxfevals slightly to stay in budget",
+        "3. Measure both accuracy and diversity"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "worker": "W1",
+      "claimed_at": "2026-01-26T07:08:15.357537Z",
+      "completed_at": "2026-01-26T07:17:56.512081Z",
+      "result": "FAILED - Score 1.1115 vs baseline 1.1246. Larger population = fewer generations = worse convergence.",
+      "score": 1.1115,
+      "time_min": 33.3
+    },
+    {
+      "id": "EXP_BASELINE_CONSISTENCY_TEST_001",
+      "priority": 1,
+      "family": "verification_v2",
+      "status": "completed",
+      "name": "baseline_consistency_test",
+      "description": "Run baseline multiple times to measure variance and establish confidence interval",
+      "hypothesis": "Understanding baseline variance will help determine if score differences are significant",
+      "implementation": [
+        "1. Run baseline (early_timestep_filtering) 3 times with different seeds",
+        "2. Measure mean and std of score/time",
+        "3. Establish confidence interval for comparing future experiments"
+      ],
+      "success_criteria": "Establish baseline variance",
+      "result": "SUCCESS - CRITICAL FINDING: True baseline is 1.1246 \u00b1 0.0049, NOT 1.1688",
+      "score_mean": 1.1246,
+      "score_std": 0.0049,
+      "time_min": 32.6,
+      "ci_95_low": 1.115,
+      "ci_95_high": 1.1342,
+      "finding": "True baseline is 1.1246 \u00b1 0.0049. To beat baseline with 95% confidence, need score > 1.1342."
+    },
+    {
+      "id": "EXP_TIGHTER_INTENSITY_BOUNDS_001",
+      "priority": 2,
+      "family": "hyperparameter_v3",
+      "status": "completed",
+      "name": "tighter_intensity_range",
+      "description": "Reduce intensity search range from [0.5, 2.0] to [0.6, 1.8] for 20% smaller search space",
+      "hypothesis": "Most true intensities are in [0.6, 1.8] range. Tighter bounds may help CMA-ES converge faster.",
+      "implementation": [
+        "1. Change q_bounds from [0.5, 2.0] to [0.6, 1.8]",
+        "2. Run on full 80 samples",
+        "3. Check if any solutions hit bounds (would indicate bounds too tight)"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "worker": "W1",
+      "claimed_at": "2026-01-26T06:26:36.678160Z",
+      "completed_at": "2026-01-26T06:37:34.291598Z",
+      "result": "FAILED - Score 1.1122 vs baseline 1.1246. 66% samples hit bounds, confirming baseline range is necessary.",
+      "score": 1.1122,
+      "time_min": 37.1,
+      "finding": "Tighter bounds hurt accuracy. Full [0.5, 2.0] range is required."
+    },
+    {
+      "id": "EXP_INTENSITY_REFINEMENT_ONLY_001",
+      "priority": 3,
+      "family": "parameter_tuning_v2",
+      "status": "completed",
+      "name": "intensity_refinement_only",
+      "description": "After CMA-ES finds position, do additional intensity-only optimization via grid search",
+      "hypothesis": "Position (x,y) is hard to find but intensity (q) can be optimized more cheaply",
+      "implementation": [
+        "1. Run standard CMA-ES to find (x, y, q)",
+        "2. Fix (x, y), grid search intensity q in [0.5, 2.0] with 10 points",
+        "3. Pick best intensity, add to candidate pool"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "claimed_at": "2026-01-27T04:35:16.278629Z",
+      "completed_at": "2026-01-27T04:37:16.704133Z",
+      "result": "NOT_FEASIBLE - Baseline already uses optimal analytic intensity via VarPro",
+      "finding": "Variable Projection means intensity is computed analytically. parameter_tuning_v2 (intensity) EXHAUSTED."
+    },
+    {
+      "id": "EXP_MULTI_SEED_ENSEMBLE_001",
+      "priority": 2,
+      "family": "robustness_v2",
+      "status": "completed",
+      "result": "NOT_FEASIBLE - 3 seeds would triple runtime (174 min vs 60 min budget). Deterministic init already minimizes seed impact.",
+      "worker": "W2",
+      "name": "multi_seed_best_selection",
+      "description": "Run CMA-ES with 3 different seeds per sample, select best result",
+      "hypothesis": "Given baseline variance of \u00b10.0049, running multiple seeds and selecting best may improve score",
+      "implementation": [
+        "1. For each sample, run CMA-ES with 3 different seeds",
+        "2. Select the run with lowest RMSE",
+        "3. This should reduce per-sample variance"
+      ],
+      "success_criteria": "Score > 1.1342 (beat baseline 95% CI)"
+    },
+    {
+      "id": "EXP_RE_EVAL_PROMISING_001",
+      "priority": 1,
+      "family": "re_evaluation_v2",
+      "status": "completed",
+      "name": "rerun_solution_verification",
+      "description": "Re-run solution_verification_pass (scored 1.1353, above baseline CI)",
+      "hypothesis": "This experiment scored ABOVE baseline upper CI (1.1342). May be a genuine improvement.",
+      "implementation": [
+        "1. Re-run solution_verification_pass with same config",
+        "2. If consistently above 1.1342, this is a genuine improvement",
+        "3. The gradient verification may actually help"
+      ],
+      "success_criteria": "Score > 1.1342 consistently",
+      "worker": "W1",
+      "claimed_at": "2026-01-26T06:38:21.709995Z",
+      "completed_at": "2026-01-26T07:06:57.138306Z",
+      "result": "SUCCESS - Genuine improvement! Mean 1.1373 vs baseline 1.1246 (+0.0127, +1.0%)",
+      "score": 1.1373,
+      "time_min": 42.6,
+      "finding": "Solution verification is a genuine improvement. Recommend promoting to production."
+    },
+    {
+      "id": "EXP_POSITION_BOUNDS_FROM_INIT_001",
+      "priority": 3,
+      "family": "search_space_v2",
+      "status": "completed",
+      "claimed_at": "2026-01-26T15:10:00Z",
+      "name": "position_bounds_from_init",
+      "description": "Use triangulation init to set tighter position bounds around likely source locations",
+      "hypothesis": "If triangulation gives approximate position, we can search in smaller region around it",
+      "implementation": [
+        "1. Get triangulation estimate (x0, y0)",
+        "2. Set bounds as [x0-0.3, x0+0.3] \u00d7 [y0-0.15, y0+0.15]",
+        "3. This is ~30% of full domain but centered on likely position",
+        "4. May help CMA-ES converge faster without hitting bounds"
+      ],
+      "success_criteria": "Score > 1.1342 AND time <= 60 min",
+      "completed_at": "2026-01-27T04:35:16.278544Z",
+      "result": "NOT_FEASIBLE"
+    },
+    {
+      "id": "EXP_SIMPLE_TOP3_NO_FILTER_001",
+      "priority": 3,
+      "family": "candidate_selection_v3",
+      "status": "claimed_by_W2",
+      "name": "simple_top3_no_dissimilarity",
+      "description": "Skip dissimilarity filtering - just take top 3 by RMSE",
+      "hypothesis": "Dissimilarity filtering may be removing good candidates. Try without it.",
+      "implementation": [
+        "1. Run CMA-ES as normal",
+        "2. Sort all candidates by RMSE",
+        "3. Take top 3 directly without dissimilarity check",
+        "4. Skip tau filtering entirely"
+      ],
+      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min",
+      "claimed_at": "2026-01-27T04:37:16.704239Z"
+    },
+    {
+      "id": "EXP_REDUCED_1SRC_EVALS_001",
+      "priority": 3,
+      "family": "efficiency_v2",
+      "status": "available",
+      "name": "reduced_1src_evals",
+      "description": "1-source problems are simpler - use fewer fevals (15 vs 20)",
+      "hypothesis": "1-src only has 3 params, may converge faster than 2-src with 6 params",
+      "implementation": [
+        "1. Use fevals=15 for 1-source problems (vs baseline 20)",
+        "2. Keep fevals=36 for 2-source problems",
+        "3. Save time on simpler problems"
+      ],
+      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min"
+    },
+    {
+      "id": "EXP_EXTENDED_VERIFICATION_001",
+      "priority": 1,
+      "family": "verification_v3",
+      "status": "completed",
+      "result": "FAILED - 1.1432 @ 40 min, still below true baseline 1.1688",
+      "score": 1.1432,
+      "time_min": 40.0,
+      "worker": "W2",
+      "claimed_at": "2026-01-27T03:00:00Z",
+      "completed_at": "2026-01-27T04:00:00Z",
+      "name": "extended_verification_all_candidates",
+      "description": "Apply solution verification to ALL top-3 candidates, not just best",
+      "hypothesis": "Solution verification improved best by +1%. Applying to all candidates may improve overall score more.",
+      "informed_by": "rerun_solution_verification (NEW BEST: 1.1373 @ 42.6 min)",
+      "implementation": [
+        "1. After CMA-ES, take top-10 candidates as usual",
+        "2. Run NM polish on each candidate",
+        "3. NEW: Apply gradient verification to ALL polished candidates",
+        "4. If gradient > threshold, do one step in negative gradient direction",
+        "5. Keep better of (original, verified) for EACH candidate",
+        "6. Return top-3 by RMSE with dissimilarity filtering"
+      ],
+      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min",
+      "finding": "Extended verification adds overhead without improving score vs true baseline. verification_v3 EXHAUSTED."
+    },
+    {
+      "id": "EXP_DOUBLE_NM_POLISH_001",
+      "priority": 2,
+      "family": "polish_v3",
+      "status": "completed",
+      "result": "FAILED - Double NM polish HURTS accuracy. All runs worse than baseline.",
+      "score": 1.1278,
+      "time_min": 31.4,
+      "name": "double_nm_polish_round",
+      "description": "Run two rounds of NM polish - first round for coarse, second for fine",
+      "hypothesis": "First NM polish may get stuck in local basin. Second round from different simplex may escape.",
+      "research_source": "LR-CMA-ES research shows local refinement synergy helps",
+      "implementation": [
+        "1. Standard CMA-ES optimization",
+        "2. First NM polish (6 iterations) - coarse refinement",
+        "3. Perturb simplex vertices slightly (scale 0.02)",
+        "4. Second NM polish (4 iterations) - fine refinement",
+        "5. Keep best result from each candidate"
+      ],
+      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min",
+      "finding": "Double polish hurts accuracy. 3-iteration NM is optimal. polish_v3 EXHAUSTED."
+    },
+    {
+      "id": "EXP_PERTURBED_LOCAL_RESTART_001",
+      "priority": 2,
+      "family": "refinement_v2",
+      "status": "NOT_FEASIBLE",
+      "abort_reason": "DISPROVED by double_nm_polish_round: Perturbation + additional NM all hurt accuracy. NM doesn't get stuck in local basin.",
+      "name": "perturbed_local_restart",
+      "description": "After finding solution, perturb position slightly and re-run local optimizer",
+      "hypothesis": "Perturbation may escape shallow local minima that NM polish missed",
+      "research_source": "Basin hopping concepts - perturbation + local optimization",
+      "implementation": [
+        "1. After NM polish, get best candidate",
+        "2. Generate 3 perturbations: move position by \u00b10.05 in random direction",
+        "3. Run brief NM (3 iterations) from each perturbed point",
+        "4. Keep best of (original, perturbed solutions)",
+        "5. Apply to top-3 candidates"
+      ],
+      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min"
+    },
+    {
+      "id": "EXP_ADAPTIVE_COMPLEXITY_BUDGET_001",
+      "priority": 2,
+      "family": "adaptive_v3",
+      "status": "completed",
+      "result": "ALREADY DONE - experiments/adaptive_sample_budget FAILED. Early termination hurts accuracy. Bonus budget adds overhead. Fixed-budget is optimal.",
+      "reference": "experiments/adaptive_sample_budget/SUMMARY.md",
+      "name": "adaptive_sample_budget",
+      "description": "Give harder samples more optimization budget based on initial RMSE",
+      "hypothesis": "Samples with high initial RMSE need more optimization. Easy samples waste budget.",
+      "implementation": [
+        "1. Run initial CMA-ES (80% of base fevals)",
+        "2. Check best candidate RMSE",
+        "3. If RMSE < 0.15: stop early (easy sample solved)",
+        "4. If RMSE > 0.25: continue with additional 40% fevals",
+        "5. Reallocate saved budget from easy to hard samples"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_TIKHONOV_REGULARIZED_001",
+      "priority": 3,
+      "family": "loss_v3",
+      "status": "available",
+      "name": "tikhonov_regularized_rmse",
+      "description": "Add Tikhonov regularization to RMSE to prevent overfitting to sensor noise",
+      "hypothesis": "Sensor data may have noise. Regularization may help find smoother, more accurate solutions.",
+      "research_source": "State-of-art inverse heat source 2025: Tikhonov regularization with optimal parameter",
+      "implementation": [
+        "1. Modify loss function: L = RMSE + lambda * ||params - prior||^2",
+        "2. Prior = triangulation estimate (reasonable starting point)",
+        "3. lambda = 0.01 (small regularization weight)",
+        "4. Run standard CMA-ES with new loss",
+        "5. Polish uses original RMSE (no regularization)"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_NM_LARGER_SIMPLEX_001",
+      "priority": 3,
+      "family": "polish_v3",
+      "status": "NOT_FEASIBLE",
+      "abort_reason": "polish_v3 EXHAUSTED by double_nm_polish_round. Additional NM iterations (10 vs 8) hurt accuracy. 3-iteration baseline is optimal.",
+      "name": "nm_larger_initial_simplex",
+      "description": "Use larger initial simplex for NM polish to explore more area",
+      "hypothesis": "Current NM simplex may be too small, getting stuck in immediate vicinity",
+      "implementation": [
+        "1. Standard CMA-ES optimization",
+        "2. NM polish with 2x larger initial simplex (scale=0.1 vs 0.05)",
+        "3. Allow NM more steps to converge (10 vs 8)",
+        "4. May find better solutions slightly outside current search area"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_REPRODUCE_W2_BEST_001",
+      "priority": 1,
+      "family": "baseline_verification",
+      "status": "available",
+      "name": "reproduce_w2_best_config",
+      "description": "VERIFY: Run the W2 1.1688 config (40% temporal, sigma 0.18/0.22, 8 NM polish) to confirm score",
+      "hypothesis": "The 1.1688 score is the TRUE baseline. We need to verify and reproduce it before trying to beat it.",
+      "implementation": [
+        "1. Use exact W2 config: timestep_fraction=0.40, sigma0_1src=0.18, sigma0_2src=0.22",
+        "2. 8 NM polish iterations on best candidate",
+        "3. Run with 3 different seeds to measure variance",
+        "4. GOAL: Confirm reproducibility of 1.1688 @ 58.4 min"
+      ],
+      "success_criteria": "Score >= 1.165 AND time <= 60 min (verify baseline)"
+    },
+    {
+      "id": "EXP_W2_CONFIG_WITH_VERIFICATION_001",
+      "priority": 2,
+      "family": "hybrid_v2",
+      "status": "available",
+      "name": "w2_config_with_gradient_verify",
+      "description": "Add gradient verification to W2's 1.1688 config",
+      "hypothesis": "If verification helped the 1.1373 config (+0.01), it might help the 1.1688 config too",
+      "implementation": [
+        "1. Start with W2 config: 40% temporal, sigma 0.18/0.22, 8 NM polish",
+        "2. Add gradient verification after NM polish",
+        "3. Use verify_top_n=1 (proven optimal)",
+        "4. May need to reduce NM polish slightly to stay in budget"
+      ],
+      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min"
+    },
+    {
+      "id": "EXP_45PCT_TEMPORAL_001",
+      "priority": 2,
+      "family": "temporal_v4",
+      "status": "available",
+      "name": "higher_temporal_45pct",
+      "description": "Test 45% temporal fidelity (between current 25% and W2's 40%)",
+      "hypothesis": "40% temporal achieves 1.1688. Maybe 45% could improve accuracy further within budget.",
+      "implementation": [
+        "1. Use timestep_fraction=0.45 (45% of timesteps)",
+        "2. Keep W2's sigma 0.18/0.22",
+        "3. May need to reduce NM polish to 6 iterations to stay in budget",
+        "4. Balance between accuracy and time"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_SIGMA_FINE_TUNE_001",
+      "priority": 3,
+      "family": "sigma_v4",
+      "status": "available",
+      "name": "sigma_fine_tune_around_w2",
+      "description": "Fine-tune sigma around W2's optimal 0.18/0.22",
+      "hypothesis": "W2 found sigma 0.18/0.22 optimal. Test nearby values (0.16/0.20, 0.20/0.24)",
+      "implementation": [
+        "1. Test sigma variants: [0.16/0.20, 0.17/0.21, 0.19/0.23, 0.20/0.24]",
+        "2. Keep 40% temporal and 8 NM polish from W2 config",
+        "3. Find if there's a slightly better sigma combination"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 60 min"
     }
   ],
   "algorithm_families": {
@@ -2339,7 +3386,9 @@
     "deterministic_global": "EXHAUSTED - DIRECT uses 441-443 evals vs CMA-ES 20-36 (12-22x more). Space partitioning doesn't scale. No covariance adaptation.",
     "alternative_optimizer": "EXHAUSTED - GA proven inferior to CMA-ES (slower, less accurate). Not worth exploring other general-purpose optimizers.",
     "alternative_metaheuristic": "EXHAUSTED - ALL tested metaheuristics (GA, DE, OpenAI ES, SA, GO) FAILED vs CMA-ES. Covariance adaptation is essential for expensive continuous optimization. Do NOT test more metaheuristics.",
-    "early_exit": "EXHAUSTED - ALL early termination approaches FAILED. CMA-ES needs full budget for covariance adaptation. Cannot be stopped early."
+    "early_exit": "EXHAUSTED - ALL early termination approaches FAILED. CMA-ES needs full budget for covariance adaptation. Cannot be stopped early.",
+    "postprocessing": "EXHAUSTED - W2 proved ensemble provides NO improvement (1.154 vs 1.156 baseline, within noise). Position averaging doesn't help when NM polish is effective. All variants (weighted, unweighted, median) FAILED.",
+    "combined_best": "EXHAUSTED - Based on postprocessing being exhausted, no benefit to combine with temporal fidelity."
   },
   "completed_experiments": [
     "EXP_WEIGHTED_LOSS_001",

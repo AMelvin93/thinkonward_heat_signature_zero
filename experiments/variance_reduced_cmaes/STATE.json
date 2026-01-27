@@ -1,0 +1,9 @@
+{
+  "experiment_id": "EXP_VARIANCE_REDUCED_CMAES_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-26T12:00:00Z",
+  "completed_at": "2026-01-26T12:00:00Z",
+  "abort_reason": "Antithetic sampling already tested in OpenAI ES and failed",
+  "summary_written": true
+}

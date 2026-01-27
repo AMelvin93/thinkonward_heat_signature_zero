@@ -88,7 +88,7 @@ class Coordinator:
                 "target_score": 1.25,
                 "experiments_claimed": {},  # hash -> {worker, timestamp}
                 "experiments_completed": [],  # list of hashes
-                "workers_registered": {},  # worker_id -> {status, last_seen}
+                "workers": {},  # worker_id -> {status, last_seen}
                 "created_at": time.time(),
                 "updated_at": time.time(),
             }
@@ -123,7 +123,7 @@ class Coordinator:
     def register_worker(self, worker_id: str, focus_area: str) -> bool:
         """Register a worker as active."""
         state = self._read_state()
-        state["workers_registered"][worker_id] = {
+        state["workers"][worker_id] = {
             "focus_area": focus_area,
             "status": "active",
             "registered_at": time.time(),
@@ -136,8 +136,8 @@ class Coordinator:
     def heartbeat(self, worker_id: str):
         """Update worker's last seen timestamp."""
         state = self._read_state()
-        if worker_id in state["workers_registered"]:
-            state["workers_registered"][worker_id]["last_seen"] = time.time()
+        if worker_id in state["workers"]:
+            state["workers"][worker_id]["last_seen"] = time.time()
             self._write_state(state)
 
     def claim_experiment(self, worker_id: str, config: ExperimentConfig) -> bool:
@@ -195,9 +195,9 @@ class Coordinator:
                     state["experiments_completed"].append(config_hash)
 
                 # Update worker stats
-                if result.worker_id in state["workers_registered"]:
-                    state["workers_registered"][result.worker_id]["experiments_run"] += 1
-                    state["workers_registered"][result.worker_id]["last_seen"] = time.time()
+                if result.worker_id in state["workers"]:
+                    state["workers"][result.worker_id]["experiments_run"] += 1
+                    state["workers"][result.worker_id]["last_seen"] = time.time()
 
                 # Check if new best (must be within budget)
                 if result.score > state["best_score"] and result.within_budget:
@@ -244,7 +244,7 @@ class Coordinator:
             "target_score": state.get("target_score", 1.25),
             "experiments_completed": len(state.get("experiments_completed", [])),
             "experiments_in_progress": len(state.get("experiments_claimed", {})),
-            "workers": state.get("workers_registered", {}),
+            "workers": state.get("workers", {}),
             "updated_at": state.get("updated_at"),
         }
 

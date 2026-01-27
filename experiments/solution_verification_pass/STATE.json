@@ -1,0 +1,61 @@
+{
+  "experiment_id": "EXP_FINAL_SOLUTION_VERIFICATION_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-26T17:30:00Z",
+  "completed_at": "2026-01-26T18:20:00Z",
+  "experiment_info": {
+    "name": "solution_verification_pass",
+    "family": "verification",
+    "description": "After optimization, verify best candidate via gradient check and re-evaluate",
+    "hypothesis": "Some solutions may have gradient indicating better nearby solutions. Quick verification may catch these."
+  },
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_verification": true,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "n_workers": 7
+      },
+      "results": {
+        "n_samples": 80,
+        "score": 1.1353,
+        "projected_400_min": 44.8,
+        "rmse_mean": 0.1692,
+        "rmse_mean_1src": 0.1333,
+        "rmse_mean_2src": 0.1931,
+        "n_verified_improved": 39,
+        "pct_verified_improved": 48.75,
+        "mlflow_run_id": "c651af213bcc46ee9122d90441cd185a"
+      },
+      "outcome": "FAILED",
+      "note": "Paradox: 48.8% of samples 'improved' by verification, yet overall score dropped 2.9%"
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "score": 1.1353,
+    "time_min": 44.8,
+    "config": {
+      "enable_verification": true,
+      "gradient_eps": 0.02,
+      "gradient_threshold": 0.1,
+      "step_size": 0.05
+    }
+  },
+  "final_result": {
+    "outcome": "FAILED",
+    "reason": "Score 1.1353 is 2.9% worse than baseline 1.1688. Gradient verification finds false positives that hurt overall score.",
+    "score": 1.1353,
+    "time_min": 44.8,
+    "delta_vs_baseline": -0.0335
+  },
+  "summary_written": true
+}

@@ -1,0 +1,57 @@
+{
+  "experiment_id": "EXP_COARSE_FINE_TEMPORAL_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-26T16:30:00Z",
+  "completed_at": "2026-01-26T17:15:00Z",
+  "experiment_info": {
+    "name": "coarse_to_fine_temporal",
+    "family": "temporal_v3",
+    "description": "Progressive temporal fidelity: start with 20% timesteps, gradually increase to 40%",
+    "hypothesis": "Starting with very coarse temporal resolution for initial search, then refining, may be faster"
+  },
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "coarse_fraction": 0.20,
+        "medium_fraction": 0.40,
+        "refine_top_n": 5,
+        "n_workers": 7
+      },
+      "results": {
+        "n_samples": 80,
+        "score": 1.1266,
+        "projected_400_min": 37.6,
+        "rmse_mean": 0.1934,
+        "rmse_mean_1src": 0.1416,
+        "rmse_mean_2src": 0.2280,
+        "mlflow_run_id": "037727885e3a47a5852a406be7f53065"
+      },
+      "outcome": "FAILED",
+      "note": "20% timesteps too coarse - poor candidate selection leads to bad final RMSE"
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "score": 1.1266,
+    "time_min": 37.6,
+    "config": {
+      "coarse_fraction": 0.20,
+      "medium_fraction": 0.40,
+      "refine_top_n": 5
+    }
+  },
+  "final_result": {
+    "outcome": "FAILED",
+    "reason": "Score 1.1266 is 3.6% worse than baseline 1.1688. 20% timesteps don't correlate well enough with full simulation.",
+    "score": 1.1266,
+    "time_min": 37.6,
+    "delta_vs_baseline": -0.0422
+  },
+  "summary_written": true
+}

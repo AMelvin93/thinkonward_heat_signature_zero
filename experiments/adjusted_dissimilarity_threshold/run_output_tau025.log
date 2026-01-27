@@ -1,0 +1,106 @@
+
+Adjusted Dissimilarity Threshold Experiment
+======================================================================
+Samples: 80, Workers: 7
+Tau (dissimilarity threshold): 0.25 (baseline: 0.2)
+Timestep fraction: 40%
+Final polish: 8 NM iters
+======================================================================
+[  1/80] Sample   4: 1-src RMSE=0.1508 cands=2 time=26.5s [OK] [P]
+[  2/80] Sample   2: 1-src RMSE=0.0027 cands=2 time=27.2s [OK] [P]
+[  3/80] Sample   1: 1-src RMSE=0.1027 cands=3 time=27.3s [OK] [P]
+[  4/80] Sample   0: 1-src RMSE=0.0990 cands=1 time=33.1s [OK] [P]
+[  5/80] Sample   6: 1-src RMSE=0.0984 cands=3 time=34.7s [OK] [P]
+[  6/80] Sample   3: 1-src RMSE=0.1409 cands=2 time=35.3s [OK] [P]
+[  7/80] Sample   5: 1-src RMSE=0.1494 cands=2 time=35.3s [OK] [P]
+[  8/80] Sample   8: 1-src RMSE=0.0978 cands=2 time=29.0s [OK] [P]
+[  9/80] Sample  12: 1-src RMSE=0.1837 cands=2 time=28.5s [OK] [P]
+[ 10/80] Sample   9: 1-src RMSE=0.1464 cands=3 time=37.2s [OK] [P]
+[ 11/80] Sample   7: 1-src RMSE=0.2119 cands=3 time=45.0s [OK] [P]
+[ 12/80] Sample  10: 1-src RMSE=0.1511 cands=2 time=47.6s [OK] [P]
+[ 13/80] Sample  11: 1-src RMSE=0.0024 cands=2 time=49.3s [OK] [P]
+[ 14/80] Sample  13: 1-src RMSE=0.1472 cands=1 time=49.3s [OK] [P]
+[ 15/80] Sample  16: 1-src RMSE=0.1518 cands=1 time=34.5s [OK] [P]
+[ 16/80] Sample  14: 1-src RMSE=0.1499 cands=2 time=50.8s [OK] [P]
+[ 17/80] Sample  15: 1-src RMSE=0.0056 cands=3 time=52.6s [OK] [P]
+[ 18/80] Sample  20: 1-src RMSE=0.0448 cands=2 time=35.1s [OK] [P]
+[ 19/80] Sample  17: 1-src RMSE=0.1009 cands=1 time=52.0s [OK] [P]
+[ 20/80] Sample  21: 1-src RMSE=0.0878 cands=2 time=35.8s [OK] [P]
+[ 21/80] Sample  18: 1-src RMSE=0.1121 cands=2 time=54.8s [OK] [P]
+[ 22/80] Sample  19: 1-src RMSE=0.0990 cands=1 time=56.4s [OK] [P]
+[ 23/80] Sample  24: 1-src RMSE=0.1033 cands=3 time=35.2s [OK] [P]
+[ 24/80] Sample  25: 1-src RMSE=0.1000 cands=2 time=34.8s [OK] [P]
+[ 25/80] Sample  22: 1-src RMSE=0.1023 cands=2 time=55.3s [OK] [P]
+[ 26/80] Sample  23: 1-src RMSE=0.1012 cands=3 time=51.2s [OK] [P]
+[ 27/80] Sample  26: 1-src RMSE=0.1539 cands=3 time=35.5s [OK] [P]
+[ 28/80] Sample  28: 1-src RMSE=0.0992 cands=2 time=36.3s [OK] [P]
+[ 29/80] Sample  27: 1-src RMSE=0.1507 cands=1 time=54.3s [OK] [P]
+[ 30/80] Sample  31: 1-src RMSE=0.1002 cands=2 time=33.5s [OK] [P]
+[ 31/80] Sample  29: 1-src RMSE=0.0991 cands=1 time=43.4s [OK] [P]
+[ 32/80] Sample  30: 1-src RMSE=0.1008 cands=3 time=44.4s [OK] [P]
+[ 33/80] Sample  33: 2-src RMSE=0.1539 cands=3 time=77.5s [OK] [P]
+[ 34/80] Sample  32: 2-src RMSE=0.0343 cands=3 time=101.5s [OK] [P]
+[ 35/80] Sample  35: 2-src RMSE=0.1004 cands=3 time=80.7s [OK] [P]
+[ 36/80] Sample  34: 2-src RMSE=0.4376 cands=3 time=94.7s [OK] [P]
+[ 37/80] Sample  37: 2-src RMSE=0.1518 cands=3 time=79.2s [OK] [P]
+[ 38/80] Sample  38: 2-src RMSE=0.1519 cands=3 time=114.8s [OK] [P]
+[ 39/80] Sample  36: 2-src RMSE=0.1622 cands=1 time=123.7s [OK] [P]
+[ 40/80] Sample  39: 2-src RMSE=0.1633 cands=3 time=83.8s [OK] [P]
+[ 41/80] Sample  40: 2-src RMSE=0.3576 cands=3 time=85.5s [OK] [P]
+[ 42/80] Sample  41: 2-src RMSE=0.1188 cands=3 time=84.7s [OK] [P]
+[ 43/80] Sample  43: 2-src RMSE=0.1601 cands=3 time=78.2s [OK] [P]
+[ 44/80] Sample  42: 2-src RMSE=0.1863 cands=3 time=120.3s [OK] [P]
+[ 45/80] Sample  44: 2-src RMSE=0.1274 cands=3 time=81.2s [OK] [P]
+[ 46/80] Sample  45: 2-src RMSE=0.1572 cands=3 time=82.4s [OK] [P]
+[ 47/80] Sample  49: 2-src RMSE=0.1560 cands=3 time=78.8s [OK] [P]
+[ 48/80] Sample  48: 2-src RMSE=0.2819 cands=3 time=84.9s [OK] [P]
+[ 49/80] Sample  47: 2-src RMSE=0.0998 cands=3 time=87.1s [OK] [P]
+[ 50/80] Sample  46: 2-src RMSE=0.1895 cands=3 time=114.6s [OK] [P]
+[ 51/80] Sample  50: 2-src RMSE=0.1888 cands=3 time=82.0s [OK] [P]
+[ 52/80] Sample  51: 2-src RMSE=0.1193 cands=2 time=80.6s [OK] [P]
+[ 53/80] Sample  53: 2-src RMSE=0.0371 cands=3 time=84.0s [OK] [P]
+[ 54/80] Sample  54: 2-src RMSE=0.1048 cands=3 time=81.7s [OK] [P]
+[ 55/80] Sample  55: 2-src RMSE=0.3102 cands=3 time=81.1s [OK] [P]
+[ 56/80] Sample  52: 2-src RMSE=0.1945 cands=3 time=126.3s [OK] [P]
+[ 57/80] Sample  57: 2-src RMSE=0.1795 cands=3 time=96.9s [OK] [P]
+[ 58/80] Sample  56: 2-src RMSE=0.0990 cands=2 time=125.3s [OK] [P]
+[ 59/80] Sample  59: 2-src RMSE=0.0169 cands=3 time=77.1s [OK] [P]
+[ 60/80] Sample  61: 2-src RMSE=0.0675 cands=2 time=75.9s [OK] [P]
+[ 61/80] Sample  60: 2-src RMSE=0.1349 cands=2 time=79.9s [OK] [P]
+[ 62/80] Sample  58: 2-src RMSE=0.0993 cands=3 time=123.8s [OK] [P]
+[ 63/80] Sample  62: 2-src RMSE=0.1073 cands=3 time=115.6s [OK] [P]
+[ 64/80] Sample  63: 2-src RMSE=0.2209 cands=3 time=79.0s [OK] [P]
+[ 65/80] Sample  64: 2-src RMSE=0.1106 cands=3 time=78.4s [OK] [P]
+[ 66/80] Sample  66: 2-src RMSE=0.0870 cands=3 time=80.4s [OK] [P]
+[ 67/80] Sample  68: 2-src RMSE=0.1098 cands=3 time=82.0s [OK] [P]
+[ 68/80] Sample  65: 2-src RMSE=0.3424 cands=3 time=117.4s [OK] [P]
+[ 69/80] Sample  70: 2-src RMSE=0.1272 cands=3 time=81.6s [OK] [P]
+[ 70/80] Sample  67: 2-src RMSE=0.1616 cands=3 time=131.2s [OK] [P]
+[ 71/80] Sample  71: 2-src RMSE=0.1547 cands=3 time=83.1s [OK] [P]
+[ 72/80] Sample  72: 2-src RMSE=0.2105 cands=3 time=84.9s [OK] [P]
+[ 73/80] Sample  69: 2-src RMSE=0.1336 cands=3 time=125.5s [OK] [P]
+[ 74/80] Sample  73: 2-src RMSE=0.1512 cands=2 time=100.7s [OK] [P]
+[ 75/80] Sample  74: 2-src RMSE=0.1433 cands=3 time=85.9s [OK] [P]
+[ 76/80] Sample  77: 2-src RMSE=0.1599 cands=3 time=78.6s [OK] [P]
+[ 77/80] Sample  75: 2-src RMSE=0.1070 cands=3 time=106.1s [OK] [P]
+[ 78/80] Sample  79: 2-src RMSE=0.1048 cands=3 time=78.3s [OK] [P]
+[ 79/80] Sample  76: 2-src RMSE=0.1209 cands=3 time=117.3s [OK] [P]
+[ 80/80] Sample  78: 2-src RMSE=0.1538 cands=3 time=113.2s [OK] [P]
+
+======================================================================
+RESULTS - Adjusted Tau Threshold (tau=0.25)
+======================================================================
+Submission Score: 1.1362
+Projected (400):  73.1 min
+Candidate distribution: 1-cand=8, 2-cand=21, 3-cand=51
+  1-source: RMSE=0.1108 (n=32)
+  2-source: RMSE=0.1552 (n=48)
+
+Baseline (1.1688 @ 58.4 min, tau=0.2):
+  This run:    1.1362 @ 73.1 min
+  Delta:       -0.0326 score, +14.7 min
+======================================================================
+
+/workspace/.venv/lib/python3.11/site-packages/mlflow/tracking/_tracking_service/utils.py:177: FutureWarning: The filesystem tracking backend (e.g., './mlruns') will be deprecated in February 2026. Consider transitioning to a database backend (e.g., 'sqlite:///mlflow.db') to take advantage of the latest MLflow features. See https://github.com/mlflow/mlflow/issues/18534 for more details and migration guidance.
+  return FileStore(store_uri, store_uri)
+MLflow run ID: 2c512ed378a749dea68d9733767c33a0

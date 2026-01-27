@@ -1,0 +1,13 @@
+{
+  "experiment_id": "EXP_MULTI_SEED_ENSEMBLE_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T14:10:00Z",
+  "completed_at": "2026-01-26T14:15:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "NOT_FEASIBLE - Running 3 seeds would triple runtime (174 min vs 60 min budget). Reducing evaluations per seed hurts convergence more than multiple seeds help.",
+  "key_finding": "The baseline uses deterministic triangulation initialization. Random seeds only affect the CMA-ES stochastic component, which has minimal impact given good initialization."
+}

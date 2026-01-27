@@ -1,0 +1,132 @@
+{
+  "experiment_id": "EXP_DOUBLE_NM_POLISH_001",
+  "worker": "W2",
+  "status": "in_progress",
+  "started_at": "2026-01-27T04:30:00Z",
+  "baseline_to_beat": {
+    "score": 1.1373,
+    "time_min": 42.6,
+    "source": "solution_verification_pass"
+  },
+  "hypothesis": "First NM polish may get stuck in local basin. Second round from different simplex may escape.",
+  "planned_configs": [
+    {
+      "run": 1,
+      "polish1_iter": 6,
+      "polish2_iter": 4,
+      "perturb_scale": 0.02,
+      "description": "Baseline double polish as specified"
+    },
+    {
+      "run": 2,
+      "polish1_iter": 4,
+      "polish2_iter": 6,
+      "perturb_scale": 0.02,
+      "description": "Reverse: more fine polish, less coarse"
+    },
+    {
+      "run": 3,
+      "polish1_iter": 6,
+      "polish2_iter": 4,
+      "perturb_scale": 0.05,
+      "description": "Larger perturbation for more exploration"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "polish1_maxiter": 6,
+        "polish2_maxiter": 4,
+        "perturb_scale": 0.02,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.125032875554582,
+        "total_time_sec": 519.3336350917816,
+        "projected_400_min": 43.27780292431513,
+        "rmse_mean": 0.1875908186892076,
+        "rmse_mean_1src": 0.12950029540622182,
+        "rmse_mean_2src": 0.2263178342111981,
+        "time_mean_1src": 21.629660166800022,
+        "time_mean_2src": 51.270829205711685,
+        "n_polished": 84,
+        "n_samples_polished": 65
+      },
+      "timestamp": "2026-01-27T03:53:42.339142"
+    },
+    {
+      "run": 2,
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "polish1_maxiter": 4,
+        "polish2_maxiter": 3,
+        "perturb_scale": 0.01,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1277636137472058,
+        "total_time_sec": 376.7253797054291,
+        "projected_400_min": 31.393781642119087,
+        "rmse_mean": 0.17771084324154435,
+        "rmse_mean_1src": 0.13949347823212682,
+        "rmse_mean_2src": 0.203189086581156,
+        "time_mean_1src": 16.789352729916573,
+        "time_mean_2src": 40.49924454589685,
+        "n_polished": 83,
+        "n_samples_polished": 65
+      },
+      "timestamp": "2026-01-27T04:00:32.961035"
+    },
+    {
+      "run": 3,
+      "config": {
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "polish1_maxiter": 3,
+        "polish2_maxiter": 3,
+        "perturb_scale": 0.0,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1245111300343316,
+        "total_time_sec": 429.21657538414,
+        "projected_400_min": 35.76804794867834,
+        "rmse_mean": 0.1887248540346552,
+        "rmse_mean_1src": 0.14321785923456093,
+        "rmse_mean_2src": 0.21906285056805133,
+        "time_mean_1src": 19.234936848282814,
+        "time_mean_2src": 47.24321343998114,
+        "n_polished": 91,
+        "n_samples_polished": 66
+      },
+      "timestamp": "2026-01-27T04:08:15.216544"
+    }
+  ],
+  "best_in_budget": {
+    "run": 2,
+    "score": 1.1277636137472058,
+    "time_min": 31.393781642119087,
+    "config": {
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 36,
+      "timestep_fraction": 0.25,
+      "polish1_maxiter": 4,
+      "polish2_maxiter": 3,
+      "perturb_scale": 0.01,
+      "refine_top_n": 2
+    }
+  },
+  "summary_written": true,
+  "status": "completed",
+  "completed_at": "2026-01-27T04:15:00Z",
+  "conclusion": "FAILED - Double NM polish consistently produces WORSE scores than baseline across ALL configurations. The 3-iteration baseline is already finding optimal local minimum.",
+  "key_finding": "NM polish family is EXHAUSTED. Additional polish rounds (6+4, 4+3, 3+3) all hurt accuracy vs baseline's 3 iterations. Hypothesis disproved.",
+  "time_utilization_pct": 72
+}

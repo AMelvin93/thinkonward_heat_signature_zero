@@ -1,0 +1,82 @@
+{
+  "experiment_id": "EXP_LIGHTWEIGHT_ENSEMBLE_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T04:45:00Z",
+  "completed_at": "2026-01-26T05:30:00Z",
+  "experiment_info": {
+    "name": "lightweight_ensemble_postprocessing",
+    "family": "postprocessing_v2",
+    "description": "Add minimal ensemble averaging step to production baseline",
+    "hypothesis": "Integrating ensemble as lightweight postprocessing (not full optimizer rewrite) should fit in budget"
+  },
+  "baseline": {
+    "score": 1.1247,
+    "time_min": 57.2,
+    "note": "OLD BASELINE - see verification run for accurate comparison"
+  },
+  "verified_baseline": {
+    "score": 1.1557,
+    "time_min": 49.3,
+    "experiment": "early_timestep_filtering (same machine, same conditions)"
+  },
+  "informed_by": {
+    "experiment": "ensemble_weighted_solution",
+    "result": "PARTIAL SUCCESS - +0.0305 improvement but 21% over budget",
+    "key_insight": "Ensemble averaging works, but implementation overhead from full optimizer rewrite"
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "ensemble_top_n": 5,
+        "note": "Production baseline + lightweight ensemble step"
+      },
+      "score": 1.1542,
+      "rmse_mean": 0.1394,
+      "time_min": 56.9,
+      "in_budget": true,
+      "mlflow_id": "3d67dc22ad624a9aa70db00bbf179349",
+      "ensemble_wins": 9,
+      "ensemble_pct": 11.2,
+      "notes": "Score matches baseline within noise. 15% timing overhead."
+    },
+    {
+      "run": 2,
+      "config": {
+        "ensemble_top_n": 5,
+        "note": "Verification run"
+      },
+      "score": 1.1538,
+      "rmse_mean": 0.1387,
+      "time_min": 49.9,
+      "in_budget": true,
+      "mlflow_id": "fa0e290c9e0b4c1181627f6338205f6e",
+      "ensemble_wins": 12,
+      "ensemble_pct": 15.0,
+      "notes": "Similar to baseline timing. Score within noise."
+    },
+    {
+      "run": 3,
+      "config": {
+        "note": "Production baseline (for comparison)"
+      },
+      "score": 1.1557,
+      "rmse_mean": null,
+      "time_min": 49.3,
+      "in_budget": true,
+      "notes": "Baseline run on same machine - achieves same score without ensemble"
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "score": 1.1542,
+    "time_min": 56.9,
+    "config": {
+      "ensemble_top_n": 5
+    }
+  },
+  "conclusion": "NEUTRAL - Lightweight ensemble achieves same score as baseline (1.154 vs 1.156, within noise) but ensemble only wins 11-15% of samples. The ensemble step neither helps nor hurts significantly. Not worth the added complexity.",
+  "next_config_to_try": null,
+  "summary_written": true
+}

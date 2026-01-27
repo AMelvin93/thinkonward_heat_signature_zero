@@ -1,0 +1,48 @@
+{
+  "experiment_id": "EXP_KALMAN_ESTIMATION_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T02:30:00Z",
+  "completed_at": "2026-01-26T03:00:00Z",
+  "experiment_info": {
+    "name": "extended_kalman_filter_inversion",
+    "family": "state_estimation",
+    "description": "Extended Kalman Filter for heat source state estimation",
+    "hypothesis": "EKF treats source params as hidden state and temperature as observations"
+  },
+  "baseline": {
+    "score": 1.1247,
+    "time_min": 57.2
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "n_timesteps_ekf": 20,
+        "process_noise_std": 0.01,
+        "measurement_noise_std": 0.1,
+        "jacobian_eps": 0.01,
+        "nm_polish_iters": 8
+      },
+      "n_samples": 5,
+      "score": 1.0058,
+      "rmse_mean": 0.1703,
+      "time_min": 357.9,
+      "in_budget": false,
+      "avg_sims_per_sample": 233.4,
+      "notes": "Quick test with 5 samples shows EKF is completely unviable - 6x over budget, 10% worse accuracy"
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.0058,
+    "time_min": 357.9,
+    "config": {
+      "n_timesteps_ekf": 20
+    }
+  },
+  "conclusion": "FAILED - EKF is fundamentally unsuitable for this problem. Same issues as LM: (1) Local optimizer converges to nearest state estimate (local minima), (2) Jacobian computation requires state_dim+1 simulations per timestep, making it 6x slower than baseline. state_estimation family EXHAUSTED.",
+  "next_config_to_try": null,
+  "summary_written": true
+}

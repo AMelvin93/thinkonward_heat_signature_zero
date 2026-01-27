@@ -1,0 +1,305 @@
+{
+  "experiment_id": "EXP_EXTENDED_VERIFICATION_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-01-27T03:00:00Z",
+  "baseline_to_beat": {
+    "score": 1.1373,
+    "time_min": 42.6,
+    "source": "solution_verification_pass (rerun)"
+  },
+  "hypothesis": "If gradient verification improved best candidate by +1%, applying to ALL candidates may improve overall score more",
+  "planned_configs": [
+    {
+      "run": 1,
+      "verify_top_n": 3,
+      "description": "Verify top-3 candidates (baseline extension)"
+    },
+    {
+      "run": 2,
+      "verify_top_n": 5,
+      "description": "Verify top-5 candidates for more coverage"
+    },
+    {
+      "run": 3,
+      "verify_top_n": 10,
+      "description": "Verify all pool candidates"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_verification": true,
+        "verify_top_n": 3,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1455515070147435,
+        "total_time_sec": 765.5972945690155,
+        "projected_400_min": 63.79977454741796,
+        "rmse_mean": 0.15852304857372262,
+        "rmse_mean_1src": 0.13275281118395266,
+        "rmse_mean_2src": 0.1757032068335693,
+        "time_mean_1src": 32.10537910461426,
+        "time_mean_2src": 84.67589137454827,
+        "n_verified_selected": 87,
+        "n_samples_with_verified": 61
+      },
+      "timestamp": "2026-01-27T03:04:19.440026"
+    },
+    {
+      "run": 2,
+      "config": {
+        "enable_verification": true,
+        "verify_top_n": 3,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1484284889332634,
+        "total_time_sec": 765.5759336948395,
+        "projected_400_min": 63.79799447456996,
+        "rmse_mean": 0.157039273538437,
+        "rmse_mean_1src": 0.12117597737319671,
+        "rmse_mean_2src": 0.1809481376485972,
+        "time_mean_1src": 32.47201680392027,
+        "time_mean_2src": 83.6651091426611,
+        "n_verified_selected": 95,
+        "n_samples_with_verified": 61
+      },
+      "timestamp": "2026-01-27T03:04:38.269250"
+    },
+    {
+      "run": 3,
+      "config": {
+        "enable_verification": true,
+        "verify_top_n": 2,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1431687060220386,
+        "total_time_sec": 607.2523639202118,
+        "projected_400_min": 50.60436366001765,
+        "rmse_mean": 0.16333401986377166,
+        "rmse_mean_1src": 0.14015261099071796,
+        "rmse_mean_2src": 0.17878829244580743,
+        "time_mean_1src": 26.24467946588993,
+        "time_mean_2src": 67.4382734944423,
+        "n_verified_selected": 48,
+        "n_samples_with_verified": 40
+      },
+      "timestamp": "2026-01-27T03:15:18.293296"
+    },
+    {
+      "run": 4,
+      "config": {
+        "enable_verification": true,
+        "verify_top_n": 2,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1361524884041945,
+        "total_time_sec": 640.2566363811493,
+        "projected_400_min": 53.354719698429115,
+        "rmse_mean": 0.16483182292291856,
+        "rmse_mean_1src": 0.12160207620419494,
+        "rmse_mean_2src": 0.1936516540687343,
+        "time_mean_1src": 27.191087193787098,
+        "time_mean_2src": 70.16503012677033,
+        "n_verified_selected": 60,
+        "n_samples_with_verified": 48
+      },
+      "timestamp": "2026-01-27T03:15:43.495072"
+    },
+    {
+      "run": 5,
+      "config": {
+        "enable_verification": true,
+        "verify_top_n": 1,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.143248025576803,
+        "total_time_sec": 480.4459619522095,
+        "projected_400_min": 40.037163496017456,
+        "rmse_mean": 0.16075523408642364,
+        "rmse_mean_1src": 0.12021397455051769,
+        "rmse_mean_2src": 0.18778274044369428,
+        "time_mean_1src": 19.302852727472782,
+        "time_mean_2src": 54.134397611021996,
+        "n_verified_selected": 38,
+        "n_samples_with_verified": 38
+      },
+      "timestamp": "2026-01-27T03:23:52.106250"
+    },
+    {
+      "run": 6,
+      "config": {
+        "enable_verification": true,
+        "verify_top_n": 3,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.2,
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1465868156544938,
+        "total_time_sec": 732.3928601741791,
+        "projected_400_min": 61.03273834784826,
+        "rmse_mean": 0.16146800395645608,
+        "rmse_mean_1src": 0.13108760244742365,
+        "rmse_mean_2src": 0.1817216049624777,
+        "time_mean_1src": 33.34943003207445,
+        "time_mean_2src": 78.31981546183427,
+        "n_verified_selected": 91,
+        "n_samples_with_verified": 62
+      },
+      "timestamp": "2026-01-27T03:29:09.373793"
+    },
+    {
+      "run": 7,
+      "config": {
+        "enable_verification": true,
+        "verify_top_n": 3,
+        "gradient_eps": 0.04,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1431825680359293,
+        "total_time_sec": 757.7792563438416,
+        "projected_400_min": 63.1482713619868,
+        "rmse_mean": 0.1657322293586735,
+        "rmse_mean_1src": 0.1429742762733176,
+        "rmse_mean_2src": 0.18090419808224412,
+        "time_mean_1src": 32.60471796244383,
+        "time_mean_2src": 83.49720547099908,
+        "n_verified_selected": 95,
+        "n_samples_with_verified": 64
+      },
+      "timestamp": "2026-01-27T03:37:19.773945"
+    },
+    {
+      "run": 8,
+      "config": {
+        "enable_verification": true,
+        "verify_top_n": 3,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.18,
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.1431385366580677,
+        "total_time_sec": 688.466737985611,
+        "projected_400_min": 57.37222816546758,
+        "rmse_mean": 0.1618069033005744,
+        "rmse_mean_1src": 0.13255849440717957,
+        "rmse_mean_2src": 0.18130584256283763,
+        "time_mean_1src": 31.559811666607857,
+        "time_mean_2src": 76.25227690239747,
+        "n_verified_selected": 96,
+        "n_samples_with_verified": 67
+      },
+      "timestamp": "2026-01-27T03:41:23.027782"
+    },
+    {
+      "run": 9,
+      "config": {
+        "enable_verification": true,
+        "verify_top_n": 3,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.19,
+        "refine_maxiter": 3,
+        "refine_top_n": 2
+      },
+      "results": {
+        "score": 1.14608547382097,
+        "total_time_sec": 724.405172586441,
+        "projected_400_min": 60.36709771553675,
+        "rmse_mean": 0.16646656787709838,
+        "rmse_mean_1src": 0.1303691277480784,
+        "rmse_mean_2src": 0.19053152796311168,
+        "time_mean_1src": 28.37847041338682,
+        "time_mean_2src": 82.70803368588288,
+        "n_verified_selected": 96,
+        "n_samples_with_verified": 60
+      },
+      "timestamp": "2026-01-27T03:54:11.444365"
+    }
+  ],
+  "best_in_budget": {
+    "run": 5,
+    "score": 1.143248025576803,
+    "time_min": 40.037163496017456,
+    "config": {
+      "enable_verification": true,
+      "verify_top_n": 1,
+      "gradient_eps": 0.02,
+      "gradient_threshold": 0.1,
+      "step_size": 0.05,
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 36,
+      "timestep_fraction": 0.25,
+      "refine_maxiter": 3,
+      "refine_top_n": 2
+    }
+  },
+  "summary_written": true,
+  "completed_at": "2026-01-27T04:00:00Z",
+  "conclusion": "FAILED - Extended verification to multiple candidates does NOT improve score over verifying just the best. Same score (~1.1432) achieved with verify_top_n=1,2,3. The verification overhead is not justified for additional candidates.",
+  "key_finding": "Verification helps slightly (+0.0059 vs old baseline), but MORE verification doesn't help MORE. verify_top_n=1 is optimal (40 min vs 64 min at same score).",
+  "time_utilization_pct": 67
+}

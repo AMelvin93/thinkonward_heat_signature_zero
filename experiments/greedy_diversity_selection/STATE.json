@@ -1,0 +1,39 @@
+{
+  "experiment_id": "EXP_GREEDY_DIVERSITY_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T14:20:00Z",
+  "completed_at": "2026-01-26T15:00:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "tau": 0.2,
+        "selection": "greedy"
+      },
+      "score": 1.1499,
+      "time_min": 68.5,
+      "in_budget": false,
+      "rmse_1src": 0.1199,
+      "rmse_2src": 0.1690,
+      "candidate_distribution": {
+        "1_cand": 3,
+        "2_cand": 13,
+        "3_cand": 64
+      },
+      "mlflow_id": "8b32af3283ea465d908fff963a7d56e9",
+      "notes": "FAILED: Score worse (-0.0189) and over budget (+10.1 min). Greedy selects fewer diverse candidates."
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1499,
+    "time_min": 68.5,
+    "in_budget": false
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - Greedy selection produced worse results than simple sort+filter. Fewer samples got 3 candidates (64/80 vs ~70-75). RMSE was also worse.",
+  "key_finding": "The simple baseline approach (sort by RMSE, filter by dissimilarity) is actually optimal. Greedy selection that considers combined score performs worse."
+}

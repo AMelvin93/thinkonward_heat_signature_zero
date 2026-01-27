@@ -1,0 +1,21 @@
+{
+  "experiment_id": "EXP_ADEI_ALGORITHM_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T10:30:00Z",
+  "completed_at": "2026-01-26T10:45:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "NOT IMPLEMENTED - Deemed not feasible based on prior findings. CMA-ES optimization overhead is only 0.2% of runtime (per fcmaes experiment). Implementing ADEI (4 population types, custom update rules) would require significant effort for minimal expected benefit. The simulation bottleneck (99.8% of runtime) makes optimizer algorithm choice largely irrelevant.",
+  "decision_rationale": [
+    "1. fcmaes experiment showed optimization is 0.2% of runtime (10ms vs 6000ms simulation)",
+    "2. ADEI requires implementing 4 distinct population types (leaders/followers/contemplators/rationalists)",
+    "3. No existing Python implementation available - would need to code from scratch",
+    "4. Even with perfect optimizer convergence, simulation cost dominates",
+    "5. Baseline CMA-ES already achieves competitive 1.1688 score",
+    "6. Time better spent on other approaches"
+  ],
+  "recommendation": "Mark evolutionary_adei family as LOW_PRIORITY. Focus on simulation-reduction strategies instead of optimizer algorithm improvements."
+}

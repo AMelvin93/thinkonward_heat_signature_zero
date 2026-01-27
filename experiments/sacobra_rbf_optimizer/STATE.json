@@ -1,0 +1,53 @@
+{
+  "experiment_id": "EXP_SACOBRA_RBF_001",
+  "worker": "W1",
+  "status": "done",
+  "started_at": "2026-01-26T10:00:00Z",
+  "completed_at": "2026-01-26T11:00:00Z",
+  "experiment_info": {
+    "name": "sacobra_rbf_optimizer",
+    "family": "surrogate_optimization",
+    "description": "SACOBRA (Self-Adjusting COBRA) with RBF surrogates",
+    "hypothesis": "SACOBRA uses self-adjusting parameters with RBF surrogates, claimed to outperform CMA-ES for expensive functions with low evaluation budgets"
+  },
+  "baseline": {
+    "score": 1.1688,
+    "time_min": 58.4
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "initial_samples": 8,
+        "rbf_function": "multiquadric",
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 5
+      },
+      "score": 0.9921,
+      "time_min": 52.8,
+      "in_budget": true,
+      "mlflow_id": "66b5ca95d13b421f8055061bc3eb2bea",
+      "notes": "FAILED - Score -0.1767 vs baseline. 1-src RMSE mean=0.2100, 2-src RMSE mean=0.3067. Several outliers with RMSE >0.5."
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "score": 0.9921,
+    "time_min": 52.8,
+    "config": {
+      "initial_samples": 8,
+      "rbf_function": "multiquadric"
+    }
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "final_result": "FAILED",
+  "key_findings": [
+    "Sequential surrogate optimization is 17.6% worse than CMA-ES",
+    "RBF surrogate cannot model the complex RMSE landscape",
+    "CMA-ES covariance adaptation is essential for this problem",
+    "surrogate_optimization family should be marked EXHAUSTED"
+  ]
+}

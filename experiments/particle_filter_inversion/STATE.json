@@ -1,0 +1,9 @@
+{
+  "experiment_id": "EXP_PARTICLE_FILTER_001",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-26T12:00:00Z",
+  "completed_at": "2026-01-26T12:00:00Z",
+  "abort_reason": "State estimation family exhausted - EKF SUMMARY explicitly warns against this",
+  "summary_written": true
+}

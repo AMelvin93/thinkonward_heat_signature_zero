@@ -1,0 +1,48 @@
+{
+  "experiment_id": "EXP_SIMPLE_TOP3_NO_FILTER_001",
+  "worker": "W2",
+  "status": "in_progress",
+  "started_at": "2026-01-27T04:45:00Z",
+  "hypothesis": "Top 3 candidates by RMSE are naturally distinct enough (tau>0.2) without explicit filtering",
+  "baseline_comparison": {
+    "baseline": "temporal_40pct_higher_sigma (W2's 1.1688 config)",
+    "difference": "Skip filter_dissimilar, just take top 3 by RMSE"
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.4,
+        "final_polish_maxiter": 8,
+        "no_dissimilarity_filter": true
+      },
+      "score": 1.1825,
+      "time_min": 69.1,
+      "budget_remaining_min": -9.099999999999994,
+      "in_budget": false,
+      "decision": "PIVOT - score improved (+0.0137) but over budget. Reduce polish to fit.",
+      "comparison_vs_baseline": "+0.0137 score, +10.7 min"
+    }
+  ],
+  "planned_configs": [
+    {
+      "run": 1,
+      "config": "Baseline config (sigma 0.18/0.22, 40% temporal, 8 NM polish) without dissimilarity filtering",
+      "expected": "Same or worse score if top 3 are too similar"
+    },
+    {
+      "run": 2,
+      "config": "Analyze N_valid per sample to understand natural diversity",
+      "expected": "See how many samples have N_valid < 3"
+    },
+    {
+      "run": 3,
+      "config": "If promising, try variant optimizations",
+      "expected": "Depends on Run 1-2 results"
+    }
+  ],
+  "next_config_to_try": 2,
+  "last_updated": "2026-01-27T04:54:22.327173"
+}

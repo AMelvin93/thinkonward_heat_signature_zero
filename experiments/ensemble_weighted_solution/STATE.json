@@ -1,0 +1,81 @@
+{
+  "experiment_id": "EXP_ENSEMBLE_SOLUTION_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T03:15:00Z",
+  "completed_at": "2026-01-26T04:30:00Z",
+  "experiment_info": {
+    "name": "ensemble_weighted_solution",
+    "family": "postprocessing",
+    "description": "Average top-N CMA-ES solutions weighted by inverse RMSE",
+    "hypothesis": "Averaging multiple good solutions may smooth optimization noise and yield lower RMSE"
+  },
+  "baseline": {
+    "score": 1.1247,
+    "time_min": 57.2
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "ensemble_top_n": 5,
+        "polish_maxiter": 8,
+        "refine_maxiter": 3
+      },
+      "score": 1.1507,
+      "rmse_mean": 0.1378,
+      "time_min": 80.9,
+      "in_budget": false,
+      "mlflow_id": "900bd0bc73eb435ab73a4f7e283a229b",
+      "ensemble_wins": 80,
+      "ensemble_pct": 100.0,
+      "notes": "Score improved +0.026 vs baseline but 40% over budget"
+    },
+    {
+      "run": 2,
+      "config": {
+        "ensemble_top_n": 5,
+        "polish_maxiter": 6,
+        "refine_maxiter": 2
+      },
+      "score": 1.1552,
+      "rmse_mean": 0.1450,
+      "time_min": 72.8,
+      "in_budget": false,
+      "mlflow_id": "6cd1b155edb44464a1aeb44cbd429f3d",
+      "ensemble_wins": 79,
+      "ensemble_pct": 98.8,
+      "notes": "Best score achieved +0.0305 vs baseline but still 21% over budget"
+    },
+    {
+      "run": 3,
+      "config": {
+        "ensemble_top_n": 5,
+        "polish_maxiter": 4,
+        "refine_maxiter": 1
+      },
+      "score": 1.1342,
+      "rmse_mean": 0.1599,
+      "time_min": 66.4,
+      "in_budget": false,
+      "mlflow_id": null,
+      "ensemble_wins": 72,
+      "ensemble_pct": 90.0,
+      "notes": "Closest to budget (11% over) but score dropped to +0.0095 vs baseline"
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 2,
+    "score": 1.1552,
+    "time_min": 72.8,
+    "config": {
+      "ensemble_top_n": 5,
+      "polish_maxiter": 6,
+      "refine_maxiter": 2
+    }
+  },
+  "conclusion": "PARTIAL SUCCESS - Ensemble averaging DOES improve accuracy (consistently +0.01 to +0.03 score improvement). However, the implementation is consistently ~10-25 min over the 60-minute budget. The approach has merit but needs implementation optimization to be viable. Key finding: ensemble wins 90-100% of the time, showing weighted averaging is better than taking single best solution.",
+  "next_config_to_try": null,
+  "summary_written": true
+}

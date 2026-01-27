@@ -1,0 +1,23 @@
+{
+  "experiment_id": "EXP_INTENSITY_REFINEMENT_ONLY_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-27T04:35:00Z",
+  "completed_at": "2026-01-27T04:45:00Z",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "NOT_FEASIBLE - Baseline already implements Variable Projection (VarPro) with ANALYTIC intensity optimization. Grid search would be WORSE than the existing closed-form solution.",
+  "key_finding": "The baseline separates position optimization (CMA-ES) from intensity (analytic). Intensity is already computed optimally via least-squares closed-form solution. Grid search would add overhead without improvement.",
+  "technical_analysis": {
+    "baseline_approach": "Variable Projection (VarPro) - CMA-ES optimizes (x,y) only, intensity computed analytically via least-squares",
+    "proposed_approach": "Grid search 10 intensity values after finding position",
+    "comparison": {
+      "accuracy": "Analytic > Grid search (continuous vs 10 discrete points)",
+      "speed": "Analytic > Grid search (0 extra sims vs 10 extra sims)",
+      "implementation": "Analytic already implemented, grid search would be regression"
+    },
+    "conclusion": "Experiment proposes an approach that's ALREADY IMPLEMENTED in a SUPERIOR form"
+  }
+}

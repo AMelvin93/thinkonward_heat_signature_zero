@@ -1,0 +1,82 @@
+{
+  "experiment_id": "EXP_RERUN_SOLUTION_VERIFICATION_001",
+  "worker": "W1",
+  "status": "completed",
+  "completed_at": "2026-01-26T21:00:00Z",
+  "started_at": "2026-01-26T20:15:00Z",
+  "experiment_info": {
+    "name": "rerun_solution_verification",
+    "family": "re_evaluation_v2",
+    "description": "Re-run solution_verification_pass with multiple seeds to verify if 1.1353 is genuine improvement",
+    "hypothesis": "solution_verification_pass scored 1.1353, above baseline 95% CI (1.1342). Need to verify consistency."
+  },
+  "baseline": {
+    "score": 1.1246,
+    "score_std": 0.0049,
+    "score_95ci_high": 1.1342,
+    "time_min": 32.6,
+    "note": "Corrected baseline from consistency test"
+  },
+  "original_result": {
+    "score": 1.1353,
+    "time_min": 44.8,
+    "note": "Original solution_verification_pass result"
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "seeds": [
+          42,
+          123,
+          456
+        ],
+        "n_workers": 7
+      },
+      "results": {
+        "seeds": [
+          42,
+          123,
+          456
+        ],
+        "n_runs": 3,
+        "individual_results": [
+          {
+            "seed": 42,
+            "score": 1.125535693087593,
+            "time_min": 45.26795518398285
+          },
+          {
+            "seed": 123,
+            "score": 1.1420015187063028,
+            "time_min": 40.11911139885584
+          },
+          {
+            "seed": 456,
+            "score": 1.14431125441015,
+            "time_min": 42.37759494781494
+          }
+        ],
+        "score_mean": 1.1372828220680153,
+        "score_std": 0.008359824528358362,
+        "score_min": 1.125535693087593,
+        "score_max": 1.14431125441015,
+        "time_mean": 42.58822051021787,
+        "time_std": 2.1072763505788563,
+        "ci_95_low": 1.120897565992433,
+        "ci_95_high": 1.1536680781435977,
+        "outcome": "SUCCESS",
+        "mlflow_run_id": "ff99e77bea6c49eca1aec51745d4103f"
+      }
+    }
+  ],
+  "final_result": {
+    "outcome": "SUCCESS",
+    "reason": "Solution verification is a genuine improvement. Mean score 1.1373 vs baseline 1.1246 (+0.0127, +1.0%). 2/3 runs above baseline 95% CI.",
+    "score_mean": 1.1373,
+    "score_std": 0.0084,
+    "time_mean_min": 42.6,
+    "delta_vs_baseline": 0.0127
+  },
+  "summary_written": true
+}

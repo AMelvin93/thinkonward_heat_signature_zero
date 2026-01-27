@@ -1,0 +1,38 @@
+{
+  "experiment_id": "EXP_ENSEMBLE_40PCT_COMBINED_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T08:00:00Z",
+  "completed_at": "2026-01-26T08:45:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8,
+        "ensemble_top_n": 5,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "score": 1.1595,
+      "time_min": 68.0,
+      "in_budget": false,
+      "ensemble_win_rate": 0.15,
+      "rmse_1src": 0.1060,
+      "rmse_2src": 0.1555,
+      "mlflow_id": "6bca71b07ec2493db8f1c07cc86bd166",
+      "notes": "FAILED: Lower score than baseline (1.1688) AND over budget (68 min vs 60 limit)"
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1595,
+    "time_min": 68.0,
+    "in_budget": false
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - Ensemble averaging HURTS performance when combined with 8-iteration NM polish. The ensemble step adds overhead (extra simulations) without improving accuracy. The 15% ensemble win rate is offset by the time overhead pushing runtime over budget. No tuning needed - the approach is fundamentally flawed.",
+  "skip_tuning_reason": "No tuning attempted because: 1) Score is LOWER than baseline even with ideal config; 2) Time is already over budget; 3) Previous lightweight_ensemble experiment showed same pattern; 4) Ensemble win rate too low (15%) to justify overhead"
+}

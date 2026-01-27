@@ -1,0 +1,37 @@
+{
+  "experiment_id": "EXP_SAMPLE_STRATIFIED_001",
+  "worker": "W2",
+  "status": "done",
+  "started_at": "2026-01-26T11:00:00Z",
+  "completed_at": "2026-01-26T11:30:00Z",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "max_fevals_1src": 15,
+        "max_fevals_2src": 36,
+        "polish_maxiter_1src": 10,
+        "polish_maxiter_2src": 6,
+        "timestep_fraction": 0.40
+      },
+      "score": 1.1605,
+      "time_min": 69.1,
+      "in_budget": false,
+      "rmse_1src": 0.1037,
+      "rmse_2src": 0.1606,
+      "mlflow_id": "318fec91ab164abb868ce339c41de64f",
+      "notes": "FAILED: Worse score (-0.0083) and over budget (+10.7 min)"
+    }
+  ],
+  "best_in_budget": null,
+  "best_overall": {
+    "run": 1,
+    "score": 1.1605,
+    "time_min": 69.1,
+    "in_budget": false
+  },
+  "next_config_to_try": null,
+  "summary_written": true,
+  "conclusion": "FAILED - Stratified settings hurt 2-source performance. Reducing polish from 8 to 6 iterations for 2-source increased RMSE (0.1606 vs ~0.138 baseline). More polish for 1-source (10 vs 8) showed minimal benefit (0.1037 vs ~0.104). Net result: worse score and over budget.",
+  "key_finding": "The baseline's uniform 8 iterations of NM polish for both 1-source and 2-source is already optimal. Differentiation hurts performance."
+}
