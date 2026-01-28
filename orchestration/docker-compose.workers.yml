@@ -4,8 +4,9 @@
 #   docker-compose -f orchestration/docker-compose.workers.yml logs -f
 #   docker-compose -f orchestration/docker-compose.workers.yml down
 #
-# For 128GB RAM / 32 core system: each worker gets 8 CPUs, 32GB RAM
-# This leaves 8 cores and 32GB for system overhead
+# For 128GB RAM / 32 core system: each worker gets 7 dedicated cores, 32GB RAM
+# Uses cpuset for TRUE core isolation (not just cpus limit)
+# This leaves 4 cores (28-31) for system overhead
 
 version: '3.8'
 
@@ -18,8 +19,9 @@ services:
     image: heat-signature-zero:latest
     container_name: claude-worker-1
 
-    # Resource allocation (8 CPUs, 32GB each - matches G4dn.2xlarge)
-    cpus: '8'
+    # Resource allocation: 7 DEDICATED cores (cpuset for true isolation)
+    # Simulates G4dn.2xlarge (8 vCPUs, using 7 for work + 1 for system)
+    cpuset: "0-6"
     mem_limit: 32g
 
     volumes:
@@ -57,7 +59,7 @@ services:
     image: heat-signature-zero:latest
     container_name: claude-worker-2
 
-    cpus: '8'
+    cpuset: "7-13"
     mem_limit: 32g
 
     volumes:
@@ -94,7 +96,7 @@ services:
     image: heat-signature-zero:latest
     container_name: claude-worker-3
 
-    cpus: '8'
+    cpuset: "14-20"
     mem_limit: 32g
 
     volumes:

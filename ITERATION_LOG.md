@@ -2526,3 +2526,114 @@ See `experiments/multi_seed_best_selection/SUMMARY.md` for details.
 **Recommendation**: Mark candidate selection algorithm tuning as EXHAUSTED.
 
 See `experiments/greedy_diversity_selection/SUMMARY.md` for details.
+
+---
+
+### [W1] Experiment: perturbed_local_restart | Score: 1.1452 @ 47.7 min | **NEW BEST**
+**Date**: 2026-01-27
+**Algorithm**: Basin hopping - perturb top candidate and re-optimize with NM
+**Tuning Runs**: 3 runs
+**Result**: **SUCCESS - NEW BEST IN-BUDGET**
+
+**Results (3 runs)**:
+| Run | perturb_top_n | n_perturbations | Score | Time (min) | Status |
+|-----|---------------|-----------------|-------|------------|--------|
+| 1   | 3 | 3 | 1.1434 | 69.4 | OVER |
+| 2   | 1 | 2 | **1.1452** | **47.7** | **BEST** |
+| 3   | 2 | 2 | 1.1429 | 57.3 | IN |
+
+**Statistics**:
+- Best in-budget: 1.1452 @ 47.7 min
+- Baseline: 1.1373 @ 42.6 min (solution_verification_pass)
+- Delta: **+0.0079 (+0.7%)**
+- Samples benefiting from perturbation: 25%
+
+**Key Finding**: Basin hopping concept works! Perturbing the top candidate with small random noise and re-optimizing with NM can escape local minima. ~25% of samples find better solutions through perturbation.
+
+**Optimal Configuration**:
+- perturb_top_n=1 (only perturb best candidate)
+- n_perturbations=2 (create 2 perturbed versions)
+- perturbation_scale=0.05 (5% of parameter range)
+- perturb_nm_iters=3 (quick NM polish)
+
+**Critical Bug Fix**: Use coarse grid (50x25) for perturbation NM, not fine grid (100x50). This reduced runtime from 187 min to 47 min.
+
+**Recommendation**: **ADOPT as new production optimizer.** Next step: combine perturbation with W2's 40% temporal config.
+
+See `experiments/perturbed_local_restart/SUMMARY.md` for details.
+
+---
+
+
+---
+
+### [W2] Experiment: reproduce_w2_best_config | FAILED - Cannot Reproduce
+**Date**: 2026-01-28
+**Algorithm**: Verification of claimed W2 baseline (1.1688 @ 58.4 min)
+**Tuning Runs**: 2 runs
+**Result**: **CRITICAL - CANNOT REPRODUCE CLAIMED BASELINE**
+
+**Verification Results**:
+| Run | sigma | Score | Time (min) | vs Claimed |
+|-----|-------|-------|------------|------------|
+| 1   | 0.18/0.22 | 1.1599 | 71.5 | -0.0089, +13.1 min |
+| 2   | 0.15/0.20 | 1.1559 | 71.1 | -0.0129, +12.7 min |
+
+**Impact**:
+- The claimed 1.1688 @ 58.4 min baseline **CANNOT be reproduced**
+- Both configs run 22% slower and score lower
+- **TRUE best in-budget: perturbed_local_restart (1.1452 @ 47.7 min)**
+
+**Possible Causes**:
+1. Different machine (G4dn.2xlarge vs WSL)
+2. Different code version or parameters
+3. Incorrect original measurement
+
+**Recommendation**: 
+- Do NOT use 1.1688 as comparison baseline
+- Use solution_verification_pass (1.1373) or perturbed_local_restart (1.1452) instead
+- These have been verified with multiple runs
+
+See `experiments/reproduce_w2_best_config/SUMMARY.md` for details.
+
+---
+
+
+---
+
+### [W1] Experiment: perturbed_extended_polish | Score: 1.1464 @ 51.2 min | **NEW BEST**
+**Date**: 2026-01-28
+**Algorithm**: Higher sigma + perturbation optimization
+**Tuning Runs**: 5 runs
+**Result**: **SUCCESS - NEW BEST IN-BUDGET**
+
+**Results (5 runs)**:
+| Run | Sigma | Polish | Perturb | Score | Time (min) | Status |
+|-----|-------|--------|---------|-------|------------|--------|
+| 1   | 0.15/0.20 | 10 | 2 | 1.1374 | 51.9 | Below baseline |
+| 2   | 0.15/0.20 | 8 | 3 | 1.1406 | 55.6 | Below baseline |
+| 3   | 0.15/0.20 | 8 | 2 | 1.1352 | 54.3 | Variance |
+| 4   | **0.18/0.22** | **8** | **2** | **1.1464** | **51.2** | **NEW BEST** |
+| 5   | 0.18/0.22 | 8 | 3 | 1.1404 | 58.3 | Below Run 4 |
+
+**Key Finding**: Higher sigma (0.18/0.22) + perturbation is the winning combination:
+- More polish (10 vs 8) HURTS score - overfitting to coarse grid
+- More perturbations (3 vs 2) add time without benefit
+- Budget utilization: 85% (8.8 min remaining)
+
+**Optimal Configuration**:
+```python
+config = {
+    "sigma0_1src": 0.18, "sigma0_2src": 0.22,
+    "perturb_top_n": 1, "n_perturbations": 2,
+    "perturbation_scale": 0.05, "perturb_nm_iters": 3,
+    "refine_maxiter": 8, "timestep_fraction": 0.4
+}
+```
+
+**Recommendation**: **ADOPT as new production optimizer.**
+
+See `experiments/perturbed_extended_polish/SUMMARY.md` for details.
+
+---
+

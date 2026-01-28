@@ -1,0 +1,87 @@
+{
+  "experiment": "higher_sigma_aggressive_perturb",
+  "experiment_id": "EXP_HIGHER_SIGMA_AGGRESSIVE_PERTURB_001",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-28T01:50:00Z",
+  "status": "in_progress",
+  "baseline_to_beat": {
+    "score": 1.1464,
+    "time_min": 51.2,
+    "source": "perturbed_extended_polish (Run 4)"
+  },
+  "hypothesis": "Even higher sigma (0.20/0.25 or 0.22/0.27) with more aggressive perturbation scale might improve exploration and score. Previous experiments showed higher sigma consistently improved results.",
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Higher sigma 0.20/0.25 with standard perturbation",
+      "sigma0_1src": 0.2,
+      "sigma0_2src": 0.25,
+      "perturbation_scale": 0.05
+    },
+    {
+      "run": 2,
+      "description": "Same sigma with larger perturbation scale",
+      "sigma0_1src": 0.2,
+      "sigma0_2src": 0.25,
+      "perturbation_scale": 0.08
+    },
+    {
+      "run": 3,
+      "description": "Even higher sigma 0.22/0.27",
+      "sigma0_1src": 0.22,
+      "sigma0_2src": 0.27,
+      "perturbation_scale": 0.05
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.2,
+        "sigma0_2src": 0.25
+      },
+      "results": {
+        "score": 1.1468012240260368,
+        "total_time_sec": 651.7757065296173,
+        "projected_400_min": 54.314642210801445,
+        "rmse_mean": 0.17033999300102737,
+        "rmse_mean_1src": 0.12670194484544026,
+        "rmse_mean_2src": 0.1994320251047521,
+        "time_mean_1src": 29.60465842485428,
+        "time_mean_2src": 70.7134609868129,
+        "n_perturbed_selected": 20,
+        "n_samples_with_perturbed": 19
+      },
+      "timestamp": "2026-01-28T01:56:43.568753"
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "score": 1.1468012240260368,
+    "time_min": 54.314642210801445,
+    "config": {
+      "enable_perturbation": true,
+      "perturb_top_n": 1,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 36,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "refine_top_n": 2,
+      "sigma0_1src": 0.2,
+      "sigma0_2src": 0.25
+    }
+  }
+}

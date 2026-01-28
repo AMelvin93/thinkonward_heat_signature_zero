@@ -1,0 +1,57 @@
+{
+  "experiment_id": "EXP_REPRODUCE_W2_BEST_001",
+  "name": "reproduce_w2_best_config",
+  "worker": "W2",
+  "status": "completed",
+  "result": "FAILED",
+  "started_at": "2026-01-28T00:00:00Z",
+  "completed_at": "2026-01-28T01:30:00Z",
+  "hypothesis": "Verify the W2 1.1688 config is reproducible",
+  "baseline_claimed": {
+    "score": 1.1688,
+    "time_min": 58.4,
+    "config": "40% temporal + 8 NM polish + sigma 0.18/0.22"
+  },
+  "completed_runs": [
+    {
+      "run": 1,
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "seed": 42,
+      "score": 1.1599,
+      "time_min": 71.5,
+      "in_budget": false,
+      "delta_vs_claimed": "-0.0089 score, +13.1 min"
+    },
+    {
+      "run": 2,
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.20,
+        "timestep_fraction": 0.40,
+        "final_polish_maxiter": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "seed": 42,
+      "score": 1.1559,
+      "time_min": 71.1,
+      "in_budget": false,
+      "delta_vs_claimed": "-0.0129 score, +12.7 min"
+    }
+  ],
+  "key_findings": [
+    "CRITICAL: Claimed W2 baseline (1.1688 @ 58.4 min) cannot be reproduced",
+    "Both configs ~22% slower than claimed (71 min vs 58 min)",
+    "Both configs score lower than claimed (1.16 vs 1.17)",
+    "sigma 0.18/0.22 slightly better than 0.15/0.20",
+    "Use solution_verification_pass (1.1373 @ 42.6 min) as reliable baseline instead"
+  ],
+  "recommendation": "Do not use 1.1688 as comparison baseline - it cannot be reproduced. Use solution_verification_pass (1.1373 @ 42.6 min) instead."
+}

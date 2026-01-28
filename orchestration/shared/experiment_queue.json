@@ -1,7 +1,7 @@
 {
-  "version": "15.6",
-  "last_updated": "2026-01-27T04:45:06.057394",
-  "notes": "V15.6: CRITICAL - Added experiments to properly verify and extend W2's 1.1688 config. Previous experiments used WRONG baseline (25% temporal vs 40%).",
+  "version": "15.8",
+  "last_updated": "2026-01-28T03:06:26.788393",
+  "notes": "V15.8: W0 added 2 perturbation experiments for queue health (available was 4, now 6)",
   "queue_status": "OK",
   "experiment_queue": [
     {
@@ -3274,7 +3274,7 @@
       "id": "EXP_REPRODUCE_W2_BEST_001",
       "priority": 1,
       "family": "baseline_verification",
-      "status": "available",
+      "status": "completed",
       "name": "reproduce_w2_best_config",
       "description": "VERIFY: Run the W2 1.1688 config (40% temporal, sigma 0.18/0.22, 8 NM polish) to confirm score",
       "hypothesis": "The 1.1688 score is the TRUE baseline. We need to verify and reproduce it before trying to beat it.",
@@ -3284,7 +3284,15 @@
         "3. Run with 3 different seeds to measure variance",
         "4. GOAL: Confirm reproducibility of 1.1688 @ 58.4 min"
       ],
-      "success_criteria": "Score >= 1.165 AND time <= 60 min (verify baseline)"
+      "success_criteria": "Score >= 1.165 AND time <= 60 min (verify baseline)",
+      "claimed_by": "W2",
+      "claimed_at": "2026-01-28T00:41:47.361453Z",
+      "result": "FAILED - Cannot reproduce claimed W2 baseline (1.1688 @ 58.4 min). Actual: 1.1599 @ 71.5 min",
+      "worker": "W2",
+      "completed_at": "2026-01-28T01:28:36.582018Z",
+      "score": 1.1599,
+      "time_min": 71.5,
+      "finding": "Claimed baseline cannot be reproduced - 22% slower than claimed. Use solution_verification_pass (1.1373 @ 42.6 min) as reliable baseline."
     },
     {
       "id": "EXP_W2_CONFIG_WITH_VERIFICATION_001",
@@ -3306,7 +3314,7 @@
       "id": "EXP_45PCT_TEMPORAL_001",
       "priority": 2,
       "family": "temporal_v4",
-      "status": "available",
+      "status": "completed",
       "name": "higher_temporal_45pct",
       "description": "Test 45% temporal fidelity (between current 25% and W2's 40%)",
       "hypothesis": "40% temporal achieves 1.1688. Maybe 45% could improve accuracy further within budget.",
@@ -3316,7 +3324,13 @@
         "3. May need to reduce NM polish to 6 iterations to stay in budget",
         "4. Balance between accuracy and time"
       ],
-      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "claimed_by": "W3",
+      "claimed_at": "2026-01-28T02:53:08.826304Z",
+      "result": "FAILED - 40% temporal is optimal. 45% worse, 35% comparable.",
+      "score": 1.1443,
+      "time_min": 51.3,
+      "worker": "W1"
     },
     {
       "id": "EXP_SIGMA_FINE_TUNE_001",
@@ -3332,6 +3346,79 @@
         "3. Find if there's a slightly better sigma combination"
       ],
       "success_criteria": "Score >= 1.17 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_PERTURB_40PCT_TEMPORAL_001",
+      "priority": 1,
+      "family": "basin_hopping_v2",
+      "status": "claimed",
+      "name": "perturbation_with_40pct_temporal",
+      "description": "Combine perturbed local restart (1.1452) with W2's 40% temporal config",
+      "hypothesis": "Perturbation improved score by +0.0079 on simpler config. Applying to W2's better config (1.1688) could yield even higher scores.",
+      "informed_by": "perturbed_local_restart SUCCESS (1.1452 @ 47.7 min)",
+      "implementation": [
+        "1. Start with W2's config: timestep_fraction=0.40, sigma0_1src=0.18, sigma0_2src=0.22",
+        "2. Add perturbation: perturb_top_n=1, n_perturbations=2, perturbation_scale=0.05",
+        "3. Use coarse grid (50x25) for perturbation NM (critical for speed)",
+        "4. Run 8 NM polish iterations on best candidate"
+      ],
+      "success_criteria": "Score >= 1.17 (beat W2's 1.1688 baseline) AND time <= 60 min",
+      "claimed_by": "W2",
+      "claimed_at": "2026-01-28T01:29:40.971211Z"
+    },
+    {
+      "id": "EXP_PERTURB_PLUS_VERIFY_001",
+      "priority": 2,
+      "family": "hybrid_v3",
+      "status": "completed",
+      "name": "perturbation_plus_verification",
+      "description": "Combine perturbation + gradient verification",
+      "hypothesis": "Perturbation (+0.0079) and verification (+0.0127 on simpler config) might stack for additional improvement.",
+      "informed_by": "perturbed_local_restart SUCCESS + solution_verification_pass SUCCESS",
+      "implementation": [
+        "1. Run CMA-ES + NM as normal",
+        "2. Add perturbation phase: perturb_top_n=1, n_perturbations=2",
+        "3. Add gradient verification: verify_top_n=1, verify_steps=3",
+        "4. Budget carefully - both add ~5 min overhead each"
+      ],
+      "success_criteria": "Score >= 1.15 (beat both baselines) AND time <= 60 min",
+      "claimed_by": "W3",
+      "claimed_at": "2026-01-28T02:14:38.446749Z",
+      "result": "SUCCESS - NEW BEST 1.1468 @ 54.2 min",
+      "score": 1.1468,
+      "time_min": 54.2,
+      "worker": "W2",
+      "completed_at": "2026-01-28T02:52:36.622578Z"
+    },
+    {
+      "id": "EXP_ADAPTIVE_PERTURB_SCALE_001",
+      "priority": 2,
+      "family": "perturbation_v2",
+      "status": "available",
+      "name": "adaptive_perturbation_scale",
+      "description": "Scale perturbation based on solution quality - larger perturbations for worse solutions",
+      "hypothesis": "Worse solutions may be stuck in poor basins and need larger perturbations to escape. Better solutions need smaller perturbations to fine-tune.",
+      "implementation": [
+        "Compute perturbation_scale = base_scale * (rmse / baseline_rmse)^0.5",
+        "Good solutions (low RMSE) get small perturbation, bad solutions get larger",
+        "Cap at max_scale to prevent instability"
+      ],
+      "success_criteria": "Score > 1.1464 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_MULTI_ROUND_PERTURB_001",
+      "priority": 2,
+      "family": "perturbation_v2",
+      "status": "available",
+      "name": "multi_round_perturbation",
+      "description": "Apply perturbation twice: perturb \u2192 NM optimize \u2192 perturb \u2192 NM optimize",
+      "hypothesis": "Single perturbation may not escape deep local minima. Two rounds of perturbation+optimization may find better basins.",
+      "implementation": [
+        "Round 1: perturb best candidate, optimize with 2 NM iterations",
+        "Round 2: perturb result of round 1, optimize with 2 NM iterations",
+        "Keep best of all candidates"
+      ],
+      "success_criteria": "Score > 1.1464 AND time <= 60 min"
     }
   ],
   "algorithm_families": {

@@ -1,0 +1,72 @@
+{
+  "experiment_id": "EXP_REDUCED_1SRC_EVALS_001",
+  "experiment_name": "reduced_1src_evals",
+  "worker": "W3",
+  "status": "in_progress",
+  "started_at": "2026-01-28T03:45:00Z",
+  "hypothesis": "1-source problems have only 3 params vs 6 for 2-source. May converge faster and need fewer CMA-ES fevals.",
+  "baseline": {
+    "experiment": "perturbed_extended_polish",
+    "score": 1.1464,
+    "time_min": 51.2,
+    "fevals_1src": 20,
+    "fevals_2src": 36
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "15 fevals for 1-src (25% reduction)",
+      "config": {
+        "max_fevals_1src": 15,
+        "max_fevals_2src": 36
+      }
+    },
+    {
+      "run": 2,
+      "description": "Adjust based on Run 1 - if score ok, try 12 fevals",
+      "conditional": "dependent on run 1"
+    },
+    {
+      "run": 3,
+      "description": "Fine-tune best config",
+      "conditional": "dependent on runs 1-2"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 3,
+        "perturbation_scale": 0.05,
+        "max_fevals_1src": 15,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1398477706263044,
+      "projected_400_min": 49.006530503431954,
+      "total_time_sec": 588.0783660411835,
+      "rmse_mean": 0.1744130763368703,
+      "rmse_mean_1src": 0.13301756566878373,
+      "rmse_mean_2src": 0.20201008344892804,
+      "n_perturbed_selected": 18,
+      "n_samples_with_perturbed": 18,
+      "n_1src": 32,
+      "n_2src": 48,
+      "in_budget": true,
+      "timestamp": "2026-01-28T03:46:49.171900"
+    }
+  ],
+  "best_in_budget": {
+    "run": 1,
+    "score": 1.1398477706263044,
+    "time_min": 49.006530503431954,
+    "config": "fevals_1src=15"
+  }
+}

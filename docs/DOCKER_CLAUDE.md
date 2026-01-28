@@ -287,7 +287,7 @@ for wid, prompt in prompts.items():
 
 - **Credentials persist**: Docker volumes store Claude credentials, so you only need to `claude login` once per container (unless you delete the volumes)
 - **Natural throttling**: Each experiment takes ~55-60 min, so workers rarely hit API rate limits simultaneously
-- **Resource allocation**: Workers get 8 CPUs + 32GB RAM each; Orchestrator gets 4 CPUs + 16GB RAM
+- **Resource allocation**: Workers get 7 dedicated cores + 32GB RAM each (see CPU Isolation below)
 - **State resumption**: If a session ends, workers can resume from their `state_WX.json` file
 - **Deep exploration**: Workers explore 4-8 experiments per topic before moving to next
 - **Orchestrator guidance**: W0 monitors results and adjusts priorities - workers check `queue.json` for insights
@@ -322,6 +322,111 @@ docker-compose down
 ```bash
 docker-compose up -d --build
 ```
+
+---
+
+## CPU Isolation for Parallel Workers (CRITICAL)
+
+### The Problem
+
+Using `cpus: '8'` does **NOT** isolate cores. All containers compete for the same physical cores, causing:
+- 15-20% slower execution per container
+- Non-reproducible results (same config yields different scores)
+- Cache thrashing and memory bandwidth contention
+
+**Evidence**: Run 2 vs Run 4 with identical config showed 0.006 score difference and 7-minute runtime variance.
+
+### The Solution: `cpuset` for True Isolation
+
+Use `cpuset` to pin each container to **dedicated physical cores**:
+
+```yaml
+# docker-compose.workers.yml - CORRECT
+services:
+  worker1:
+    cpuset: "0-6"      # Cores 0-6 (7 cores) - TRUE ISOLATION
+    mem_limit: 32g
+
+  worker2:
+    cpuset: "7-13"     # Cores 7-13 (7 cores)
+    mem_limit: 32g
+
+  worker3:
+    cpuset: "14-20"    # Cores 14-20 (7 cores)
+    mem_limit: 32g
+
+  worker4:
+    cpuset: "21-27"    # Cores 21-27 (7 cores)
+    mem_limit: 32g
+```
+
+### Core Allocation for 32-Core System
+
+| Worker | cpuset | Cores | Simulates |
+|--------|--------|-------|-----------|
+| W1 | `"0-6"` | 7 | G4dn.2xlarge (7 of 8 vCPUs) |
+| W2 | `"7-13"` | 7 | G4dn.2xlarge (7 of 8 vCPUs) |
+| W3 | `"14-20"` | 7 | G4dn.2xlarge (7 of 8 vCPUs) |
+| W4 | `"21-27"` | 7 | G4dn.2xlarge (7 of 8 vCPUs) |
+| System | 28-31 | 4 | OS, Docker daemon, monitoring |
+
+### Why 7 Cores Per Worker?
+
+Competition runs on **G4dn.2xlarge** (8 vCPUs). We use 7 workers to leave 1 core for system overhead:
+- Accurate timing simulation of competition environment
+- Each container behaves like a dedicated G4dn instance
+- Reproducible and comparable results
+
+### `cpus` vs `cpuset` - IMPORTANT
+
+| Setting | Effect | Isolation? |
+|---------|--------|------------|
+| `cpus: '8'` | Limits to 8 cores worth of CPU **time** | NO - cores shared |
+| `cpuset: "0-6"` | Pins to specific cores 0-6 | YES - dedicated cores |
+
+**Always use `cpuset` for parallel experiments.**
+
+### Manual Docker Commands
+
+```bash
+# Run with CPU pinning directly
+docker run --cpuset-cpus="0-6" --memory=32g heat-signature-zero:latest \
+  uv run python experiments/exp1/run.py --workers 7
+
+docker run --cpuset-cpus="7-13" --memory=32g heat-signature-zero:latest \
+  uv run python experiments/exp2/run.py --workers 7
+
+docker run --cpuset-cpus="14-20" --memory=32g heat-signature-zero:latest \
+  uv run python experiments/exp3/run.py --workers 7
+
+docker run --cpuset-cpus="21-27" --memory=32g heat-signature-zero:latest \
+  uv run python experiments/exp4/run.py --workers 7
+```
+
+### Verifying Isolation
+
+```bash
+# Get container PID
+docker inspect --format '{{.State.Pid}}' claude-worker-1
+
+# Check CPU affinity (Linux/WSL)
+taskset -p <PID>
+
+# Monitor per-container CPU usage
+docker stats
+```
+
+### Hyperthreading Note
+
+If your 32 "cores" are actually 16 physical + 16 hyperthreads:
+- Cores 0-15 = physical cores
+- Cores 16-31 = hyperthreads
+
+For most consistent timing, pin to physical cores only:
+- W1: `"0-3"` (4 physical cores)
+- W2: `"4-7"`
+- W3: `"8-11"`
+- W4: `"12-15"`
 
 ---
 

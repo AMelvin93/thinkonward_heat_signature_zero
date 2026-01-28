@@ -1,0 +1,128 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_PERTURB_SCALE_001",
+  "experiment_name": "adaptive_perturbation_scale",
+  "worker": "W1",
+  "status": "in_progress",
+  "started_at": "2026-01-28T03:10:00Z",
+  "hypothesis": "Scale perturbation based on solution quality - larger perturbations for worse solutions (stuck in poor basins) and smaller perturbations for better solutions (fine-tuning).",
+  "baseline": {
+    "current_best": {
+      "experiment": "perturbed_extended_polish",
+      "score": 1.1464,
+      "time_min": 51.2,
+      "perturbation_scale": 0.05
+    }
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Adaptive scale: 0.10 for RMSE>0.3, 0.05 for RMSE 0.15-0.3, 0.02 for RMSE<0.15",
+      "config": {
+        "adaptive_perturbation": true,
+        "perturbation_scale_high": 0.1,
+        "perturbation_scale_mid": 0.05,
+        "perturbation_scale_low": 0.02
+      }
+    },
+    {
+      "run": 2,
+      "description": "Adjust thresholds based on Run 1",
+      "conditional": "dependent on run 1 results"
+    },
+    {
+      "run": 3,
+      "description": "Fine-tune best configuration",
+      "conditional": "dependent on runs 1-2"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "perturbation_scale_high": 0.1,
+        "perturbation_scale_mid": 0.05,
+        "perturbation_scale_low": 0.02,
+        "rmse_high_threshold": 0.3,
+        "rmse_mid_threshold": 0.15
+      },
+      "score": 1.1442315816919382,
+      "time_min": 63.15639982620875,
+      "rmse_mean": 0.16825221306742455,
+      "rmse_mean_1src": 0.1302350569138686,
+      "rmse_mean_2src": 0.19359698383646184,
+      "n_perturbed_selected": 17,
+      "n_samples_with_perturbed": 17,
+      "timestamp": "2026-01-28T03:16:19.674585"
+    },
+    {
+      "run": 2,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "perturbation_scale_high": 0.08,
+        "perturbation_scale_mid": 0.04,
+        "perturbation_scale_low": 0.02,
+        "rmse_high_threshold": 0.3,
+        "rmse_mid_threshold": 0.15
+      },
+      "score": 1.1454351228790518,
+      "time_min": 61.18881384531657,
+      "rmse_mean": 0.17326771799992371,
+      "rmse_mean_1src": 0.12280973580619915,
+      "rmse_mean_2src": 0.2069063727957401,
+      "n_perturbed_selected": 12,
+      "n_samples_with_perturbed": 11,
+      "timestamp": "2026-01-28T03:28:56.703631"
+    },
+    {
+      "run": 3,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "perturbation_scale_high": 0.05,
+        "perturbation_scale_mid": 0.05,
+        "perturbation_scale_low": 0.05,
+        "rmse_high_threshold": 0.3,
+        "rmse_mid_threshold": 0.15
+      },
+      "score": 1.1419330573675044,
+      "time_min": 57.398939847946174,
+      "rmse_mean": 0.16556839890414912,
+      "rmse_mean_1src": 0.12477427347483847,
+      "rmse_mean_2src": 0.19276448252368958,
+      "n_perturbed_selected": 20,
+      "n_samples_with_perturbed": 19,
+      "timestamp": "2026-01-28T03:40:53.631700"
+    }
+  ],
+  "decisions": []
+}

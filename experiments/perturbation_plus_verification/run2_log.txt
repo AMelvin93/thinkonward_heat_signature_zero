@@ -1,0 +1,17 @@
+
+############################################################
+RUN 2 - PIVOT: 25% timestep fraction
+Reason: Run 1 @ 40% timestep was ~190 min projected (3.2x over budget)
+############################################################
+
+============================================================
+Perturbation + Verification Experiment - Run 2 (25% timestep)
+Config: {'enable_perturbation': True, 'perturb_top_n': 1, 'n_perturbations': 2, 'perturbation_scale': 0.05, 'perturb_nm_iters': 3, 'enable_verification': True, 'gradient_eps': 0.02, 'gradient_threshold': 0.1, 'step_size': 0.05, 'max_fevals_1src': 20, 'max_fevals_2src': 36, 'timestep_fraction': 0.25, 'refine_maxiter': 8, 'refine_top_n': 2, 'sigma0_1src': 0.18, 'sigma0_2src': 0.22}
+============================================================
+
+  Using 250/1000 timesteps (25%) for CMA-ES
+  Perturbation: ENABLED
+  Verification: ENABLED
+  Sample 10/80: RMSE=0.1609, n_cand=3, time=22.2s, projected_400=147.2min
+  Sample 20/80: RMSE=0.1021, n_cand=1, time=21.7s, projected_400=162.1min
+  Sample 30/80: RMSE=0.0993, n_cand=3, time=22.1s, projected_400=154.1min

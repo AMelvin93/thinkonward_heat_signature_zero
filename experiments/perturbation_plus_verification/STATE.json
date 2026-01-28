@@ -1,0 +1,38 @@
+{
+  "experiment": "perturbation_plus_verification",
+  "experiment_id": "EXP_PERTURB_PLUS_VERIFY_001",
+  "worker": "W2",
+  "status": "over_budget",
+  "run_results": [
+    {
+      "run": 1,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 2,
+        "n_perturbations": 1,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "enable_verification": true,
+        "gradient_eps": 0.02,
+        "gradient_threshold": 0.1,
+        "step_size": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1436101709261972,
+      "projected_400_min": 64.78811426957448,
+      "total_time_sec": 777.4573712348938,
+      "rmse_mean": 0.1635672772190442,
+      "n_perturbed_selected": 28,
+      "n_verified_selected": 10,
+      "in_budget": false,
+      "timestamp": "2026-01-28T03:15:15.962388"
+    }
+  ],
+  "best_in_budget": null
+}

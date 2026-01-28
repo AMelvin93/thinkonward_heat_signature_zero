@@ -1,0 +1,81 @@
+{
+  "experiment": "multi_round_perturbation",
+  "experiment_id": "EXP_MULTI_ROUND_PERTURB_001",
+  "worker": "W2",
+  "status": "in_progress",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "perturbation_scale": 0.05,
+        "perturb_rounds": 2,
+        "perturb_nm_iters_per_round": 2,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1432077262979123,
+      "projected_400_min": 61.602106153964996,
+      "total_time_sec": 739.22527384758,
+      "rmse_mean": 0.1685554405660507,
+      "rmse_mean_1src": 0.12585295572546723,
+      "rmse_mean_2src": 0.1970237637931064,
+      "n_multi_perturbed_selected": 13,
+      "n_samples_with_multi_perturbed": 13,
+      "in_budget": false,
+      "timestamp": "2026-01-28T03:32:35.168852"
+    },
+    {
+      "run": 2,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "perturbation_scale": 0.05,
+        "perturb_rounds": 2,
+        "perturb_nm_iters_per_round": 1,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1372185914028001,
+      "projected_400_min": 50.870648880799614,
+      "total_time_sec": 610.4477865695953,
+      "rmse_mean": 0.16823954100584368,
+      "rmse_mean_1src": 0.1258601955993377,
+      "rmse_mean_2src": 0.19649243794351431,
+      "n_multi_perturbed_selected": 13,
+      "n_samples_with_multi_perturbed": 13,
+      "in_budget": true,
+      "timestamp": "2026-01-28T03:43:08.549980"
+    }
+  ],
+  "best_in_budget": {
+    "run": 2,
+    "score": 1.1372185914028001,
+    "time_min": 50.870648880799614,
+    "config": {
+      "enable_perturbation": true,
+      "perturb_top_n": 1,
+      "perturbation_scale": 0.05,
+      "perturb_rounds": 2,
+      "perturb_nm_iters_per_round": 1,
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 36,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "refine_top_n": 2,
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "experiment_id": "EXP_PERTURB_40PCT_TEMPORAL_001",
+  "name": "perturb_40pct_temporal",
+  "worker": "W2",
+  "status": "in_progress",
+  "started_at": "2026-01-28T02:00:00Z",
+  "hypothesis": "Improve perturbed_local_restart (1.1452 @ 47.7 min) by investing the 12.3 min budget cushion",
+  "baseline": {
+    "score": 1.1452,
+    "time_min": 47.7,
+    "source": "perturbed_local_restart (perturb_top_n=1, n_perturbations=2)",
+    "budget_remaining_min": 12.3
+  },
+  "planned_runs": [
+    {
+      "run": 1,
+      "description": "Reproduce baseline: perturb_top_n=1, n_perturbations=2",
+      "config": {
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8
+      },
+      "expected_time": "~47 min"
+    },
+    {
+      "run": 2,
+      "description": "Increase NM polish to use remaining budget",
+      "config": {
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 12
+      },
+      "expected_time": "~52 min"
+    },
+    {
+      "run": 3,
+      "description": "More perturbations with higher polish",
+      "config": {
+        "perturb_top_n": 2,
+        "n_perturbations": 2,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 10
+      },
+      "expected_time": "~55 min"
+    }
+  ],
+  "completed_runs": []
+}

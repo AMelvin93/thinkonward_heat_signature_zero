@@ -1,0 +1,215 @@
+{
+  "experiment": "perturbed_extended_polish",
+  "experiment_id": "EXP_PERTURBED_EXTENDED_POLISH_001",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-28T00:00:00Z",
+  "status": "completed",
+  "completed_at": "2026-01-28T01:45:00Z",
+  "conclusion": "SUCCESS - Higher sigma (0.18/0.22) with perturbation achieves new best score of 1.1464 @ 51.2 min, beating baseline 1.1452 @ 47.7 min by +0.0012 score.",
+  "baseline_to_beat": {
+    "score": 1.1452,
+    "time_min": 47.7,
+    "source": "perturbed_local_restart (Run 2)"
+  },
+  "hypothesis": "The perturbed_local_restart has 12+ min budget remaining. Investing this in more polish (refine_maxiter 10-12) or more fevals could improve accuracy.",
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Baseline perturbed + extended polish (10 iters)",
+      "refine_maxiter": 10,
+      "notes": "Start with +2 polish iters"
+    },
+    {
+      "run": 2,
+      "description": "Extended polish (12 iters)",
+      "refine_maxiter": 12,
+      "notes": "More polish if time permits"
+    },
+    {
+      "run": 3,
+      "description": "More perturbations with extended polish",
+      "refine_maxiter": 10,
+      "n_perturbations": 3,
+      "notes": "Try more perturbations"
+    },
+    {
+      "run": 4,
+      "description": "Higher sigma + extended polish",
+      "refine_maxiter": 10,
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "notes": "Higher sigma for more exploration"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 10,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2
+      },
+      "results": {
+        "score": 1.1373661316800479,
+        "total_time_sec": 623.3817830085754,
+        "projected_400_min": 51.94848191738129,
+        "rmse_mean": 0.1713833203590786,
+        "rmse_mean_1src": 0.12948760482961547,
+        "rmse_mean_2src": 0.19931379737872068,
+        "time_mean_1src": 28.194112963974476,
+        "time_mean_2src": 68.7947880923748,
+        "n_perturbed_selected": 15,
+        "n_samples_with_perturbed": 14
+      },
+      "timestamp": "2026-01-28T00:55:16.064402"
+    },
+    {
+      "run": 2,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 3,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2
+      },
+      "results": {
+        "score": 1.1406009235203887,
+        "total_time_sec": 667.1411783695221,
+        "projected_400_min": 55.595098197460175,
+        "rmse_mean": 0.16911031166424198,
+        "rmse_mean_1src": 0.12489966722535033,
+        "rmse_mean_2src": 0.1985840746235031,
+        "time_mean_1src": 26.348571598529816,
+        "time_mean_2src": 74.56909640133381,
+        "n_perturbed_selected": 27,
+        "n_samples_with_perturbed": 26
+      },
+      "timestamp": "2026-01-28T01:07:13.028099"
+    },
+    {
+      "run": 3,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.2
+      },
+      "results": {
+        "score": 1.1351946557373969,
+        "total_time_sec": 652.0628731250763,
+        "projected_400_min": 54.33857276042303,
+        "rmse_mean": 0.16998467874538567,
+        "rmse_mean_1src": 0.13122782134317856,
+        "rmse_mean_2src": 0.19582258368019043,
+        "time_mean_1src": 30.127380929887295,
+        "time_mean_2src": 69.92030063768227,
+        "n_perturbed_selected": 23,
+        "n_samples_with_perturbed": 22
+      },
+      "timestamp": "2026-01-28T01:18:39.438560"
+    },
+    {
+      "run": 4,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.146444911151664,
+        "total_time_sec": 613.9347822666168,
+        "projected_400_min": 51.1612318555514,
+        "rmse_mean": 0.15891963671623108,
+        "rmse_mean_1src": 0.12262394929459697,
+        "rmse_mean_2src": 0.1831167616639872,
+        "time_mean_1src": 29.734907068312168,
+        "time_mean_2src": 65.56264562904835,
+        "n_perturbed_selected": 16,
+        "n_samples_with_perturbed": 16
+      },
+      "timestamp": "2026-01-28T01:29:26.458618"
+    },
+    {
+      "run": 5,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 3,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1404185707878194,
+        "total_time_sec": 699.6063966751099,
+        "projected_400_min": 58.300533056259155,
+        "rmse_mean": 0.1628774559091184,
+        "rmse_mean_1src": 0.1282786104644594,
+        "rmse_mean_2src": 0.1859433528722244,
+        "time_mean_1src": 30.373063161969185,
+        "time_mean_2src": 77.53166155020396,
+        "n_perturbed_selected": 26,
+        "n_samples_with_perturbed": 24
+      },
+      "timestamp": "2026-01-28T01:41:34.064119"
+    }
+  ],
+  "best_in_budget": {
+    "run": 4,
+    "score": 1.146444911151664,
+    "time_min": 51.1612318555514,
+    "config": {
+      "enable_perturbation": true,
+      "perturb_top_n": 1,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 36,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "refine_top_n": 2,
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22
+    }
+  }
+}

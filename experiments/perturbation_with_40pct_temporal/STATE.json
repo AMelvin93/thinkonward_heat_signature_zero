@@ -1,0 +1,63 @@
+{
+  "experiment_id": "EXP_PERTURBATION_40PCT_TEMPORAL_001",
+  "worker": "W3",
+  "status": "in_progress",
+  "started_at": "2026-01-28T01:00:00Z",
+  "algorithm_family": "perturbation_temporal_v1",
+  "hypothesis": "If perturbation improved score by +0.0079 on 25% temporal config (1.1373 -> 1.1452), applying it to W2's better 40% temporal config (1.1688) could yield even higher scores.",
+  "baseline_to_beat": {
+    "perturbed_local_restart": {
+      "score": 1.1452,
+      "time_min": 47.7,
+      "config": "25% temporal, sigma 0.15/0.20, perturbation (1,2)"
+    },
+    "w2_40pct_temporal": {
+      "score": 1.1688,
+      "time_min": 58.4,
+      "config": "40% temporal, sigma 0.18/0.22, 8 NM polish, NO perturbation"
+    }
+  },
+  "target": {
+    "score": ">= 1.17 (beat W2's 1.1688)",
+    "time": "<= 60 min"
+  },
+  "configs_to_test": [
+    {
+      "name": "baseline_combo",
+      "timestep_fraction": 0.40,
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "refine_maxiter": 8,
+      "perturb_top_n": 1,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "rationale": "Direct combination of W2 config + best perturbation params"
+    },
+    {
+      "name": "reduced_polish_for_budget",
+      "timestep_fraction": 0.40,
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "refine_maxiter": 6,
+      "perturb_top_n": 1,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "rationale": "If baseline combo is over budget, reduce NM polish to 6"
+    },
+    {
+      "name": "more_perturbations",
+      "timestep_fraction": 0.40,
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "refine_maxiter": 8,
+      "perturb_top_n": 2,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "rationale": "If time budget allows, try perturbing top 2 candidates"
+    }
+  ],
+  "runs": []
+}

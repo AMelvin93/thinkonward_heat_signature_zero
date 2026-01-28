@@ -1,0 +1,27 @@
+Running on 80 samples
+Configuration:
+  timestep_fraction: 0.45
+  sigma: 0.18/0.22
+  refine_maxiter: 6
+  perturbation: True (top_n=1, n=2, iters=3)
+[Parallel(n_jobs=7)]: Using backend LokyBackend with 7 concurrent workers.
+[Parallel(n_jobs=7)]: Done   4 tasks      | elapsed:   44.4s
+[Parallel(n_jobs=7)]: Done  11 tasks      | elapsed:  1.2min
+[Parallel(n_jobs=7)]: Done  18 tasks      | elapsed:  1.8min
+[Parallel(n_jobs=7)]: Done  27 tasks      | elapsed:  2.4min
+[Parallel(n_jobs=7)]: Done  36 tasks      | elapsed:  3.9min
+[Parallel(n_jobs=7)]: Done  47 tasks      | elapsed:  6.2min
+[Parallel(n_jobs=7)]: Done  58 tasks      | elapsed:  8.2min
+[Parallel(n_jobs=7)]: Done  76 out of  80 | elapsed: 11.1min remaining:   34.9s
+[Parallel(n_jobs=7)]: Done  80 out of  80 | elapsed: 11.7min finished
+
+Total time: 11.7 min
+Projected time for 400 samples: 58.6 min
+
+=== RESULTS ===
+Submission Score: 1.1459
+Total Time: 11.7 min
+Projected 400 samples: 58.6 min
+In Budget: YES
+1-source mean RMSE: 0.1269 (n=32)
+2-source mean RMSE: 0.1910 (n=48)

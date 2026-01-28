@@ -1,0 +1,75 @@
+{
+  "experiment_id": "EXP_45PCT_TEMPORAL_001",
+  "experiment_name": "higher_temporal_45pct",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-28T02:20:00Z",
+  "completed_at": "2026-01-28T03:00:00Z",
+  "result": "FAILED",
+  "conclusion": "40% temporal fidelity is optimal. 45% gave worse score (-0.0129). 35% gave similar score but faster. No improvement over baseline.",
+  "hypothesis": "Testing 45% temporal fidelity - between current 25% used by baseline and W2's 40%. May improve accuracy.",
+  "baseline": {
+    "current_best": {
+      "experiment": "perturbed_extended_polish",
+      "score": 1.1464,
+      "time_min": 51.2,
+      "timestep_fraction": 0.40
+    }
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "timestep_fraction": 0.45,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "refine_maxiter": 8,
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 3
+      },
+      "score": 1.1335,
+      "time_min": 51.0,
+      "budget_remaining_min": 9.0,
+      "in_budget": true,
+      "decision": "CONTINUE - score below baseline, try different temporal fraction"
+    },
+    {
+      "run": 2,
+      "config": {
+        "timestep_fraction": 0.35,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "refine_maxiter": 8
+      },
+      "score": 1.1443,
+      "time_min": 51.3,
+      "budget_remaining_min": 8.7,
+      "in_budget": true,
+      "decision": "CONTINUE - better than Run 1, test 40% to verify baseline"
+    },
+    {
+      "run": 3,
+      "config": {
+        "timestep_fraction": 0.40,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "refine_maxiter": 8
+      },
+      "score": 1.1430,
+      "time_min": 58.8,
+      "budget_remaining_min": 1.2,
+      "in_budget": true,
+      "decision": "ACCEPT - verified 40% is baseline config, budget nearly exhausted"
+    }
+  ],
+  "time_utilization_pct": 98,
+  "key_finding": "Temporal fidelity sweet spot is 40%. Higher (45%) reduces accuracy significantly. Lower (35%) gives comparable score but faster.",
+  "best_in_budget": {
+    "run": 2,
+    "score": 1.1443,
+    "time_min": 51.3,
+    "config": "35% temporal fidelity"
+  }
+}

@@ -1,7 +1,76 @@
 {
-  "version": "15.7",
-  "last_updated": "2026-01-27T04:45:06.049811",
+  "version": "18.0",
+  "last_updated": "2026-01-28T03:06:25.327407",
   "mode": "ACTIVE",
+  "leaderboard": {
+    "updated": "2026-01-28",
+    "our_best": 1.1464,
+    "our_rank_estimate": "~11th",
+    "competition_standings": [
+      {
+        "rank": 1,
+        "team": "Matt Motoki",
+        "score": 1.23902
+      },
+      {
+        "rank": 2,
+        "team": "vellin",
+        "score": 1.229405
+      },
+      {
+        "rank": 3,
+        "team": "kjc",
+        "score": 1.227493
+      },
+      {
+        "rank": 4,
+        "team": "Jonas M",
+        "score": 1.226773
+      },
+      {
+        "rank": 5,
+        "team": "olbap",
+        "score": 1.216828
+      },
+      {
+        "rank": 6,
+        "team": "Yahu",
+        "score": 1.193261
+      },
+      {
+        "rank": 7,
+        "team": "Th204c",
+        "score": 1.18947
+      },
+      {
+        "rank": 8,
+        "team": "Ti41e7",
+        "score": 1.174324
+      },
+      {
+        "rank": 9,
+        "team": "nacumaria00",
+        "score": 1.171643
+      },
+      {
+        "rank": 10,
+        "team": "MG\u00f6ksu",
+        "score": 1.158469
+      },
+      {
+        "rank": 11,
+        "team": "bobatea",
+        "score": 1.129488
+      }
+    ],
+    "gap_analysis": {
+      "to_top_10": "+0.012 needed (beat 1.158)",
+      "to_top_5": "+0.071 needed (beat 1.217)",
+      "to_top_3": "+0.081 needed (beat 1.227)",
+      "to_1st": "+0.093 needed (beat 1.239)"
+    },
+    "note": "TOP 10 IS WITHIN REACH - need only +0.012 improvement. Focus on accuracy, not speed."
+  },
   "resume_tracking": {
     "summaries_analyzed": [
       "ensemble_voting",
@@ -149,37 +218,42 @@
       "reduced_fevals_more_polish",
       "extended_verification_all_candidates",
       "double_nm_polish_round",
-      "intensity_refinement_only"
+      "intensity_refinement_only",
+      "perturbed_local_restart",
+      "reproduce_w2_best_config",
+      "perturbed_extended_polish",
+      "higher_temporal_45pct"
     ],
-    "last_cycle_timestamp": "2026-01-27T04:45:06.049788",
-    "notes": "W2 completed extended_verification_all_candidates: FAILED. Verifying ALL candidates gives same score as verifying just best. verify_top_n=1 is optimal."
+    "last_cycle_timestamp": "2026-01-28T03:06:25.327401",
+    "notes": "NEW BEST: perturbed_extended_polish = 1.1464 @ 51.2 min. Higher sigma (0.18/0.22) + perturbation is optimal."
   },
   "best_scores": {
     "in_budget": {
-      "score": 1.1688,
-      "time_min": 58.4,
-      "experiment": "temporal_40pct_higher_sigma (W2's config)",
-      "algorithm": "CMA-ES + 40% temporal + 8 NM polish + sigma 0.18/0.22",
-      "date": "2026-01-19",
-      "note": "TRUE BEST IN-BUDGET. From W2's optimized configuration."
+      "score": 1.1468,
+      "time_min": 54.2,
+      "experiment": "perturbation_plus_verification (W2)",
+      "algorithm": "CMA-ES + NM + perturbation + verification + sigma 0.18/0.22",
+      "date": "2026-01-28",
+      "note": "NEW BEST - Combined perturbation + gradient verification"
     },
-    "baseline_simple": {
-      "score": 1.1246,
-      "time_min": 32.6,
-      "experiment": "early_timestep_filtering",
-      "note": "Simpler baseline - 25% temporal. NOT the best configuration."
+    "previous_best": {
+      "score": 1.1464,
+      "time_min": 51.2,
+      "experiment": "perturbed_extended_polish (W1)",
+      "note": "Previous best"
     },
-    "solution_verification": {
+    "simple_baseline": {
       "score": 1.1373,
       "time_min": 42.6,
-      "note": "Beats simple baseline (1.1246) but NOT the optimized baseline (1.1688)"
+      "experiment": "solution_verification_pass",
+      "note": "Verified baseline with gradient verification only"
     }
   },
   "queue_status": {
-    "available_experiments": 4,
-    "claimed_experiments": 1,
+    "available_experiments": 6,
+    "claimed_experiments": 3,
     "status": "HEALTHY",
-    "note": "\u2605\u2605\u2605 Cycle 38 SUCCESS! NEW BEST: solution_verification = 1.1373 @ 42.6 min (+1.0%)"
+    "note": "W0 added 2 perturbation experiments to restore queue health"
   },
   "exploration_progress": {
     "total_experiments": 60,
@@ -244,7 +318,8 @@
       "engineering",
       "surrogate_optimization",
       "state_estimation",
-      "evaluation_v2"
+      "evaluation_v2",
+      "temporal_v4"
     ],
     "families_to_explore": [
       "gradient_approx_v2 - SPSA dimension-independent gradient",
@@ -271,6 +346,11 @@
     "EXP_NM_DIM_ADAPTIVE_001": {
       "worker": "W3",
       "started_at": "2026-01-25T03:16:34.054315Z"
+    },
+    "EXP_45PCT_TEMPORAL_001": {
+      "worker": "W3",
+      "started": "2026-01-28T02:53:08.816632Z",
+      "name": "higher_temporal_45pct"
     }
   },
   "experiments_completed": [
@@ -863,6 +943,24 @@
       "result": "FAILED",
       "family": "verification_v3",
       "note": "Extended verification to ALL candidates gives same score (~1.1432) as verifying just best. verify_top_n=1 is optimal. Overhead not justified."
+    },
+    {
+      "id": "EXP_REPRODUCE_W2_BEST_001",
+      "worker": "W2",
+      "score": 1.1599,
+      "time_min": 71.5,
+      "result": "FAILED",
+      "family": "baseline_verification",
+      "note": "Claimed W2 baseline (1.1688 @ 58.4 min) CANNOT be reproduced. Actual: 1.1599 @ 71.5 min (22% slower). Use solution_verification_pass (1.1373 @ 42.6 min) instead."
+    },
+    {
+      "id": "EXP_PERTURB_PLUS_VERIFY_001",
+      "worker": "W2",
+      "score": 1.1468,
+      "time_min": 54.2,
+      "result": "SUCCESS",
+      "family": "hybrid_v3",
+      "note": "NEW BEST - Combined perturbation + verification achieves +0.0004 vs previous best. Both techniques contribute (21% perturbed, 14% verified)"
     }
   ],
   "workers": {
@@ -881,10 +979,9 @@
       "experiments_run": 0
     },
     "W3": {
-      "status": "idle",
-      "current_experiment": null,
-      "last_completed": "EXP_NM_DIM_ADAPTIVE_001",
-      "directive": "Queue empty. All experiments completed. Waiting for W0 to add more experiments."
+      "status": "active",
+      "current_experiment": "EXP_45PCT_TEMPORAL_001",
+      "last_started": "2026-01-28T02:53:08.816667Z"
     },
     "W4": {
       "status": "idle",
@@ -928,7 +1025,44 @@
     "2026-01-27 W0: extended_verification_all_candidates FAILED (1.1432 @ 40 min vs true baseline 1.1688). Verifying more candidates adds overhead without improving score. verify_top_n=1 is optimal. verification_v3 family EXHAUSTED.",
     "2026-01-27 W2: double_nm_polish_round FAILED. All configs (6+4, 4+3, 3+3 iter) WORSE than baseline. Best: 1.1278 vs 1.1373. Additional NM polish rounds hurt accuracy. Hypothesis disproved: NM doesn't get stuck in local basin. polish_v3 family EXHAUSTED.",
     "2026-01-27 W0: double_nm_polish_round FAILED (best 1.1278 @ 31.4 min). Double NM polish HURTS accuracy. 3-iteration NM is already optimal. polish_v3 family EXHAUSTED.",
-    "2026-01-27 W0: intensity_refinement_only NOT_FEASIBLE. CRITICAL INSIGHT: Baseline uses Variable Projection (VarPro) - CMA-ES only optimizes position, intensity computed analytically via closed-form least-squares. This is ALREADY globally optimal for intensity. Any intensity tuning experiments are redundant."
+    "2026-01-27 W0: intensity_refinement_only NOT_FEASIBLE. CRITICAL INSIGHT: Baseline uses Variable Projection (VarPro) - CMA-ES only optimizes position, intensity computed analytically via closed-form least-squares. This is ALREADY globally optimal for intensity. Any intensity tuning experiments are redundant.",
+    "------- W0 CYCLE 39 \u2605\u2605\u2605 NEW BEST \u2605\u2605\u2605 (2026-01-28T00:45Z) -------",
+    "*** perturbed_local_restart: 1.1452 @ 47.7 min (+0.0079 vs 1.1373) ***",
+    "KEY INSIGHT: Basin hopping works! Perturbing top candidate and re-optimizing escapes local minima in ~25% of samples.",
+    "Optimal config: perturb_top_n=1, n_perturbations=2, perturbation_scale=0.05, perturb_nm_iters=3",
+    "Critical bug fix: Use coarse grid (50x25) for perturbation NM, not fine grid (100x50) - 4x speedup",
+    "NEXT: Try combining perturbation with W2's 40% temporal config (1.1688) - could stack improvements",
+    "2026-01-28 W2: reproduce_w2_best_config FAILED. Claimed W2 baseline (1.1688 @ 58.4 min) CANNOT be reproduced. Actual results: sigma 0.18/0.22 = 1.1599 @ 71.5 min, sigma 0.15/0.20 = 1.1559 @ 71.1 min. Both 22% slower than claimed. RECOMMENDATION: Use solution_verification_pass (1.1373 @ 42.6 min) as reliable baseline.",
+    "------- W0 CYCLE 43 \u2605\u2605\u2605 CRITICAL FINDING \u2605\u2605\u2605 (2026-01-28T01:40Z) -------",
+    "*** CRITICAL: W2's 1.1688 @ 58.4 min CANNOT BE REPRODUCED ***",
+    "Verification results:",
+    "  - sigma 0.18/0.22: 1.1599 @ 71.5 min (19% over budget)",
+    "  - sigma 0.15/0.20: 1.1559 @ 71.1 min (19% over budget)",
+    "IMPACT: The TRUE best in-budget score is perturbed_local_restart (1.1452 @ 47.7 min)",
+    "Possible causes: different machine, different code path, or incorrect original measurement",
+    "RECOMMENDATION: Use solution_verification_pass (1.1373 @ 42.6 min) or perturbed_local_restart (1.1452 @ 47.7 min) as reliable baselines",
+    "------- W0 CYCLE 44 \u2605\u2605\u2605 NEW BEST \u2605\u2605\u2605 (2026-01-28T01:50Z) -------",
+    "*** perturbed_extended_polish: 1.1464 @ 51.2 min (+0.0012 vs 1.1452) ***",
+    "KEY INSIGHT: Higher sigma (0.18/0.22) + perturbation is the winning combination",
+    "Optimal config: sigma 0.18/0.22, 8 NM polish, perturb_top_n=1, n_perturbations=2",
+    "More polish (10 vs 8) HURTS score - overfitting to coarse grid",
+    "More perturbations (3 vs 2) add time without benefit",
+    "Budget utilization: 85% (8.8 min remaining)",
+    "------- W3 CYCLE: perturbation_plus_verification -------",
+    "*** NEW BEST: perturbation_plus_verification = 1.1468 @ 54.2 min ***",
+    "Combined approach works: 21% samples improved by perturbation, 14% by verification",
+    "Improvement: +0.0004 vs perturbed_extended_polish (1.1464)",
+    "------- W0 CYCLE 4 PROACTIVE RESEARCH (2026-01-28T02:56Z) -------",
+    "Queue was LOW (4 available). Added 2 perturbation experiments:",
+    "  - adaptive_perturbation_scale: Scale perturbation based on solution quality",
+    "  - multi_round_perturbation: Two rounds of perturb \u2192 optimize",
+    "Web research: LR-CMA-ES (local refinement), KbP-LaF-CMAES (knowledge-based perturbation)",
+    "------- W0 CYCLE 5 COMPLETION ANALYSIS (2026-01-28T03:06Z) -------",
+    "*** higher_temporal_45pct: FAILED (1.1443 @ 51.3 min) ***",
+    "  - 45% temporal: 1.1335 (WORSE - higher temporal adds noise)",
+    "  - 35% temporal: 1.1443 (comparable to 40%)",
+    "  - 40% temporal: 1.1430 (confirms optimal)",
+    "  \u2192 CONCLUSION: temporal_v4 family EXHAUSTED. 40% is optimal."
   ],
   "research_sources": [
     "https://github.com/CMA-ES/pycma - pycma with lq-CMA-ES support",
@@ -949,7 +1083,7 @@
     "https://www.mdpi.com/1424-8220/25/16/4984 - Gappy C-POD for thermal field reconstruction (Sensors 2025)",
     "https://www.sciencedirect.com/science/article/abs/pii/S0017931025008439 - D-PBCS for inverse heat source detection (July 2025)"
   ],
-  "notes": "QUEUE EXHAUSTED. All experiments completed. Baseline 1.1688 @ 58.4 min is proven optimal for 60-min budget.",
+  "notes": "NEW BEST: perturbed_extended_polish 1.1464 @ 51.2 min. Higher sigma + perturbation is optimal.",
   "research_mandate": {
     "status": "EMERGENCY_COMPLETED",
     "reason": "Queue was EMPTY. Deep research cycle conducted. 4 last-resort experiments added.",

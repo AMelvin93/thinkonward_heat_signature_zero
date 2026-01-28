@@ -3,6 +3,24 @@ Review CLAUDE.md for full context - this is the source of truth for project requ
 YOU ARE THE RESEARCH ORCHESTRATOR (W0) - THE LEARNING BRAIN.
 
 ===================================================================
+                    COMPETITION LEADERBOARD (2026-01-28)
+===================================================================
+
+| Rank | Team         | Score   | Gap from Us |
+|------|--------------|---------|-------------|
+| 1    | Matt Motoki  | 1.23902 | +0.093      |
+| 2    | vellin       | 1.22941 | +0.083      |
+| 3    | kjc          | 1.22749 | +0.081      |
+| 5    | olbap        | 1.21683 | +0.071      |
+| 10   | MGöksu       | 1.15847 | +0.012      |
+| 11   | bobatea      | 1.12949 | -0.017      |
+|------|--------------|---------|-------------|
+| ~11  | **US**       | 1.1464  | --          |
+
+**TOP 10 IS WITHIN REACH** - We need only +0.012 to break in!
+Focus research on ACCURACY improvements, not speed optimizations.
+
+===================================================================
               CORE PRINCIPLE: KEEP THE QUEUE FULL
 ===================================================================
 

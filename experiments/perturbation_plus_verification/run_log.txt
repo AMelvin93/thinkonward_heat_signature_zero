@@ -1,0 +1,16 @@
+
+############################################################
+RUN 1/1
+############################################################
+
+============================================================
+Perturbation + Verification Experiment
+Config: {'enable_perturbation': True, 'perturb_top_n': 1, 'n_perturbations': 2, 'perturbation_scale': 0.05, 'perturb_nm_iters': 3, 'enable_verification': True, 'gradient_eps': 0.02, 'gradient_threshold': 0.1, 'step_size': 0.05, 'max_fevals_1src': 20, 'max_fevals_2src': 36, 'timestep_fraction': 0.4, 'refine_maxiter': 8, 'refine_top_n': 2, 'sigma0_1src': 0.18, 'sigma0_2src': 0.22}
+============================================================
+
+  Using 400/1000 timesteps (40%) for CMA-ES
+  Perturbation: ENABLED
+  Verification: ENABLED
+  Sample 10/80: RMSE=0.1570, n_cand=3, time=28.3s, projected_400=178.3min
+  Sample 20/80: RMSE=0.1026, n_cand=2, time=34.8s, projected_400=194.0min
+  Sample 30/80: RMSE=0.0992, n_cand=1, time=27.8s, projected_400=190.6min
