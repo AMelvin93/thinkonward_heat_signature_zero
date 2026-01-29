@@ -1,0 +1,110 @@
+
+============================================================
+TIKHONOV REGULARIZED RMSE EXPERIMENT
+============================================================
+Samples: 80 (32 1-source, 48 2-source)
+Workers: 7
+Regularization: lambda=0.01
+Timestep fraction: 0.4
+============================================================
+[  1/80] Sample   2: 1-src RMSE=0.0397 time=204.9s [OK]
+[  2/80] Sample   1: 1-src RMSE=0.1026 time=208.4s [OK]
+[  3/80] Sample   4: 1-src RMSE=0.1508 time=213.6s [OK] [PERT]
+[  4/80] Sample   0: 1-src RMSE=0.1444 time=253.6s [OK]
+[  5/80] Sample   6: 1-src RMSE=0.1277 time=254.6s [OK]
+[  6/80] Sample   5: 1-src RMSE=0.1695 time=257.5s [OK]
+[  7/80] Sample   3: 1-src RMSE=0.0074 time=272.7s [OK] [PERT]
+[  8/80] Sample   8: 1-src RMSE=0.0996 time=191.5s [OK]
+[  9/80] Sample  12: 1-src RMSE=0.1707 time=185.2s [OK]
+[ 10/80] Sample   9: 1-src RMSE=0.1576 time=247.0s [OK]
+[ 11/80] Sample   7: 1-src RMSE=0.3315 time=288.8s [OK]
+[ 12/80] Sample  10: 1-src RMSE=0.1867 time=282.9s [OK]
+[ 13/80] Sample  11: 1-src RMSE=0.0079 time=296.9s [OK]
+[ 14/80] Sample  13: 1-src RMSE=0.0794 time=287.6s [OK]
+[ 15/80] Sample  16: 1-src RMSE=0.1542 time=200.5s [OK]
+[ 16/80] Sample  14: 1-src RMSE=0.1568 time=287.7s [OK]
+[ 17/80] Sample  15: 1-src RMSE=0.0279 time=292.4s [OK]
+[ 18/80] Sample  20: 1-src RMSE=0.0516 time=193.2s [OK]
+[ 19/80] Sample  17: 1-src RMSE=0.1058 time=297.6s [OK]
+[ 20/80] Sample  18: 1-src RMSE=0.1493 time=305.1s [OK]
+[ 21/80] Sample  19: 1-src RMSE=0.0988 time=301.3s [OK]
+[ 22/80] Sample  21: 1-src RMSE=0.1135 time=201.4s [OK]
+[ 23/80] Sample  24: 1-src RMSE=0.2870 time=203.2s [OK]
+[ 24/80] Sample  22: 1-src RMSE=0.1107 time=300.2s [OK]
+[ 25/80] Sample  25: 1-src RMSE=0.2234 time=203.1s [OK]
+[ 26/80] Sample  23: 1-src RMSE=0.1107 time=298.5s [OK]
+[ 27/80] Sample  26: 1-src RMSE=0.1685 time=202.7s [OK]
+[ 28/80] Sample  28: 1-src RMSE=0.1018 time=197.1s [OK]
+[ 29/80] Sample  27: 1-src RMSE=0.1516 time=292.8s [OK]
+[ 30/80] Sample  31: 1-src RMSE=0.1021 time=204.2s [OK]
+[ 31/80] Sample  29: 1-src RMSE=0.0991 time=245.5s [OK]
+[ 32/80] Sample  30: 1-src RMSE=0.1012 time=247.7s [OK]
+[ 33/80] Sample  33: 2-src RMSE=0.1887 time=558.8s [OK] [PERT]
+[ 34/80] Sample  35: 2-src RMSE=0.1433 time=535.8s [OK]
+[ 35/80] Sample  32: 2-src RMSE=0.0351 time=700.4s [OK]
+[ 36/80] Sample  37: 2-src RMSE=0.1699 time=549.6s [OK] [PERT]
+[ 37/80] Sample  34: 2-src RMSE=0.4676 time=701.4s [OK]
+[ 38/80] Sample  36: 2-src RMSE=0.1867 time=810.5s [OK]
+[ 39/80] Sample  38: 2-src RMSE=0.1614 time=790.3s [OK]
+[ 40/80] Sample  39: 2-src RMSE=0.2585 time=540.8s [OK]
+[ 41/80] Sample  40: 2-src RMSE=0.1645 time=526.0s [OK]
+[ 42/80] Sample  41: 2-src RMSE=0.2391 time=533.6s [OK]
+[ 43/80] Sample  43: 2-src RMSE=0.2145 time=551.4s [OK] [PERT]
+[ 44/80] Sample  44: 2-src RMSE=0.1394 time=521.1s [OK]
+[ 45/80] Sample  42: 2-src RMSE=0.2485 time=804.9s [OK]
+[ 46/80] Sample  45: 2-src RMSE=0.2905 time=542.2s [OK] [PERT]
+[ 47/80] Sample  47: 2-src RMSE=0.1592 time=530.4s [OK] [PERT]
+[ 48/80] Sample  48: 2-src RMSE=0.2781 time=552.8s [OK]
+[ 49/80] Sample  49: 2-src RMSE=0.1924 time=557.2s [OK]
+[ 50/80] Sample  46: 2-src RMSE=0.1077 time=813.8s [OK]
+[ 51/80] Sample  50: 2-src RMSE=0.2190 time=537.3s [OK]
+[ 52/80] Sample  51: 2-src RMSE=0.2255 time=545.7s [OK]
+[ 53/80] Sample  53: 2-src RMSE=0.0300 time=564.5s [OK]
+[ 54/80] Sample  54: 2-src RMSE=0.1707 time=554.5s [OK]
+[ 55/80] Sample  52: 2-src RMSE=0.1551 time=819.3s [OK]
+[ 56/80] Sample  55: 2-src RMSE=0.1312 time=524.5s [OK]
+[ 57/80] Sample  56: 2-src RMSE=0.1401 time=879.6s [OK]
+[ 58/80] Sample  59: 2-src RMSE=0.0301 time=592.2s [OK] [PERT]
+[ 59/80] Sample  61: 2-src RMSE=0.1304 time=600.1s [OK]
+[ 60/80] Sample  60: 2-src RMSE=0.1224 time=615.1s [OK] [PERT]
+[ 61/80] Sample  58: 2-src RMSE=0.0996 time=888.4s [OK] [PERT]
+[ 62/80] Sample  62: 2-src RMSE=0.1444 time=856.1s [OK]
+[ 63/80] Sample  63: 2-src RMSE=0.2509 time=572.2s [OK]
+[ 64/80] Sample  64: 2-src RMSE=0.1072 time=570.8s [OK] [PERT]
+[ 65/80] Sample  57: 2-src RMSE=0.5213 time=1429.9s [OK]
+[ 66/80] Sample  66: 2-src RMSE=0.1763 time=553.2s [OK]
+[ 67/80] Sample  67: 2-src RMSE=0.1594 time=845.0s [OK] [PERT]
+[ 68/80] Sample  68: 2-src RMSE=0.3287 time=591.9s [OK]
+[ 69/80] Sample  65: 2-src RMSE=0.2758 time=885.4s [OK] [PERT]
+[ 70/80] Sample  71: 2-src RMSE=0.4255 time=597.2s [OK] [PERT]
+[ 71/80] Sample  70: 2-src RMSE=0.1358 time=629.6s [OK] [PERT]
+[ 72/80] Sample  72: 2-src RMSE=0.2471 time=600.1s [OK]
+[ 73/80] Sample  69: 2-src RMSE=0.1795 time=908.2s [OK] [PERT]
+[ 74/80] Sample  74: 2-src RMSE=0.1935 time=598.1s [OK]
+[ 75/80] Sample  73: 2-src RMSE=0.2050 time=750.3s [OK]
+[ 76/80] Sample  75: 2-src RMSE=0.1208 time=764.2s [OK] [PERT]
+[ 77/80] Sample  77: 2-src RMSE=0.1779 time=581.0s [OK]
+[ 78/80] Sample  79: 2-src RMSE=0.1261 time=507.0s [OK]
+[ 79/80] Sample  76: 2-src RMSE=0.1096 time=776.1s [OK]
+[ 80/80] Sample  78: 2-src RMSE=0.3753 time=750.4s [OK]
+
+======================================================================
+RESULTS - Tikhonov Regularized RMSE
+======================================================================
+Score:            1.1388
+RMSE mean:        0.1681
+Total time:       5894.0s
+Projected (400):  491.2 min
+
+  1-source: RMSE=0.1278 (n=32)
+  2-source: RMSE=0.1950 (n=48)
+
+Perturbed selected: 17 across 17/80 samples
+
+Baseline (perturbed_extended_polish): 1.1464 @ 51.2 min (no regularization)
+This run:                             1.1388 @ 491.2 min
+Delta vs baseline:                    -0.0076 score, +440.0 min
+
+STATUS: OVER BUDGET
+======================================================================
+

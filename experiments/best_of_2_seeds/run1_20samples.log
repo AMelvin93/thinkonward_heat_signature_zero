@@ -1,0 +1,47 @@
+
+============================================================
+BEST OF 2 SEEDS EXPERIMENT
+============================================================
+Samples: 20 (20 1-source, 0 2-source)
+Workers: 7
+Seeds: 2
+Fevals: 20 for 1-src, 36 for 2-src
+============================================================
+[  1/20] Sample   4: 1-src RMSE=0.1541 cands=3 time=90.7s [OK]
+[  2/20] Sample   1: 1-src RMSE=0.1840 cands=2 time=93.3s [OK]
+[  3/20] Sample   2: 1-src RMSE=0.0528 cands=2 time=95.3s [OK]
+[  4/20] Sample   3: 1-src RMSE=0.1428 cands=3 time=122.0s [OK]
+[  5/20] Sample   6: 1-src RMSE=0.1097 cands=3 time=123.8s [OK]
+[  6/20] Sample   5: 1-src RMSE=0.1862 cands=2 time=126.7s [OK]
+[  7/20] Sample   0: 1-src RMSE=0.1085 cands=3 time=126.8s [OK]
+[  8/20] Sample   8: 1-src RMSE=0.1108 cands=3 time=102.5s [OK]
+[  9/20] Sample   9: 1-src RMSE=0.1633 cands=3 time=127.0s [OK]
+[ 10/20] Sample  12: 1-src RMSE=0.1823 cands=3 time=99.3s [OK]
+[ 11/20] Sample  11: 1-src RMSE=0.0488 cands=3 time=152.1s [OK]
+[ 12/20] Sample  10: 1-src RMSE=0.1652 cands=2 time=154.8s [OK]
+[ 13/20] Sample  13: 1-src RMSE=0.1517 cands=1 time=154.2s [OK]
+[ 14/20] Sample  16: 1-src RMSE=0.1588 cands=2 time=104.1s [OK]
+[ 15/20] Sample  14: 1-src RMSE=0.1554 cands=2 time=146.5s [OK]
+[ 16/20] Sample  15: 1-src RMSE=0.1490 cands=3 time=147.0s [OK]
+[ 17/20] Sample   7: 1-src RMSE=0.5374 cands=3 time=293.1s [OK]
+[ 18/20] Sample  18: 1-src RMSE=0.1229 cands=3 time=122.0s [OK]
+[ 19/20] Sample  17: 1-src RMSE=0.1005 cands=2 time=123.7s [OK]
+[ 20/20] Sample  19: 1-src RMSE=0.1022 cands=1 time=120.7s [OK]
+
+======================================================================
+RESULTS - Best of 2 Seeds
+======================================================================
+Score:            1.1162
+RMSE mean:        0.1543
+Total time:       401.7s
+Projected (400):  133.9 min
+
+  1-source: RMSE=0.1543 (n=20, time=131.3s)
+
+Baseline:  1.1468 @ 54.2 min (perturbation_plus_verification)
+This run:  1.1162 @ 133.9 min
+Delta:     -0.0306 score, +79.7 min
+
+STATUS: OVER BUDGET
+======================================================================
+

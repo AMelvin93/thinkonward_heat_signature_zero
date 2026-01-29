@@ -1,0 +1,67 @@
+
+============================================================
+ASYMMETRIC NM ITERATIONS EXPERIMENT
+============================================================
+Samples: 40 (32 1-source, 8 2-source)
+Workers: 7
+NM iters: 8 for 1-src, 8 for 2-src
+============================================================
+[  1/40] Sample   4: 1-src RMSE=0.1503 cands=3 time=94.7s [OK]
+[  2/40] Sample   2: 1-src RMSE=0.0325 cands=3 time=95.1s [OK]
+[  3/40] Sample   1: 1-src RMSE=0.1577 cands=3 time=98.9s [OK]
+[  4/40] Sample   3: 1-src RMSE=0.0083 cands=3 time=122.5s [OK]
+[  5/40] Sample   0: 1-src RMSE=0.1342 cands=2 time=122.8s [OK]
+[  6/40] Sample   5: 1-src RMSE=0.1741 cands=3 time=123.1s [OK]
+[  7/40] Sample   6: 1-src RMSE=0.1176 cands=3 time=123.6s [OK]
+[  8/40] Sample   8: 1-src RMSE=0.1006 cands=3 time=104.1s [OK]
+[  9/40] Sample  12: 1-src RMSE=0.1720 cands=3 time=102.2s [OK]
+[ 10/40] Sample   9: 1-src RMSE=0.1646 cands=3 time=129.0s [OK]
+[ 11/40] Sample   7: 1-src RMSE=0.2818 cands=3 time=154.5s [OK]
+[ 12/40] Sample  10: 1-src RMSE=0.1533 cands=3 time=148.3s [OK]
+[ 13/40] Sample  13: 1-src RMSE=0.2144 cands=2 time=156.2s [OK]
+[ 14/40] Sample  11: 1-src RMSE=0.0147 cands=3 time=158.5s [OK]
+[ 15/40] Sample  16: 1-src RMSE=0.1528 cands=1 time=102.4s [OK]
+[ 16/40] Sample  14: 1-src RMSE=0.1560 cands=3 time=151.8s [OK]
+[ 17/40] Sample  15: 1-src RMSE=0.0339 cands=3 time=153.8s [OK]
+[ 18/40] Sample  20: 1-src RMSE=0.0881 cands=2 time=104.1s [OK]
+[ 19/40] Sample  17: 1-src RMSE=0.1027 cands=3 time=152.1s [OK]
+[ 20/40] Sample  18: 1-src RMSE=0.2262 cands=2 time=153.7s [OK]
+[ 21/40] Sample  21: 1-src RMSE=0.1684 cands=3 time=104.5s [OK]
+[ 22/40] Sample  19: 1-src RMSE=0.1047 cands=2 time=158.3s [OK]
+[ 23/40] Sample  24: 1-src RMSE=0.2895 cands=2 time=102.6s [OK]
+[ 24/40] Sample  25: 1-src RMSE=0.1880 cands=2 time=102.3s [OK]
+[ 25/40] Sample  22: 1-src RMSE=0.1609 cands=3 time=155.9s [OK]
+[ 26/40] Sample  26: 1-src RMSE=0.2177 cands=3 time=102.3s [OK]
+[ 27/40] Sample  23: 1-src RMSE=0.1456 cands=2 time=151.6s [OK]
+[ 28/40] Sample  28: 1-src RMSE=0.1336 cands=3 time=99.8s [OK]
+[ 29/40] Sample  27: 1-src RMSE=0.1509 cands=2 time=154.1s [OK]
+[ 30/40] Sample  31: 1-src RMSE=0.1012 cands=3 time=101.5s [OK]
+[ 31/40] Sample  29: 1-src RMSE=0.0994 cands=2 time=127.0s [OK]
+[ 32/40] Sample  30: 1-src RMSE=0.1066 cands=3 time=126.8s [OK]
+[ 33/40] Sample  33: 2-src RMSE=0.1851 cands=3 time=231.5s [OK]
+[ 34/40] Sample  32: 2-src RMSE=0.1093 cands=3 time=293.4s [OK]
+[ 35/40] Sample  35: 2-src RMSE=0.1030 cands=3 time=237.6s [OK]
+[ 36/40] Sample  37: 2-src RMSE=0.2840 cands=3 time=232.6s [OK]
+[ 37/40] Sample  36: 2-src RMSE=0.2339 cands=1 time=309.4s [OK]
+[ 38/40] Sample  38: 2-src RMSE=0.1578 cands=3 time=302.8s [OK]
+[ 39/40] Sample  39: 2-src RMSE=0.2330 cands=3 time=177.1s [OK]
+[ 40/40] Sample  34: 2-src RMSE=0.3168 cands=3 time=443.3s [OK]
+
+======================================================================
+RESULTS - Asymmetric NM Iterations
+======================================================================
+Score:            1.1355
+RMSE mean:        0.1531
+Total time:       981.3s
+Projected (400):  163.6 min
+
+  1-source: RMSE=0.1407 (n=32, time=126.2s)
+  2-source: RMSE=0.2029 (n=8, time=278.5s)
+
+Baseline:  1.1468 @ 54.2 min (perturbation_plus_verification)
+This run:  1.1355 @ 163.6 min
+Delta:     -0.0113 score, +109.4 min
+
+STATUS: OVER BUDGET
+======================================================================
+

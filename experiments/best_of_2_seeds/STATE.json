@@ -1,0 +1,86 @@
+{
+  "experiment_id": "EXP_BEST_OF_2_SEEDS_001",
+  "name": "best_of_2_seeds",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-28T16:45:00Z",
+  "family": "multi_start_v2",
+  "hypothesis": "CMA-ES can get stuck in suboptimal basins. Running 2 instances with different seeds may find better global optimum.",
+  "baseline": {
+    "score": 1.1468,
+    "time_min": 54.2,
+    "experiment": "perturbation_plus_verification",
+    "note": "Current best in-budget."
+  },
+  "prior_evidence": {
+    "more_inits_select_best": "FAILED - MORE inits add overhead without benefit",
+    "multistart_elite_selection": "FAILED - Multi-init strategies don't help",
+    "conclusion": "Prior experiments used 3-5 inits. Testing if 2 is the sweet spot."
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "2 seeds with standard budget (20/36 fevals total, split)",
+      "config": {
+        "n_seeds": 2,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "rationale": "Test baseline hypothesis with half budget per seed"
+    },
+    {
+      "run": 2,
+      "description": "2 seeds with slightly higher budget (24/40 fevals total)",
+      "config": {
+        "n_seeds": 2,
+        "max_fevals_1src": 24,
+        "max_fevals_2src": 40
+      },
+      "rationale": "If Run 1 is promising but over budget, try with slightly more evals"
+    },
+    {
+      "run": 3,
+      "description": "Baseline comparison: 1 seed with full budget",
+      "config": {
+        "n_seeds": 1,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36
+      },
+      "rationale": "Direct comparison to understand if 2 seeds helps"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "n_seeds": 2,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_top_n": 2,
+        "refine_maxiter": 8,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1161890370632181,
+        "total_time_sec": 401.67441272735596,
+        "projected_400_min": 133.89147090911865,
+        "rmse_mean": 0.154310638377747,
+        "rmse_mean_1src": 0.154310638377747,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 131.2776933193207,
+        "time_mean_2src": 0
+      },
+      "timestamp": "2026-01-28T16:26:55.148946"
+    }
+  ],
+  "best_in_budget": null,
+  "conclusions": {
+    "status": "FAILED",
+    "finding": "Multi-seed approach is WORSE than single seed. Score -0.0306 below baseline, 2.2x over budget. Sample 7 had catastrophic RMSE=0.5374.",
+    "root_cause": "Budget splitting prevents CMA-ES covariance learning. Each instance needs full budget to adapt properly.",
+    "recommendation": "Do not pursue multi-seed strategies. Single-seed full-budget is optimal.",
+    "family_exhausted": "multi_start_v2"
+  }
+}

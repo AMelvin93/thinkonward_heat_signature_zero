@@ -1,0 +1,47 @@
+
+============================================================
+MULTI-CANDIDATE PERTURBATION EXPERIMENT
+============================================================
+Samples: 20 (20 1-source, 0 2-source)
+Workers: 7
+Perturb top 2 with 1 perturbation(s) each
+Perturbation scale: 0.05
+============================================================
+[  1/20] Sample   1: 1-src RMSE=0.1820 cands=3 time=117.6s [OK]
+[  2/20] Sample   4: 1-src RMSE=0.1509 cands=3 time=118.9s [OK]
+[  3/20] Sample   2: 1-src RMSE=0.0505 cands=3 time=120.4s [OK]
+[  4/20] Sample   5: 1-src RMSE=0.1866 cands=2 time=142.7s [OK]
+[  5/20] Sample   0: 1-src RMSE=0.1704 cands=3 time=150.7s [OK]
+[  6/20] Sample   6: 1-src RMSE=0.1093 cands=3 time=153.1s [OK]
+[  7/20] Sample   3: 1-src RMSE=0.1275 cands=3 time=160.4s [OK]
+[  8/20] Sample   8: 1-src RMSE=0.0995 cands=3 time=122.7s [OK]
+[  9/20] Sample   9: 1-src RMSE=0.2255 cands=3 time=144.1s [OK]
+[ 10/20] Sample  12: 1-src RMSE=0.1927 cands=3 time=126.8s [OK]
+[ 11/20] Sample   7: 1-src RMSE=0.3242 cands=3 time=171.6s [OK]
+[ 12/20] Sample  10: 1-src RMSE=0.1549 cands=2 time=175.3s [OK]
+[ 13/20] Sample  11: 1-src RMSE=0.0165 cands=3 time=176.5s [OK]
+[ 14/20] Sample  13: 1-src RMSE=0.0853 cands=2 time=178.6s [OK]
+[ 15/20] Sample  16: 1-src RMSE=0.1526 cands=3 time=106.4s [OK]
+[ 16/20] Sample  14: 1-src RMSE=0.1567 cands=3 time=162.1s [OK]
+[ 17/20] Sample  15: 1-src RMSE=0.0479 cands=3 time=159.7s [OK]
+[ 18/20] Sample  17: 1-src RMSE=0.1010 cands=2 time=140.7s [OK]
+[ 19/20] Sample  19: 1-src RMSE=0.1015 cands=1 time=123.3s [OK]
+[ 20/20] Sample  18: 1-src RMSE=0.1028 cands=3 time=133.0s [OK]
+
+======================================================================
+RESULTS - Multi-Candidate Perturbation
+======================================================================
+Score:            1.1526
+RMSE mean:        0.1369
+Total time:       451.1s
+Projected (400):  150.4 min
+
+  1-source: RMSE=0.1369 (n=20, time=144.2s)
+
+Baseline:  1.1468 @ 54.2 min (perturbation_plus_verification)
+This run:  1.1526 @ 150.4 min
+Delta:     +0.0058 score, +96.2 min
+
+STATUS: OVER BUDGET
+======================================================================
+

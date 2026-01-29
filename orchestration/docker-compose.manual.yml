@@ -9,11 +9,10 @@ version: "2.4"
 # Each worker container is pinned to dedicated CPU cores to prevent contention
 # and ensure timing matches G4dn.2xlarge (8 vCPUs, 32GB RAM).
 #
-# CPU Layout (32-core system):
+# CPU Layout (12-core system):
 #   - W1: cores 0-7   (8 cores) - mirrors G4dn.2xlarge
-#   - W2: cores 8-15  (8 cores) - mirrors G4dn.2xlarge
-#   - W0: cores 16-19 (4 cores) - orchestrator (no experiments)
-#   - Host OS: cores 20-31 (12 cores reserved)
+#   - W2: cores 8-11  (4 cores) - reduced for available cores
+#   - W0: uncapped    (shares available cores) - orchestrator (no experiments)
 #
 # This ensures each experiment worker has ISOLATED resources matching the
 # competition submission environment.
@@ -51,9 +50,8 @@ services:
     hostname: orchestrator
 
     # Orchestrator uses fewer resources (no experiments)
-    # Pinned to cores 16-19 (4 cores)
+    # No CPU pinning - shares available cores
     cpus: '4'
-    cpuset: "16-19"
     mem_limit: 16g
 
     volumes:
@@ -83,7 +81,7 @@ services:
         echo '';
         echo 'DOES NOT run experiments!';
         echo '';
-        echo 'CPU: Pinned to cores 16-19';
+        echo 'CPU: Uncapped (shares available cores)';
         echo '';
         echo 'SETUP:';
         echo '  1. Run: claude login';
@@ -150,7 +148,7 @@ services:
 
   # ===================================================================
   # W2 - EXPERIMENT WORKER
-  # PINNED TO CORES 8-15 - Mirrors G4dn.2xlarge (8 vCPUs)
+  # PINNED TO CORES 8-11 (4 cores on 12-core system)
   # ===================================================================
   worker2:
     build:
@@ -160,10 +158,10 @@ services:
     container_name: claude-worker-2
     hostname: worker2
 
-    # G4dn.2xlarge equivalent: 8 vCPUs, 32GB RAM
-    # PINNED to dedicated cores 8-15 for accurate timing
-    cpus: '8'
-    cpuset: "8-15"
+    # Reduced for 12-core system (cores 0-11 available)
+    # PINNED to cores 8-11 (4 cores) - remaining after W1
+    cpus: '4'
+    cpuset: "8-11"
     mem_limit: 32g
 
     volumes:
@@ -186,7 +184,7 @@ services:
         echo 'W2 - EXPERIMENT WORKER';
         echo '========================================';
         echo '';
-        echo 'CPU: Pinned to cores 8-15 (G4dn.2xlarge equivalent)';
+        echo 'CPU: Pinned to cores 8-11 (4 cores available)';
         echo 'RAM: 32GB isolated';
         echo '';
         echo 'Timing should now match submission environment!';

@@ -1,0 +1,55 @@
+
+============================================================
+EARLY STOP POLISH CONVERGENCE EXPERIMENT
+============================================================
+Samples: 20 (20 1-source, 0 2-source)
+Workers: 7
+Early stop threshold: 0.0
+Min NM iters: 8
+Consecutive iters: 2
+Max NM iters: 8
+Use saved budget for 2nd: False
+============================================================
+[  1/20] Sample   4: 1-src RMSE=0.1514 cands=3 time=171.6s [OK]
+[  2/20] Sample   2: 1-src RMSE=0.0762 cands=3 time=176.9s [OK]
+[  3/20] Sample   1: 1-src RMSE=0.1027 cands=3 time=181.8s [OK]
+[  4/20] Sample   0: 1-src RMSE=0.1141 cands=3 time=218.8s [OK]
+[  5/20] Sample   3: 1-src RMSE=0.0242 cands=2 time=222.6s [OK]
+[  6/20] Sample   5: 1-src RMSE=0.1654 cands=2 time=224.7s [OK]
+[  7/20] Sample   6: 1-src RMSE=0.1020 cands=3 time=232.9s [OK]
+[  8/20] Sample   8: 1-src RMSE=0.1008 cands=2 time=190.5s [OK]
+[  9/20] Sample  12: 1-src RMSE=0.1520 cands=3 time=185.3s [OK]
+[ 10/20] Sample   9: 1-src RMSE=0.1816 cands=3 time=234.9s [OK]
+[ 11/20] Sample   7: 1-src RMSE=0.2777 cands=3 time=282.2s [OK]
+[ 12/20] Sample  10: 1-src RMSE=0.1565 cands=3 time=300.3s [OK]
+[ 13/20] Sample  11: 1-src RMSE=0.0440 cands=3 time=296.9s [OK]
+[ 14/20] Sample  13: 1-src RMSE=0.0694 cands=1 time=291.2s [OK]
+[ 15/20] Sample  16: 1-src RMSE=0.1519 cands=3 time=177.9s [OK]
+[ 16/20] Sample  14: 1-src RMSE=0.1622 cands=3 time=255.5s [OK]
+[ 17/20] Sample  15: 1-src RMSE=0.0308 cands=3 time=242.3s [OK]
+[ 18/20] Sample  17: 1-src RMSE=0.1094 cands=3 time=228.6s [OK]
+[ 19/20] Sample  19: 1-src RMSE=0.1053 cands=1 time=188.3s [OK]
+[ 20/20] Sample  18: 1-src RMSE=0.1159 cands=3 time=194.0s [OK]
+
+======================================================================
+RESULTS - Early Stop Polish Convergence
+======================================================================
+Score:            1.1604
+RMSE mean:        0.1197
+Total time:       713.2s
+Projected (400):  237.7 min
+
+  1-source: RMSE=0.1197 (n=20, time=224.8s)
+
+Early stopping stats:
+  Samples early stopped: 0/20 (0.0%)
+  Total iterations saved: 0
+  Avg iters saved per sample: 0.00
+
+Baseline:  1.1468 @ 54.2 min (perturbation_plus_verification)
+This run:  1.1604 @ 237.7 min
+Delta:     +0.0136 score, +183.5 min
+
+STATUS: OVER BUDGET
+======================================================================
+

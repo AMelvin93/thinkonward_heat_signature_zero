@@ -2,7 +2,10 @@
   "experiment_id": "EXP_ADAPTIVE_PERTURB_SCALE_001",
   "experiment_name": "adaptive_perturbation_scale",
   "worker": "W1",
-  "status": "in_progress",
+  "status": "completed",
+  "result": "FAILED",
+  "conclusion": "Adaptive perturbation scale FAILS. Best in-budget (1.1419 @ 57.4 min) is WORSE than baseline (1.1464 @ 51.2 min). Fixed scale 0.05 is optimal.",
+  "best_in_budget": {"run": 3, "score": 1.1419, "time_min": 57.4},
   "started_at": "2026-01-28T03:10:00Z",
   "hypothesis": "Scale perturbation based on solution quality - larger perturbations for worse solutions (stuck in poor basins) and smaller perturbations for better solutions (fine-tuning).",
   "baseline": {

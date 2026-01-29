@@ -1,0 +1,92 @@
+{
+  "experiment": "w2_config_with_gradient_verify",
+  "experiment_id": "EXP_W2_CONFIG_WITH_VERIFICATION_001",
+  "worker": "W1",
+  "status": "completed",
+  "result": "FAILED",
+  "conclusion": "W2 config (40% temporal) with gradient verification is fundamentally incompatible with 60-min budget. Even at 25% temporal, runs take 300+ min (5x over budget). The gradient verification adds massive overhead without improving accuracy. Stick with baseline optimizers.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "refine_maxiter": 5,
+        "timestep_fraction": 0.4,
+        "enable_perturbation": true,
+        "enable_verification": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 2,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1410196763581193,
+      "projected_400_min": 391.5871769587199,
+      "total_time_sec": 4699.046123504639,
+      "rmse_mean": 0.16536324695572263,
+      "rmse_mean_1src": 0.12627075323839998,
+      "rmse_mean_2src": 0.19142490943393775,
+      "n_verified": 16,
+      "n_perturbed": 23,
+      "in_budget": false,
+      "timestamp": "2026-01-28T08:08:15.884882"
+    },
+    {
+      "run": 2,
+      "config": {
+        "refine_maxiter": 3,
+        "timestep_fraction": 0.35,
+        "enable_perturbation": false,
+        "enable_verification": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 2,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1412899688867242,
+      "projected_400_min": 308.99246827761334,
+      "total_time_sec": 3707.90961933136,
+      "rmse_mean": 0.17436738320742012,
+      "rmse_mean_1src": 0.1376499569710894,
+      "rmse_mean_2src": 0.19884566736497397,
+      "n_verified": 23,
+      "n_perturbed": 0,
+      "in_budget": false,
+      "timestamp": "2026-01-28T09:11:04.726148"
+    },
+    {
+      "run": 3,
+      "config": {
+        "refine_maxiter": 5,
+        "timestep_fraction": 0.25,
+        "enable_perturbation": true,
+        "enable_verification": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 2,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1355289925262775,
+      "projected_400_min": 313.91709037621814,
+      "total_time_sec": 3767.005084514618,
+      "rmse_mean": 0.1767400212400096,
+      "rmse_mean_1src": 0.12506385565097144,
+      "rmse_mean_2src": 0.21119079829936838,
+      "n_verified": 11,
+      "n_perturbed": 21,
+      "in_budget": false,
+      "timestamp": "2026-01-28T10:14:36.792825"
+    }
+  ],
+  "best_in_budget": null
+}

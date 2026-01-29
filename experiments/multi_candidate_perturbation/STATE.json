@@ -1,0 +1,86 @@
+{
+  "experiment_id": "EXP_MULTI_CANDIDATE_PERTURB_001",
+  "name": "multi_candidate_perturbation",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-28T17:00:00Z",
+  "family": "perturbation_v3",
+  "hypothesis": "Current perturbation only explores around best candidate. 2nd-best candidate may be in a different basin with better local optimum.",
+  "baseline": {
+    "score": 1.1468,
+    "time_min": 54.2,
+    "experiment": "perturbation_plus_verification",
+    "note": "Current best in-budget."
+  },
+  "prior_evidence": {
+    "perturbed_local_restart": "SUCCESS - 1.1452 @ 47.7 min with perturb_top_n=1, n_perturbations=2",
+    "perturbed_extended_polish": "SUCCESS - 1.1464 @ 51.2 min with higher sigma",
+    "multi_round_perturbation": "FAILED - 1.1372 @ 50.9 min, single-round is optimal"
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Perturb top 2 with 1 perturbation each (2 total)",
+      "config": {
+        "perturb_top_n": 2,
+        "n_perturbations": 1
+      },
+      "rationale": "Baseline test: explore 2nd-best candidate's basin"
+    },
+    {
+      "run": 2,
+      "description": "Perturb top 2 with 2 perturbations each (4 total)",
+      "config": {
+        "perturb_top_n": 2,
+        "n_perturbations": 2
+      },
+      "rationale": "More exploration if Run 1 shows promise"
+    },
+    {
+      "run": 3,
+      "description": "Perturb only top 1 with 2 perturbations (baseline comparison)",
+      "config": {
+        "perturb_top_n": 1,
+        "n_perturbations": 2
+      },
+      "rationale": "Direct comparison to understand if 2nd candidate helps"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "perturb_top_n": 2,
+        "n_perturbations": 1,
+        "perturbation_scale": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_top_n": 2,
+        "refine_maxiter": 8,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "perturb_nm_iters": 3
+      },
+      "results": {
+        "score": 1.152586280484924,
+        "total_time_sec": 451.11281847953796,
+        "projected_400_min": 150.37093949317932,
+        "rmse_mean": 0.1369236809550363,
+        "rmse_mean_1src": 0.1369236809550363,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 144.24203283786773,
+        "time_mean_2src": 0
+      },
+      "timestamp": "2026-01-28T16:37:58.912458"
+    }
+  ],
+  "best_in_budget": null,
+  "conclusions": {
+    "status": "INCONCLUSIVE",
+    "finding": "Score +0.0058 better than baseline (1.1526 vs 1.1468). 2nd-best candidate perturbation shows promise.",
+    "limitation": "Machine too slow - 150.4 min vs 60 min budget (2.5x over). Cannot validate production viability.",
+    "comparison": "Multi-candidate perturbation outperforms multi-seed (1.1526 vs 1.1162). Sample 7 improved from 0.5374 to 0.3242.",
+    "recommendation": "Test on faster machine. If budget permits, perturbing 2nd-best candidate may improve accuracy."
+  }
+}

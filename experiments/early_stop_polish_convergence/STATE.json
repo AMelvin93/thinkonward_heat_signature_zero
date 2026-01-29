@@ -1,0 +1,186 @@
+{
+  "experiment_id": "EXP_EARLY_STOP_POLISH_001",
+  "name": "early_stop_polish_convergence",
+  "worker": "W1",
+  "status": "in_progress",
+  "started_at": "2026-01-28T13:30:00Z",
+  "family": "polish_efficiency",
+  "hypothesis": "Fixed 8 NM iterations wastes budget on easy samples that converge quickly. Early stopping could reallocate budget to harder samples or more candidates.",
+  "baseline": {
+    "score": 1.1468,
+    "time_min": 54.2,
+    "experiment": "perturbation_plus_verification",
+    "note": "Current best in-budget"
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Baseline 8 NM iterations with convergence tracking (to measure actual convergence)",
+      "config": {
+        "nm_iters": 8,
+        "early_stop_threshold": 0.0,
+        "min_nm_iters": 8,
+        "track_convergence": true
+      },
+      "rationale": "Establish baseline and measure how many samples converge early"
+    },
+    {
+      "run": 2,
+      "description": "Early stop at 0.001 improvement, min 3 iterations",
+      "config": {
+        "nm_iters": 8,
+        "early_stop_threshold": 0.001,
+        "min_nm_iters": 3,
+        "consecutive_iters": 2
+      },
+      "rationale": "Conservative early stopping - stop if RMSE improves < 0.001 for 2 consecutive iters"
+    },
+    {
+      "run": 3,
+      "description": "Use saved budget for second-best candidate",
+      "config": {
+        "nm_iters": 8,
+        "early_stop_threshold": 0.001,
+        "min_nm_iters": 3,
+        "consecutive_iters": 2,
+        "use_saved_budget_for_2nd": true
+      },
+      "rationale": "Reallocate saved budget to improve second-best candidate"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "early_stop_threshold": 0.0,
+        "min_nm_iters": 8,
+        "consecutive_iters": 2,
+        "use_saved_budget_for_2nd": false,
+        "refine_maxiter": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1604021374754518,
+        "total_time_sec": 713.1955111026764,
+        "projected_400_min": 237.73183703422546,
+        "rmse_mean": 0.11967680162950159,
+        "rmse_mean_1src": 0.11967680162950159,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 224.8476030111313,
+        "time_mean_2src": 0,
+        "n_early_stopped": 0,
+        "pct_early_stopped": 0.0,
+        "total_iters_saved": 0,
+        "avg_iters_saved": 0.0
+      },
+      "timestamp": "2026-01-28T13:48:14.726797"
+    },
+    {
+      "run": 2,
+      "config": {
+        "early_stop_threshold": 0.0,
+        "min_nm_iters": 8,
+        "consecutive_iters": 2,
+        "use_saved_budget_for_2nd": false,
+        "refine_maxiter": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1433909087397185,
+        "total_time_sec": 256.7275502681732,
+        "projected_400_min": 171.15170017878214,
+        "rmse_mean": 0.14872526565607075,
+        "rmse_mean_1src": 0.14872526565607075,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 118.33350863456727,
+        "time_mean_2src": 0,
+        "n_early_stopped": 0,
+        "pct_early_stopped": 0.0,
+        "total_iters_saved": 0,
+        "avg_iters_saved": 0.0
+      },
+      "timestamp": "2026-01-28T13:54:28.284910"
+    },
+    {
+      "run": 3,
+      "config": {
+        "early_stop_threshold": 0.001,
+        "min_nm_iters": 3,
+        "consecutive_iters": 2,
+        "use_saved_budget_for_2nd": false,
+        "refine_maxiter": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1203240468517046,
+        "total_time_sec": 5346.60831785202,
+        "projected_400_min": 445.550693154335,
+        "rmse_mean": 0.20223987450795278,
+        "rmse_mean_1src": 0.17523945612491407,
+        "rmse_mean_2src": 0.22024015342997863,
+        "time_mean_1src": 253.4738631248474,
+        "time_mean_2src": 590.1524455597004,
+        "n_early_stopped": 72,
+        "pct_early_stopped": 90.0,
+        "total_iters_saved": 277,
+        "avg_iters_saved": 3.4625
+      },
+      "timestamp": "2026-01-28T15:32:58.751464"
+    },
+    {
+      "run": 4,
+      "config": {
+        "early_stop_threshold": 0.001,
+        "min_nm_iters": 3,
+        "consecutive_iters": 2,
+        "use_saved_budget_for_2nd": false,
+        "refine_maxiter": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1255146367005107,
+        "total_time_sec": 5374.313111543655,
+        "projected_400_min": 447.8594259619713,
+        "rmse_mean": 0.2006042890145085,
+        "rmse_mean_1src": 0.14649369767761863,
+        "rmse_mean_2src": 0.23667801657243512,
+        "time_mean_1src": 229.67536018043756,
+        "time_mean_2src": 614.9938482989868,
+        "n_early_stopped": 71,
+        "pct_early_stopped": 88.75,
+        "total_iters_saved": 270,
+        "avg_iters_saved": 3.375
+      },
+      "timestamp": "2026-01-28T15:33:02.070391"
+    }
+  ],
+  "best_in_budget": null,
+  "conclusions": {
+    "status": "FAILED",
+    "result": "Early stopping adds MASSIVE overhead (7.4x over budget)",
+    "key_finding": "Running scipy minimize with maxiter=1 repeatedly is extremely inefficient - simplex initialization overhead dominates",
+    "early_stop_rate": "90% of samples triggered early stopping (3.46 iters saved avg)",
+    "fatal_flaw": "Per-iteration overhead in scipy's Nelder-Mead is ~10x higher than per-iteration cost within a single minimize call",
+    "recommendation": "Fixed 8 NM iterations is optimal - early stopping approach fundamentally flawed for scipy's implementation"
+  }
+}

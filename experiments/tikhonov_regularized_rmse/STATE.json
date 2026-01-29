@@ -1,0 +1,67 @@
+{
+  "experiment_id": "EXP_TIKHONOV_REGULARIZED_001",
+  "experiment_name": "tikhonov_regularized_rmse",
+  "worker": "W1",
+  "status": "completed",
+  "result": "FAILED",
+  "completed_at": "2026-01-28T13:30:00Z",
+  "conclusion": "Tikhonov regularization catastrophically failed - 8x over budget (491.2 min vs 60 min) with worse accuracy (1.1388 vs 1.1464). The regularization penalty during CMA-ES optimization fundamentally breaks convergence by biasing toward triangulation prior which may be suboptimal. No further runs warranted.",
+  "started_at": "2026-01-28T11:45:00Z",
+  "hypothesis": "Sensor data may have noise. Tikhonov regularization toward triangulation prior may help find smoother, more accurate solutions.",
+  "baseline": {
+    "experiment": "perturbed_extended_polish",
+    "score": 1.1464,
+    "time_min": 51.2
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Lambda=0.01 (small regularization)",
+      "config": {
+        "regularization_lambda": 0.01
+      }
+    },
+    {
+      "run": 2,
+      "description": "Adjust lambda based on Run 1",
+      "conditional": "dependent on run 1"
+    },
+    {
+      "run": 3,
+      "description": "Fine-tune or try without regularization as control",
+      "conditional": "dependent on runs 1-2"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_regularization": true,
+        "regularization_lambda": 0.01,
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 3,
+        "perturbation_scale": 0.05,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1388109072606842,
+      "projected_400_min": 491.16484804948163,
+      "total_time_sec": 5893.9781765937805,
+      "rmse_mean": 0.16810414415968006,
+      "rmse_mean_1src": 0.1277973034077014,
+      "rmse_mean_2src": 0.19497537132766582,
+      "n_perturbed_selected": 17,
+      "n_samples_with_perturbed": 17,
+      "in_budget": false,
+      "timestamp": "2026-01-28T13:27:17.368949"
+    }
+  ],
+  "best_in_budget": null
+}

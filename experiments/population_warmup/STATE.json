@@ -1,0 +1,29 @@
+{
+  "experiment_id": "EXP_POPULATION_WARMUP_001",
+  "name": "population_warmup",
+  "worker": "W1",
+  "status": "aborted",
+  "started_at": "2026-01-28T17:45:00Z",
+  "aborted_at": "2026-01-28T17:45:00Z",
+  "family": "cmaes_efficiency",
+  "hypothesis": "Two-phase sigma schedule: explore broadly then refine locally within CMA-ES budget.",
+  "baseline": {
+    "score": 1.1468,
+    "time_min": 54.2,
+    "experiment": "perturbation_plus_verification"
+  },
+  "prior_evidence": {
+    "sigma_ladder": "FAILED - Sigma scheduling interferes with CMA-ES covariance learning",
+    "adaptive_sigma_schedule": "FAILED - Same issue",
+    "learning_rate_adapted_cmaes": "FAILED - Parameter adaptation interference"
+  },
+  "abort_reason": "Prior evidence (sigma_ladder) conclusively shows sigma scheduling interferes with CMA-ES covariance adaptation. This experiment would repeat a known failure.",
+  "tuning_runs": [],
+  "best_in_budget": null,
+  "conclusions": {
+    "status": "ABORTED",
+    "finding": "Sigma scheduling is theoretically unsound for CMA-ES - interferes with covariance adaptation",
+    "recommendation": "Do not pursue sigma schedule modifications. CMA-ES internal adaptation is optimal.",
+    "family_exhausted": "cmaes_efficiency"
+  }
+}

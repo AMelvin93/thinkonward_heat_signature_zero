@@ -2,7 +2,9 @@
   "experiment_id": "EXP_REDUCED_1SRC_EVALS_001",
   "experiment_name": "reduced_1src_evals",
   "worker": "W3",
-  "status": "in_progress",
+  "status": "completed",
+  "result": "FAILED",
+  "conclusion": "Reducing 1-source fevals hurts accuracy. Best in-budget (Run 1 with fevals=15) scores 1.1398, WORSE than baseline 1.1464 by 0.0066. 1-source problems still need full 20 fevals.",
   "started_at": "2026-01-28T03:45:00Z",
   "hypothesis": "1-source problems have only 3 params vs 6 for 2-source. May converge faster and need fewer CMA-ES fevals.",
   "baseline": {
@@ -61,6 +63,35 @@
       "n_2src": 48,
       "in_budget": true,
       "timestamp": "2026-01-28T03:46:49.171900"
+    },
+    {
+      "run": 2,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 3,
+        "perturbation_scale": 0.05,
+        "max_fevals_1src": 17,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "score": 1.1401926138081655,
+      "projected_400_min": 413.59277363618213,
+      "total_time_sec": 4963.113283634186,
+      "rmse_mean": 0.17128782950842475,
+      "rmse_mean_1src": 0.14370385377288494,
+      "rmse_mean_2src": 0.1896771466654513,
+      "n_perturbed_selected": 24,
+      "n_samples_with_perturbed": 22,
+      "n_1src": 32,
+      "n_2src": 48,
+      "in_budget": false,
+      "timestamp": "2026-01-28T11:42:43.740530"
     }
   ],
   "best_in_budget": {

@@ -1,0 +1,132 @@
+{
+  "experiment_id": "EXP_ASYMMETRIC_NM_ITERS_001",
+  "name": "asymmetric_nm_iterations",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-01-28T15:35:00Z",
+  "family": "polish_allocation",
+  "hypothesis": "2-source problems have more complex landscapes and may benefit from more NM polish iterations than 1-source problems.",
+  "baseline": {
+    "score": 1.1468,
+    "time_min": 54.2,
+    "experiment": "perturbation_plus_verification",
+    "note": "Current best in-budget. Uses fixed 8 NM iterations for both 1-src and 2-src."
+  },
+  "prior_evidence": {
+    "adaptive_nm_iterations": "FAILED - scipy adaptive NM is worse",
+    "double_nm_polish_round": "FAILED - more polish rounds hurt accuracy",
+    "reduced_cmaes_more_nm": "FAILED - budget reallocation hurts accuracy",
+    "conclusion": "Fixed 8 NM is optimal, but 1-src vs 2-src specific tuning not tested"
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Baseline: 8 NM for both 1-src and 2-src",
+      "config": {
+        "nm_iters_1src": 8,
+        "nm_iters_2src": 8
+      },
+      "rationale": "Establish baseline on current machine"
+    },
+    {
+      "run": 2,
+      "description": "More polish for 2-src: 6 for 1-src, 10 for 2-src",
+      "config": {
+        "nm_iters_1src": 6,
+        "nm_iters_2src": 10
+      },
+      "rationale": "Test hypothesis: 2-src needs more polish"
+    },
+    {
+      "run": 3,
+      "description": "Alternative: 5 for 1-src, 12 for 2-src",
+      "config": {
+        "nm_iters_1src": 5,
+        "nm_iters_2src": 12
+      },
+      "rationale": "More aggressive reallocation to 2-src"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "nm_iters_1src": 8,
+        "nm_iters_2src": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1506921362229423,
+        "total_time_sec": 366.65181183815,
+        "projected_400_min": 122.21727061271667,
+        "rmse_mean": 0.12481184945435167,
+        "rmse_mean_1src": 0.12481184945435167,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 116.03283460140229,
+        "time_mean_2src": 0
+      },
+      "timestamp": "2026-01-28T15:43:27.383875"
+    },
+    {
+      "run": 2,
+      "config": {
+        "nm_iters_1src": 6,
+        "nm_iters_2src": 10,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1479094441033109,
+        "total_time_sec": 857.1790308952332,
+        "projected_400_min": 142.8631718158722,
+        "rmse_mean": 0.15297997238960473,
+        "rmse_mean_1src": 0.13711273202263913,
+        "rmse_mean_2src": 0.21644893385746705,
+        "time_mean_1src": 111.64846356213093,
+        "time_mean_2src": 250.6670907139778
+      },
+      "timestamp": "2026-01-28T15:58:24.341008"
+    },
+    {
+      "run": 3,
+      "config": {
+        "nm_iters_1src": 8,
+        "nm_iters_2src": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.135521124258955,
+        "total_time_sec": 981.3274080753326,
+        "projected_400_min": 163.55456801255545,
+        "rmse_mean": 0.1531342477699747,
+        "rmse_mean_1src": 0.1407023007556416,
+        "rmse_mean_2src": 0.20286203582730714,
+        "time_mean_1src": 126.18752689659595,
+        "time_mean_2src": 278.46463203430176
+      },
+      "timestamp": "2026-01-28T16:15:18.117096"
+    }
+  ],
+  "best_in_budget": null,
+  "conclusions": {
+    "status": "INCONCLUSIVE",
+    "finding": "Asymmetric NM allocation (6/10) scored slightly better than baseline (8/8) on same samples, but 2-src RMSE was actually worse with more iterations, contradicting hypothesis",
+    "limitation": "Machine too slow - all runs over 60-min budget, cannot test production performance",
+    "recommendation": "Do not pursue asymmetric NM allocation. Fixed 8 NM iterations remains optimal.",
+    "family_exhausted": "polish_allocation"
+  }
+}

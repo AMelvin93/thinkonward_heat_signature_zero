@@ -1,7 +1,7 @@
 {
-  "version": "15.8",
-  "last_updated": "2026-01-28T03:06:26.788393",
-  "notes": "V15.8: W0 added 2 perturbation experiments for queue health (available was 4, now 6)",
+  "version": "15.11",
+  "last_updated": "2026-01-28T13:28:32.058149",
+  "notes": "V15.9: W0 added 2 experiments for queue health (was 3, now 5)",
   "queue_status": "OK",
   "experiment_queue": [
     {
@@ -3136,9 +3136,9 @@
     },
     {
       "id": "EXP_REDUCED_1SRC_EVALS_001",
-      "priority": 3,
+      "priority": 99,
       "family": "efficiency_v2",
-      "status": "available",
+      "status": "completed",
       "name": "reduced_1src_evals",
       "description": "1-source problems are simpler - use fewer fevals (15 vs 20)",
       "hypothesis": "1-src only has 3 params, may converge faster than 2-src with 6 params",
@@ -3147,7 +3147,11 @@
         "2. Keep fevals=36 for 2-source problems",
         "3. Save time on simpler problems"
       ],
-      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min"
+      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min",
+      "result": "FAILED - 1-source needs full 20 fevals",
+      "score": 1.1398,
+      "time_min": 49.0,
+      "worker": "W1"
     },
     {
       "id": "EXP_EXTENDED_VERIFICATION_001",
@@ -3239,7 +3243,7 @@
       "id": "EXP_TIKHONOV_REGULARIZED_001",
       "priority": 3,
       "family": "loss_v3",
-      "status": "available",
+      "status": "in_progress",
       "name": "tikhonov_regularized_rmse",
       "description": "Add Tikhonov regularization to RMSE to prevent overfitting to sensor noise",
       "hypothesis": "Sensor data may have noise. Regularization may help find smoother, more accurate solutions.",
@@ -3251,7 +3255,9 @@
         "4. Run standard CMA-ES with new loss",
         "5. Polish uses original RMSE (no regularization)"
       ],
-      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "worker": "W1",
+      "started_at": "2026-01-28T11:46:10.164820"
     },
     {
       "id": "EXP_NM_LARGER_SIMPLEX_001",
@@ -3296,9 +3302,9 @@
     },
     {
       "id": "EXP_W2_CONFIG_WITH_VERIFICATION_001",
-      "priority": 2,
+      "priority": 99,
       "family": "hybrid_v2",
-      "status": "available",
+      "status": "completed",
       "name": "w2_config_with_gradient_verify",
       "description": "Add gradient verification to W2's 1.1688 config",
       "hypothesis": "If verification helped the 1.1373 config (+0.01), it might help the 1.1688 config too",
@@ -3308,7 +3314,11 @@
         "3. Use verify_top_n=1 (proven optimal)",
         "4. May need to reduce NM polish slightly to stay in budget"
       ],
-      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min"
+      "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min",
+      "result": "FAILED",
+      "score": 1.1413,
+      "time_min": 308.99,
+      "worker": "W1"
     },
     {
       "id": "EXP_45PCT_TEMPORAL_001",
@@ -3336,7 +3346,9 @@
       "id": "EXP_SIGMA_FINE_TUNE_001",
       "priority": 3,
       "family": "sigma_v4",
-      "status": "available",
+      "status": "completed",
+      "completed_by": "W1",
+      "completed_at": "2026-01-28T17:30:00Z",
       "name": "sigma_fine_tune_around_w2",
       "description": "Fine-tune sigma around W2's optimal 0.18/0.22",
       "hypothesis": "W2 found sigma 0.18/0.22 optimal. Test nearby values (0.16/0.20, 0.20/0.24)",
@@ -3345,7 +3357,8 @@
         "2. Keep 40% temporal and 8 NM polish from W2 config",
         "3. Find if there's a slightly better sigma combination"
       ],
-      "success_criteria": "Score >= 1.17 AND time <= 60 min"
+      "success_criteria": "Score >= 1.17 AND time <= 60 min",
+      "result": "INCONCLUSIVE - Machine too slow (148.8 min vs 60 min budget). Prior evidence: sigma 0.18/0.22 is optimal."
     },
     {
       "id": "EXP_PERTURB_40PCT_TEMPORAL_001",
@@ -3392,9 +3405,9 @@
     },
     {
       "id": "EXP_ADAPTIVE_PERTURB_SCALE_001",
-      "priority": 2,
+      "priority": 99,
       "family": "perturbation_v2",
-      "status": "available",
+      "status": "completed",
       "name": "adaptive_perturbation_scale",
       "description": "Scale perturbation based on solution quality - larger perturbations for worse solutions",
       "hypothesis": "Worse solutions may be stuck in poor basins and need larger perturbations to escape. Better solutions need smaller perturbations to fine-tune.",
@@ -3403,13 +3416,18 @@
         "Good solutions (low RMSE) get small perturbation, bad solutions get larger",
         "Cap at max_scale to prevent instability"
       ],
-      "success_criteria": "Score > 1.1464 AND time <= 60 min"
+      "success_criteria": "Score > 1.1464 AND time <= 60 min",
+      "worker": "W1",
+      "started_at": "2026-01-28T10:17:46.085746",
+      "result": "FAILED",
+      "score": 1.1419,
+      "time_min": 57.4
     },
     {
       "id": "EXP_MULTI_ROUND_PERTURB_001",
-      "priority": 2,
+      "priority": 99,
       "family": "perturbation_v2",
-      "status": "available",
+      "status": "completed",
       "name": "multi_round_perturbation",
       "description": "Apply perturbation twice: perturb \u2192 NM optimize \u2192 perturb \u2192 NM optimize",
       "hypothesis": "Single perturbation may not escape deep local minima. Two rounds of perturbation+optimization may find better basins.",
@@ -3418,7 +3436,107 @@
         "Round 2: perturb result of round 1, optimize with 2 NM iterations",
         "Keep best of all candidates"
       ],
-      "success_criteria": "Score > 1.1464 AND time <= 60 min"
+      "success_criteria": "Score > 1.1464 AND time <= 60 min",
+      "result": "FAILED - Best in-budget 1.1372 @ 50.9 min is WORSE than baseline 1.1468"
+    },
+    {
+      "id": "EXP_POSITION_ONLY_PERTURB_001",
+      "priority": 2,
+      "family": "perturbation_targeted",
+      "status": "claimed",
+      "name": "position_only_perturbation",
+      "description": "Since VarPro handles intensity optimally, only perturb position parameters. May reduce variance in perturbation outcomes.",
+      "hypothesis": "Intensity is globally optimal via VarPro. Perturbing only position (x,y) may escape local position minima without disrupting optimal intensity.",
+      "implementation": [
+        "Modify perturbation to only add noise to x,y coordinates",
+        "Keep intensity fixed during perturbation step",
+        "Re-optimize intensity analytically after position perturbation"
+      ],
+      "success_criteria": "Score >= 1.15 AND time <= 60 min",
+      "worker": "W1",
+      "claimed_at": "2026-01-28T13:28:32.058029"
+    },
+    {
+      "id": "EXP_EARLY_STOP_POLISH_001",
+      "priority": 2,
+      "family": "polish_efficiency",
+      "status": "completed",
+      "claimed_by": "W1",
+      "completed_at": "2026-01-28T15:35:00Z",
+      "name": "early_stop_polish_convergence",
+      "description": "Stop NM polish early if convergence is detected. Some samples may converge in 3-4 iterations, saving budget for harder samples.",
+      "hypothesis": "Fixed 8 NM iterations wastes budget on easy samples that converge quickly. Early stopping could reallocate budget to harder samples or more candidates.",
+      "implementation": [
+        "Track RMSE improvement between NM iterations",
+        "Stop if improvement < 0.001 for 2 consecutive iterations",
+        "Use saved budget for second-best candidate polish"
+      ],
+      "success_criteria": "Score >= 1.15 AND time <= 55 min",
+      "result": "FAILED - Per-iteration NM polish has ~10x overhead vs single minimize call. 90% early stopped but 7.4x over budget. polish_efficiency family EXHAUSTED."
+    },
+    {
+      "id": "EXP_ASYMMETRIC_NM_ITERS_001",
+      "priority": 2,
+      "family": "polish_allocation",
+      "status": "completed",
+      "name": "asymmetric_nm_iterations",
+      "description": "2-source problems may need more NM polish than 1-source. Try 10 iters for 2-src, 6 for 1-src.",
+      "hypothesis": "2-source problems have more complex landscapes and may benefit from more polish iterations.",
+      "success_criteria": "Score >= 1.15 AND time <= 60 min",
+      "result": "INCONCLUSIVE - Machine too slow (all runs over budget). Asymmetric (6/10) scored better than baseline (8/8) on same samples but 2-src RMSE was actually worse with more iterations. Hypothesis NOT supported. polish_allocation family EXHAUSTED."
+    },
+    {
+      "id": "EXP_POPULATION_WARMUP_001",
+      "priority": 3,
+      "family": "cmaes_efficiency",
+      "status": "aborted",
+      "aborted_by": "W1",
+      "aborted_at": "2026-01-28T17:45:00Z",
+      "name": "population_warmup",
+      "description": "Use first 5 evals with larger sigma to explore, then tighten sigma for refinement.",
+      "hypothesis": "Two-phase sigma schedule: explore broadly then refine locally within CMA-ES budget.",
+      "success_criteria": "Score >= 1.15 AND time <= 60 min",
+      "result": "ABORTED - Prior evidence (sigma_ladder) shows sigma scheduling interferes with CMA-ES covariance adaptation. cmaes_efficiency family EXHAUSTED."
+    },
+    {
+      "id": "EXP_BEST_OF_2_SEEDS_001",
+      "priority": 2,
+      "family": "multi_start_v2",
+      "status": "completed",
+      "completed_by": "W1",
+      "completed_at": "2026-01-28T16:50:00Z",
+      "name": "best_of_2_seeds",
+      "description": "Run 2 independent CMA-ES instances with different random seeds, select best candidate before NM polish.",
+      "hypothesis": "CMA-ES can get stuck in suboptimal basins depending on initialization. Running 2 instances doubles exploration. Since we use 40% temporal, the overhead may be acceptable.",
+      "informed_by": "more_inits_select_best FAILED (adds overhead), but that tested MORE inits. 2 may be sweet spot.",
+      "implementation": [
+        "1. Run CMA-ES twice with different seeds (half budget each: 10/18 fevals)",
+        "2. Compare best candidates from each run",
+        "3. Polish the better candidate with full 8 NM iterations",
+        "4. Use 40% temporal to control overhead"
+      ],
+      "success_criteria": "Score >= 1.15 AND time <= 60 min",
+      "result": "FAILED - Score 1.1162 (vs baseline 1.1468), Time 133.9 min (2.2x over budget). Budget splitting prevents CMA-ES covariance learning. multi_start_v2 family EXHAUSTED."
+    },
+    {
+      "id": "EXP_MULTI_CANDIDATE_PERTURB_001",
+      "priority": 2,
+      "family": "perturbation_v3",
+      "status": "completed",
+      "completed_by": "W1",
+      "completed_at": "2026-01-28T17:15:00Z",
+      "name": "multi_candidate_perturbation",
+      "description": "Perturb top 2 candidates instead of just top 1. May find improvements from 2nd-best candidate's basin.",
+      "hypothesis": "Current perturbation only explores around best candidate. 2nd-best candidate may be in a different basin with better local optimum.",
+      "informed_by": "perturbed_extended_polish SUCCESS (1.1464) - extend the winning pattern",
+      "implementation": [
+        "1. After CMA-ES, identify top 2 candidates by RMSE",
+        "2. Perturb each with 1 perturbation (total 2 perturbations)",
+        "3. Run coarse-grid NM on both perturbed candidates",
+        "4. Polish best overall with 8 NM iterations"
+      ],
+      "success_criteria": "Score >= 1.15 AND time <= 60 min",
+      "result": "INCONCLUSIVE - Score 1.1526 (+0.0058), Time 150.4 min (2.5x over). Shows promise but machine too slow to validate."
     }
   ],
   "algorithm_families": {
