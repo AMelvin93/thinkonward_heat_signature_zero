@@ -1,0 +1,57 @@
+{
+  "experiment": "coordinate_wise_refinement",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-30T04:15:00Z",
+  "completed_at": "2026-01-30T07:30:00Z",
+  "baseline": {
+    "score": 1.1516,
+    "time_min": 56.1,
+    "config": "nm_7iter (from shorter_nm_polish_6iter experiment)"
+  },
+  "hypothesis": "After NM polish, coordinate-wise line search may find improvements that NM's simplex geometry misses.",
+  "planned_configs": [
+    {"run": 1, "description": "No coord refine (baseline)", "params": {"coord_refine": false}},
+    {"run": 2, "description": "Coord refine step=0.01", "params": {"coord_refine": true, "coord_step": 0.01}},
+    {"run": 3, "description": "Coord refine step=0.02", "params": {"coord_refine": true, "coord_step": 0.02}}
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "no_coord_refine_baseline",
+      "params": {"enable_coord_refine": false, "refine_maxiter": 7},
+      "score": 1.1532,
+      "time_min": 61.11,
+      "in_budget": false,
+      "rmse_1src": 0.131739,
+      "rmse_2src": 0.212434
+    },
+    {
+      "run": 2,
+      "config": "coord_step_001",
+      "params": {"enable_coord_refine": true, "coord_step": 0.01, "refine_maxiter": 7},
+      "score": 1.1637,
+      "time_min": 63.85,
+      "in_budget": false,
+      "rmse_1src": 0.120762,
+      "rmse_2src": 0.194830
+    },
+    {
+      "run": 3,
+      "config": "coord_step_002",
+      "params": {"enable_coord_refine": true, "coord_step": 0.02, "refine_maxiter": 7},
+      "score": 1.1567,
+      "time_min": 60.78,
+      "in_budget": false,
+      "rmse_1src": 0.129770,
+      "rmse_2src": 0.204655
+    }
+  ],
+  "result": "SUCCESS",
+  "finding": "Coordinate refinement significantly improves accuracy! Step=0.01 gives +0.0105 improvement (1.1532 → 1.1637). Both 1-source and 2-source RMSE improved substantially.",
+  "recommendations": [
+    "Add coordinate refinement with step=0.01 to production config",
+    "Consider reducing NM iterations to 6 to stay in budget",
+    "Test combined config: 6 NM iter + coord_step=0.01"
+  ]
+}

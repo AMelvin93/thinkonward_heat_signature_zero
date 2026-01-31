@@ -1,0 +1,49 @@
+[
+  {
+    "config": "no_coord_refine_baseline",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 7,
+      "enable_coord_refine": false
+    },
+    "score": 1.1531791524605843,
+    "rmse_1src": 0.13173928968304885,
+    "rmse_2src": 0.2124342572583685,
+    "time_min": 61.110936943689985,
+    "errors": 0
+  },
+  {
+    "config": "coord_step_001",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 7,
+      "enable_coord_refine": true,
+      "coord_step": 0.01
+    },
+    "score": 1.1637102820419345,
+    "rmse_1src": 0.12076165837836832,
+    "rmse_2src": 0.19482962446674731,
+    "time_min": 63.846080549558,
+    "errors": 0
+  },
+  {
+    "config": "coord_step_002",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 7,
+      "enable_coord_refine": true,
+      "coord_step": 0.02
+    },
+    "score": 1.1567420027838318,
+    "rmse_1src": 0.12977006571476968,
+    "rmse_2src": 0.2046549928225181,
+    "time_min": 60.776748820145926,
+    "errors": 0
+  }
+]

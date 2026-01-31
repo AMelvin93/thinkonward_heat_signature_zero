@@ -1,0 +1,56 @@
+[
+  {
+    "config": "scale_010_large",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_perturbation": true,
+      "n_perturbations": 2,
+      "perturb_nm_iters": 3,
+      "perturbation_scale": 0.1
+    },
+    "score": 1.1627309491278275,
+    "rmse_1src": 0.1280204163378194,
+    "rmse_2src": 0.19019942035853166,
+    "time_min": 64.41096764008203,
+    "errors": 0
+  },
+  {
+    "config": "scale_005_medium",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_perturbation": true,
+      "n_perturbations": 2,
+      "perturb_nm_iters": 3,
+      "perturbation_scale": 0.05
+    },
+    "score": 1.1648315586867302,
+    "rmse_1src": 0.12940045036403772,
+    "rmse_2src": 0.18318860806145856,
+    "time_min": 64.47014816204707,
+    "errors": 0
+  },
+  {
+    "config": "scale_002_small",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_perturbation": true,
+      "n_perturbations": 2,
+      "perturb_nm_iters": 3,
+      "perturbation_scale": 0.02
+    },
+    "score": 1.153380439040334,
+    "rmse_1src": 0.13443306645906417,
+    "rmse_2src": 0.20918756099414235,
+    "time_min": 64.92606988747914,
+    "errors": 0
+  }
+]

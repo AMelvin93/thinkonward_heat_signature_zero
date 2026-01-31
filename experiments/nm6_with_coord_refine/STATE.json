@@ -1,0 +1,70 @@
+{
+  "experiment": "nm6_with_coord_refine",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-30T07:35:00Z",
+  "completed_at": "2026-01-30T10:30:00Z",
+  "baseline": {
+    "score": 1.1637,
+    "time_min": 63.85,
+    "config": "coord_step_001 with 7 NM iter (over budget)"
+  },
+  "hypothesis": "6 NM iterations + coord refinement should fit within 60 min budget while maintaining accuracy gains.",
+  "planned_configs": [
+    {"run": 1, "description": "6 NM + coord step=0.01", "params": {"refine_maxiter": 6, "coord_step": 0.01}},
+    {"run": 2, "description": "6 NM + coord step=0.015", "params": {"refine_maxiter": 6, "coord_step": 0.015}},
+    {"run": 3, "description": "5 NM + coord step=0.01", "params": {"refine_maxiter": 5, "coord_step": 0.01}}
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "nm6_coord001",
+      "params": {"refine_maxiter": 6, "coord_step": 0.01, "enable_coord_refine": true},
+      "score": 1.1602,
+      "time_min": 57.55,
+      "in_budget": true,
+      "rmse_1src": 0.135102,
+      "rmse_2src": 0.189828
+    },
+    {
+      "run": 2,
+      "config": "nm6_coord0015",
+      "params": {"refine_maxiter": 6, "coord_step": 0.015, "enable_coord_refine": true},
+      "score": 1.1554,
+      "time_min": 59.84,
+      "in_budget": true,
+      "rmse_1src": 0.130839,
+      "rmse_2src": 0.207319
+    },
+    {
+      "run": 3,
+      "config": "nm5_coord001",
+      "params": {"refine_maxiter": 5, "coord_step": 0.01, "enable_coord_refine": true},
+      "score": 1.1595,
+      "time_min": 57.18,
+      "in_budget": true,
+      "rmse_1src": 0.125622,
+      "rmse_2src": 0.201310
+    }
+  ],
+  "result": "SUCCESS",
+  "best_config": {
+    "name": "nm6_coord001",
+    "score": 1.1602,
+    "time_min": 57.55,
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.40,
+      "refine_maxiter": 6,
+      "enable_coord_refine": true,
+      "coord_step": 0.01
+    }
+  },
+  "finding": "Found best IN-BUDGET configuration: nm6_coord001 @ 1.1602, 57.6 min. All 3 configs completed within budget.",
+  "recommendations": [
+    "Adopt nm6_coord001 as new production config",
+    "6 NM iterations + coord refine (step=0.01) is optimal",
+    "Mark coordinate refinement as validated technique"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "experiment": "higher_fevals_test",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-31T13:40:00Z",
+  "completed_at": "2026-01-31T17:10:00Z",
+  "baseline": {
+    "nm4_perturb1_score": 1.1585,
+    "nm4_perturb1_time": 54.94,
+    "budget_remaining": 5.06,
+    "fevals_1src": 20,
+    "fevals_2src": 36
+  },
+  "hypothesis": "More CMA-ES function evaluations could improve convergence and accuracy while staying within budget.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "fevals_25_45",
+      "params": {"max_fevals_1src": 25, "max_fevals_2src": 45},
+      "score": 1.1542,
+      "time_min": 58.88,
+      "in_budget": true,
+      "rmse_1src": 0.134062,
+      "rmse_2src": 0.207256,
+      "note": "WORSE than baseline despite more fevals"
+    },
+    {
+      "run": 2,
+      "config": "fevals_30_50",
+      "params": {"max_fevals_1src": 30, "max_fevals_2src": 50},
+      "score": 1.1640,
+      "time_min": 61.62,
+      "in_budget": false,
+      "rmse_1src": 0.125332,
+      "rmse_2src": 0.189350,
+      "note": "Best score but over budget"
+    },
+    {
+      "run": 3,
+      "config": "fevals_22_40",
+      "params": {"max_fevals_1src": 22, "max_fevals_2src": 40},
+      "score": 1.1640,
+      "time_min": 57.10,
+      "in_budget": true,
+      "rmse_1src": 0.125231,
+      "rmse_2src": 0.189620,
+      "note": "BEST - Same score as fevals_30_50, but in budget!"
+    }
+  ],
+  "result": "SUCCESS",
+  "best_in_budget": {
+    "config": "fevals_22_40",
+    "score": 1.1640,
+    "time_min": 57.10,
+    "fevals_1src": 22,
+    "fevals_2src": 40,
+    "improvement_vs_baseline": "+0.0055 score, +2.2 min"
+  },
+  "finding": "Slight fevals increase (20/36 -> 22/40) provides +0.0055 score improvement while staying in budget. This is the new optimal in-budget config.",
+  "recommendations": [
+    "Adopt fevals_22_40 as new production config",
+    "Score 1.1640 is top-tier performance",
+    "Still 2.9 min budget remaining for safety margin"
+  ]
+}

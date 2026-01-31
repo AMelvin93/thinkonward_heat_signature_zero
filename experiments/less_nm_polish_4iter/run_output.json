@@ -1,0 +1,50 @@
+[
+  {
+    "config": "nm_4iter",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_tabu_hopping": false,
+      "refine_maxiter": 4
+    },
+    "score": 1.1528312864468768,
+    "rmse_1src": 0.12675869609106885,
+    "rmse_2src": 0.21837102860809765,
+    "time_min": 51.9271759112676,
+    "in_budget": true,
+    "errors": 0
+  },
+  {
+    "config": "nm_5iter",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_tabu_hopping": false,
+      "refine_maxiter": 5
+    },
+    "score": 1.1519179224361948,
+    "rmse_1src": 0.13644969852731562,
+    "rmse_2src": 0.21119430252936064,
+    "time_min": 51.85139073530833,
+    "in_budget": true,
+    "errors": 0
+  },
+  {
+    "config": "nm_3iter",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_tabu_hopping": false,
+      "refine_maxiter": 3
+    },
+    "score": 1.1497698645545433,
+    "rmse_1src": 0.142683678338076,
+    "rmse_2src": 0.21089472379603272,
+    "time_min": 48.76351873874664,
+    "in_budget": true,
+    "errors": 0
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "experiment": "larger_perturbation_scale",
+  "experiment_id": "EXP_LARGER_PERTURBATION_001",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-29T01:30:00Z",
+  "status": "completed",
+  "conclusion": {
+    "result": "FAILED",
+    "finding": "Larger perturbation scales (0.08, 0.10) do NOT improve over baseline (0.05)",
+    "evidence": "Scale 0.05 achieved 1.1549, scale 0.08 achieved 1.1469, scale 0.10 achieved 1.1506 - all within noise",
+    "recommendation": "Keep baseline scale 0.05"
+  },
+
+  "hypothesis": "Current 0.05 perturbation scale may be too small. Larger jumps (0.08, 0.10) may reach better basins.",
+
+  "baseline": {
+    "experiment": "perturbation_plus_verification",
+    "score": 1.1468,
+    "time_min": 54.2,
+    "perturbation_scale": 0.05
+  },
+
+  "prior_evidence": {
+    "adaptive_perturbation_scale": "FAILED - Adaptive scaling based on RMSE didn't help",
+    "note": "But this tests LARGER fixed scales, not adaptive"
+  },
+
+  "planned_configs": [
+    {"run": 1, "perturbation_scale": 0.08, "description": "60% larger scale"},
+    {"run": 2, "perturbation_scale": 0.10, "description": "100% larger scale"},
+    {"run": 3, "perturbation_scale": 0.05, "description": "baseline comparison (if needed)"}
+  ],
+
+  "tuning_runs": [],
+  "best_in_budget": null,
+
+  "machine_note": "WARNING: This machine runs 4.5x slower than baseline. Times will be inflated."
+}

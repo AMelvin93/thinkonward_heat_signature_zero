@@ -1,0 +1,64 @@
+[
+  {
+    "config": "ils_3iter_4nm",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_ils": true,
+      "max_ils_iterations": 3,
+      "ils_nm_iters": 4,
+      "ils_perturbation_scale": 0.05,
+      "ils_apply_to_top_n": 1
+    },
+    "score": 1.1609206802189027,
+    "rmse_1src": 0.1337114316661842,
+    "rmse_2src": 0.18938295548626302,
+    "overall_rmse": 0.1615471935762236,
+    "time_min": 71.11266931295395,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  },
+  {
+    "config": "ils_2iter_3nm",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_ils": true,
+      "max_ils_iterations": 2,
+      "ils_nm_iters": 3,
+      "ils_perturbation_scale": 0.05,
+      "ils_apply_to_top_n": 1
+    },
+    "score": 1.1533774324441757,
+    "rmse_1src": 0.13187331183081544,
+    "rmse_2src": 0.21175557260283906,
+    "overall_rmse": 0.17181444221682723,
+    "time_min": 64.66428485711415,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  },
+  {
+    "config": "no_ils_baseline",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_ils": false
+    },
+    "score": 1.1477072365279442,
+    "rmse_1src": 0.14099567680912192,
+    "rmse_2src": 0.21830941558532171,
+    "overall_rmse": 0.17965254619722182,
+    "time_min": 56.886025440692904,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  }
+]

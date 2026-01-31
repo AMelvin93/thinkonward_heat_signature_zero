@@ -1,0 +1,62 @@
+[
+  {
+    "config": "nm4_perturb1",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_tabu_hopping": true,
+      "tabu_distance": 0.0,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "refine_maxiter": 4,
+      "n_perturbations": 1
+    },
+    "score": 1.1585452596057344,
+    "rmse_1src": 0.13055937043338425,
+    "rmse_2src": 0.19896254774533853,
+    "time_min": 54.942366949717204,
+    "in_budget": true,
+    "errors": 0
+  },
+  {
+    "config": "nm4_perturb2",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_tabu_hopping": true,
+      "tabu_distance": 0.0,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "refine_maxiter": 4,
+      "n_perturbations": 2
+    },
+    "score": 1.1599465991777482,
+    "rmse_1src": 0.12166430101707007,
+    "rmse_2src": 0.20406150790214886,
+    "time_min": 61.44218157132467,
+    "in_budget": false,
+    "errors": 0
+  },
+  {
+    "config": "nm5_perturb1",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_tabu_hopping": true,
+      "tabu_distance": 0.0,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "refine_maxiter": 5,
+      "n_perturbations": 1
+    },
+    "score": 1.1514050591698102,
+    "rmse_1src": 0.1351206072555355,
+    "rmse_2src": 0.2139375507382217,
+    "time_min": 58.97259157896042,
+    "in_budget": true,
+    "errors": 0
+  }
+]

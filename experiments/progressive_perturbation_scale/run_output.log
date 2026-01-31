@@ -1,0 +1,59 @@
+Loading data...
+Loaded 80 samples
+
+============================================================
+Config: scale_010_large
+Parameters: perturbation_scale=0.1
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 10.3 min
+  Progress: 40/80 samples, elapsed: 24.5 min
+  Progress: 60/80 samples, elapsed: 44.7 min
+  Progress: 80/80 samples, elapsed: 64.4 min
+
+--- Results for scale_010_large ---
+  RMSE 1-source: 0.128020
+  RMSE 2-source: 0.190199
+  Score:         1.1627
+  Time:          64.41 min
+
+============================================================
+Config: scale_005_medium
+Parameters: perturbation_scale=0.05
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 10.0 min
+  Progress: 40/80 samples, elapsed: 25.0 min
+  Progress: 60/80 samples, elapsed: 44.7 min
+  Progress: 80/80 samples, elapsed: 64.5 min
+
+--- Results for scale_005_medium ---
+  RMSE 1-source: 0.129400
+  RMSE 2-source: 0.183189
+  Score:         1.1648
+  Time:          64.47 min
+
+============================================================
+Config: scale_002_small
+Parameters: perturbation_scale=0.02
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 10.7 min
+  Progress: 40/80 samples, elapsed: 25.2 min
+  Progress: 60/80 samples, elapsed: 45.5 min
+  Progress: 80/80 samples, elapsed: 64.9 min
+
+--- Results for scale_002_small ---
+  RMSE 1-source: 0.134433
+  RMSE 2-source: 0.209188
+  Score:         1.1534
+  Time:          64.93 min
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                       Score     Time  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+scale_010_large             1.1627    64.4m   0.128020   0.190199
+scale_005_medium            1.1648    64.5m   0.129400   0.183189
+scale_002_small             1.1534    64.9m   0.134433   0.209188

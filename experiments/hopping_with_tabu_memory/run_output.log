@@ -1,0 +1,70 @@
+Loading data...
+Loaded 80 samples
+
+============================================================
+Config: tabu_dist_003
+Parameters: enable_tabu_hopping=True
+            tabu_distance=0.03
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 11.3 min
+  Progress: 40/80 samples, elapsed: 27.0 min
+  Progress: 60/80 samples, elapsed: 48.2 min
+  Progress: 80/80 samples, elapsed: 69.7 min
+
+--- Results for tabu_dist_003 ---
+  RMSE 1-source: 0.114969 (n=32)
+  RMSE 2-source: 0.192951 (n=48)
+  Overall RMSE:  0.153960
+  Score:         1.1666
+  Time:          69.68 min
+  Errors:        0
+
+============================================================
+Config: tabu_dist_005
+Parameters: enable_tabu_hopping=True
+            tabu_distance=0.05
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 11.2 min
+  Progress: 40/80 samples, elapsed: 26.9 min
+  Progress: 60/80 samples, elapsed: 47.5 min
+  Progress: 80/80 samples, elapsed: 68.1 min
+
+--- Results for tabu_dist_005 ---
+  RMSE 1-source: 0.118131 (n=32)
+  RMSE 2-source: 0.178924 (n=48)
+  Overall RMSE:  0.148527
+  Score:         1.1707
+  Time:          68.09 min
+  Errors:        0
+
+============================================================
+Config: no_tabu_baseline
+Parameters: enable_tabu_hopping=False
+            tabu_distance=0.03
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 9.0 min
+  Progress: 40/80 samples, elapsed: 23.1 min
+  Progress: 60/80 samples, elapsed: 40.2 min
+  Progress: 80/80 samples, elapsed: 58.2 min
+
+--- Results for no_tabu_baseline ---
+  RMSE 1-source: 0.122212 (n=32)
+  RMSE 2-source: 0.179507 (n=48)
+  Overall RMSE:  0.150860
+  Score:         1.1689
+  Time:          58.18 min
+  Errors:        0
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                       Score     Time  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+tabu_dist_003               1.1666    69.7m   0.114969   0.192951
+tabu_dist_005               1.1707    68.1m   0.118131   0.178924
+no_tabu_baseline            1.1689    58.2m   0.122212   0.179507
+
+Best in-budget config: no_tabu_baseline with score 1.1689 @ 58.2 min

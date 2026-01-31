@@ -1,0 +1,69 @@
+{
+  "experiment": "less_nm_polish_4iter",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-31T01:00:00Z",
+  "completed_at": "2026-01-31T04:00:00Z",
+  "baseline": {
+    "nm6_score": 1.1489,
+    "nm6_time": 53.45,
+    "nm7_score": 1.1516,
+    "nm7_time": 56.13,
+    "nm8_score": 1.1554,
+    "nm8_time": 65.83
+  },
+  "hypothesis": "4 NM iterations could save significant time (~10 min vs 8 iter) with acceptable accuracy loss.",
+  "planned_configs": [
+    {"run": 1, "description": "4 NM iterations", "params": {"refine_maxiter": 4}},
+    {"run": 2, "description": "5 NM iterations", "params": {"refine_maxiter": 5}},
+    {"run": 3, "description": "3 NM iterations", "params": {"refine_maxiter": 3}}
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "nm_4iter",
+      "params": {"refine_maxiter": 4},
+      "score": 1.1528,
+      "time_min": 51.93,
+      "in_budget": true,
+      "rmse_1src": 0.126759,
+      "rmse_2src": 0.218371,
+      "budget_remaining_min": 8.07
+    },
+    {
+      "run": 2,
+      "config": "nm_5iter",
+      "params": {"refine_maxiter": 5},
+      "score": 1.1519,
+      "time_min": 51.85,
+      "in_budget": true,
+      "rmse_1src": 0.136450,
+      "rmse_2src": 0.211194,
+      "budget_remaining_min": 8.15
+    },
+    {
+      "run": 3,
+      "config": "nm_3iter",
+      "params": {"refine_maxiter": 3},
+      "score": 1.1498,
+      "time_min": 48.76,
+      "in_budget": true,
+      "rmse_1src": 0.142684,
+      "rmse_2src": 0.210895,
+      "budget_remaining_min": 11.24
+    }
+  ],
+  "result": "SUCCESS",
+  "finding": "4 NM iterations provide comparable accuracy to 6-8 iterations (1.1528 vs 1.1489-1.1554) while saving 12+ minutes. All configs in budget with 8-11 min to spare. High variance between runs makes it difficult to definitively rank NM iteration counts.",
+  "recommendations": [
+    "4 NM iterations is viable for time-constrained scenarios",
+    "The ~8-11 min saved can be used for perturbation (adds 3-7 min)",
+    "Combined config: 4 NM + 1 perturbation should fit in ~55-58 min",
+    "Run-to-run variance is significant - averaging multiple runs recommended"
+  ],
+  "time_savings_vs_8nm": {
+    "nm_3iter": "17 min saved",
+    "nm_4iter": "14 min saved",
+    "nm_5iter": "14 min saved"
+  }
+}

@@ -1,0 +1,70 @@
+Loading data...
+Loaded 80 samples
+
+============================================================
+Config: gradient_verify_3iter_fine
+Parameters: gradient_verify_maxiter=3
+            gradient_verify_use_fine_grid=True
+            enable_gradient_verify=True
+============================================================
+  Progress: 20/80 samples, elapsed: 21.0 min
+  Progress: 40/80 samples, elapsed: 52.1 min
+  Progress: 60/80 samples, elapsed: 101.3 min
+  Progress: 80/80 samples, elapsed: 146.2 min
+
+--- Results for gradient_verify_3iter_fine ---
+  RMSE 1-source: 0.100343 (n=32)
+  RMSE 2-source: 0.145251 (n=48)
+  Overall RMSE:  0.122797
+  Score:         1.1906
+  Time:          146.25 min
+  Errors:        0
+
+============================================================
+Config: gradient_verify_2iter_fine
+Parameters: gradient_verify_maxiter=2
+            gradient_verify_use_fine_grid=True
+            enable_gradient_verify=True
+============================================================
+  Progress: 20/80 samples, elapsed: 20.0 min
+  Progress: 40/80 samples, elapsed: 49.2 min
+  Progress: 60/80 samples, elapsed: 97.6 min
+  Progress: 80/80 samples, elapsed: 138.1 min
+
+--- Results for gradient_verify_2iter_fine ---
+  RMSE 1-source: 0.106393 (n=32)
+  RMSE 2-source: 0.151312 (n=48)
+  Overall RMSE:  0.128852
+  Score:         1.1859
+  Time:          138.14 min
+  Errors:        0
+
+============================================================
+Config: no_gradient_verify_baseline
+Parameters: gradient_verify_maxiter=3
+            gradient_verify_use_fine_grid=True
+            enable_gradient_verify=False
+============================================================
+  Progress: 20/80 samples, elapsed: 10.9 min
+  Progress: 40/80 samples, elapsed: 27.6 min
+  Progress: 60/80 samples, elapsed: 48.5 min
+  Progress: 80/80 samples, elapsed: 68.8 min
+
+--- Results for no_gradient_verify_baseline ---
+  RMSE 1-source: 0.128077 (n=32)
+  RMSE 2-source: 0.209518 (n=48)
+  Overall RMSE:  0.168797
+  Score:         1.1556
+  Time:          68.81 min
+  Errors:        0
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                                 Score     Time  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+gradient_verify_3iter_fine            1.1906   146.2m   0.100343   0.145251
+gradient_verify_2iter_fine            1.1859   138.1m   0.106393   0.151312
+no_gradient_verify_baseline           1.1556    68.8m   0.128077   0.209518
+
+Best in-budget config: gradient_verify_3iter_fine with score 1.1906 @ 146.2 min

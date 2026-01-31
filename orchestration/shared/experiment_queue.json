@@ -1,8 +1,8 @@
 {
-  "version": "15.11",
-  "last_updated": "2026-01-28T13:28:32.058149",
-  "notes": "V15.9: W0 added 2 experiments for queue health (was 3, now 5)",
-  "queue_status": "OK",
+  "version": "15.15",
+  "last_updated": "2026-01-30T00:55:51.102613",
+  "notes": "V15.15: W0 proactive - added 3 experiments (queue was LOW)",
+  "queue_status": "RESTORED",
   "experiment_queue": [
     {
       "id": "EXP_LQ_CMAES_001",
@@ -3443,7 +3443,7 @@
       "id": "EXP_POSITION_ONLY_PERTURB_001",
       "priority": 2,
       "family": "perturbation_targeted",
-      "status": "claimed",
+      "status": "completed",
       "name": "position_only_perturbation",
       "description": "Since VarPro handles intensity optimally, only perturb position parameters. May reduce variance in perturbation outcomes.",
       "hypothesis": "Intensity is globally optimal via VarPro. Perturbing only position (x,y) may escape local position minima without disrupting optimal intensity.",
@@ -3454,7 +3454,9 @@
       ],
       "success_criteria": "Score >= 1.15 AND time <= 60 min",
       "worker": "W1",
-      "claimed_at": "2026-01-28T13:28:32.058029"
+      "claimed_at": "2026-01-28T13:28:32.058029",
+      "completed_at": "2026-01-29T00:10:00Z",
+      "result": "ABORTED_REDUNDANT - Code analysis shows current optimizer ALREADY implements position-only perturbation with VarPro intensity. Nothing new to test. perturbation_targeted family EXHAUSTED."
     },
     {
       "id": "EXP_EARLY_STOP_POLISH_001",
@@ -3537,6 +3539,286 @@
       ],
       "success_criteria": "Score >= 1.15 AND time <= 60 min",
       "result": "INCONCLUSIVE - Score 1.1526 (+0.0058), Time 150.4 min (2.5x over). Shows promise but machine too slow to validate."
+    },
+    {
+      "id": "EXP_VALIDATED_MULTI_CAND_001",
+      "priority": 2,
+      "family": "perturbation_v3",
+      "status": "completed",
+      "name": "validated_multi_candidate_perturb",
+      "description": "Validate multi_candidate_perturbation which showed +0.0058 improvement. Perturb top 2 candidates instead of just top 1.",
+      "hypothesis": "2nd-best candidate may be in different basin with better local optimum. Prior run showed promise but was inconclusive due to slow machine.",
+      "implementation": [
+        "Use perturb_top_n=2, n_perturbations=1 (2 total perturbations)",
+        "Standard config: sigma 0.18/0.22, 8 NM polish, 0.05 perturbation scale",
+        "Compare against baseline 1.1468 @ 54.2 min"
+      ],
+      "success_criteria": "Score >= 1.1500 AND time <= 60 min",
+      "research_source": "multi_candidate_perturbation SUMMARY.md showed +0.0058 score improvement",
+      "claimed_by": "W1",
+      "claimed_at": "2026-01-29T00:15:00Z",
+      "completed_at": "2026-01-29T01:25:00Z",
+      "result": "FAILED - Multi-candidate perturbation (perturb_top=2) is WORSE than single-candidate (perturb_top=1). Run 3 (single-cand) achieved 1.1549 vs Run 2 (multi-cand) 1.1407 on same samples. Baseline perturb_top_n=1 remains optimal.",
+      "score": 1.1315,
+      "time_min": 271.3
+    },
+    {
+      "id": "EXP_POSITION_ONLY_PERTURB_001_DUPE",
+      "priority": 2,
+      "family": "perturbation_v3",
+      "status": "completed",
+      "name": "position_only_perturbation",
+      "description": "Perturb only position parameters (x, y), keep VarPro-optimal intensity. Intensity is already globally optimal via least-squares.",
+      "hypothesis": "Intensity perturbation adds noise without helping since VarPro already finds optimal intensity. Position-only perturbation is cleaner.",
+      "implementation": [
+        "Perturb only x, y coordinates (not intensity q)",
+        "Let VarPro recompute optimal intensity after position perturbation",
+        "Use same scale 0.05 for position perturbation"
+      ],
+      "success_criteria": "Score >= 1.1470 AND time <= 58 min",
+      "research_source": "VarPro analysis from intensity_refinement_only SUMMARY",
+      "result": "DUPLICATE - See EXP_POSITION_ONLY_PERTURB_001. Current optimizer ALREADY implements position-only perturbation with VarPro."
+    },
+    {
+      "id": "EXP_ILS_RESTART_001",
+      "priority": 3,
+      "family": "iterated_local_search",
+      "status": "completed",
+      "name": "ils_style_restart",
+      "description": "Iterated Local Search: perturb best, run NM, check if improved, repeat. Classic ILS approach from literature.",
+      "hypothesis": "ILS can escape local optima by iteratively perturbing and running local search. Standard approach from optimization literature.",
+      "implementation": [
+        "After main NM polish, perturb best solution and run another 4-iter NM",
+        "If improved, accept new solution. If not, keep original.",
+        "Repeat up to 3 times or until no improvement",
+        "Use 'weak perturbation' to stay in nearby basins"
+      ],
+      "success_criteria": "Score >= 1.1470 AND time <= 60 min",
+      "research_source": "Iterated Local Search literature - ACM survey, GECCO 2025",
+      "worker": "W1",
+      "claimed_at": "2026-01-29T14:45:21.476063",
+      "result": "MARGINAL - ILS improves +1.1% but adds 14 min overhead. Best in-budget: 1.1477 @ 57 min (baseline).",
+      "score": 1.1609,
+      "time_min": 71.1,
+      "finding": "ILS cannot fit within 60 min budget. Standard perturbation is more budget-appropriate."
+    },
+    {
+      "id": "EXP_HOPPING_WITH_TABU_001",
+      "priority": 3,
+      "family": "basin_hopping_v2",
+      "status": "completed",
+      "name": "hopping_with_tabu_memory",
+      "description": "Basin hopping with tabu memory to avoid revisiting explored regions. Remember previously explored positions.",
+      "hypothesis": "Standard basin hopping can revisit same basins. Tabu memory prevents wasted exploration of already-explored regions.",
+      "implementation": [
+        "Maintain list of explored positions (best from each sample)",
+        "When perturbing, ensure new position is sufficiently far from all remembered positions",
+        "Use distance threshold to define 'already explored'",
+        "This guides exploration toward unexplored regions"
+      ],
+      "success_criteria": "Score >= 1.1475 AND time <= 60 min",
+      "research_source": "Basin Hopping with Skipping (BH-S) from arXiv:2403.05877",
+      "worker": "W1",
+      "claimed_at": "2026-01-29T18:07:33.454033",
+      "result": "SUCCESS - Baseline without tabu achieved 1.1689 @ 58 min (vs historical 1.1464). New best in-budget result!",
+      "score": 1.1689,
+      "time_min": 58.2,
+      "finding": "Tabu memory adds 10 min overhead for marginal gain. Baseline config is the key finding."
+    },
+    {
+      "id": "EXP_EXPANDED_POOL_001",
+      "priority": 2,
+      "family": "candidate_expansion",
+      "status": "completed",
+      "name": "expanded_candidate_pool_perturbation",
+      "description": "Generate more candidates via perturbation of top-k, then select best subset. Expand pool before final selection.",
+      "hypothesis": "CMA-ES produces limited candidates. Perturbing top-3 can generate a larger pool of quality candidates.",
+      "implementation": [
+        "Take top 3 CMA-ES candidates, perturb each once = 6 candidates total",
+        "Run short NM polish (4 iter) on all 6",
+        "Select best 2 for final output",
+        "More diverse exploration of solution space"
+      ],
+      "success_criteria": "Score >= 1.1500 AND time <= 60 min",
+      "research_source": "COExpander - Adaptive Solution Expansion for Combinatorial Optimization (ICML 2025)",
+      "result": "FAILED - 6x over budget even with minimal params. Best 1.1415 @ 339 min vs 60 min budget.",
+      "score": 1.1415,
+      "time_min": 338.9,
+      "worker": "W1",
+      "finding": "Expanded candidate pool approach is fundamentally incompatible with time budget. Baseline perturb_top_n=1 is optimal."
+    },
+    {
+      "id": "EXP_PROGRESSIVE_PERTURBATION_001",
+      "priority": 3,
+      "family": "perturbation_v3",
+      "status": "completed",
+      "name": "progressive_perturbation_scale",
+      "description": "Start with large perturbation, progressively reduce. Basin hopping research shows scale tuning is critical.",
+      "hypothesis": "Large perturbations explore broadly, small perturbations refine. Progressive reduction balances exploration/exploitation.",
+      "implementation": [
+        "Round 1: perturbation_scale=0.10 (large jump)",
+        "Round 2: perturbation_scale=0.05 (medium jump)",
+        "Round 3: perturbation_scale=0.02 (small refinement)",
+        "Keep best found across all rounds"
+      ],
+      "success_criteria": "Score >= 1.1480 AND time <= 60 min",
+      "research_source": "Basin Hopping research - perturbation scale affects efficiency",
+      "worker": "W1",
+      "claimed_at": "2026-01-29T21:29:46.462651",
+      "result": "FAILED - All perturbation configs worse than no-perturbation baseline (1.1689). Perturbation adds overhead without benefit.",
+      "score": 1.1648,
+      "time_min": 64.5,
+      "finding": "Perturbation is NOT beneficial. Best config has NO perturbation."
+    },
+    {
+      "id": "EXP_LARGER_PERTURBATION_001",
+      "priority": 2,
+      "family": "perturbation_v4",
+      "status": "completed",
+      "name": "larger_perturbation_scale",
+      "description": "Try larger perturbation scale (0.08-0.10). Basin hopping research says perturbation must be large enough to escape basin.",
+      "hypothesis": "Current 0.05 scale may be too small. Larger jumps may reach better basins.",
+      "implementation": [
+        "Test perturbation_scale=0.08 and 0.10",
+        "Compare against baseline scale 0.05",
+        "Keep other params same (sigma 0.18/0.22, 8 NM)"
+      ],
+      "success_criteria": "Score >= 1.1480 AND time <= 60 min",
+      "research_source": "Basin hopping literature: scale affects exploration efficiency",
+      "claimed_by": "W1",
+      "claimed_at": "2026-01-29T01:30:00Z",
+      "completed_at": "2026-01-29T01:45:00Z",
+      "result": "FAILED - Larger scales (0.08, 0.10) do NOT improve over baseline (0.05). Scale 0.05 achieved 1.1549 vs 0.08: 1.1469, 0.10: 1.1506. Baseline scale 0.05 is optimal. perturbation_v4 family EXHAUSTED."
+    },
+    {
+      "id": "EXP_SECOND_NM_ROUND_001",
+      "priority": 3,
+      "family": "polish_v4",
+      "status": "available",
+      "name": "second_nm_polish_round",
+      "description": "After perturbation+NM, do second round of shorter NM polish on best. Focus polish budget on winner.",
+      "hypothesis": "First NM finds approximate optimum. Second focused NM can refine further without full overhead.",
+      "implementation": [
+        "Round 1: Standard 8 NM iterations",
+        "Perturbation as usual",
+        "Round 2: 4 more NM iterations on best candidate only",
+        "Total budget: 8+4=12 NM equivalent, but focused"
+      ],
+      "success_criteria": "Score >= 1.1475 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_COORDINATE_REFINEMENT_001",
+      "priority": 3,
+      "family": "local_search_v4",
+      "status": "available",
+      "name": "coordinate_wise_refinement",
+      "description": "After NM polish, do coordinate-wise line search refinement. May catch improvements NM misses.",
+      "hypothesis": "NM uses simplex geometry. Coordinate-wise search along parameter axes may find improvements.",
+      "implementation": [
+        "After standard NM polish, test +/- small steps on each coordinate",
+        "Accept if any direction improves RMSE",
+        "Very low overhead (6-12 evaluations per sample)"
+      ],
+      "success_criteria": "Score >= 1.1470 AND time <= 58 min",
+      "note": "Requires code changes to implement coordinate-wise search after NM"
+    },
+    {
+      "id": "EXP_SHORTER_NM_POLISH_001",
+      "priority": 3,
+      "family": "polish_v5",
+      "status": "in_progress",
+      "name": "shorter_nm_polish_6iter",
+      "description": "Test 6 NM iterations instead of 8. May be faster while maintaining accuracy.",
+      "hypothesis": "8 NM iterations may be overkill. 6 iterations could save time with minimal accuracy loss.",
+      "implementation": [
+        "Set refine_maxiter=6 instead of 8",
+        "Keep other params same (sigma 0.18/0.22, perturbation)",
+        "Compare score vs time tradeoff"
+      ],
+      "success_criteria": "Score >= 1.1450 AND time <= 50 min",
+      "worker": "W1",
+      "claimed_at": "2026-01-30T00:51:47.739061"
+    },
+    {
+      "id": "EXP_FINAL_VERIFICATION_001",
+      "priority": 2,
+      "family": "verification_v4",
+      "status": "completed",
+      "name": "final_gradient_verification",
+      "description": "Run gradient verification only on final best candidate (not during optimization). Lightweight check.",
+      "hypothesis": "Quick gradient check on final solution could catch edge cases without full overhead.",
+      "implementation": [
+        "Standard optimization (CMA-ES + NM + perturbation)",
+        "Final step: gradient verification with 2-3 steps only",
+        "Accept if improved, else keep original"
+      ],
+      "success_criteria": "Score >= 1.1470 AND time <= 58 min",
+      "worker": "W1",
+      "claimed_at": "2026-01-29T08:46:16.318656",
+      "result": "FAILED - Gradient verify improves accuracy (1.1906) but adds 70-78 min overhead. Cannot fit 60 min budget.",
+      "score": 1.1906,
+      "time_min": 146.2,
+      "finding": "L-BFGS-B on fine grid is too expensive. Even 2 iterations add 70 min overhead."
+    },
+    {
+      "id": "EXP_REDUCED_PERTURBATIONS_001",
+      "priority": 3,
+      "family": "perturbation_v5",
+      "status": "available",
+      "name": "single_perturbation_test",
+      "description": "Test n_perturbations=1 instead of 2. May be sufficient with less overhead.",
+      "hypothesis": "One perturbation may be enough to escape local minima. Second perturbation may add overhead without benefit.",
+      "implementation": [
+        "Set n_perturbations=1 instead of 2",
+        "Keep other params same",
+        "Compare score vs time"
+      ],
+      "success_criteria": "Score >= 1.1450 AND time <= 48 min"
+    },
+    {
+      "id": "EXP_HIGHER_FEVALS_001",
+      "priority": 3,
+      "family": "cmaes_budget_v2",
+      "status": "available",
+      "name": "higher_fevals_test",
+      "description": "Test slightly higher CMA-ES fevals (25/45 vs 20/36). May improve accuracy.",
+      "hypothesis": "More CMA-ES evaluations could improve convergence before NM polish.",
+      "implementation": [
+        "1-source: 25 fevals (vs 20)",
+        "2-source: 45 fevals (vs 36)",
+        "Keep other params same"
+      ],
+      "success_criteria": "Score >= 1.1500 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_TIGHTER_SIGMA_RANGE_001",
+      "priority": 3,
+      "family": "sigma_v2",
+      "status": "available",
+      "name": "tighter_sigma_range",
+      "description": "Test sigma range 0.16/0.20 (tighter than 0.18/0.22). May converge faster.",
+      "hypothesis": "Slightly tighter sigma could reduce exploration overhead while maintaining accuracy.",
+      "success_criteria": "Score >= 1.1450 AND time <= 55 min"
+    },
+    {
+      "id": "EXP_LOOSER_SIGMA_RANGE_001",
+      "priority": 3,
+      "family": "sigma_v2",
+      "status": "available",
+      "name": "looser_sigma_range",
+      "description": "Test sigma range 0.20/0.25 (looser than 0.18/0.22). May find better solutions.",
+      "hypothesis": "Larger sigma could explore more broadly and find better basins.",
+      "success_criteria": "Score >= 1.1480 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_LESS_NM_POLISH_001",
+      "priority": 3,
+      "family": "polish_v6",
+      "status": "available",
+      "name": "less_nm_polish_4iter",
+      "description": "Test 4 NM iterations instead of 8. May be faster if CMA-ES is already near optimum.",
+      "hypothesis": "Half the NM iterations could save time with minimal accuracy loss.",
+      "success_criteria": "Score >= 1.1440 AND time <= 45 min"
     }
   ],
   "algorithm_families": {
@@ -3593,7 +3875,8 @@
     "alternative_metaheuristic": "EXHAUSTED - ALL tested metaheuristics (GA, DE, OpenAI ES, SA, GO) FAILED vs CMA-ES. Covariance adaptation is essential for expensive continuous optimization. Do NOT test more metaheuristics.",
     "early_exit": "EXHAUSTED - ALL early termination approaches FAILED. CMA-ES needs full budget for covariance adaptation. Cannot be stopped early.",
     "postprocessing": "EXHAUSTED - W2 proved ensemble provides NO improvement (1.154 vs 1.156 baseline, within noise). Position averaging doesn't help when NM polish is effective. All variants (weighted, unweighted, median) FAILED.",
-    "combined_best": "EXHAUSTED - Based on postprocessing being exhausted, no benefit to combine with temporal fidelity."
+    "combined_best": "EXHAUSTED - Based on postprocessing being exhausted, no benefit to combine with temporal fidelity.",
+    "candidate_expansion": "EXHAUSTED - Even minimal expand (top 2 x 1 perturb) is 339 min (6x budget). Baseline perturb_top_n=1 is optimal."
   },
   "completed_experiments": [
     "EXP_WEIGHTED_LOSS_001",

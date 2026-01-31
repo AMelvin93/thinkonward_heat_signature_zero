@@ -1,0 +1,114 @@
+{
+  "experiment": "expanded_candidate_pool_perturbation",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-29T02:00:00Z",
+  "baseline": {
+    "score": 1.1464,
+    "time_min": 51.2,
+    "config": "perturbed_extended_polish with perturb_top_n=1, n_perturbations=2"
+  },
+  "hypothesis": "CMA-ES produces limited candidates. Perturbing top-3 can generate a larger pool of quality candidates, then select best subset. Different from current single-candidate perturbation approach.",
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Baseline: perturb top 3 with 1 perturbation each, short 4-iter NM",
+      "params": {
+        "expand_top_n": 3,
+        "n_perturbations_per_candidate": 1,
+        "perturb_nm_iters": 4,
+        "perturbation_scale": 0.05
+      },
+      "rationale": "Experiment description: perturb top 3, each once, 4 iter NM"
+    },
+    {
+      "run": 2,
+      "description": "More perturbations: perturb top 3 with 2 perturbations each = 9 candidates",
+      "params": {
+        "expand_top_n": 3,
+        "n_perturbations_per_candidate": 2,
+        "perturb_nm_iters": 3,
+        "perturbation_scale": 0.05
+      },
+      "rationale": "If run 1 is promising, try more perturbations per candidate"
+    },
+    {
+      "run": 3,
+      "description": "Fewer but deeper: perturb top 2 with more NM iterations",
+      "params": {
+        "expand_top_n": 2,
+        "n_perturbations_per_candidate": 2,
+        "perturb_nm_iters": 5,
+        "perturbation_scale": 0.05
+      },
+      "rationale": "Trade breadth for depth - fewer candidates, better polish"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "expand_3x1_nm4",
+      "params": {
+        "expand_top_n": 3,
+        "n_perturbations_per_candidate": 1,
+        "perturb_nm_iters": 4,
+        "perturbation_scale": 0.05,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8
+      },
+      "score": 1.1414453867958,
+      "time_min": 407.20200433333713,
+      "budget_remaining_min": -347.20200433333713,
+      "in_budget": false,
+      "rmse_1src": 0.12154776724791819,
+      "rmse_2src": 0.1898938965786212,
+      "n_perturbed_selected": 71
+    },
+    {
+      "run": 2,
+      "config": "expand_2x1_nm3_reduced",
+      "params": {
+        "expand_top_n": 2,
+        "n_perturbations_per_candidate": 1,
+        "perturb_nm_iters": 3,
+        "perturbation_scale": 0.05,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8
+      },
+      "score": 1.1421865777925895,
+      "time_min": 374.73552429676056,
+      "budget_remaining_min": -314.73552429676056,
+      "in_budget": false,
+      "rmse_1src": 0.13602679691490666,
+      "rmse_2src": 0.18532269366134554,
+      "n_perturbed_selected": 54
+    },
+    {
+      "run": 3,
+      "config": "minimal_expand",
+      "params": {
+        "expand_top_n": 2,
+        "n_perturbations_per_candidate": 1,
+        "perturb_nm_iters": 2,
+        "perturbation_scale": 0.05,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 6
+      },
+      "score": 1.141494881637146,
+      "time_min": 338.88897611697513,
+      "budget_remaining_min": -278.88897611697513,
+      "in_budget": false,
+      "rmse_1src": 0.1298426868628049,
+      "rmse_2src": 0.17909444289915866,
+      "n_perturbed_selected": 46
+    }
+  ],
+  "result": "FAILED",
+  "completed_at": "2026-01-29T08:41:18.517808"
+}

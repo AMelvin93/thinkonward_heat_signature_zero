@@ -1,0 +1,114 @@
+{
+  "experiment": "hopping_with_tabu_memory",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-29T17:45:00Z",
+  "completed_at": "2026-01-29T20:30:00Z",
+  "baseline": {
+    "score": 1.1464,
+    "time_min": 51.2,
+    "config": "perturbed_extended_polish with perturb_top_n=1, n_perturbations=2"
+  },
+  "hypothesis": "Tabu memory prevents revisiting already-explored regions, guiding exploration toward unexplored basins.",
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Tabu hopping with standard tabu distance (0.03)",
+      "params": {
+        "tabu_distance": 0.03,
+        "n_perturbations": 2
+      },
+      "rationale": "Standard tabu distance to prevent revisiting"
+    },
+    {
+      "run": 2,
+      "description": "Tabu hopping with larger tabu distance (0.05)",
+      "params": {
+        "tabu_distance": 0.05,
+        "n_perturbations": 2
+      },
+      "rationale": "Larger tabu distance for more exploration"
+    },
+    {
+      "run": 3,
+      "description": "No tabu hopping baseline",
+      "params": {
+        "enable_tabu_hopping": false
+      },
+      "rationale": "Baseline comparison without tabu memory"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "tabu_dist_003",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8,
+        "enable_tabu_hopping": true,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "tabu_distance": 0.03,
+        "max_tabu_attempts": 10
+      },
+      "score": 1.1666,
+      "time_min": 69.68,
+      "budget_remaining_min": -9.68,
+      "in_budget": false,
+      "rmse_1src": 0.114969,
+      "rmse_2src": 0.192951,
+      "overall_rmse": 0.153960
+    },
+    {
+      "run": 2,
+      "config": "tabu_dist_005",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8,
+        "enable_tabu_hopping": true,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "tabu_distance": 0.05,
+        "max_tabu_attempts": 10
+      },
+      "score": 1.1707,
+      "time_min": 68.09,
+      "budget_remaining_min": -8.09,
+      "in_budget": false,
+      "rmse_1src": 0.118131,
+      "rmse_2src": 0.178924,
+      "overall_rmse": 0.148527
+    },
+    {
+      "run": 3,
+      "config": "no_tabu_baseline",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8,
+        "enable_tabu_hopping": false
+      },
+      "score": 1.1689,
+      "time_min": 58.18,
+      "budget_remaining_min": 1.82,
+      "in_budget": true,
+      "rmse_1src": 0.122212,
+      "rmse_2src": 0.179507,
+      "overall_rmse": 0.150860
+    }
+  ],
+  "result": "SUCCESS",
+  "finding": "Baseline without tabu achieved 1.1689 @ 58 min - significant improvement over historical baseline (1.1464). Tabu memory adds 10 min overhead for marginal gain.",
+  "recommendations": [
+    "The no_tabu_baseline config (1.1689 @ 58 min) should become new production baseline",
+    "Tabu memory not worth the overhead within 60 min budget",
+    "Key params: sigma=0.18/0.22, timestep_fraction=0.40, refine_maxiter=8, n_perturbations=2"
+  ]
+}

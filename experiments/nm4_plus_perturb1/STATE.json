@@ -1,0 +1,68 @@
+{
+  "experiment": "nm4_plus_perturb1",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-31T04:30:00Z",
+  "completed_at": "2026-01-31T08:00:00Z",
+  "baseline": {
+    "nm4_no_perturb_score": 1.1528,
+    "nm4_no_perturb_time": 51.93,
+    "nm8_1perturb_score": 1.1622,
+    "nm8_1perturb_time": 64.06
+  },
+  "hypothesis": "4 NM iterations + 1 perturbation should combine time savings from reduced NM with accuracy boost from perturbation.",
+  "planned_configs": [
+    {"run": 1, "description": "4 NM + 1 perturb", "params": {"refine_maxiter": 4, "n_perturbations": 1}},
+    {"run": 2, "description": "4 NM + 2 perturb", "params": {"refine_maxiter": 4, "n_perturbations": 2}},
+    {"run": 3, "description": "5 NM + 1 perturb", "params": {"refine_maxiter": 5, "n_perturbations": 1}}
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "nm4_perturb1",
+      "params": {"refine_maxiter": 4, "n_perturbations": 1},
+      "score": 1.1585,
+      "time_min": 54.94,
+      "in_budget": true,
+      "rmse_1src": 0.130559,
+      "rmse_2src": 0.198963,
+      "budget_remaining_min": 5.06,
+      "improvement_vs_no_perturb": "+0.0057 score"
+    },
+    {
+      "run": 2,
+      "config": "nm4_perturb2",
+      "params": {"refine_maxiter": 4, "n_perturbations": 2},
+      "score": 1.1599,
+      "time_min": 61.44,
+      "in_budget": false,
+      "rmse_1src": 0.121664,
+      "rmse_2src": 0.204062,
+      "budget_remaining_min": -1.44,
+      "note": "Best score but just over budget"
+    },
+    {
+      "run": 3,
+      "config": "nm5_perturb1",
+      "params": {"refine_maxiter": 5, "n_perturbations": 1},
+      "score": 1.1514,
+      "time_min": 58.97,
+      "in_budget": true,
+      "rmse_1src": 0.135121,
+      "rmse_2src": 0.213938,
+      "budget_remaining_min": 1.03
+    }
+  ],
+  "result": "SUCCESS",
+  "best_in_budget": {
+    "config": "nm4_perturb1",
+    "score": 1.1585,
+    "time_min": 54.94
+  },
+  "finding": "nm4_perturb1 (4 NM + 1 perturbation) is the optimal in-budget configuration. It achieves 1.1585 @ 54.9 min with 5 min to spare. This combines the time savings from reduced NM iterations with the accuracy boost from perturbation.",
+  "recommendations": [
+    "Use nm4_perturb1 as production config for time-constrained scenarios",
+    "On faster machines, nm4_perturb2 (1.1599) may fit in budget",
+    "5 min buffer accounts for machine speed variance"
+  ]
+}

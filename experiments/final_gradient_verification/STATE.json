@@ -1,0 +1,123 @@
+{
+  "experiment": "final_gradient_verification",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-29T09:00:00Z",
+  "completed_at": "2026-01-29T14:45:00Z",
+  "baseline": {
+    "score": 1.1464,
+    "time_min": 51.2,
+    "config": "perturbed_extended_polish with perturb_top_n=1, n_perturbations=2"
+  },
+  "hypothesis": "Quick L-BFGS-B verification on final best candidate could catch edge cases without full optimization overhead.",
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Gradient verify with 3 L-BFGS-B iterations on fine grid",
+      "params": {
+        "gradient_verify_maxiter": 3,
+        "gradient_verify_use_fine_grid": true
+      },
+      "rationale": "Standard gradient verification - 3 iterations should be enough to catch improvements"
+    },
+    {
+      "run": 2,
+      "description": "Gradient verify with 2 L-BFGS-B iterations (lighter)",
+      "params": {
+        "gradient_verify_maxiter": 2,
+        "gradient_verify_use_fine_grid": true
+      },
+      "rationale": "Test if 2 iterations is sufficient - less overhead"
+    },
+    {
+      "run": 3,
+      "description": "No gradient verify (baseline comparison)",
+      "params": {
+        "enable_gradient_verify": false
+      },
+      "rationale": "Baseline without gradient verify to measure actual impact"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "gradient_verify_3iter_fine",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8,
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "enable_gradient_verify": true,
+        "gradient_verify_maxiter": 3,
+        "gradient_verify_use_fine_grid": true
+      },
+      "score": 1.1906,
+      "time_min": 146.25,
+      "budget_remaining_min": -86.25,
+      "in_budget": false,
+      "rmse_1src": 0.100343,
+      "rmse_2src": 0.145251,
+      "overall_rmse": 0.122797
+    },
+    {
+      "run": 2,
+      "config": "gradient_verify_2iter_fine",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8,
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "enable_gradient_verify": true,
+        "gradient_verify_maxiter": 2,
+        "gradient_verify_use_fine_grid": true
+      },
+      "score": 1.1859,
+      "time_min": 138.14,
+      "budget_remaining_min": -78.14,
+      "in_budget": false,
+      "rmse_1src": 0.106393,
+      "rmse_2src": 0.151312,
+      "overall_rmse": 0.128852
+    },
+    {
+      "run": 3,
+      "config": "no_gradient_verify_baseline",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8,
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "enable_gradient_verify": false
+      },
+      "score": 1.1556,
+      "time_min": 68.81,
+      "budget_remaining_min": -8.81,
+      "in_budget": false,
+      "rmse_1src": 0.128077,
+      "rmse_2src": 0.209518,
+      "overall_rmse": 0.168797
+    }
+  ],
+  "result": "FAILED",
+  "finding": "Gradient verification significantly improves accuracy (1.1906 vs 1.1556) but adds 70-78 min overhead. Cannot fit within 60 min budget.",
+  "recommendations": [
+    "Mark gradient_verification family as EXHAUSTED",
+    "L-BFGS-B on fine grid is too expensive",
+    "Would need coarse grid verification or reduced timesteps to be practical"
+  ]
+}

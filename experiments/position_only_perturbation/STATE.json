@@ -1,0 +1,40 @@
+{
+  "experiment": "position_only_perturbation",
+  "id": "EXP_POSITION_ONLY_PERTURB_001",
+  "worker": "W1",
+  "started_at": "2026-01-29T00:00:00Z",
+  "hypothesis": "Since VarPro handles intensity optimally, only perturb position parameters (x,y) to escape local minima",
+  "status": "analyzing",
+
+  "analysis": {
+    "finding": "REDUNDANT - Current optimizer already implements position-only perturbation",
+    "evidence": [
+      "In perturbed_extended_polish/optimizer.py and perturbation_plus_verification/optimizer.py:",
+      "- _generate_perturbations() operates on pos_params which contains only (x,y) for 1-src, (x1,y1,x2,y2) for 2-src",
+      "- Intensity is NEVER perturbed - it's computed analytically via compute_optimal_intensity_*() after each position evaluation",
+      "- VarPro (Variable Projection) is already the approach: optimize position, compute optimal intensity analytically"
+    ],
+    "code_references": [
+      "perturbation_plus_verification/optimizer.py:278-286 - _generate_perturbations() only modifies pos_params",
+      "perturbation_plus_verification/optimizer.py:88-136 - compute_optimal_intensity_*() computes intensity analytically",
+      "The objective functions (lines 330-357) take xy_params and compute intensity via VarPro"
+    ]
+  },
+
+  "decision": "ABORT - Experiment is redundant with current implementation",
+  "rationale": "The current best optimizer (perturbation_plus_verification) already implements exactly what this experiment proposes: position-only perturbation with VarPro intensity optimization. There is nothing new to test.",
+
+  "prior_evidence": {
+    "coordination_note": "2026-01-27 W0: intensity_refinement_only NOT_FEASIBLE. CRITICAL INSIGHT: Baseline uses Variable Projection (VarPro) - CMA-ES only optimizes position, intensity computed analytically via closed-form least-squares. This is ALREADY globally optimal for intensity.",
+    "related_failures": [
+      "adaptive_perturbation_scale: FAILED (1.1419 vs baseline 1.1464)",
+      "multi_round_perturbation: FAILED (1.1372 vs baseline)"
+    ]
+  },
+
+  "conclusion": {
+    "status": "ABORTED_REDUNDANT",
+    "reason": "Experiment already implemented in current optimizer - nothing new to test",
+    "family_status": "perturbation_targeted family EXHAUSTED"
+  }
+}

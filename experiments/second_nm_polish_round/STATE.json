@@ -1,0 +1,55 @@
+{
+  "experiment": "second_nm_polish_round",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-31T10:00:00Z",
+  "completed_at": "2026-01-31T13:30:00Z",
+  "baseline": {
+    "nm4_perturb1_score": 1.1585,
+    "nm4_perturb1_time": 54.94,
+    "budget_remaining": 5.06
+  },
+  "hypothesis": "Adding a second focused NM polish round on the final best candidate can improve accuracy without exceeding budget.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "second_polish_2iter",
+      "params": {"second_polish_iterations": 2},
+      "score": 1.1594,
+      "time_min": 64.47,
+      "in_budget": false,
+      "rmse_1src": 0.124417,
+      "rmse_2src": 0.202881,
+      "overhead_vs_baseline": 9.53
+    },
+    {
+      "run": 2,
+      "config": "second_polish_4iter",
+      "params": {"second_polish_iterations": 4},
+      "score": 1.1552,
+      "time_min": 63.68,
+      "in_budget": false,
+      "rmse_1src": 0.126400,
+      "rmse_2src": 0.212253,
+      "overhead_vs_baseline": 8.74
+    },
+    {
+      "run": 3,
+      "config": "second_polish_6iter",
+      "params": {"second_polish_iterations": 6},
+      "score": 1.1642,
+      "time_min": 64.27,
+      "in_budget": false,
+      "rmse_1src": 0.121502,
+      "rmse_2src": 0.192803,
+      "overhead_vs_baseline": 9.33
+    }
+  ],
+  "result": "FAILED",
+  "finding": "Second polish adds 8-10 min overhead, NOT the expected 1-2 min. All configs exceed budget. Best score (1.1642) is with 6 iterations but still over budget.",
+  "recommendations": [
+    "Second polish is too expensive for 60 min budget",
+    "Overhead comes from fine grid verification step, not just NM iterations",
+    "nm4_perturb1 remains optimal in-budget config"
+  ]
+}

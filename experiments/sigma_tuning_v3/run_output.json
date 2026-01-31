@@ -1,0 +1,68 @@
+[
+  {
+    "config": "tighter_sigma",
+    "params": {
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 4,
+      "max_fevals_1src": 22,
+      "max_fevals_2src": 40,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 1,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.0,
+      "sigma0_1src": 0.16,
+      "sigma0_2src": 0.2
+    },
+    "score": 1.1523007861068737,
+    "rmse_1src": 0.13087408277528872,
+    "rmse_2src": 0.21571532861733586,
+    "time_min": 56.58301312923432,
+    "in_budget": true,
+    "errors": 0
+  },
+  {
+    "config": "looser_sigma",
+    "params": {
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 4,
+      "max_fevals_1src": 22,
+      "max_fevals_2src": 40,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 1,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.0,
+      "sigma0_1src": 0.2,
+      "sigma0_2src": 0.25
+    },
+    "score": 1.1626163116238915,
+    "rmse_1src": 0.12358913958109294,
+    "rmse_2src": 0.19493877723393016,
+    "time_min": 56.76894976298014,
+    "in_budget": true,
+    "errors": 0
+  },
+  {
+    "config": "asymmetric_sigma",
+    "params": {
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 4,
+      "max_fevals_1src": 22,
+      "max_fevals_2src": 40,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 1,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.0,
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.25
+    },
+    "score": 1.1624445050266212,
+    "rmse_1src": 0.12835131514263956,
+    "rmse_2src": 0.19063847300409575,
+    "time_min": 57.47508984406789,
+    "in_budget": true,
+    "errors": 0
+  }
+]

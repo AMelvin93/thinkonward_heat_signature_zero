@@ -1,0 +1,75 @@
+[
+  {
+    "config": "gradient_verify_3iter_fine",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_perturbation": true,
+      "perturb_top_n": 1,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "enable_gradient_verify": true,
+      "gradient_verify_maxiter": 3,
+      "gradient_verify_use_fine_grid": true
+    },
+    "score": 1.1906327103922032,
+    "rmse_1src": 0.10034328575387312,
+    "rmse_2src": 0.14525130858712185,
+    "overall_rmse": 0.12279729717049748,
+    "time_min": 146.24883728027345,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  },
+  {
+    "config": "gradient_verify_2iter_fine",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_perturbation": true,
+      "perturb_top_n": 1,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "enable_gradient_verify": true,
+      "gradient_verify_maxiter": 2,
+      "gradient_verify_use_fine_grid": true
+    },
+    "score": 1.1858554903555119,
+    "rmse_1src": 0.10639287510995288,
+    "rmse_2src": 0.15131170738053787,
+    "overall_rmse": 0.1288522912452454,
+    "time_min": 138.13833520412444,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  },
+  {
+    "config": "no_gradient_verify_baseline",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_perturbation": true,
+      "perturb_top_n": 1,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "enable_gradient_verify": false
+    },
+    "score": 1.155580385915026,
+    "rmse_1src": 0.12807684451598028,
+    "rmse_2src": 0.20951765031461433,
+    "overall_rmse": 0.1687972474152973,
+    "time_min": 68.80865160624187,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  }
+]

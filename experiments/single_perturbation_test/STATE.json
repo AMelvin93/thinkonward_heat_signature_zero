@@ -1,0 +1,70 @@
+{
+  "experiment": "single_perturbation_test",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-30T20:30:00Z",
+  "completed_at": "2026-01-31T00:30:00Z",
+  "baseline": {
+    "hopping_no_tabu_score": 1.1689,
+    "hopping_no_tabu_time": 58.18,
+    "hopping_no_tabu_n_perturb": 2
+  },
+  "hypothesis": "One perturbation may be sufficient to escape local minima. The second perturbation may add overhead without benefit.",
+  "planned_configs": [
+    {"run": 1, "description": "n_perturbations=0 (no perturbation)", "params": {"enable_tabu_hopping": false}},
+    {"run": 2, "description": "n_perturbations=1 (test)", "params": {"n_perturbations": 1}},
+    {"run": 3, "description": "n_perturbations=2 (baseline)", "params": {"n_perturbations": 2}}
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "no_perturbation",
+      "params": {"enable_tabu_hopping": false},
+      "score": 1.1514,
+      "time_min": 60.71,
+      "in_budget": false,
+      "rmse_1src": 0.128094,
+      "rmse_2src": 0.220976,
+      "budget_remaining_min": -0.71,
+      "note": "Just barely over budget"
+    },
+    {
+      "run": 2,
+      "config": "perturbation_n1",
+      "params": {"n_perturbations": 1, "enable_tabu_hopping": true},
+      "score": 1.1622,
+      "time_min": 64.06,
+      "in_budget": false,
+      "rmse_1src": 0.124819,
+      "rmse_2src": 0.194787,
+      "budget_remaining_min": -4.06,
+      "delta_vs_no_perturb": "+0.0108 score, +3.35 min"
+    },
+    {
+      "run": 3,
+      "config": "perturbation_n2",
+      "params": {"n_perturbations": 2, "enable_tabu_hopping": true},
+      "score": 1.1657,
+      "time_min": 68.07,
+      "in_budget": false,
+      "rmse_1src": 0.123165,
+      "rmse_2src": 0.187221,
+      "budget_remaining_min": -8.07,
+      "delta_vs_no_perturb": "+0.0143 score, +7.36 min"
+    }
+  ],
+  "result": "INCONCLUSIVE",
+  "finding": "Perturbation DOES help accuracy: n=1 gives +0.0108, n=2 gives +0.0143. However, perturbation adds 3-7 min overhead. This machine runs ~5% slower than reference. On reference machine, no_perturbation would be in budget at ~58 min, perturbation_n1 at ~61 min (borderline), perturbation_n2 at ~65 min (over).",
+  "recommendations": [
+    "n_perturbations=2 is optimal for accuracy if time permits",
+    "n_perturbations=1 is a good tradeoff (+0.0108 for +3 min)",
+    "For strict 60 min budget, may need to reduce NM iterations to 7 when using perturbation",
+    "Machine speed variance is significant factor"
+  ],
+  "machine_speed_analysis": {
+    "reference_time_no_perturb": 58.18,
+    "this_machine_no_perturb": 60.71,
+    "slowdown_factor": 1.044,
+    "note": "This machine is ~4.4% slower than reference"
+  }
+}

@@ -1,0 +1,70 @@
+Loading data...
+Loaded 80 samples
+
+============================================================
+Config: ils_3iter_4nm
+Parameters: max_ils_iterations=3
+            ils_nm_iters=4
+            enable_ils=True
+============================================================
+  Progress: 20/80 samples, elapsed: 11.7 min
+  Progress: 40/80 samples, elapsed: 28.0 min
+  Progress: 60/80 samples, elapsed: 49.8 min
+  Progress: 80/80 samples, elapsed: 71.1 min
+
+--- Results for ils_3iter_4nm ---
+  RMSE 1-source: 0.133711 (n=32)
+  RMSE 2-source: 0.189383 (n=48)
+  Overall RMSE:  0.161547
+  Score:         1.1609
+  Time:          71.11 min
+  Errors:        0
+
+============================================================
+Config: ils_2iter_3nm
+Parameters: max_ils_iterations=2
+            ils_nm_iters=3
+            enable_ils=True
+============================================================
+  Progress: 20/80 samples, elapsed: 10.3 min
+  Progress: 40/80 samples, elapsed: 24.6 min
+  Progress: 60/80 samples, elapsed: 45.0 min
+  Progress: 80/80 samples, elapsed: 64.7 min
+
+--- Results for ils_2iter_3nm ---
+  RMSE 1-source: 0.131873 (n=32)
+  RMSE 2-source: 0.211756 (n=48)
+  Overall RMSE:  0.171814
+  Score:         1.1534
+  Time:          64.66 min
+  Errors:        0
+
+============================================================
+Config: no_ils_baseline
+Parameters: max_ils_iterations=3
+            ils_nm_iters=4
+            enable_ils=False
+============================================================
+  Progress: 20/80 samples, elapsed: 8.9 min
+  Progress: 40/80 samples, elapsed: 21.6 min
+  Progress: 60/80 samples, elapsed: 39.0 min
+  Progress: 80/80 samples, elapsed: 56.9 min
+
+--- Results for no_ils_baseline ---
+  RMSE 1-source: 0.140996 (n=32)
+  RMSE 2-source: 0.218309 (n=48)
+  Overall RMSE:  0.179653
+  Score:         1.1477
+  Time:          56.89 min
+  Errors:        0
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                       Score     Time  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+ils_3iter_4nm               1.1609    71.1m   0.133711   0.189383
+ils_2iter_3nm               1.1534    64.7m   0.131873   0.211756
+no_ils_baseline             1.1477    56.9m   0.140996   0.218309
+
+Best in-budget config: no_ils_baseline with score 1.1477 @ 56.9 min

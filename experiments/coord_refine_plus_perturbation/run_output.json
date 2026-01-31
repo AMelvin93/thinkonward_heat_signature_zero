@@ -1,0 +1,65 @@
+[
+  {
+    "config": "nm5_coord_perturb2",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_coord_refine": true,
+      "coord_step": 0.01,
+      "enable_perturbation": true,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "refine_maxiter": 5,
+      "n_perturbations": 2
+    },
+    "score": 1.1560925597491098,
+    "rmse_1src": 0.1281970310432633,
+    "rmse_2src": 0.2079989529355353,
+    "time_min": 74.20127221345902,
+    "in_budget": false,
+    "errors": 0
+  },
+  {
+    "config": "nm6_coord_perturb1",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_coord_refine": true,
+      "coord_step": 0.01,
+      "enable_perturbation": true,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "refine_maxiter": 6,
+      "n_perturbations": 1
+    },
+    "score": 1.1658486292611774,
+    "rmse_1src": 0.1196888613318919,
+    "rmse_2src": 0.19018371039763363,
+    "time_min": 69.21417673428853,
+    "in_budget": false,
+    "errors": 0
+  },
+  {
+    "config": "nm6_coord_perturb2",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_coord_refine": true,
+      "coord_step": 0.01,
+      "enable_perturbation": true,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "refine_maxiter": 6,
+      "n_perturbations": 2
+    },
+    "score": 1.1657380115630356,
+    "rmse_1src": 0.12508710908552498,
+    "rmse_2src": 0.18508060133893214,
+    "time_min": 76.27884119749069,
+    "in_budget": false,
+    "errors": 0
+  }
+]

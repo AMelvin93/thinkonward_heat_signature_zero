@@ -10,3 +10,45 @@ Invalid API key · Please run /login
 Invalid API key · Please run /login
 Invalid API key · Please run /login
 Invalid API key · Please run /login
+
+=== W1 Session: 2026-01-29 ===
+
+EXPERIMENTS COMPLETED:
+1. position_only_perturbation - ABORTED (REDUNDANT)
+   - Finding: Already implemented in baseline optimizer
+   - VarPro already handles intensity optimally; perturbation is already position-only
+
+2. validated_multi_candidate_perturb - FAILED
+   - Multi-candidate perturbation (perturb_top_n=2) is WORSE than single-candidate (perturb_top_n=1)
+   - Run 2 (multi-cand): Score 1.1407
+   - Run 3 (single-cand): Score 1.1549
+   - Baseline perturb_top_n=1 remains optimal
+
+3. larger_perturbation_scale - FAILED
+   - Larger scales (0.08, 0.10) do NOT improve over baseline (0.05)
+   - Scale 0.05: Score 1.1549
+   - Scale 0.08: Score 1.1469
+   - Scale 0.10: Score 1.1506
+   - Baseline scale 0.05 is optimal
+
+KEY FINDINGS:
+- Baseline perturbation config is optimal: perturb_top_n=1, n_perturbations=2, scale=0.05
+- Multi-candidate perturbation doesn't help (2nd-best candidate's basin is not better)
+- Larger perturbation scales don't help (current scale is optimal for this problem)
+
+MACHINE CONSTRAINT:
+- This machine runs ~4.5x slower than baseline
+- Cannot reliably validate within-budget performance
+- Relative comparisons are valid but absolute times inflated
+
+FAMILIES EXHAUSTED:
+- perturbation_targeted: Position-only perturbation is already implemented
+- perturbation_v3: Multi-candidate perturbation FAILED
+- perturbation_v4: Larger perturbation scale FAILED
+
+RECOMMENDATION:
+- Keep baseline configuration unchanged
+- Remaining experiments unlikely to improve given pattern of failures
+- Need faster machine to validate production-relevant timing
+
+[W1] Session complete. 3 experiments completed. Baseline remains optimal.

@@ -1,0 +1,56 @@
+
+============================================================
+VALIDATED MULTI-CANDIDATE PERTURBATION EXPERIMENT
+============================================================
+Samples: 20 (20 1-source, 0 2-source)
+Workers: 7
+Perturbation: ENABLED
+  Perturb top N: 1 (MULTI-CANDIDATE)
+  N perturbations per candidate: 2
+  Total perturbations: 2
+  Scale: 0.1
+  NM iters for perturbed: 3
+Timestep fraction: 0.25
+NM polish iters: 8
+Sigma: 0.18/0.22
+============================================================
+[  1/20] Sample   2: 1-src RMSE=0.0887 cands=3 time=120.1s [OK]
+[  2/20] Sample   4: 1-src RMSE=0.1509 cands=2 time=121.7s [OK]
+[  3/20] Sample   1: 1-src RMSE=0.1404 cands=3 time=126.9s [OK] [PERT:1]
+[  4/20] Sample   5: 1-src RMSE=0.1863 cands=3 time=153.4s [OK]
+[  5/20] Sample   0: 1-src RMSE=0.1035 cands=3 time=153.5s [OK]
+[  6/20] Sample   6: 1-src RMSE=0.1300 cands=3 time=161.4s [OK]
+[  7/20] Sample   3: 1-src RMSE=0.1699 cands=3 time=174.9s [OK] [PERT:1]
+[  8/20] Sample   8: 1-src RMSE=0.0990 cands=3 time=120.2s [OK]
+[  9/20] Sample   9: 1-src RMSE=0.1553 cands=2 time=157.5s [OK]
+[ 10/20] Sample   7: 1-src RMSE=0.2758 cands=3 time=177.5s [OK]
+[ 11/20] Sample  12: 1-src RMSE=0.1575 cands=3 time=137.2s [OK] [PERT:1]
+[ 12/20] Sample  10: 1-src RMSE=0.1512 cands=3 time=182.7s [OK]
+[ 13/20] Sample  11: 1-src RMSE=0.0614 cands=3 time=186.7s [OK]
+[ 14/20] Sample  13: 1-src RMSE=0.2774 cands=3 time=179.8s [OK]
+[ 15/20] Sample  14: 1-src RMSE=0.1592 cands=3 time=163.9s [OK]
+[ 16/20] Sample  16: 1-src RMSE=0.1528 cands=3 time=112.7s [OK]
+[ 17/20] Sample  15: 1-src RMSE=0.0967 cands=3 time=152.7s [OK]
+[ 18/20] Sample  17: 1-src RMSE=0.1113 cands=3 time=149.4s [OK]
+[ 19/20] Sample  19: 1-src RMSE=0.1016 cands=1 time=125.3s [OK]
+[ 20/20] Sample  18: 1-src RMSE=0.1200 cands=2 time=130.2s [OK]
+
+======================================================================
+RESULTS - Multi-Candidate Perturbation Validation
+======================================================================
+Score:            1.1506
+RMSE mean:        0.1445
+Total time:       466.4s
+Projected (400):  155.5 min
+
+  1-source: RMSE=0.1445 (n=20, time=149.4s)
+
+Perturbed candidates selected: 3 across 3/20 samples
+
+Baseline (perturbation_plus_verification): 1.1468 @ 54.2 min
+This run:                                   1.1506 @ 155.5 min
+Delta vs baseline:                          +0.0038 score, +101.3 min
+
+STATUS: OVER BUDGET
+======================================================================
+

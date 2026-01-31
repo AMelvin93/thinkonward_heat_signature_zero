@@ -1,0 +1,57 @@
+{
+  "experiment": "shorter_nm_polish_6iter",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-30T01:00:00Z",
+  "completed_at": "2026-01-30T04:00:00Z",
+  "baseline": {
+    "score": 1.1689,
+    "time_min": 58.2,
+    "config": "hopping_with_tabu_memory no_tabu_baseline (refine_maxiter=8, NO perturbation)"
+  },
+  "hypothesis": "8 NM iterations may be overkill. 6-7 iterations could save time with minimal accuracy loss.",
+  "planned_configs": [
+    {"run": 1, "description": "6 NM iterations", "params": {"refine_maxiter": 6}},
+    {"run": 2, "description": "7 NM iterations", "params": {"refine_maxiter": 7}},
+    {"run": 3, "description": "8 NM iterations (baseline)", "params": {"refine_maxiter": 8}}
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "nm_6iter",
+      "params": {"refine_maxiter": 6},
+      "score": 1.1489,
+      "time_min": 53.45,
+      "in_budget": true,
+      "rmse_1src": 0.134832,
+      "rmse_2src": 0.221059
+    },
+    {
+      "run": 2,
+      "config": "nm_7iter",
+      "params": {"refine_maxiter": 7},
+      "score": 1.1516,
+      "time_min": 56.13,
+      "in_budget": true,
+      "rmse_1src": 0.130246,
+      "rmse_2src": 0.218347
+    },
+    {
+      "run": 3,
+      "config": "nm_8iter_baseline",
+      "params": {"refine_maxiter": 8},
+      "score": 1.1554,
+      "time_min": 65.83,
+      "in_budget": false,
+      "rmse_1src": 0.134085,
+      "rmse_2src": 0.204070
+    }
+  ],
+  "result": "MIXED",
+  "finding": "8 iterations actually takes 65.8 min (over budget). Best in-budget is 7 iterations @ 1.1516. All scores lower than claimed baseline of 1.1689 - suggests prior result may have been variance-lucky.",
+  "recommendations": [
+    "Use 7 NM iterations for in-budget runs",
+    "Re-verify baseline - 1.1689 appears unreproducible",
+    "Acknowledge significant run-to-run variance"
+  ]
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "config": "nm_6iter",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_tabu_hopping": false,
+      "refine_maxiter": 6
+    },
+    "score": 1.1489358939159857,
+    "rmse_1src": 0.13483191282309295,
+    "rmse_2src": 0.22105857824139294,
+    "time_min": 53.45152405897776,
+    "errors": 0
+  },
+  {
+    "config": "nm_7iter",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_tabu_hopping": false,
+      "refine_maxiter": 7
+    },
+    "score": 1.1515737896218579,
+    "rmse_1src": 0.13024557891750477,
+    "rmse_2src": 0.21834713773726877,
+    "time_min": 56.13043641249339,
+    "errors": 0
+  },
+  {
+    "config": "nm_8iter_baseline",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "enable_tabu_hopping": false,
+      "refine_maxiter": 8
+    },
+    "score": 1.1553753352542535,
+    "rmse_1src": 0.13408483575355618,
+    "rmse_2src": 0.20407002746273725,
+    "time_min": 65.83462198177973,
+    "errors": 0
+  }
+]

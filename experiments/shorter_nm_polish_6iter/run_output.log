@@ -1,0 +1,61 @@
+Loading data...
+Loaded 80 samples
+
+============================================================
+Config: nm_6iter
+Parameters: refine_maxiter=6
+            enable_tabu_hopping=False
+============================================================
+  Progress: 20/80 samples, elapsed: 8.0 min
+  Progress: 40/80 samples, elapsed: 19.9 min
+  Progress: 60/80 samples, elapsed: 36.7 min
+  Progress: 80/80 samples, elapsed: 53.5 min
+
+--- Results for nm_6iter ---
+  RMSE 1-source: 0.134832
+  RMSE 2-source: 0.221059
+  Score:         1.1489
+  Time:          53.45 min
+
+============================================================
+Config: nm_7iter
+Parameters: refine_maxiter=7
+            enable_tabu_hopping=False
+============================================================
+  Progress: 20/80 samples, elapsed: 8.6 min
+  Progress: 40/80 samples, elapsed: 21.1 min
+  Progress: 60/80 samples, elapsed: 38.2 min
+  Progress: 80/80 samples, elapsed: 56.1 min
+
+--- Results for nm_7iter ---
+  RMSE 1-source: 0.130246
+  RMSE 2-source: 0.218347
+  Score:         1.1516
+  Time:          56.13 min
+
+============================================================
+Config: nm_8iter_baseline
+Parameters: refine_maxiter=8
+            enable_tabu_hopping=False
+============================================================
+  Progress: 20/80 samples, elapsed: 10.1 min
+  Progress: 40/80 samples, elapsed: 24.7 min
+  Progress: 60/80 samples, elapsed: 47.0 min
+  Progress: 80/80 samples, elapsed: 65.8 min
+
+--- Results for nm_8iter_baseline ---
+  RMSE 1-source: 0.134085
+  RMSE 2-source: 0.204070
+  Score:         1.1554
+  Time:          65.83 min
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                       Score     Time  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+nm_6iter                    1.1489    53.5m   0.134832   0.221059
+nm_7iter                    1.1516    56.1m   0.130246   0.218347
+nm_8iter_baseline           1.1554    65.8m   0.134085   0.204070
+
+Best in-budget: nm_7iter @ 1.1516, 56.1 min

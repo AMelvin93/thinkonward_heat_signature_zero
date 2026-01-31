@@ -1,0 +1,276 @@
+{
+  "experiment": "validated_multi_candidate_perturb",
+  "experiment_id": "EXP_VALIDATED_MULTI_CAND_001",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-29T00:15:00Z",
+  "status": "in_progress",
+  "conclusion": {
+    "result": "FAILED",
+    "finding": "Multi-candidate perturbation (perturb_top_n=2) is WORSE than single-candidate (perturb_top_n=1)",
+    "evidence": "Run 3 (single-cand) achieved 1.1549 vs Run 2 (multi-cand) 1.1407 on same samples",
+    "recommendation": "DO NOT USE - Baseline perturb_top_n=1 remains optimal"
+  },
+  "hypothesis": "Perturbing the 2nd-best candidate (in addition to best) may find better solutions if it's in a different basin with a better local optimum.",
+  "prior_evidence": {
+    "experiment": "multi_candidate_perturbation",
+    "result": "INCONCLUSIVE - Score 1.1526 (+0.0058 vs baseline), but 150.4 min (2.5x over budget)",
+    "machine_note": "Prior run was on slow machine (2-3x slower than baseline)"
+  },
+  "baseline": {
+    "experiment": "perturbation_plus_verification",
+    "score": 1.1468,
+    "time_min": 54.2,
+    "config": {
+      "perturb_top_n": 1,
+      "n_perturbations": 2,
+      "total_perturbations": 2
+    }
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Baseline config: perturb_top_n=2, n_perturbations=1 (total=2)",
+      "config": {
+        "perturb_top_n": 2,
+        "n_perturbations": 1,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "refine_maxiter": 8,
+        "timestep_fraction": 0.25
+      },
+      "expected_time": "~55-60 min",
+      "rationale": "Exact config from experiment description"
+    },
+    {
+      "run": 2,
+      "description": "IF run 1 is over budget, reduce polish OR timestep_fraction",
+      "depends_on": "run 1 results"
+    },
+    {
+      "run": 3,
+      "description": "IF run 1 is in budget with time remaining, increase quality parameters",
+      "depends_on": "run 1 results"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 2,
+        "n_perturbations": 1,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.131498776501083,
+        "total_time_sec": 3255.1518030166626,
+        "projected_400_min": 271.26265025138855,
+        "rmse_mean": 0.18501414151030735,
+        "rmse_mean_1src": 0.14043842546438,
+        "rmse_mean_2src": 0.21473128554092555,
+        "time_mean_1src": 157.8118997812271,
+        "time_mean_2src": 355.4890295465787,
+        "n_perturbed_selected": 15,
+        "n_samples_with_perturbed": 13
+      },
+      "timestamp": "2026-01-29T01:02:21.839367",
+      "budget_analysis": {
+        "time_min": 271.26265025138855,
+        "budget_remaining_min": -211.26265025138855,
+        "in_budget": false,
+        "time_utilization_pct": 100
+      }
+    },
+    {
+      "run": 2,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 2,
+        "n_perturbations": 1,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.15,
+        "refine_maxiter": 4,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1406993073991671,
+        "total_time_sec": 393.0426676273346,
+        "projected_400_min": 131.01422254244488,
+        "rmse_mean": 0.1714545607363413,
+        "rmse_mean_1src": 0.1714545607363413,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 128.95660226345063,
+        "time_mean_2src": 0,
+        "n_perturbed_selected": 5,
+        "n_samples_with_perturbed": 5
+      },
+      "timestamp": "2026-01-29T01:10:52.524874",
+      "budget_analysis": {
+        "time_min": 131.01422254244488,
+        "budget_remaining_min": -71.01422254244488,
+        "in_budget": false,
+        "time_utilization_pct": 100
+      }
+    },
+    {
+      "run": 3,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1548530393775251,
+        "total_time_sec": 458.40687561035156,
+        "projected_400_min": 152.8022918701172,
+        "rmse_mean": 0.12873434160288028,
+        "rmse_mean_1src": 0.12873434160288028,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 147.62753438949585,
+        "time_mean_2src": 0,
+        "n_perturbed_selected": 1,
+        "n_samples_with_perturbed": 1
+      },
+      "timestamp": "2026-01-29T01:19:09.753521",
+      "budget_analysis": {
+        "time_min": 152.8022918701172,
+        "budget_remaining_min": -92.80229187011719,
+        "in_budget": false,
+        "time_utilization_pct": 100
+      }
+    },
+    {
+      "run": 4,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.08,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1468734315022122,
+        "total_time_sec": 464.1359477043152,
+        "projected_400_min": 154.71198256810507,
+        "rmse_mean": 0.11731950698096086,
+        "rmse_mean_1src": 0.11731950698096086,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 150.43669842481614,
+        "time_mean_2src": 0,
+        "n_perturbed_selected": 1,
+        "n_samples_with_perturbed": 1
+      },
+      "timestamp": "2026-01-29T01:29:12.867504",
+      "budget_analysis": {
+        "time_min": 154.71198256810507,
+        "budget_remaining_min": -94.71198256810507,
+        "in_budget": false,
+        "time_utilization_pct": 100
+      }
+    },
+    {
+      "run": 5,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.1,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1506198537751493,
+        "total_time_sec": 466.407995223999,
+        "projected_400_min": 155.469331741333,
+        "rmse_mean": 0.1444521188930038,
+        "rmse_mean_1src": 0.1444521188930038,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 149.38605499267578,
+        "time_mean_2src": 0,
+        "n_perturbed_selected": 3,
+        "n_samples_with_perturbed": 3
+      },
+      "timestamp": "2026-01-29T01:37:35.614343",
+      "budget_analysis": {
+        "time_min": 155.469331741333,
+        "budget_remaining_min": -95.46933174133301,
+        "in_budget": false,
+        "time_utilization_pct": 100
+      }
+    },
+    {
+      "run": 6,
+      "config": {
+        "enable_perturbation": true,
+        "perturb_top_n": 1,
+        "n_perturbations": 4,
+        "perturbation_scale": 0.05,
+        "perturb_nm_iters": 3,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "timestep_fraction": 0.25,
+        "refine_maxiter": 8,
+        "refine_top_n": 2,
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "results": {
+        "score": 1.1565582941650405,
+        "total_time_sec": 553.4856975078583,
+        "projected_400_min": 184.49523250261942,
+        "rmse_mean": 0.11839367494616919,
+        "rmse_mean_1src": 0.11839367494616919,
+        "rmse_mean_2src": 0,
+        "time_mean_1src": 176.5500398516655,
+        "time_mean_2src": 0,
+        "n_perturbed_selected": 5,
+        "n_samples_with_perturbed": 4
+      },
+      "timestamp": "2026-01-29T01:50:28.838732",
+      "budget_analysis": {
+        "time_min": 184.49523250261942,
+        "budget_remaining_min": -124.49523250261942,
+        "in_budget": false,
+        "time_utilization_pct": 100
+      }
+    }
+  ],
+  "best_in_budget": null
+}

@@ -1,0 +1,61 @@
+[
+  {
+    "config": "no_perturbation",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_tabu_hopping": false,
+      "tabu_distance": 0.0,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3
+    },
+    "score": 1.1514006621533437,
+    "rmse_1src": 0.12809445952109375,
+    "rmse_2src": 0.2209758300669414,
+    "time_min": 60.706150352954865,
+    "in_budget": false,
+    "errors": 0
+  },
+  {
+    "config": "perturbation_n1",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_tabu_hopping": true,
+      "tabu_distance": 0.0,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "n_perturbations": 1
+    },
+    "score": 1.1622154656513308,
+    "rmse_1src": 0.12481894099008042,
+    "rmse_2src": 0.19478686483847704,
+    "time_min": 64.06386505762735,
+    "in_budget": false,
+    "errors": 0
+  },
+  {
+    "config": "perturbation_n2",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_tabu_hopping": true,
+      "tabu_distance": 0.0,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "n_perturbations": 2
+    },
+    "score": 1.1656561972392039,
+    "rmse_1src": 0.12316497218431205,
+    "rmse_2src": 0.18722107527714513,
+    "time_min": 68.06682219107945,
+    "in_budget": false,
+    "errors": 0
+  }
+]

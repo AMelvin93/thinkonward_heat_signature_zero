@@ -1,0 +1,114 @@
+{
+  "experiment": "ils_style_restart",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-29T14:50:00Z",
+  "completed_at": "2026-01-29T17:30:00Z",
+  "baseline": {
+    "score": 1.1464,
+    "time_min": 51.2,
+    "config": "perturbed_extended_polish with perturb_top_n=1, n_perturbations=2"
+  },
+  "hypothesis": "Iterated Local Search (ILS) can escape local optima by iteratively perturbing and running local search. Classic approach from optimization literature.",
+  "planned_configs": [
+    {
+      "run": 1,
+      "description": "Standard ILS: 3 iterations, 4 NM iter per step",
+      "params": {
+        "max_ils_iterations": 3,
+        "ils_nm_iters": 4,
+        "ils_perturbation_scale": 0.05
+      },
+      "rationale": "Standard ILS configuration from literature"
+    },
+    {
+      "run": 2,
+      "description": "Lighter ILS: 2 iterations, 3 NM iter per step",
+      "params": {
+        "max_ils_iterations": 2,
+        "ils_nm_iters": 3,
+        "ils_perturbation_scale": 0.05
+      },
+      "rationale": "Lighter ILS to reduce overhead"
+    },
+    {
+      "run": 3,
+      "description": "No ILS baseline",
+      "params": {
+        "enable_ils": false
+      },
+      "rationale": "Baseline comparison without ILS"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "ils_3iter_4nm",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8,
+        "enable_ils": true,
+        "max_ils_iterations": 3,
+        "ils_nm_iters": 4,
+        "ils_perturbation_scale": 0.05,
+        "ils_apply_to_top_n": 1
+      },
+      "score": 1.1609,
+      "time_min": 71.11,
+      "budget_remaining_min": -11.11,
+      "in_budget": false,
+      "rmse_1src": 0.133711,
+      "rmse_2src": 0.189383,
+      "overall_rmse": 0.161547
+    },
+    {
+      "run": 2,
+      "config": "ils_2iter_3nm",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8,
+        "enable_ils": true,
+        "max_ils_iterations": 2,
+        "ils_nm_iters": 3,
+        "ils_perturbation_scale": 0.05,
+        "ils_apply_to_top_n": 1
+      },
+      "score": 1.1534,
+      "time_min": 64.66,
+      "budget_remaining_min": -4.66,
+      "in_budget": false,
+      "rmse_1src": 0.131873,
+      "rmse_2src": 0.211756,
+      "overall_rmse": 0.171814
+    },
+    {
+      "run": 3,
+      "config": "no_ils_baseline",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8,
+        "enable_ils": false
+      },
+      "score": 1.1477,
+      "time_min": 56.89,
+      "budget_remaining_min": 3.11,
+      "in_budget": true,
+      "rmse_1src": 0.140996,
+      "rmse_2src": 0.218309,
+      "overall_rmse": 0.179653
+    }
+  ],
+  "result": "MARGINAL_IMPROVEMENT",
+  "finding": "ILS improves score by +0.013 but adds 14 min overhead. Best in-budget is 1.1477 @ 57 min (baseline without ILS).",
+  "recommendations": [
+    "ILS not practical within 60 min budget",
+    "Could work with longer time budget",
+    "The baseline config (no ILS) achieved 1.1477 which is slightly better than historical 1.1464"
+  ]
+}

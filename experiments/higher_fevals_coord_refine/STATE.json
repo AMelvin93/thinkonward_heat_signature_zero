@@ -1,0 +1,57 @@
+{
+  "experiment": "higher_fevals_coord_refine",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-30T10:45:00Z",
+  "completed_at": "2026-01-30T13:45:00Z",
+  "baseline": {
+    "score": 1.1602,
+    "time_min": 57.55,
+    "config": "nm6_coord001 (6 NM + coord step=0.01)"
+  },
+  "hypothesis": "Higher CMA-ES fevals (25/45 vs 20/36) could improve accuracy.",
+  "planned_configs": [
+    {"run": 1, "description": "25/45 fevals", "params": {"max_fevals_1src": 25, "max_fevals_2src": 45}},
+    {"run": 2, "description": "22/40 fevals", "params": {"max_fevals_1src": 22, "max_fevals_2src": 40}},
+    {"run": 3, "description": "20/36 fevals (baseline)", "params": {"max_fevals_1src": 20, "max_fevals_2src": 36}}
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "fevals_25_45",
+      "params": {"max_fevals_1src": 25, "max_fevals_2src": 45},
+      "score": 1.1545,
+      "time_min": 58.86,
+      "in_budget": true,
+      "rmse_1src": 0.132921,
+      "rmse_2src": 0.207687
+    },
+    {
+      "run": 2,
+      "config": "fevals_22_40",
+      "params": {"max_fevals_1src": 22, "max_fevals_2src": 40},
+      "score": 1.1518,
+      "time_min": 59.23,
+      "in_budget": true,
+      "rmse_1src": 0.131393,
+      "rmse_2src": 0.216505
+    },
+    {
+      "run": 3,
+      "config": "fevals_20_36_baseline",
+      "params": {"max_fevals_1src": 20, "max_fevals_2src": 36},
+      "score": 1.1621,
+      "time_min": 56.18,
+      "in_budget": true,
+      "rmse_1src": 0.122297,
+      "rmse_2src": 0.197739
+    }
+  ],
+  "result": "FAILED",
+  "finding": "Higher fevals (25/45, 22/40) performed WORSE than baseline (20/36). The baseline achieved 1.1621 @ 56.2 min, which is optimal. Do NOT increase fevals.",
+  "recommendations": [
+    "Keep fevals at 20/36 - don't increase",
+    "Mark higher_fevals family as EXHAUSTED",
+    "Current config is already well-tuned"
+  ]
+}
