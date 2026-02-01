@@ -1,0 +1,31 @@
+
+Temporal 40% + Higher Sigma Optimizer
+======================================================================
+Samples: 80, Workers: 7
+Fevals: 20/36
+Sigma: 0.18/0.22
+Timestep fraction: 40%
+Final polish: 6 iterations
+======================================================================
+[  1/80] Sample   1: 1-src RMSE=0.1022 cands=3 time=189.5s [OK]
+[  2/80] Sample   4: 1-src RMSE=0.1508 cands=3 time=195.2s [OK]
+[  3/80] Sample   2: 1-src RMSE=0.0347 cands=3 time=203.6s [OK]
+[  4/80] Sample   6: 1-src RMSE=0.1028 cands=3 time=236.0s [OK]
+[  5/80] Sample   3: 1-src RMSE=0.0079 cands=3 time=237.3s [OK]
+[  6/80] Sample   0: 1-src RMSE=0.0994 cands=3 time=246.5s [OK]
+[  7/80] Sample   5: 1-src RMSE=0.1561 cands=3 time=252.3s [OK]
+[  8/80] Sample   8: 1-src RMSE=0.0978 cands=3 time=200.6s [OK]
+[  9/80] Sample  12: 1-src RMSE=0.1490 cands=3 time=198.3s [OK]
+[ 10/80] Sample   9: 1-src RMSE=0.1481 cands=3 time=256.0s [OK]
+[ 11/80] Sample   7: 1-src RMSE=0.2243 cands=3 time=296.7s [OK]
+[ 12/80] Sample  11: 1-src RMSE=0.0338 cands=3 time=289.3s [OK]
+[ 13/80] Sample  10: 1-src RMSE=0.1520 cands=3 time=303.2s [OK]
+[ 14/80] Sample  13: 1-src RMSE=0.1084 cands=3 time=305.1s [OK]
+[ 15/80] Sample  16: 1-src RMSE=0.1518 cands=3 time=198.7s [OK]
+[ 16/80] Sample  14: 1-src RMSE=0.1515 cands=3 time=297.4s [OK]
+[ 17/80] Sample  15: 1-src RMSE=0.1170 cands=3 time=282.3s [OK]
+[ 18/80] Sample  20: 1-src RMSE=0.0533 cands=3 time=206.5s [OK]
+[ 19/80] Sample  17: 1-src RMSE=0.1009 cands=3 time=313.6s [OK]
+[ 20/80] Sample  18: 1-src RMSE=0.1019 cands=3 time=300.7s [OK]
+[ 21/80] Sample  21: 1-src RMSE=0.0862 cands=3 time=184.5s [OK]
+[ 22/80] Sample  19: 1-src RMSE=0.0988 cands=3 time=312.5s [OK]

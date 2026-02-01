@@ -1,0 +1,23 @@
+[
+  {
+    "config": "nm8_perturb2_nofilter",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.0
+    },
+    "score": 1.1588001315743621,
+    "rmse_1src": 0.12118090630562128,
+    "rmse_2src": 0.20764966377542615,
+    "time_min": 71.61508770783742,
+    "avg_n_candidates": 3.0,
+    "in_budget": false,
+    "errors": 0
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "experiment": "fast_no_filter",
+  "status": "in_progress",
+  "claimed_by": "W1",
+  "claimed_at": "2026-02-01T03:00:00Z",
+  "baseline": {
+    "hopping_no_tabu_score": 1.1689,
+    "hopping_no_tabu_time": 58.18,
+    "simple_top3_no_dissimilarity_score": 1.1825,
+    "simple_top3_no_dissimilarity_time": 69.1
+  },
+  "hypothesis": "Skipping dissimilarity filtering and taking top 3 by RMSE may improve score while maintaining fast execution (uses hopping optimizer code path).",
+  "planned_configs": [
+    {"run": 1, "description": "8 NM + 2 perturb (baseline config)", "params": {"refine_maxiter": 8, "n_perturbations": 2}},
+    {"run": 2, "description": "6 NM + 2 perturb (reduced NM)", "params": {"refine_maxiter": 6, "n_perturbations": 2}},
+    {"run": 3, "description": "8 NM + 1 perturb (reduced perturb)", "params": {"refine_maxiter": 8, "n_perturbations": 1}}
+  ],
+  "tuning_runs": []
+}

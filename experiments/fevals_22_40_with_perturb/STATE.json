@@ -1,0 +1,66 @@
+{
+  "experiment": "fevals_22_40_with_perturb",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-01-31T21:00:00Z",
+  "completed_at": "2026-02-01T02:30:00Z",
+  "baseline": {
+    "hopping_no_tabu_score": 1.1689,
+    "hopping_no_tabu_time": 58.18,
+    "fevals_22_40_score": 1.1640,
+    "fevals_22_40_time": 57.10
+  },
+  "hypothesis": "Combining higher fevals (22/40) with full perturbation config (8 NM, 2 perturbations) may achieve better accuracy than either approach alone.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "nm8_perturb2_fevals22_40",
+      "params": {"refine_maxiter": 8, "n_perturbations": 2, "max_fevals_1src": 22, "max_fevals_2src": 40},
+      "score": 1.1655,
+      "time_min": 68.04,
+      "in_budget": false,
+      "rmse_1src": 0.122147,
+      "rmse_2src": 0.188554,
+      "delta_vs_baseline": -0.0034,
+      "next_action": "CONTINUE - try higher fevals"
+    },
+    {
+      "run": 2,
+      "config": "nm8_perturb2_fevals24_42",
+      "params": {"refine_maxiter": 8, "n_perturbations": 2, "max_fevals_1src": 24, "max_fevals_2src": 42},
+      "score": 1.1596,
+      "time_min": 71.48,
+      "in_budget": false,
+      "rmse_1src": 0.111909,
+      "rmse_2src": 0.214698,
+      "delta_vs_baseline": -0.0093,
+      "next_action": "CONTINUE - try reduced NM"
+    },
+    {
+      "run": 3,
+      "config": "nm6_perturb2_fevals22_40",
+      "params": {"refine_maxiter": 6, "n_perturbations": 2, "max_fevals_1src": 22, "max_fevals_2src": 40},
+      "score": 1.1619,
+      "time_min": 66.86,
+      "in_budget": false,
+      "rmse_1src": 0.128716,
+      "rmse_2src": 0.191814,
+      "delta_vs_baseline": -0.0070,
+      "next_action": "CONCLUDE - all configs over budget and worse"
+    }
+  ],
+  "result": "FAILED",
+  "finding": "Combining higher fevals (22/40) with full perturbation config (8 NM, 2 perturb) does NOT improve results. All configs are over budget and ALL scored WORSE than baseline hopping_no_tabu (1.1689). The techniques do not stack - they seem to address the same optimization bottleneck.",
+  "recommendations": [
+    "Do NOT combine higher fevals with perturbation",
+    "hopping_no_tabu (1.1689 @ 58.18 min) remains the optimal in-budget config",
+    "fevals and perturbation are redundant optimization mechanisms",
+    "Mark combined_fevals_perturb family as EXHAUSTED"
+  ],
+  "time_utilization_analysis": {
+    "total_experiment_time_min": 206.38,
+    "configs_tried": 3,
+    "all_over_budget": true,
+    "best_over_budget_score": 1.1655
+  }
+}

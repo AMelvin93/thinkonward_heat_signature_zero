@@ -1,0 +1,44 @@
+Loading data...
+Loaded 80 samples
+
+============================================================
+Config: nm8_perturb2_nofilter
+Parameters:
+  sigma0_1src=0.18
+  sigma0_2src=0.22
+  timestep_fraction=0.4
+  refine_maxiter=8
+  enable_tabu_hopping=True
+  n_perturbations=2
+  perturbation_scale=0.05
+  perturb_nm_iters=3
+  tabu_distance=0.0
+============================================================
+  Progress: 20/80 samples, elapsed: 11.7 min
+  Progress: 40/80 samples, elapsed: 27.5 min
+  Progress: 60/80 samples, elapsed: 49.2 min
+  Progress: 80/80 samples, elapsed: 71.6 min
+
+--- Results for nm8_perturb2_nofilter ---
+  RMSE 1-source: 0.121181
+  RMSE 2-source: 0.207650
+  Score:         1.1588
+  Time:          71.62 min
+  Avg N_cands:   3.00
+  In budget:     NO
+
+============================================================
+Config: nm6_perturb2_nofilter
+Parameters:
+  sigma0_1src=0.18
+  sigma0_2src=0.22
+  timestep_fraction=0.4
+  refine_maxiter=6
+  enable_tabu_hopping=True
+  n_perturbations=2
+  perturbation_scale=0.05
+  perturb_nm_iters=3
+  tabu_distance=0.0
+============================================================
+  Progress: 20/80 samples, elapsed: 10.7 min
+  Progress: 40/80 samples, elapsed: 25.8 min

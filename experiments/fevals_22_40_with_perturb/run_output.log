@@ -1,0 +1,77 @@
+Loading data...
+Loaded 80 samples
+
+============================================================
+Config: nm8_perturb2_fevals22_40
+Parameters:
+  max_fevals_1src=22
+  max_fevals_2src=40
+  refine_maxiter=8
+  n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 11.0 min
+  Progress: 40/80 samples, elapsed: 26.3 min
+  Progress: 60/80 samples, elapsed: 47.1 min
+  Progress: 80/80 samples, elapsed: 68.0 min
+
+--- Results for nm8_perturb2_fevals22_40 ---
+  RMSE 1-source: 0.122147
+  RMSE 2-source: 0.188554
+  Score:         1.1655
+  Time:          68.04 min
+  In budget:     NO
+
+============================================================
+Config: nm8_perturb2_fevals24_42
+Parameters:
+  max_fevals_1src=24
+  max_fevals_2src=42
+  refine_maxiter=8
+  n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 12.1 min
+  Progress: 40/80 samples, elapsed: 27.9 min
+  Progress: 60/80 samples, elapsed: 50.8 min
+  Progress: 80/80 samples, elapsed: 71.5 min
+
+--- Results for nm8_perturb2_fevals24_42 ---
+  RMSE 1-source: 0.111909
+  RMSE 2-source: 0.214698
+  Score:         1.1596
+  Time:          71.48 min
+  In budget:     NO
+
+============================================================
+Config: nm6_perturb2_fevals22_40
+Parameters:
+  max_fevals_1src=22
+  max_fevals_2src=40
+  refine_maxiter=6
+  n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 10.4 min
+  Progress: 40/80 samples, elapsed: 25.5 min
+  Progress: 60/80 samples, elapsed: 46.0 min
+  Progress: 80/80 samples, elapsed: 66.9 min
+
+--- Results for nm6_perturb2_fevals22_40 ---
+  RMSE 1-source: 0.128716
+  RMSE 2-source: 0.191814
+  Score:         1.1619
+  Time:          66.86 min
+  In budget:     NO
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                            Score     Time  In Budget  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+nm8_perturb2_fevals22_40         1.1655    68.0m         NO   0.122147   0.188554
+nm8_perturb2_fevals24_42         1.1596    71.5m         NO   0.111909   0.214698
+nm6_perturb2_fevals22_40         1.1619    66.9m         NO   0.128716   0.191814
+
+--- Comparison with baselines ---
+hopping_no_tabu (8 NM, 2 perturb, 20/36): 1.1689 @ 58.18 min
+fevals_22_40 (4 NM, 1 perturb, 22/40): 1.1640 @ 57.10 min
+
+No configs within budget!
