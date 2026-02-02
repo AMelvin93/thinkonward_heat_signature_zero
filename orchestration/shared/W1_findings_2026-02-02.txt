@@ -1,0 +1,39 @@
+
+# W1 Session Findings - 2026-02-02
+
+## VALIDATED BEST CONFIG (4pert_nm2)
+Mean Score: 1.1482 +/- 0.0030 @ 51.7 min
+
+Config:
+- n_perturbations: 4
+- perturb_nm_iters: 2
+- perturbation_scale: 0.05
+- tabu_distance: 0.04
+- sigma: 0.18/0.22
+- fevals: 20/44
+- timestep_fraction: 0.40
+- refine_maxiter: 8
+
+## ALTERNATIVE (3-pert)
+Mean Score: 1.1475 +/- 0.0031 @ 55.7 min
+(Equivalent, slightly more buffer)
+
+## GAP TO TOP 10: +0.0103
+Cannot be closed by parameter tuning alone.
+
+## PARAMETER SPACE EXHAUSTED
+All major dimensions tested and optimal values found.
+
+## WORKER STATUS
+Session complete. All assigned work finished.
+Awaiting new experiments or STOP file.
+
+## RECOMMENDATIONS FOR CLOSING GAP
+1. Novel algorithmic approaches (beyond CMA-ES+NM)
+2. Better 2-source handling (RMSE 0.18-0.19 is bottleneck)
+3. Faster computation to enable more perturbations
+4. Different optimization paradigm entirely
+
+## PRODUCTION READY
+The 4pert_nm2 config is validated and ready for final submission.
+

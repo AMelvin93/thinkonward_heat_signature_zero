@@ -1,11 +1,12 @@
 {
   "experiment_id": "EXP_SIMPLE_TOP3_NO_FILTER_001",
   "worker": "W2",
-  "status": "in_progress",
+  "status": "completed",
   "started_at": "2026-01-27T04:45:00Z",
+  "completed_at": "2026-02-01T08:30:00Z",
   "hypothesis": "Top 3 candidates by RMSE are naturally distinct enough (tau>0.2) without explicit filtering",
   "baseline_comparison": {
-    "baseline": "temporal_40pct_higher_sigma (W2's 1.1688 config)",
+    "baseline": "tighter_sigma_range (1.173 @ 50.4 min)",
     "difference": "Skip filter_dissimilar, just take top 3 by RMSE"
   },
   "tuning_runs": [
@@ -16,33 +17,126 @@
         "sigma0_2src": 0.22,
         "timestep_fraction": 0.4,
         "final_polish_maxiter": 8,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
         "no_dissimilarity_filter": true
       },
       "score": 1.1825,
       "time_min": 69.1,
-      "budget_remaining_min": -9.099999999999994,
+      "budget_remaining_min": -9.1,
       "in_budget": false,
-      "decision": "PIVOT - score improved (+0.0137) but over budget. Reduce polish to fit.",
-      "comparison_vs_baseline": "+0.0137 score, +10.7 min"
-    }
-  ],
-  "planned_configs": [
-    {
-      "run": 1,
-      "config": "Baseline config (sigma 0.18/0.22, 40% temporal, 8 NM polish) without dissimilarity filtering",
-      "expected": "Same or worse score if top 3 are too similar"
+      "decision": "PIVOT - score improved (+0.0095) but over budget by 9.1 min"
     },
     {
       "run": 2,
-      "config": "Analyze N_valid per sample to understand natural diversity",
-      "expected": "See how many samples have N_valid < 3"
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.4,
+        "final_polish_maxiter": 6,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "no_dissimilarity_filter": true
+      },
+      "score": 1.1799,
+      "time_min": 61.8,
+      "budget_remaining_min": -1.8,
+      "in_budget": false,
+      "decision": "CONTINUE - excellent score, close to budget, try further reduction"
     },
     {
       "run": 3,
-      "config": "If promising, try variant optimizations",
-      "expected": "Depends on Run 1-2 results"
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.4,
+        "final_polish_maxiter": 5,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "no_dissimilarity_filter": true
+      },
+      "score": 1.1648,
+      "time_min": 61.6,
+      "budget_remaining_min": -1.6,
+      "in_budget": false,
+      "decision": "PIVOT - 5 NM hurts score significantly without saving time"
+    },
+    {
+      "run": 4,
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "timestep_fraction": 0.4,
+        "final_polish_maxiter": 6,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 36,
+        "no_dissimilarity_filter": true
+      },
+      "score": 1.1780,
+      "time_min": 62.0,
+      "budget_remaining_min": -2.0,
+      "in_budget": false,
+      "decision": "PIVOT - tighter sigma didn't help reduce time"
+    },
+    {
+      "run": 5,
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.4,
+        "final_polish_maxiter": 6,
+        "max_fevals_1src": 18,
+        "max_fevals_2src": 32,
+        "no_dissimilarity_filter": true
+      },
+      "score": 1.1771,
+      "time_min": 60.6,
+      "budget_remaining_min": -0.6,
+      "in_budget": false,
+      "decision": "CONTINUE - almost in budget, try slightly more reduction"
+    },
+    {
+      "run": 6,
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "timestep_fraction": 0.4,
+        "final_polish_maxiter": 6,
+        "max_fevals_1src": 17,
+        "max_fevals_2src": 30,
+        "no_dissimilarity_filter": true
+      },
+      "score": 1.1713,
+      "time_min": 56.8,
+      "budget_remaining_min": 3.2,
+      "in_budget": true,
+      "decision": "ACCEPT - in budget but worse than current best"
     }
   ],
-  "next_config_to_try": 2,
-  "last_updated": "2026-01-27T04:54:22.327173"
+  "best_in_budget": {
+    "run": 6,
+    "score": 1.1713,
+    "time_min": 56.8,
+    "config": "sigma 0.18/0.22, 6 NM, 17/30 fevals, no dissimilarity filter"
+  },
+  "best_overall": {
+    "run": 1,
+    "score": 1.1825,
+    "time_min": 69.1,
+    "config": "sigma 0.18/0.22, 8 NM, 20/36 fevals, no dissimilarity filter"
+  },
+  "comparison_vs_current_best": {
+    "current_best": "tighter_sigma_range (1.173 @ 50.4 min)",
+    "this_experiment_best_in_budget": "1.1713 @ 56.8 min",
+    "delta_score": -0.0017,
+    "delta_time_min": 6.4,
+    "conclusion": "WORSE - no dissimilarity filter doesn't beat perturbation approach"
+  },
+  "conclusion": "FAILED - Removing dissimilarity filter shows potential (1.1825 @ 69 min) but cannot fit budget without sacrificing accuracy. When constrained to budget, scores 1.1713 which is worse than current best 1.173.",
+  "key_insights": [
+    "Dissimilarity filter removal CAN improve accuracy (+0.0095) with enough compute budget",
+    "But accuracy gains require more NM polish iterations",
+    "Reducing polish to fit budget negates the accuracy benefit",
+    "Perturbation approach (current best) achieves similar/better accuracy more efficiently"
+  ]
 }

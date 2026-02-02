@@ -1,0 +1,84 @@
+
+=== Run 1 ===
+Sigma: 1src=0.18, 2src=0.22
+Fevals: 1src=20, 2src=44
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 1 Result: Score=1.1340, Avg cands=2.77, Time=42.8 min
+
+=== Run 2 ===
+Sigma: 1src=0.18, 2src=0.22
+Fevals: 1src=20, 2src=44
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 2 Result: Score=1.1481, Avg cands=2.86, Time=43.0 min
+
+=== Run 3 ===
+Sigma: 1src=0.18, 2src=0.22
+Fevals: 1src=20, 2src=44
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 3 Result: Score=1.1393, Avg cands=2.84, Time=41.0 min
+
+============================================================
+SUMMARY: Validation of New Best Candidate
+============================================================
+True baseline (sigma 0.15/0.19): 1.1337
+
+  Run 1: 1.1340 @ 42.8 min (vs baseline: +0.0003)
+  Run 2: 1.1481 @ 43.0 min (vs baseline: +0.0144)
+  Run 3: 1.1393 @ 41.0 min (vs baseline: +0.0056)
+
+Mean score: 1.1405
+Std dev:    0.0058
+Min score:  1.1340
+Max score:  1.1481
+Mean time:  42.3 min
+
+CONCLUSION: Config is 0.60% BETTER than baseline!
+THIS IS A NEW BEST CONFIGURATION
+{
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": false,
+    "n_perturbations": 2,
+    "perturbation_scale": 0.05,
+    "perturb_nm_iters": 3
+  },
+  "runs": [
+    {
+      "run": 1,
+      "score": 1.134012841977424,
+      "avg_n_cands": 2.775,
+      "projected_400_min": 42.804500460624695
+    },
+    {
+      "run": 2,
+      "score": 1.1481222834182074,
+      "avg_n_cands": 2.8625,
+      "projected_400_min": 42.9710178176562
+    },
+    {
+      "run": 3,
+      "score": 1.1393085047854192,
+      "avg_n_cands": 2.8375,
+      "projected_400_min": 41.01826669772466
+    }
+  ],
+  "mean_score": 1.14048121006035,
+  "std_score": 0.005819536790794281,
+  "mean_time": 42.264594992001854,
+  "vs_baseline": 0.006781210060350151,
+  "improvement_pct": 0.5981485455014688
+}

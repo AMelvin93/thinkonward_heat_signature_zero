@@ -1,0 +1,58 @@
+
+Config: scale_0.04 (scale=0.04)
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1389, Avg cands=2.86, Time=45.2 min
+vs Current Best (1.1437): -0.0048
+
+Config: scale_0.06 (scale=0.06)
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1378, Avg cands=2.81, Time=43.8 min
+vs Current Best (1.1437): -0.0059
+
+Config: scale_0.05 (scale=0.05)
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1419, Avg cands=2.83, Time=38.3 min
+vs Current Best (1.1437): -0.0018
+
+============================================================
+SUMMARY: Perturbation Scale Tuning
+============================================================
+Current best (scale=0.05): 1.1437 @ 42.2 min
+
+  scale=0.04: 1.1389 @ 45.2 min (-0.0048)
+  scale=0.06: 1.1378 @ 43.8 min (-0.0059)
+  scale=0.05: 1.1419 @ 38.3 min (-0.0018)
+
+Best: scale=0.05 = 1.1419
+[
+  {
+    "config_name": "scale_0.04",
+    "scale": 0.04,
+    "score": 1.138870692474087,
+    "avg_n_cands": 2.8625,
+    "projected_400_min": 45.17746943235397
+  },
+  {
+    "config_name": "scale_0.06",
+    "scale": 0.06,
+    "score": 1.1377741607638554,
+    "avg_n_cands": 2.8125,
+    "projected_400_min": 43.78415324290594
+  },
+  {
+    "config_name": "scale_0.05",
+    "scale": 0.05,
+    "score": 1.1418607248612922,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 38.26503803332647
+  }
+]

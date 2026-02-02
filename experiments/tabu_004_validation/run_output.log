@@ -1,0 +1,108 @@
+============================================================
+TABU_DISTANCE=0.04 VALIDATION (3 Runs)
+============================================================
+Config: sigma 0.18/0.22, tabu_distance=0.04
+Prior result: 1.1535 @ 53.1 min (+0.0071 vs baseline)
+Baseline: 1.1464 @ 51.2 min (tabu_distance=0.03)
+
+=== Validation Run 1 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1431, Avg cands=2.77, Time=57.3 min
+  RMSE 1src: 0.1265, RMSE 2src: 0.1871
+
+=== Validation Run 2 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1525, Avg cands=2.88, Time=55.2 min
+  RMSE 1src: 0.1263, RMSE 2src: 0.1842
+
+=== Validation Run 3 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1533, Avg cands=2.84, Time=53.8 min
+  RMSE 1src: 0.1194, RMSE 2src: 0.1793
+
+============================================================
+VALIDATION SUMMARY (3 Runs)
+============================================================
+Prior finding: 1.1535 @ 53.1 min (+0.0071 vs baseline)
+Baseline: 1.1464 @ 51.2 min
+
+  Run 1: 1.1431 @ 57.3 min (-0.0033) [IN BUDGET]
+  Run 2: 1.1525 @ 55.2 min (+0.0061) [IN BUDGET]
+  Run 3: 1.1533 @ 53.8 min (+0.0069) [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1496 +/- 0.0046
+  Mean Time:  55.4 +/- 1.4 min
+  Score Range: [1.1431, 1.1533]
+
+  vs Prior finding (1.1535): -0.0039
+  vs Baseline (1.1464): +0.0032
+
+CONCLUSION: VALIDATED! Mean 1.1496 > baseline 1.1464
+  Improvement: +0.0032
+
+{
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 2,
+    "perturb_nm_iters": 3,
+    "perturbation_scale": 0.05,
+    "tabu_distance": 0.04,
+    "max_tabu_attempts": 10
+  },
+  "validation_runs": [
+    {
+      "run": 1,
+      "score": 1.143081358605964,
+      "avg_n_cands": 2.775,
+      "projected_400_min": 57.29202566544214,
+      "rmse_1src_mean": 0.12650197614184255,
+      "rmse_2src_mean": 0.1871208815454195,
+      "in_budget": true
+    },
+    {
+      "run": 2,
+      "score": 1.1525214306648564,
+      "avg_n_cands": 2.875,
+      "projected_400_min": 55.17648883660634,
+      "rmse_1src_mean": 0.12626243723279018,
+      "rmse_2src_mean": 0.1841838212516286,
+      "in_budget": true
+    },
+    {
+      "run": 3,
+      "score": 1.1533035824147735,
+      "avg_n_cands": 2.8375,
+      "projected_400_min": 53.821865499019616,
+      "rmse_1src_mean": 0.1194235233708347,
+      "rmse_2src_mean": 0.1793372546920082,
+      "in_budget": true
+    }
+  ],
+  "statistics": {
+    "mean_score": 1.1496354572285312,
+    "std_score": 0.004645434813213794,
+    "mean_time_min": 55.4301266670227,
+    "std_time_min": 1.4279943993634656,
+    "min_score": 1.143081358605964,
+    "max_score": 1.1533035824147735
+  },
+  "vs_baseline": 0.0032354572285311356,
+  "vs_prior_finding": -0.0038645427714687486,
+  "conclusion": "VALIDATED"
+}

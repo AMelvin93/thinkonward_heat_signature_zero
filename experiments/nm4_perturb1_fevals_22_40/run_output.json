@@ -1,0 +1,77 @@
+[
+  {
+    "config": "nm4_p1_fevals_20_36",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 4,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 1,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.03,
+      "max_tabu_attempts": 10,
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 36
+    },
+    "score": 1.1553252437986592,
+    "rmse_1src": 0.12309150065012556,
+    "rmse_2src": 0.21520029478154698,
+    "overall_rmse": 0.16914589771583627,
+    "time_min": 7.782507812976837,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  },
+  {
+    "config": "nm4_p1_fevals_22_40",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 4,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 1,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.03,
+      "max_tabu_attempts": 10,
+      "max_fevals_1src": 22,
+      "max_fevals_2src": 40
+    },
+    "score": 1.159940784581789,
+    "rmse_1src": 0.12781974137177257,
+    "rmse_2src": 0.19792179323011372,
+    "overall_rmse": 0.16287076730094313,
+    "time_min": 9.220904219150544,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  },
+  {
+    "config": "nm4_p1_fevals_24_44",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 4,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 1,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.03,
+      "max_tabu_attempts": 10,
+      "max_fevals_1src": 24,
+      "max_fevals_2src": 44
+    },
+    "score": 1.1639488056694927,
+    "rmse_1src": 0.11832539575746248,
+    "rmse_2src": 0.19662658620651152,
+    "overall_rmse": 0.157475990981987,
+    "time_min": 8.612690202395122,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  }
+]

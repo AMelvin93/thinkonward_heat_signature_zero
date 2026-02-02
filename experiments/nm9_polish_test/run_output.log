@@ -1,0 +1,58 @@
+
+=== Run 1: refine_maxiter=9 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 1: Score=1.1425, Avg cands=2.86, Time=43.3 min
+vs Current Best (1.1437): -0.0012
+
+=== Run 2: refine_maxiter=9 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 2: Score=1.1307, Avg cands=2.79, Time=46.7 min
+vs Current Best (1.1437): -0.0130
+
+=== Run 3: refine_maxiter=9 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 3: Score=1.1421, Avg cands=2.83, Time=45.4 min
+vs Current Best (1.1437): -0.0016
+
+============================================================
+SUMMARY: Refine Maxiter=9
+============================================================
+Current best (maxiter=8): 1.1437 @ 42.2 min
+
+  Run 1: 1.1425 @ 43.3 min (-0.0012)
+  Run 2: 1.1307 @ 46.7 min (-0.0130)
+  Run 3: 1.1421 @ 45.4 min (-0.0016)
+
+Mean score: 1.1384 (±0.0054)
+Mean time:  45.1 min
+
+Did not improve over current best
+[
+  {
+    "run": 1,
+    "score": 1.1424928540860588,
+    "avg_n_cands": 2.8625,
+    "projected_400_min": 43.28891158103943
+  },
+  {
+    "run": 2,
+    "score": 1.1307432105373443,
+    "avg_n_cands": 2.7875,
+    "projected_400_min": 46.65833010276159
+  },
+  {
+    "run": 3,
+    "score": 1.1420754846515697,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 45.39582669734955
+  }
+]

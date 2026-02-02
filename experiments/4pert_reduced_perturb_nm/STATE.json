@@ -1,0 +1,25 @@
+{
+  "experiment": "4pert_reduced_perturb_nm",
+  "status": "COMPLETED",
+  "result": "SUCCESS - NEW BEST! 1.1524 @ 58.3 min (IN BUDGET)",
+  "claimed_by": "W1",
+  "started_at": "2026-02-02T09:30:00Z",
+  "completed_at": "2026-02-02T10:00:00Z",
+  "hypothesis": "Reducing perturb_nm_iters from 3 to 2 could save ~2 min, fitting 4-pert within budget",
+  "baseline": {
+    "3pert_validated": "1.1475 @ 55.7 min",
+    "4pert_over_budget": "1.1555 @ 61.9 min"
+  },
+  "runs": [
+    {"config": "4pert_nm3", "score": 1.1566, "time_min": 65.0, "in_budget": false},
+    {"config": "4pert_nm2", "score": 1.1524, "time_min": 58.3, "in_budget": true},
+    {"config": "4pert_nm1", "score": 1.1479, "time_min": 50.7, "in_budget": true}
+  ],
+  "best_in_budget": {
+    "config": "4pert_nm2",
+    "score": 1.1524,
+    "time_min": 58.3,
+    "improvement_vs_baseline": 0.0049
+  },
+  "gap_to_top10": 0.0061
+}

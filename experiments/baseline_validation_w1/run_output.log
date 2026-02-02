@@ -1,0 +1,67 @@
+
+=== Run1_fevals36 ===
+  Config: sigma 0.18/0.22, fevals 20/36
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1400, Avg cands=2.84, Time=44.3 min
+vs Claimed Baseline (1.1464): -0.0064
+Budget remaining: 15.7 min
+
+=== Run2_fevals44 ===
+  Config: sigma 0.18/0.22, fevals 20/44
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1433, Avg cands=2.83, Time=46.5 min
+vs Claimed Baseline (1.1464): -0.0031
+Budget remaining: 13.5 min
+
+=== Run3_4perturbations ===
+  Config: sigma 0.18/0.22, fevals 20/44
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1424, Avg cands=2.84, Time=47.2 min
+vs Claimed Baseline (1.1464): -0.0040
+Budget remaining: 12.8 min
+
+============================================================
+BASELINE VALIDATION SUMMARY
+============================================================
+Claimed best: 1.1464 @ 51.2 min
+
+  Run1_fevals36: 1.1400 @ 44.3 min (-0.0064) [IN BUDGET]
+  Run2_fevals44: 1.1433 @ 46.5 min (-0.0031) [IN BUDGET]
+  Run3_4perturbations: 1.1424 @ 47.2 min (-0.0040) [IN BUDGET]
+
+Best this session: Run2_fevals44 = 1.1433 @ 46.5 min
+
+Baseline VALIDATED (within margin)
+
+[
+  {
+    "config_name": "Run1_fevals36",
+    "score": 1.1400191086985956,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 44.25023305416107,
+    "in_budget": true
+  },
+  {
+    "config_name": "Run2_fevals44",
+    "score": 1.1433079483007567,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 46.545927902062736,
+    "in_budget": true
+  },
+  {
+    "config_name": "Run3_4perturbations",
+    "score": 1.142380510982617,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 47.24824249744415,
+    "in_budget": true
+  }
+]

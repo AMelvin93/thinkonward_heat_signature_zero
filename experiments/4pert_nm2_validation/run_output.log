@@ -1,0 +1,55 @@
+============================================================
+VALIDATION: 4-pert + perturb_nm_iters=2
+============================================================
+Prior result: 1.1524 @ 58.3 min
+3-pert baseline: 1.1475 @ 55.7 min
+Goal: 3-run validation
+
+=== Validation Run 1: 4pert_nm2 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1444, Time=52.4 min, Candidates=2.80
+  RMSE 1src: 0.1279, RMSE 2src: 0.1855
+  Budget: IN BUDGET
+
+=== Validation Run 2: 4pert_nm2 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1486, Time=51.6 min, Candidates=2.81
+  RMSE 1src: 0.1165, RMSE 2src: 0.1893
+  Budget: IN BUDGET
+
+=== Validation Run 3: 4pert_nm2 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1517, Time=51.3 min, Candidates=2.81
+  RMSE 1src: 0.1193, RMSE 2src: 0.1775
+  Budget: IN BUDGET
+
+============================================================
+VALIDATION SUMMARY: 4-pert + perturb_nm_iters=2 (3 runs)
+============================================================
+
+Run Results:
+  Run 1: 1.1444 @ 52.4 min (-0.0031) [IN BUDGET]
+  Run 2: 1.1486 @ 51.6 min (+0.0011) [IN BUDGET]
+  Run 3: 1.1517 @ 51.3 min (+0.0042) [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1482 +/- 0.0030
+  Score Range: [1.1444, 1.1517]
+  Mean Time: 51.7 min
+  vs 3-pert baseline: +0.0007
+  Runs in budget: 3/3 (100%)
+
+  Gap to Top 10 (1.1585): +0.0103
+
+*** VALIDATED SUCCESS! Promote to production. ***
+
+Results saved to run_output.json

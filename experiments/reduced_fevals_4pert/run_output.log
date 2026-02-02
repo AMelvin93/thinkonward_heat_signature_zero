@@ -1,0 +1,50 @@
+============================================================
+REDUCED FEVALS (18/40) WITH 4 PERTURBATIONS
+============================================================
+Baseline (2 pert): 1.1496 @ 55.4 min
+Best 4 pert (over budget): 1.1535 @ 61.3 min
+Target: ~1.1535 @ <60 min
+
+=== Run 1: reduced_fevals_4pert ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1480, Time=65.4 min, Candidates=2.81
+  RMSE 1src: 0.1146, RMSE 2src: 0.1912
+
+=== Run 2: reduced_fevals_4pert ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1541, Time=62.6 min, Candidates=2.85
+  RMSE 1src: 0.1212, RMSE 2src: 0.1790
+
+=== Run 3: reduced_fevals_4pert ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1470, Time=67.2 min, Candidates=2.81
+  RMSE 1src: 0.1180, RMSE 2src: 0.1901
+
+============================================================
+SUMMARY: Reduced Fevals with 4 Perturbations
+============================================================
+
+Run Results:
+  Run 1: 1.1480 @ 65.4 min (vs base: -0.0016, vs 4pert: -0.0055) [OVER BUDGET]
+  Run 2: 1.1541 @ 62.6 min (vs base: +0.0045, vs 4pert: +0.0006) [OVER BUDGET]
+  Run 3: 1.1470 @ 67.2 min (vs base: -0.0026, vs 4pert: -0.0065) [OVER BUDGET]
+
+Statistics:
+  Mean Score: 1.1497 +/- 0.0031
+  Mean Time: 65.0 min
+  vs Baseline (2 pert): +0.0001
+  vs Best 4 pert (over budget): -0.0038
+
+Budget Status: OVER BUDGET
+  Runs in budget: 0/3
+
+FAILED: Config is still over budget

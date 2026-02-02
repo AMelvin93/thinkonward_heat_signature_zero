@@ -1,0 +1,58 @@
+
+=== Run 1: 7 NM + 1 perturbation ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 1: Score=1.1383, Avg cands=2.76, Time=43.4 min
+vs Current Best (1.1437): -0.0054
+
+=== Run 2: 7 NM + 1 perturbation ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 2: Score=1.1392, Avg cands=2.83, Time=44.0 min
+vs Current Best (1.1437): -0.0045
+
+=== Run 3: 7 NM + 1 perturbation ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 3: Score=1.1259, Avg cands=2.73, Time=44.6 min
+vs Current Best (1.1437): -0.0178
+
+============================================================
+SUMMARY: 7 NM + 1 Perturbation
+============================================================
+Current best (8 NM + 4 perturb): 1.1437 @ 42.2 min
+
+  Run 1: 1.1383 @ 43.4 min (-0.0054)
+  Run 2: 1.1392 @ 44.0 min (-0.0045)
+  Run 3: 1.1259 @ 44.6 min (-0.0178)
+
+Mean score: 1.1345 (±0.0061)
+Mean time:  44.0 min
+
+Did not improve over current best
+[
+  {
+    "run": 1,
+    "score": 1.1383373196117417,
+    "avg_n_cands": 2.7625,
+    "projected_400_min": 43.35903950532278
+  },
+  {
+    "run": 2,
+    "score": 1.1391569419523997,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 44.042874336242676
+  },
+  {
+    "run": 3,
+    "score": 1.125922451888838,
+    "avg_n_cands": 2.725,
+    "projected_400_min": 44.56528091430664
+  }
+]

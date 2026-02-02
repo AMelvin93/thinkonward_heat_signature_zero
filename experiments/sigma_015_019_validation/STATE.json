@@ -1,0 +1,46 @@
+{
+  "experiment_id": "EXP_SIGMA_015_019_VALIDATION_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-01T18:50:00Z",
+  "completed_at": "2026-02-01T19:25:00Z",
+  "hypothesis": "Validate the 1.1730 result with 3 runs to confirm it's reproducible.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "score": 1.1365,
+      "avg_n_cands": 2.78,
+      "time_min": 42.1,
+      "delta_vs_claimed": -0.0365
+    },
+    {
+      "run": 2,
+      "score": 1.1345,
+      "avg_n_cands": 2.79,
+      "time_min": 47.2,
+      "delta_vs_claimed": -0.0385
+    },
+    {
+      "run": 3,
+      "score": 1.1300,
+      "avg_n_cands": 2.71,
+      "time_min": 42.7,
+      "delta_vs_claimed": -0.0430
+    }
+  ],
+  "conclusion": "CRITICAL: Claimed 1.173 baseline is NOT reproducible. Actual baseline is 1.1337 (mean of 3 runs). The 1.173 was likely an outlier or error.",
+  "statistics": {
+    "mean_score": 1.1337,
+    "std_score": 0.0027,
+    "min_score": 1.1300,
+    "max_score": 1.1365,
+    "range": 0.0065,
+    "mean_time_min": 44.0
+  },
+  "key_insights": [
+    "Claimed 1.173 was 0.04 ABOVE actual reproducible baseline",
+    "Run-to-run variance is actually small (±0.003), not the claimed ±0.01-0.03",
+    "True baseline is ~1.13-1.14, NOT 1.17",
+    "This changes the competitive landscape - 'improvements' over 1.173 were never real"
+  ]
+}

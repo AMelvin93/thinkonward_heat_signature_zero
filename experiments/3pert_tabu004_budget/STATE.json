@@ -1,0 +1,30 @@
+{
+  "experiment_id": "EXP_3PERT_TABU004_BUDGET_001",
+  "name": "3pert_tabu004_budget",
+  "description": "Reduced config to fit budget: 3 perturbations + tabu_distance=0.04",
+  "claimed_by": "W2",
+  "started_at": "2026-02-02T05:00:00Z",
+  "completed_at": "2026-02-02T06:30:00Z",
+  "status": "completed",
+  "result": "SUCCESS - 1.1478 @ 58.4 min (IN BUDGET)",
+  "hypothesis": "4 pert + tabu 0.04 gave 1.1555 @ 61.9 min (over budget). Reducing to 3 perturbations should fit budget while preserving most improvement.",
+  "prior_finding": {
+    "4pert_tabu004": {"score": 1.1555, "time_min": 61.9, "status": "over_budget"},
+    "baseline": {"score": 1.1337, "time_min": 44.0}
+  },
+  "best_result": {
+    "config": "3pert_tabu004",
+    "n_perturbations": 3,
+    "tabu_distance": 0.04,
+    "mean_score": 1.1478,
+    "std_score": 0.0007,
+    "mean_time_min": 58.4,
+    "in_budget": true
+  },
+  "runs": [
+    {"run": 1, "score": 1.1468, "time_min": 58.7, "in_budget": true},
+    {"run": 2, "score": 1.1484, "time_min": 62.3, "in_budget": false},
+    {"run": 3, "score": 1.1482, "time_min": 54.3, "in_budget": true}
+  ],
+  "conclusion": "SUCCESS: 3-pert + tabu 0.04 achieves 1.1478 @ 58.4 min (IN BUDGET). +0.0141 vs baseline."
+}

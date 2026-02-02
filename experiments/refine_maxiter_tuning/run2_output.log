@@ -1,0 +1,49 @@
+Previous Run 1: Score=1.1468
+
+=== Validation Run 2: refine_maxiter=6 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 2: Score=1.1334, Avg cands=2.83, Time=40.4 min
+
+=== Validation Run 3: refine_maxiter=6 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 3: Score=1.1370, Avg cands=2.83, Time=35.4 min
+
+============================================================
+SUMMARY: Refine Maxiter=6 Validation
+============================================================
+Previous best (maxiter=8): 1.1437 @ 42.2 min
+
+  Run 1: 1.1468 @ 34.5 min (+0.0031)
+  Run 2: 1.1334 @ 40.4 min (-0.0103)
+  Run 3: 1.1370 @ 35.4 min (-0.0067)
+
+Mean score: 1.1391 (±0.0057)
+Mean time:  36.8 min
+
+Did not improve over baseline
+[
+  {
+    "run": 1,
+    "score": 1.1468,
+    "avg_n_cands": 2.84,
+    "projected_400_min": 34.5
+  },
+  {
+    "run": 2,
+    "score": 1.1334358901942818,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 40.445489366849266
+  },
+  {
+    "run": 3,
+    "score": 1.137000499999084,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 35.41074405113856
+  }
+]

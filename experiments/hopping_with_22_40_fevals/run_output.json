@@ -1,0 +1,77 @@
+[
+  {
+    "config": "fevals_20_36_baseline",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.03,
+      "max_tabu_attempts": 10,
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 36
+    },
+    "score": 1.1636916295272344,
+    "rmse_1src": 0.11823489400450653,
+    "rmse_2src": 0.19740639696731374,
+    "overall_rmse": 0.15782064548591013,
+    "time_min": 10.299194995562235,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  },
+  {
+    "config": "fevals_22_40_sweetspot",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.03,
+      "max_tabu_attempts": 10,
+      "max_fevals_1src": 22,
+      "max_fevals_2src": 40
+    },
+    "score": 1.1648328748977057,
+    "rmse_1src": 0.12563400731690041,
+    "rmse_2src": 0.1869515315209522,
+    "overall_rmse": 0.1562927694189263,
+    "time_min": 10.236120891571044,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  },
+  {
+    "config": "fevals_24_44_higher",
+    "params": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.03,
+      "max_tabu_attempts": 10,
+      "max_fevals_1src": 24,
+      "max_fevals_2src": 44
+    },
+    "score": 1.1616358154886188,
+    "rmse_1src": 0.12102302488664078,
+    "rmse_2src": 0.2001432544721561,
+    "overall_rmse": 0.16058313967939844,
+    "time_min": 11.074784060319265,
+    "n_1src": 32,
+    "n_2src": 48,
+    "errors": 0
+  }
+]

@@ -1,0 +1,98 @@
+Loading data...
+Loaded 80 samples
+Baseline: sigma 0.15/0.19 + 20/36 fevals + 2 perturb + 8 NM = 1.1730 @ 50.4 min
+
+============================================================
+Config: baseline_20_36
+Sigma: 1src=0.15, 2src=0.19
+Fevals: 1src=20, 2src=36
+NM iters: 8, Perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.8 min
+  Progress: 40/80 samples, elapsed: 4.3 min
+  Progress: 60/80 samples, elapsed: 7.6 min
+  Progress: 80/80 samples, elapsed: 11.2 min
+
+--- Results for baseline_20_36 ---
+  RMSE 1-source: 0.123077 (n=32)
+  RMSE 2-source: 0.199451 (n=48)
+  Overall RMSE:  0.161264
+  Score:         1.1611
+  Time:          11.21 min
+  Projected 400: 56.0 min
+  Errors:        0
+
+============================================================
+Config: sigma015_fevals_22_40
+Sigma: 1src=0.15, 2src=0.19
+Fevals: 1src=22, 2src=40
+NM iters: 8, Perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.8 min
+  Progress: 40/80 samples, elapsed: 4.4 min
+  Progress: 60/80 samples, elapsed: 7.7 min
+  Progress: 80/80 samples, elapsed: 10.9 min
+
+--- Results for sigma015_fevals_22_40 ---
+  RMSE 1-source: 0.120808 (n=32)
+  RMSE 2-source: 0.199864 (n=48)
+  Overall RMSE:  0.160336
+  Score:         1.1618
+  Time:          10.93 min
+  Projected 400: 54.6 min
+  Errors:        0
+
+============================================================
+Config: sigma015_fevals_24_44
+Sigma: 1src=0.15, 2src=0.19
+Fevals: 1src=24, 2src=44
+NM iters: 8, Perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.9 min
+  Progress: 40/80 samples, elapsed: 4.5 min
+  Progress: 60/80 samples, elapsed: 7.7 min
+  Progress: 80/80 samples, elapsed: 11.4 min
+
+--- Results for sigma015_fevals_24_44 ---
+  RMSE 1-source: 0.120744 (n=32)
+  RMSE 2-source: 0.179710 (n=48)
+  Overall RMSE:  0.150227
+  Score:         1.1694
+  Time:          11.44 min
+  Projected 400: 57.2 min
+  Errors:        0
+
+============================================================
+Config: sigma015_fevals_24_44_nm6
+Sigma: 1src=0.15, 2src=0.19
+Fevals: 1src=24, 2src=44
+NM iters: 6, Perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.6 min
+  Progress: 40/80 samples, elapsed: 4.2 min
+  Progress: 60/80 samples, elapsed: 7.4 min
+  Progress: 80/80 samples, elapsed: 10.7 min
+
+--- Results for sigma015_fevals_24_44_nm6 ---
+  RMSE 1-source: 0.117254 (n=32)
+  RMSE 2-source: 0.209982 (n=48)
+  Overall RMSE:  0.163618
+  Score:         1.1594
+  Time:          10.69 min
+  Projected 400: 53.4 min
+  Errors:        0
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                            Score     Time  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+baseline_20_36                   1.1611   56.0m   0.123077   0.199451 (IN)
+sigma015_fevals_22_40            1.1618   54.6m   0.120808   0.199864 (IN)
+sigma015_fevals_24_44            1.1694   57.2m   0.120744   0.179710 (IN)
+sigma015_fevals_24_44_nm6        1.1594   53.4m   0.117254   0.209982 (IN)
+----------------------------------------------------------------------
+Best in-budget: sigma015_fevals_24_44 with score 1.1694 @ 57.2 min
+Delta vs current best (1.1730): -0.0036
+
+Saved results to experiments/optimal_sigma_higher_fevals/run_output.json

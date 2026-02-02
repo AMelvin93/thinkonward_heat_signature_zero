@@ -1,0 +1,54 @@
+============================================================
+4-PERT WITH REDUCED PERTURB_NM_ITERS TUNING
+============================================================
+3-pert baseline: 1.1475 @ 55.7 min (in budget)
+4-pert target: 1.1555 @ 61.9 min (over budget by 1.9 min)
+Goal: Fit 4-pert within 60 min by reducing perturb_nm_iters
+
+=== Run 1: 4pert_nm3 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1566, Time=65.0 min, Candidates=2.83
+  RMSE 1src: 0.1169, RMSE 2src: 0.1701
+  perturb_nm_iters: 3
+  Budget: OVER BUDGET
+vs 3-pert baseline (1.1475): +0.0091
+
+=== Run 2: 4pert_nm2 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1524, Time=58.3 min, Candidates=2.84
+  RMSE 1src: 0.1109, RMSE 2src: 0.1891
+  perturb_nm_iters: 2
+  Budget: IN BUDGET
+vs 3-pert baseline (1.1475): +0.0049
+
+=== Run 3: 4pert_nm1 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1479, Time=50.7 min, Candidates=2.85
+  RMSE 1src: 0.1390, RMSE 2src: 0.1838
+  perturb_nm_iters: 1
+  Budget: IN BUDGET
+vs 3-pert baseline (1.1475): +0.0004
+
+============================================================
+PERTURB_NM_ITERS TUNING SUMMARY
+============================================================
+
+Results:
+  4pert_nm3: 1.1566 @ 65.0 min (+0.0091) [OVER BUDGET]
+  4pert_nm2: 1.1524 @ 58.3 min (+0.0049) [IN BUDGET]
+  4pert_nm1: 1.1479 @ 50.7 min (+0.0004) [IN BUDGET]
+
+Best in-budget: 4pert_nm2 (1.1524 @ 58.3 min)
+vs 3-pert baseline: +0.0049
+*** NEW BEST! Consider promoting to production ***
+
+Results saved to run_output.json

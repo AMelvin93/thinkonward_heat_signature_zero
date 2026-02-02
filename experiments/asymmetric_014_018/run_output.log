@@ -1,0 +1,81 @@
+Loading data...
+Loaded 80 samples
+
+Hypothesis: Test tighter 2-source sigma (0.18 vs 0.19)
+Prior best: sigma 0.14/0.19 + scale 0.06 = ~1.167
+
+============================================================
+Config: baseline_014_019
+Sigma: 1src=0.14, 2src=0.19
+Perturbation scale: 0.06
+============================================================
+  Progress: 20/80 samples, elapsed: 1.7 min
+  Progress: 40/80 samples, elapsed: 4.2 min
+  Progress: 60/80 samples, elapsed: 7.5 min
+  Progress: 80/80 samples, elapsed: 11.2 min
+
+--- Results for baseline_014_019 ---
+  RMSE 1-source: 0.126333 (n=32)
+  RMSE 2-source: 0.183273 (n=48)
+  Score:         1.1659
+  Time:          11.19 min
+  Projected 400: 56.0 min
+  In budget:     True (remaining: 4.0 min)
+
+============================================================
+Config: test_014_018
+Sigma: 1src=0.14, 2src=0.18
+Perturbation scale: 0.06
+============================================================
+  Progress: 20/80 samples, elapsed: 1.5 min
+  Progress: 40/80 samples, elapsed: 3.7 min
+  Progress: 60/80 samples, elapsed: 7.0 min
+  Progress: 80/80 samples, elapsed: 10.5 min
+
+--- Results for test_014_018 ---
+  RMSE 1-source: 0.126724 (n=32)
+  RMSE 2-source: 0.192718 (n=48)
+  Score:         1.1623
+  Time:          10.49 min
+  Projected 400: 52.4 min
+  In budget:     True (remaining: 7.6 min)
+
+============================================================
+Config: test_014_020
+Sigma: 1src=0.14, 2src=0.2
+Perturbation scale: 0.06
+============================================================
+  Progress: 20/80 samples, elapsed: 1.6 min
+  Progress: 40/80 samples, elapsed: 4.0 min
+  Progress: 60/80 samples, elapsed: 7.3 min
+  Progress: 80/80 samples, elapsed: 12.0 min
+
+--- Results for test_014_020 ---
+  RMSE 1-source: 0.122964 (n=32)
+  RMSE 2-source: 0.193921 (n=48)
+  Score:         1.1632
+  Time:          11.96 min
+  Projected 400: 59.8 min
+  In budget:     True (remaining: 0.2 min)
+
+================================================================================
+EXPERIMENT RESULTS: 2-SOURCE SIGMA TUNING
+================================================================================
+Config                      Sigma    Score   Proj 400  RMSE 1src  RMSE 2src
+--------------------------------------------------------------------------------
+baseline_014_019        0.14/0.19   1.1659      56.0m     0.1263     0.1833
+test_014_018            0.14/0.18   1.1623      52.4m     0.1267     0.1927
+test_014_020             0.14/0.2   1.1632      59.8m     0.1230     0.1939
+
+*** BEST IN-BUDGET: baseline_014_019 ***
+    Score: 1.1659
+    Sigma: 0.14/0.19
+    Time: 56.0 min
+
+--- 2-SOURCE SIGMA ANALYSIS ---
+baseline_014_019: +0.0000 score, 2src RMSE: +0.0000
+  → Within run variance
+test_014_018: -0.0037 score, 2src RMSE: +0.0094
+  → sigma 0.18 is WORSE for 2-source
+test_014_020: -0.0027 score, 2src RMSE: +0.0106
+  → sigma 0.20 is WORSE for 2-source

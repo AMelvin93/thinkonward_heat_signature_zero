@@ -1,0 +1,83 @@
+
+=== Run1_scale_006 (scale=0.06) ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1234, Avg cands=2.74, Time=44.9 min
+vs Baseline (1.1464): -0.0230
+Budget remaining: 15.1 min
+
+============================================================
+TIME ANALYSIS after Run 1:
+  Time: 44.9 min
+  Budget remaining: 15.1 min
+  Score: 1.1234
+  Scale 0.06 significantly underperforms. Testing alternatives...
+
+=== Run2_scale_0055 (scale=0.055) ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1315, Avg cands=2.83, Time=44.5 min
+vs Baseline (1.1464): -0.0149
+Budget remaining: 15.5 min
+
+============================================================
+TIME ANALYSIS after Run 2:
+  Time: 44.5 min
+  Budget remaining: 15.5 min
+  Score: 1.1315
+
+=== Run3_scale_007 (scale=0.07) ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1344, Avg cands=2.76, Time=44.3 min
+vs Baseline (1.1464): -0.0120
+Budget remaining: 15.7 min
+
+============================================================
+SUMMARY: 4 Perturbations Scale Tuning
+============================================================
+Baseline: 1.1464 @ 51.2 min
+
+  scale=0.06: 1.1234 @ 44.9 min (-0.0230) [IN BUDGET]
+  scale=0.055: 1.1315 @ 44.5 min (-0.0149) [IN BUDGET]
+  scale=0.07: 1.1344 @ 44.3 min (-0.0120) [IN BUDGET]
+
+Best: scale=0.07 = 1.1344 @ 44.3 min
+
+No improvement over baseline (-0.0120)
+
+[
+  {
+    "config_name": "Run1_scale_006",
+    "scale": 0.06,
+    "score": 1.123436698376978,
+    "avg_n_cands": 2.7375,
+    "projected_400_min": 44.93540360530218,
+    "budget_remaining_min": 15.064596394697823,
+    "in_budget": true
+  },
+  {
+    "config_name": "Run2_scale_0055",
+    "scale": 0.055,
+    "score": 1.1314647596029601,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 44.54542318979899,
+    "budget_remaining_min": 15.454576810201011,
+    "in_budget": true
+  },
+  {
+    "config_name": "Run3_scale_007",
+    "scale": 0.07,
+    "score": 1.134427586732596,
+    "avg_n_cands": 2.7625,
+    "projected_400_min": 44.34871198733648,
+    "budget_remaining_min": 15.651288012663521,
+    "in_budget": true
+  }
+]

@@ -1,0 +1,24 @@
+
+Config: sigma_018_fevals_20_36
+Sigma: 1src=0.18, 2src=0.22
+Fevals: 1src=20, 2src=36
+NM: 8, Perturb: 2
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1310, Avg cands: 2.80, Time: 36.7 min
+1-src: RMSE=0.1316, cands=2.56 (32 samples)
+2-src: RMSE=0.2190, cands=2.96 (48 samples)
+Baseline: 1.173 @ 50.4 min, Delta: -0.0420
+{
+  "config_name": "sigma_018_fevals_20_36",
+  "score": 1.1309889555903054,
+  "avg_n_cands": 2.8,
+  "projected_400_min": 36.6856556336085,
+  "avg_rmse_1src": 0.13162090072527016,
+  "avg_rmse_2src": 0.21904406999845905,
+  "avg_cands_1src": 2.5625,
+  "avg_cands_2src": 2.9583333333333335
+}

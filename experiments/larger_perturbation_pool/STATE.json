@@ -1,0 +1,72 @@
+{
+  "experiment_id": "EXP_LARGER_PERTURB_POOL_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-01T20:10:00Z",
+  "completed_at": "2026-02-01T20:50:00Z",
+  "hypothesis": "Test more perturbations (3-4) on the new best config. More exploration without diversity loss.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "3 perturbations",
+      "score": 1.1378,
+      "avg_n_cands": 2.80,
+      "time_min": 38.7,
+      "decision": "FAILED - worse than 2 perturb baseline"
+    },
+    {
+      "run": 2,
+      "config": "4 perturbations",
+      "score": 1.1436,
+      "avg_n_cands": 2.86,
+      "time_min": 43.3,
+      "decision": "BEST - significantly better than baseline"
+    },
+    {
+      "run": 3,
+      "config": "2 perturbations (baseline verify)",
+      "score": 1.1398,
+      "avg_n_cands": 2.83,
+      "time_min": 43.9,
+      "decision": "Baseline - for comparison"
+    }
+  ],
+  "validation_runs": [
+    {
+      "run": 1,
+      "config": "4 perturbations",
+      "score": 1.1436,
+      "time_min": 43.3
+    },
+    {
+      "run": 2,
+      "config": "4 perturbations",
+      "score": 1.1449,
+      "time_min": 42.9
+    },
+    {
+      "run": 3,
+      "config": "4 perturbations",
+      "score": 1.1426,
+      "time_min": 40.5
+    }
+  ],
+  "statistics": {
+    "mean_score": 1.1437,
+    "std_score": 0.0010,
+    "mean_time_min": 42.2,
+    "vs_2perturb_baseline": "+0.0032",
+    "improvement_pct": 0.28
+  },
+  "conclusion": "NEW BEST! 4 perturbations on sigma 0.18/0.22 + fevals 20/44 = 1.1437 (±0.0010) @ 42.2 min. This is 0.28% better than 2 perturb baseline (1.1405) with lower variance.",
+  "new_best_config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "refine_maxiter": 8,
+    "n_perturbations": 4,
+    "perturbation_scale": 0.05,
+    "perturb_nm_iters": 3
+  }
+}

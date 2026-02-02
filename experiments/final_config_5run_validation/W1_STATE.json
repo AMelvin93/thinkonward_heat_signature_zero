@@ -1,0 +1,46 @@
+{
+  "experiment_id": "EXP_FINAL_CONFIG_VALIDATION_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-02-01T23:50:00Z",
+  "completed_at": "2026-02-02T00:25:00Z",
+  "hypothesis": "Validate final optimal config (sigma 0.14/0.19, fevals 20/44, 2 perturb, scale 0.06) with 5 runs.",
+  "config": {
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "n_perturbations": 2,
+    "perturbation_scale": 0.06,
+    "timestep_fraction": 0.40,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": false
+  },
+  "tuning_runs": [
+    {"run": 1, "score": 1.1267, "time_min": 47.3, "vs_baseline": -0.0197},
+    {"run": 2, "score": 1.1358, "time_min": 47.3, "vs_baseline": -0.0106},
+    {"run": 3, "score": 1.1296, "time_min": 42.4, "vs_baseline": -0.0168},
+    {"run": 4, "score": 1.1353, "time_min": 37.9, "vs_baseline": -0.0111},
+    {"run": 5, "score": 1.1352, "time_min": 38.8, "vs_baseline": -0.0112}
+  ],
+  "statistics": {
+    "mean_score": 1.1325,
+    "std_score": 0.0037,
+    "mean_time_min": 42.7,
+    "std_time_min": 4.0,
+    "min_score": 1.1267,
+    "max_score": 1.1358
+  },
+  "vs_baseline": -0.0139,
+  "conclusion": "FAILED - Config underperforms baseline (1.1325 vs 1.1464). Sigma too low and perturbation scale wrong.",
+  "tuning_efficiency": {
+    "runs_executed": 5,
+    "time_utilization_pct": 71,
+    "budget_remaining_min": 17.3
+  },
+  "key_insights": [
+    "Sigma 0.14/0.19 is too conservative",
+    "Perturbation scale 0.06 is suboptimal (0.05 is optimal)",
+    "Config is reliably worse than baseline across all 5 runs"
+  ]
+}

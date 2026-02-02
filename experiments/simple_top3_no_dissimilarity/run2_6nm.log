@@ -1,0 +1,111 @@
+
+Temporal 40% + Higher Sigma Optimizer
+======================================================================
+Samples: 80, Workers: 7
+Fevals: 20/36
+Sigma: 0.18/0.22
+Timestep fraction: 40%
+Final polish: 6 iterations
+======================================================================
+[  1/80] Sample   4: 1-src RMSE=0.1509 cands=3 time=22.2s [OK]
+[  2/80] Sample   2: 1-src RMSE=0.0347 cands=3 time=24.6s [OK]
+[  3/80] Sample   1: 1-src RMSE=0.1027 cands=3 time=24.8s [OK]
+[  4/80] Sample   3: 1-src RMSE=0.0608 cands=3 time=29.2s [OK]
+[  5/80] Sample   5: 1-src RMSE=0.1532 cands=3 time=29.4s [OK]
+[  6/80] Sample   0: 1-src RMSE=0.1016 cands=3 time=31.3s [OK]
+[  7/80] Sample   6: 1-src RMSE=0.0984 cands=3 time=32.2s [OK]
+[  8/80] Sample   8: 1-src RMSE=0.0980 cands=3 time=24.8s [OK]
+[  9/80] Sample  12: 1-src RMSE=0.1511 cands=3 time=23.4s [OK]
+[ 10/80] Sample   9: 1-src RMSE=0.1462 cands=3 time=32.8s [OK]
+[ 11/80] Sample   7: 1-src RMSE=0.2559 cands=3 time=38.4s [OK]
+[ 12/80] Sample  11: 1-src RMSE=0.0338 cands=3 time=38.7s [OK]
+[ 13/80] Sample  10: 1-src RMSE=0.1511 cands=3 time=39.5s [OK]
+[ 14/80] Sample  13: 1-src RMSE=0.1310 cands=3 time=38.8s [OK]
+[ 15/80] Sample  16: 1-src RMSE=0.1518 cands=3 time=25.5s [OK]
+[ 16/80] Sample  14: 1-src RMSE=0.1502 cands=3 time=36.7s [OK]
+[ 17/80] Sample  15: 1-src RMSE=0.0142 cands=3 time=37.7s [OK]
+[ 18/80] Sample  20: 1-src RMSE=0.0271 cands=3 time=25.5s [OK]
+[ 19/80] Sample  17: 1-src RMSE=0.0998 cands=3 time=38.1s [OK]
+[ 20/80] Sample  18: 1-src RMSE=0.1096 cands=3 time=38.6s [OK]
+[ 21/80] Sample  19: 1-src RMSE=0.0988 cands=3 time=38.1s [OK]
+[ 22/80] Sample  21: 1-src RMSE=0.1562 cands=3 time=24.9s [OK]
+[ 23/80] Sample  24: 1-src RMSE=0.1017 cands=3 time=24.8s [OK]
+[ 24/80] Sample  22: 1-src RMSE=0.1031 cands=3 time=35.9s [OK]
+[ 25/80] Sample  25: 1-src RMSE=0.1086 cands=3 time=24.8s [OK]
+[ 26/80] Sample  23: 1-src RMSE=0.1008 cands=3 time=36.1s [OK]
+[ 27/80] Sample  26: 1-src RMSE=0.1522 cands=3 time=24.6s [OK]
+[ 28/80] Sample  28: 1-src RMSE=0.1061 cands=3 time=23.6s [OK]
+[ 29/80] Sample  27: 1-src RMSE=0.1515 cands=3 time=40.0s [OK]
+[ 30/80] Sample  31: 1-src RMSE=0.1001 cands=3 time=26.0s [OK]
+[ 31/80] Sample  29: 1-src RMSE=0.0992 cands=3 time=30.7s [OK]
+[ 32/80] Sample  30: 1-src RMSE=0.1033 cands=3 time=31.1s [OK]
+[ 33/80] Sample  33: 2-src RMSE=0.1519 cands=3 time=60.7s [OK]
+[ 34/80] Sample  32: 2-src RMSE=0.1137 cands=3 time=76.4s [OK]
+[ 35/80] Sample  35: 2-src RMSE=0.1266 cands=3 time=58.5s [OK]
+[ 36/80] Sample  37: 2-src RMSE=0.1585 cands=3 time=61.1s [OK]
+[ 37/80] Sample  36: 2-src RMSE=0.2196 cands=3 time=93.0s [OK]
+[ 38/80] Sample  38: 2-src RMSE=0.1643 cands=3 time=89.9s [OK]
+[ 39/80] Sample  39: 2-src RMSE=0.2045 cands=3 time=58.5s [OK]
+[ 40/80] Sample  41: 2-src RMSE=0.1659 cands=3 time=60.8s [OK]
+[ 41/80] Sample  40: 2-src RMSE=0.4045 cands=3 time=61.7s [OK]
+[ 42/80] Sample  34: 2-src RMSE=0.1102 cands=3 time=154.4s [OK]
+[ 43/80] Sample  43: 2-src RMSE=0.1165 cands=3 time=62.2s [OK]
+[ 44/80] Sample  42: 2-src RMSE=0.1414 cands=3 time=101.6s [OK]
+[ 45/80] Sample  44: 2-src RMSE=0.1331 cands=3 time=72.5s [OK]
+[ 46/80] Sample  45: 2-src RMSE=0.1923 cands=3 time=74.0s [OK]
+[ 47/80] Sample  47: 2-src RMSE=0.1047 cands=3 time=66.5s [OK]
+[ 48/80] Sample  48: 2-src RMSE=0.0649 cands=3 time=74.2s [OK]
+[ 49/80] Sample  49: 2-src RMSE=0.1551 cands=3 time=66.9s [OK]
+[ 50/80] Sample  46: 2-src RMSE=0.1661 cands=3 time=108.2s [OK]
+[ 51/80] Sample  51: 2-src RMSE=0.1794 cands=3 time=69.2s [OK]
+[ 52/80] Sample  50: 2-src RMSE=0.2006 cands=3 time=70.3s [OK]
+[ 53/80] Sample  53: 2-src RMSE=0.0448 cands=3 time=67.3s [OK]
+[ 54/80] Sample  52: 2-src RMSE=0.1661 cands=3 time=108.2s [OK]
+[ 55/80] Sample  54: 2-src RMSE=0.1069 cands=3 time=74.2s [OK]
+[ 56/80] Sample  55: 2-src RMSE=0.1335 cands=3 time=68.1s [OK]
+[ 57/80] Sample  59: 2-src RMSE=0.0160 cands=3 time=69.3s [OK]
+[ 58/80] Sample  57: 2-src RMSE=0.2752 cands=3 time=91.4s [OK]
+[ 59/80] Sample  56: 2-src RMSE=0.1023 cands=3 time=108.9s [OK]
+[ 60/80] Sample  58: 2-src RMSE=0.0995 cands=3 time=107.6s [OK]
+[ 61/80] Sample  60: 2-src RMSE=0.1017 cands=3 time=72.3s [OK]
+[ 62/80] Sample  61: 2-src RMSE=0.0816 cands=3 time=72.9s [OK]
+[ 63/80] Sample  63: 2-src RMSE=0.1446 cands=3 time=68.4s [OK]
+[ 64/80] Sample  64: 2-src RMSE=0.1079 cands=3 time=68.0s [OK]
+[ 65/80] Sample  62: 2-src RMSE=0.1467 cands=3 time=108.0s [OK]
+[ 66/80] Sample  66: 2-src RMSE=0.1062 cands=3 time=71.8s [OK]
+[ 67/80] Sample  68: 2-src RMSE=0.1057 cands=3 time=80.0s [OK]
+[ 68/80] Sample  65: 2-src RMSE=0.4629 cands=3 time=109.5s [OK]
+[ 69/80] Sample  70: 2-src RMSE=0.1049 cands=3 time=74.4s [OK]
+[ 70/80] Sample  71: 2-src RMSE=0.2481 cands=3 time=76.4s [OK]
+[ 71/80] Sample  67: 2-src RMSE=0.1603 cands=3 time=121.3s [OK]
+[ 72/80] Sample  72: 2-src RMSE=0.2492 cands=3 time=71.7s [OK]
+[ 73/80] Sample  69: 2-src RMSE=0.2288 cands=3 time=102.0s [OK]
+[ 74/80] Sample  74: 2-src RMSE=0.1825 cands=3 time=75.3s [OK]
+[ 75/80] Sample  73: 2-src RMSE=0.1706 cands=3 time=95.8s [OK]
+[ 76/80] Sample  77: 2-src RMSE=0.1712 cands=3 time=71.2s [OK]
+[ 77/80] Sample  79: 2-src RMSE=0.1041 cands=3 time=65.2s [OK]
+[ 78/80] Sample  75: 2-src RMSE=0.1007 cands=3 time=90.8s [OK]
+[ 79/80] Sample  76: 2-src RMSE=0.1202 cands=3 time=109.2s [OK]
+[ 80/80] Sample  78: 2-src RMSE=0.3431 cands=3 time=106.0s [OK]
+
+======================================================================
+RESULTS
+======================================================================
+RMSE:             0.140790
+Submission Score: 1.1799
+Projected (400):  61.8 min
+
+  1-source: RMSE=0.1126 (n=32)
+  2-source: RMSE=0.1596 (n=48)
+
+W2 Baseline (40% temporal + polish): 1.1688 @ 58.4 min
+This run: 1.1799 @ 61.8 min
+Delta vs W2: +0.0111 score, +3.4 min
+
+OVER BUDGET
+======================================================================
+
+
+High RMSE samples (2):
+  Sample 65: 2-src RMSE=0.4629
+  Sample 40: 2-src RMSE=0.4045

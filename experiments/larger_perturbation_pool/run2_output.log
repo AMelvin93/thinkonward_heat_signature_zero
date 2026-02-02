@@ -1,0 +1,52 @@
+Previous Run 1: Score=1.1436
+
+=== Validation Run 2 ===
+4 perturbations config
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 2: Score=1.1449, Avg cands=2.84, Time=42.9 min
+
+=== Validation Run 3 ===
+4 perturbations config
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 3: Score=1.1426, Avg cands=2.83, Time=40.5 min
+
+============================================================
+SUMMARY: 4 Perturbations Validation
+============================================================
+Previous best (2 perturb): 1.1405 @ 42.3 min
+
+  Run 1: 1.1436 @ 43.3 min (+0.0031)
+  Run 2: 1.1449 @ 42.9 min (+0.0044)
+  Run 3: 1.1426 @ 40.5 min (+0.0021)
+
+Mean score: 1.1437
+Std dev:    0.0010
+Mean time:  42.2 min
+
+CONCLUSION: 4 perturbations is 0.28% BETTER!
+[
+  {
+    "run": 1,
+    "score": 1.1436,
+    "avg_n_cands": 2.86,
+    "projected_400_min": 43.3
+  },
+  {
+    "run": 2,
+    "score": 1.1449213997091179,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 42.88314441839854
+  },
+  {
+    "run": 3,
+    "score": 1.1425918296936601,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 40.48932192722956
+  }
+]

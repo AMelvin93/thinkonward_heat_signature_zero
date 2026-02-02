@@ -1,8 +1,8 @@
 {
-  "version": "15.15",
-  "last_updated": "2026-01-30T00:55:51.102613",
-  "notes": "V15.15: W0 proactive - added 3 experiments (queue was LOW)",
-  "queue_status": "RESTORED",
+  "version": "25.6",
+  "last_updated": "2026-02-02T09:56:56.567585",
+  "notes": "V25.6: W1 Comprehensive Session Complete.\n\nFINAL VALIDATED PRODUCTION CONFIG:\n- 2 perturbations + tabu_distance=0.04\n- Expected: 1.1496 @ 55.4 min\n\nKEY FINDINGS:\n1. 4 pert + tabu 0.04 gives best score (1.1535) but CANNOT fit in budget\n2. Reducing fevals doesn't help (still 65+ min)\n3. Scale 0.05 confirmed optimal\n4. 2 pert + tabu 0.04 is the optimal in-budget configuration\n\nBEST SINGLE RUN: 1.1585 @ 52.5 min (matches Top 10!)",
+  "queue_status": "HEALTHY",
   "experiment_queue": [
     {
       "id": "EXP_LQ_CMAES_001",
@@ -3121,7 +3121,7 @@
       "id": "EXP_SIMPLE_TOP3_NO_FILTER_001",
       "priority": 3,
       "family": "candidate_selection_v3",
-      "status": "claimed_by_W2",
+      "status": "completed",
       "name": "simple_top3_no_dissimilarity",
       "description": "Skip dissimilarity filtering - just take top 3 by RMSE",
       "hypothesis": "Dissimilarity filtering may be removing good candidates. Try without it.",
@@ -3132,7 +3132,12 @@
         "4. Skip tau filtering entirely"
       ],
       "success_criteria": "Score >= 1.17 (beat true baseline 1.1688) AND time <= 60 min",
-      "claimed_at": "2026-01-27T04:37:16.704239Z"
+      "claimed_at": "2026-01-27T04:37:16.704239Z",
+      "result": "FAILED - Best in-budget 1.1713 @ 56.8 min is worse than current best 1.173 @ 50.4 min",
+      "score": 1.1713,
+      "time_min": 56.8,
+      "worker": "W2",
+      "finding": "Removing dissimilarity filter CAN improve accuracy (1.1825 @ 69 min) but cannot fit budget. Perturbation approach is more efficient."
     },
     {
       "id": "EXP_REDUCED_1SRC_EVALS_001",
@@ -3692,9 +3697,9 @@
     },
     {
       "id": "EXP_SECOND_NM_ROUND_001",
-      "priority": 3,
+      "priority": 99,
       "family": "polish_v4",
-      "status": "available",
+      "status": "completed",
       "name": "second_nm_polish_round",
       "description": "After perturbation+NM, do second round of shorter NM polish on best. Focus polish budget on winner.",
       "hypothesis": "First NM finds approximate optimum. Second focused NM can refine further without full overhead.",
@@ -3704,13 +3709,14 @@
         "Round 2: 4 more NM iterations on best candidate only",
         "Total budget: 8+4=12 NM equivalent, but focused"
       ],
-      "success_criteria": "Score >= 1.1475 AND time <= 60 min"
+      "success_criteria": "Score >= 1.1475 AND time <= 60 min",
+      "result": "See SUMMARY.md for results"
     },
     {
       "id": "EXP_COORDINATE_REFINEMENT_001",
-      "priority": 3,
+      "priority": 99,
       "family": "local_search_v4",
-      "status": "available",
+      "status": "completed",
       "name": "coordinate_wise_refinement",
       "description": "After NM polish, do coordinate-wise line search refinement. May catch improvements NM misses.",
       "hypothesis": "NM uses simplex geometry. Coordinate-wise search along parameter axes may find improvements.",
@@ -3720,7 +3726,8 @@
         "Very low overhead (6-12 evaluations per sample)"
       ],
       "success_criteria": "Score >= 1.1470 AND time <= 58 min",
-      "note": "Requires code changes to implement coordinate-wise search after NM"
+      "note": "Requires code changes to implement coordinate-wise search after NM",
+      "result": "See SUMMARY.md for results"
     },
     {
       "id": "EXP_SHORTER_NM_POLISH_001",
@@ -3762,9 +3769,9 @@
     },
     {
       "id": "EXP_REDUCED_PERTURBATIONS_001",
-      "priority": 3,
+      "priority": 99,
       "family": "perturbation_v5",
-      "status": "available",
+      "status": "completed",
       "name": "single_perturbation_test",
       "description": "Test n_perturbations=1 instead of 2. May be sufficient with less overhead.",
       "hypothesis": "One perturbation may be enough to escape local minima. Second perturbation may add overhead without benefit.",
@@ -3773,13 +3780,14 @@
         "Keep other params same",
         "Compare score vs time"
       ],
-      "success_criteria": "Score >= 1.1450 AND time <= 48 min"
+      "success_criteria": "Score >= 1.1450 AND time <= 48 min",
+      "result": "See SUMMARY.md for results"
     },
     {
       "id": "EXP_HIGHER_FEVALS_001",
-      "priority": 3,
+      "priority": 99,
       "family": "cmaes_budget_v2",
-      "status": "available",
+      "status": "completed",
       "name": "higher_fevals_test",
       "description": "Test slightly higher CMA-ES fevals (25/45 vs 20/36). May improve accuracy.",
       "hypothesis": "More CMA-ES evaluations could improve convergence before NM polish.",
@@ -3788,37 +3796,977 @@
         "2-source: 45 fevals (vs 36)",
         "Keep other params same"
       ],
-      "success_criteria": "Score >= 1.1500 AND time <= 60 min"
+      "success_criteria": "Score >= 1.1500 AND time <= 60 min",
+      "result": "See SUMMARY.md for results"
     },
     {
       "id": "EXP_TIGHTER_SIGMA_RANGE_001",
-      "priority": 3,
+      "priority": 99,
       "family": "sigma_v2",
-      "status": "available",
+      "status": "completed",
       "name": "tighter_sigma_range",
       "description": "Test sigma range 0.16/0.20 (tighter than 0.18/0.22). May converge faster.",
       "hypothesis": "Slightly tighter sigma could reduce exploration overhead while maintaining accuracy.",
-      "success_criteria": "Score >= 1.1450 AND time <= 55 min"
+      "success_criteria": "Score >= 1.1450 AND time <= 55 min",
+      "notes": "LIKELY REDUNDANT: sigma_tuning_v3 already proved 0.18/0.22 optimal",
+      "result": "SUCCESS - NEW BEST 1.1699 @ 49 min! sigma 0.16/0.20 + perturb",
+      "score": 1.1699,
+      "time_min": 49.0
     },
     {
       "id": "EXP_LOOSER_SIGMA_RANGE_001",
-      "priority": 3,
+      "priority": 99,
       "family": "sigma_v2",
-      "status": "available",
+      "status": "completed",
       "name": "looser_sigma_range",
       "description": "Test sigma range 0.20/0.25 (looser than 0.18/0.22). May find better solutions.",
       "hypothesis": "Larger sigma could explore more broadly and find better basins.",
-      "success_criteria": "Score >= 1.1480 AND time <= 60 min"
+      "success_criteria": "Score >= 1.1480 AND time <= 60 min",
+      "notes": "LIKELY REDUNDANT: sigma_tuning_v3 already proved 0.18/0.22 optimal",
+      "result": "FAILED - Looser sigma (0.20/0.25, 0.22/0.28) worse than 0.18/0.22"
     },
     {
       "id": "EXP_LESS_NM_POLISH_001",
-      "priority": 3,
+      "priority": 99,
       "family": "polish_v6",
-      "status": "available",
+      "status": "completed",
       "name": "less_nm_polish_4iter",
       "description": "Test 4 NM iterations instead of 8. May be faster if CMA-ES is already near optimum.",
       "hypothesis": "Half the NM iterations could save time with minimal accuracy loss.",
-      "success_criteria": "Score >= 1.1440 AND time <= 45 min"
+      "success_criteria": "Score >= 1.1440 AND time <= 45 min",
+      "result": "See SUMMARY.md for results"
+    },
+    {
+      "id": "EXP_22_40_COORD_REFINE_001",
+      "priority": 6,
+      "family": "combined_sweet_spot",
+      "status": "deprioritized",
+      "name": "fevals_22_40_with_coord_refine",
+      "description": "Combine sweet spot fevals (22/40) with coordinate refinement - two best techniques",
+      "hypothesis": "22/40 fevals achieved 1.1640 @ 57.1 min. Adding coord refinement (+3 min) could push to 1.17+ within budget",
+      "informed_by": "higher_fevals_test SUCCESS + coordinate_wise_refinement SUCCESS",
+      "implementation": [
+        "Use max_fevals_1src=22, max_fevals_2src=40",
+        "Add coord_step=0.01 refinement after NM",
+        "Test 6 NM iterations to fit budget (6 NM + coord should be ~60 min)"
+      ],
+      "success_criteria": "Score >= 1.165 AND time <= 60 min",
+      "notes": "LIKELY REDUNDANT: tighter_sigma_with_coord proved coord refine inferior to perturbation",
+      "note": "coord_refine_v2 EXHAUSTED. Coord refine cannot match perturbation (1.1602 vs 1.1730)"
+    },
+    {
+      "id": "EXP_NM4_PERTURB1_HIGHER_FEVALS_001",
+      "priority": 99,
+      "family": "combined_budget_v2",
+      "status": "completed",
+      "name": "nm4_perturb1_fevals_22_40",
+      "description": "Add sweet spot fevals (22/40) to the efficient nm4_perturb1 config",
+      "hypothesis": "nm4_perturb1 achieved 1.1585 @ 54.9 min with 5 min buffer. Adding 2.2 min for higher fevals could improve accuracy",
+      "informed_by": "nm4_plus_perturb1 SUCCESS + higher_fevals_test SUCCESS",
+      "implementation": [
+        "refine_maxiter=4, n_perturbations=1",
+        "max_fevals_1src=22, max_fevals_2src=40",
+        "Target time: ~57 min"
+      ],
+      "success_criteria": "Score >= 1.164 AND time <= 60 min",
+      "result": "BELOW BEST - 1.1639 vs 1.173. Optimal sigma more important than fevals.",
+      "score": 1.1639
+    },
+    {
+      "id": "EXP_HOPPING_HIGHER_FEVALS_001",
+      "priority": 99,
+      "family": "hopping_optimization",
+      "status": "completed",
+      "name": "hopping_with_22_40_fevals",
+      "description": "Apply sweet spot fevals (22/40) to current best hopping_no_tabu config",
+      "hypothesis": "hopping_no_tabu achieved 1.1689 @ 58.2 min. The 2 min buffer could accommodate 22/40 fevals for better accuracy",
+      "informed_by": "hopping_with_tabu_memory SUCCESS + higher_fevals_test SUCCESS",
+      "implementation": [
+        "Base config: sigma 0.18/0.22, 8 NM, 2 perturbations, 40% temporal",
+        "Add max_fevals_1src=22, max_fevals_2src=40",
+        "Target time: ~60 min"
+      ],
+      "success_criteria": "Score >= 1.172 AND time <= 60 min",
+      "result": "MARGINAL - +0.0011 (1.1648), still below NEW BEST 1.1699",
+      "score": 1.1648
+    },
+    {
+      "id": "EXP_FAST_COORD_STEP_002_001",
+      "priority": 6,
+      "family": "coord_refinement_v2",
+      "status": "deprioritized",
+      "name": "faster_coord_refine_step_002",
+      "description": "Test faster coord refinement with step=0.02 on nm6 - less overhead",
+      "hypothesis": "coord_step=0.02 showed +0.0035 improvement with only 0.3 min overhead (vs 3 min for 0.01). More time-efficient.",
+      "informed_by": "coordinate_wise_refinement SUCCESS",
+      "implementation": [
+        "refine_maxiter=6",
+        "coord_step=0.02 (instead of 0.01)",
+        "Target: ~58 min with decent accuracy"
+      ],
+      "success_criteria": "Score >= 1.158 AND time <= 58 min",
+      "notes": "LIKELY REDUNDANT: tighter_sigma_with_coord proved coord refine inferior to perturbation",
+      "note": "coord_refine_v2 EXHAUSTED. Coord refine cannot match perturbation"
+    },
+    {
+      "id": "EXP_7NM_1PERTURB_001",
+      "priority": 3,
+      "family": "perturbation_budget_v2",
+      "status": "completed",
+      "name": "nm7_perturb1_balanced",
+      "description": "7 NM + 1 perturbation - balanced config for machines with variance",
+      "hypothesis": "Combines insights: 7 NM is reliable, 1 perturbation is efficient. Should be robust across machines.",
+      "informed_by": "shorter_nm_polish_6iter + single_perturbation_test",
+      "implementation": [
+        "refine_maxiter=7",
+        "n_perturbations=1",
+        "Target time: ~58 min with margin for machine variance"
+      ],
+      "success_criteria": "Score >= 1.16 AND time <= 58 min",
+      "claimed_at": "2026-02-01T23:20:26.997670",
+      "result": "FAILED - 7 NM + 1 perturb (1.1345) is 0.8% worse than 8 NM + 4 perturb (1.1437)",
+      "score": 1.1345,
+      "completed_at": "2026-02-01T23:48:00.234747"
+    },
+    {
+      "id": "EXP_POSITION_ONLY_COORD_REFINE_001",
+      "priority": 6,
+      "family": "coord_refinement_v2",
+      "status": "deprioritized",
+      "name": "position_only_coord_refine",
+      "description": "Coordinate refinement only on x,y position dimensions - VarPro handles intensity",
+      "hypothesis": "Since intensity is computed analytically via VarPro, coord refinement on intensity is wasteful. Focus on position only.",
+      "informed_by": "coordinate_wise_refinement + VarPro insight",
+      "implementation": [
+        "Apply coord refinement only to position parameters",
+        "Skip intensity dimension (VarPro-optimal)",
+        "Should be faster with same accuracy improvement"
+      ],
+      "success_criteria": "Score >= 1.16 AND time <= 57 min",
+      "notes": "LIKELY REDUNDANT: tighter_sigma_with_coord proved coord refine inferior to perturbation",
+      "note": "coord_refine_v2 EXHAUSTED. Coord refine cannot match perturbation"
+    },
+    {
+      "id": "EXP_ADAPTIVE_NM_BY_SOURCE_001",
+      "priority": 4,
+      "family": "source_specific_v2",
+      "status": "completed",
+      "name": "adaptive_nm_by_source_count",
+      "description": "Use 4 NM for 1-source, 8 NM for 2-source problems",
+      "hypothesis": "2-source problems need more polish (higher complexity). 1-source converges faster. Adaptive allocation could improve efficiency.",
+      "informed_by": "less_nm_polish_4iter + nm variance observations",
+      "implementation": [
+        "if n_sources == 1: refine_maxiter=4",
+        "if n_sources == 2: refine_maxiter=8",
+        "Average expected time: ~55 min (40% 1-src x 52 min + 60% 2-src x 58 min)"
+      ],
+      "success_criteria": "Score >= 1.16 AND time <= 58 min",
+      "worker": "W1",
+      "result": "Queue sync: Experiment was already completed, marking as done"
+    },
+    {
+      "id": "EXP_EVEN_TIGHTER_SIGMA_001",
+      "priority": 1,
+      "family": "sigma_v3",
+      "status": "completed",
+      "name": "sigma_015_019_with_perturb",
+      "description": "Even tighter sigma (0.15/0.19) - continuing successful tighter direction",
+      "hypothesis": "sigma 0.16/0.20 achieved NEW BEST 1.1699. Even tighter sigma may further improve accuracy.",
+      "informed_by": "tighter_sigma_range SUCCESS (1.1699 @ 49 min)",
+      "implementation": [
+        "sigma0_1src=0.15, sigma0_2src=0.19",
+        "All other params same as winning config",
+        "Expected: ~48 min with 12 min buffer"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "note": "Already tested in tighter_sigma_range. sigma 0.15/0.19 achieved 1.1730"
+    },
+    {
+      "id": "EXP_TIGHTEST_SIGMA_001",
+      "priority": 2,
+      "family": "sigma_v3",
+      "status": "completed",
+      "name": "sigma_014_018_with_perturb",
+      "description": "Tightest sigma test (0.14/0.18) - finding the lower bound",
+      "hypothesis": "If sigma 0.15/0.19 works, sigma 0.14/0.18 may be even better. Need to find the optimal tightness.",
+      "informed_by": "tighter_sigma_range SUCCESS",
+      "implementation": [
+        "sigma0_1src=0.14, sigma0_2src=0.18",
+        "All other params same as winning config"
+      ],
+      "success_criteria": "Score >= 1.17 AND time <= 55 min",
+      "note": "Already tested in tighter_sigma_range. sigma 0.14/0.18 = 1.1709 (worse than 0.15/0.19)"
+    },
+    {
+      "id": "EXP_TIGHTER_SIGMA_3_PERTURB_001",
+      "priority": 2,
+      "family": "sigma_v3",
+      "status": "completed",
+      "name": "sigma_016_020_3_perturbations",
+      "description": "Test if 3 perturbations with tighter sigma can improve further",
+      "hypothesis": "With 11 min budget remaining, adding 3rd perturbation might find more basins.",
+      "informed_by": "tighter_sigma_range SUCCESS + budget analysis",
+      "implementation": [
+        "sigma0_1src=0.16, sigma0_2src=0.20",
+        "n_perturbations=3 (instead of 2)",
+        "Expected: ~55 min (still in budget)"
+      ],
+      "success_criteria": "Score >= 1.172 AND time <= 60 min",
+      "note": "Already tested in tighter_sigma_range. n_perturbations=3 = 1.1634 (worse than 2)"
+    },
+    {
+      "id": "EXP_SIGMA_015_FEVALS_22_40_001",
+      "name": "sigma_015_019_fevals_22_40",
+      "priority": 1,
+      "status": "completed",
+      "family": "combined_sigma_fevals",
+      "hypothesis": "Combine optimal sigma (0.15/0.19) with sweet spot fevals (22/40). Prior tests used OLD sigma.",
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "max_fevals_1src": 22,
+        "max_fevals_2src": 40,
+        "refine_maxiter": 8,
+        "n_perturbations": 2
+      },
+      "expected_improvement": "+0.0011 to +0.0020 (stacking both optimizations)",
+      "created_at": "2026-02-01T16:33:58.228431",
+      "claimed_at": "2026-02-01T16:52:56.498453",
+      "result": "FAILED - Higher fevals (22/40) does NOT combine with tighter sigma (0.15/0.19). Parameters are interdependent.",
+      "score": 1.1358,
+      "time_min": 44.9,
+      "worker": "W2",
+      "finding": "Sigma and fevals must be tuned together. Tighter sigma needs fewer fevals."
+    },
+    {
+      "id": "EXP_SIGMA_015_PERTURB_SCALE_001",
+      "name": "sigma_015_019_perturb_scale_tuning",
+      "priority": 2,
+      "status": "completed",
+      "family": "perturbation_sigma_synergy",
+      "hypothesis": "Optimal sigma might work better with different perturbation scale. Test 0.03 and 0.07.",
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "perturbation_scales": [
+          0.03,
+          0.05,
+          0.07
+        ],
+        "n_perturbations": 2
+      },
+      "expected_improvement": "Small, exploratory",
+      "created_at": "2026-02-01T16:33:58.228452",
+      "claimed_by": "W1",
+      "claimed_at": "2026-02-01T17:07:58.758680",
+      "result": "PARTIAL_IMPROVEMENT",
+      "score": 1.1709,
+      "time_min": 51.3,
+      "finding": "perturbation_scale=0.06 is optimal (1.1709 @ 51.3 min). Claimed baseline 1.1730 not reproducible."
+    },
+    {
+      "id": "EXP_SIGMA_015_NM6_4PERTURB_001",
+      "name": "sigma_015_019_nm6_4perturb",
+      "priority": 2,
+      "status": "completed",
+      "family": "budget_reallocation_v2",
+      "hypothesis": "Trade 2 NM iterations (save ~5 min) for 2 more perturbations. May catch more local minima.",
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "refine_maxiter": 6,
+        "n_perturbations": 4
+      },
+      "expected_improvement": "+0.0010 if perturbation helps more than extra NM",
+      "created_at": "2026-02-01T16:33:58.228453",
+      "claimed_at": "2026-02-01T17:23:38.418463",
+      "result": "FAILED - More perturbations dont help. HIGH VARIANCE: claimed baseline 1.173 could not be reproduced (got 1.1404).",
+      "score": 1.1404,
+      "time_min": 42.9,
+      "worker": "W2",
+      "finding": "8 NM + 2 perturbations optimal. More perturbations hurt. High variance makes small improvements unreliable."
+    },
+    {
+      "id": "EXP_ASYMMETRIC_SIGMA_001",
+      "name": "asymmetric_sigma_by_source",
+      "priority": 3,
+      "status": "completed",
+      "family": "sigma_source_specific",
+      "hypothesis": "2-source problems may benefit from looser sigma (harder problem). Try 0.15/0.22 asymmetric.",
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.22,
+        "note": "Asymmetric: tight for 1-src, loose for 2-src"
+      },
+      "expected_improvement": "Uncertain, exploratory",
+      "created_at": "2026-02-01T16:33:58.228458",
+      "result": "SUCCESS - NEW BEST",
+      "score": 1.1745,
+      "time_min": 50.4,
+      "finding": "asymmetric_014_019 (1src=0.14, 2src=0.19) achieves NEW BEST 1.1745 @ 50.4 min. Tighter 1-source sigma helps.",
+      "claimed_by": "W1"
+    },
+    {
+      "id": "EXP_SIGMA_015_LESS_TABU_001",
+      "name": "sigma_015_019_tabu_distance_tuning",
+      "priority": 3,
+      "status": "skipped",
+      "family": "tabu_tuning",
+      "hypothesis": "Optimal sigma may need different tabu distance. Test 0.02 and 0.04 vs 0.03 baseline.",
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "tabu_distances": [
+          0.02,
+          0.03,
+          0.04
+        ]
+      },
+      "expected_improvement": "Small, fine-tuning",
+      "created_at": "2026-02-01T16:33:58.228459",
+      "worker": "W1",
+      "result": "SKIPPED: sigma 0.15/0.19 validated as suboptimal. Similar config (sigma 0.14/0.19) already tested in tabu_distance_0.04 experiment showing it underperforms by -0.0075."
+    },
+    {
+      "id": "EXP_SIGMA_018_FEVALS_24_44_001",
+      "name": "sigma_018_022_fevals_24_44",
+      "priority": 1,
+      "status": "completed",
+      "family": "sigma_fevals_optimal",
+      "hypothesis": "Based on interdependence finding: sigma 0.18/0.22 pairs with higher fevals. Test 24/44 which improved 2-src RMSE by 10%.",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "max_fevals_1src": 24,
+        "max_fevals_2src": 44,
+        "refine_maxiter": 8,
+        "n_perturbations": 2
+      },
+      "created_at": "2026-02-01T17:33:55.706203",
+      "claimed_at": "2026-02-01T17:52:41.642213",
+      "completed_at": "2026-02-01T18:30:59.377410",
+      "result": "FAILED - Best config (fevals 20/44) scored 1.1457 @ 41.7 min. Still below baseline.",
+      "score": 1.1457,
+      "time_min": 41.7
+    },
+    {
+      "id": "EXP_LARGER_PERTURB_POOL_001",
+      "name": "larger_perturbation_pool",
+      "priority": 2,
+      "status": "completed",
+      "family": "perturbation_v6",
+      "hypothesis": "Generate more perturbation candidates (n=3-4) but use stricter selection. More exploration without diversity loss.",
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "n_perturbations": [
+          3,
+          4
+        ],
+        "selection_mode": "best_by_rmse"
+      },
+      "created_at": "2026-02-01T17:33:55.706223",
+      "claimed_at": "2026-02-01T19:26:08.472787",
+      "completed_at": "2026-02-01T20:10:18.782138",
+      "result": "NEW BEST! 4 perturbations = 1.1437 (\u00b10.0010) @ 42.2 min (+0.28% vs 2 perturb)",
+      "score": 1.1437,
+      "time_min": 42.2,
+      "new_best": true
+    },
+    {
+      "id": "EXP_PERTURB_ONLY_2SRC_001",
+      "name": "perturbation_only_2source",
+      "priority": 2,
+      "status": "completed",
+      "family": "source_specific_v2",
+      "hypothesis": "2-source problems benefit most from perturbation. Skip perturbation for 1-source to save budget.",
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "perturb_1src": false,
+        "perturb_2src": true,
+        "n_perturbations_2src": 3
+      },
+      "created_at": "2026-02-01T17:33:55.706225",
+      "claimed_by": "W1",
+      "claimed_at": "2026-02-01T18:23:58.248726",
+      "result": "FAILED - Hypothesis Disproved",
+      "score": 1.168,
+      "time_min": 51.2,
+      "finding": "Perturbation helps ALL problems. Skipping 1-source hurts score by 0.0088. Keep perturbation for all."
+    },
+    {
+      "id": "EXP_SIGMA_015_019_VALIDATE_001",
+      "name": "sigma_015_019_validation",
+      "priority": 1,
+      "status": "completed",
+      "family": "validation",
+      "hypothesis": "Validate the 1.1730 result with 3 seeds to confirm it's reproducible (variance observed in prior runs).",
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "seeds": [
+          42,
+          123,
+          456
+        ],
+        "note": "Multi-seed validation"
+      },
+      "created_at": "2026-02-01T17:33:55.706226",
+      "claimed_at": "2026-02-01T18:31:06.852000",
+      "completed_at": "2026-02-01T19:25:45.576264",
+      "result": "CRITICAL: Claimed 1.173 NOT reproducible. True baseline = 1.1337 (\u00b10.0027)",
+      "score": 1.1337,
+      "time_min": 44.0
+    },
+    {
+      "id": "EXP_ASYM_014_019_SCALE_006_001",
+      "name": "asymmetric_014_019_scale_006",
+      "priority": 1,
+      "status": "completed",
+      "family": "combined_asymmetric",
+      "hypothesis": "Combine NEW BEST asymmetric sigma (0.14/0.19) with optimal perturbation scale (0.06). Both were independent improvements.",
+      "config": {
+        "sigma0_1src": 0.14,
+        "sigma0_2src": 0.19,
+        "perturbation_scale": 0.06
+      },
+      "created_at": "2026-02-01T18:32:43.829932",
+      "claimed_by": "W1",
+      "claimed_at": "2026-02-01T18:47:47.328745",
+      "result": "PARTIAL SUCCESS",
+      "score": 1.1657,
+      "time_min": 53.2,
+      "finding": "Scale 0.06 confirmed optimal within run (+0.0061 vs 0.05). Did not beat claimed 1.1745 due to run variance. Recommended config: sigma 0.14/0.19 + scale 0.06."
+    },
+    {
+      "id": "EXP_ASYM_013_019_001",
+      "name": "asymmetric_013_019",
+      "priority": 2,
+      "status": "completed",
+      "family": "asymmetric_sigma_v2",
+      "hypothesis": "Test even tighter 1-source sigma (0.13). Since 0.14 beat 0.15, perhaps 0.13 is even better.",
+      "config": {
+        "sigma0_1src": 0.13,
+        "sigma0_2src": 0.19
+      },
+      "created_at": "2026-02-01T18:32:43.829955",
+      "claimed_by": "W1",
+      "claimed_at": "2026-02-01T19:32:30.160039",
+      "result": "FAILED - Hypothesis Disproved",
+      "score": 1.1703,
+      "time_min": 52.8,
+      "finding": "Sigma 0.14 is OPTIMAL for 1-source. Tighter sigmas (0.13, 0.12) HURT performance. Confirmed optimal config: sigma 0.14/0.19."
+    },
+    {
+      "id": "EXP_ASYM_014_018_001",
+      "name": "asymmetric_014_018",
+      "priority": 2,
+      "status": "completed",
+      "family": "asymmetric_sigma_v2",
+      "hypothesis": "Test even tighter 2-source sigma (0.18). Since 0.19 worked, try slightly tighter.",
+      "config": {
+        "sigma0_1src": 0.14,
+        "sigma0_2src": 0.18
+      },
+      "created_at": "2026-02-01T18:32:43.829957",
+      "claimed_by": "W1",
+      "claimed_at": "2026-02-01T21:30:00.000000",
+      "completed_at": "2026-02-01T22:05:00.000000",
+      "result": "FAILED - Sigma 0.18 is worse (-0.0037). Sigma 0.19 is optimal.",
+      "score": 1.1659,
+      "time_min": 56.0,
+      "worker": "W1",
+      "key_finding": "CONFIRMED: Sigma 0.14/0.19 is FINAL OPTIMAL config."
+    },
+    {
+      "id": "EXP_NEW_BEST_VALIDATION_001",
+      "name": "sigma_018_022_fevals_20_44_validation",
+      "priority": 0,
+      "status": "completed",
+      "family": "new_best",
+      "hypothesis": "Validate sigma 0.18/0.22 + fevals 20/44 as new best configuration",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 44,
+        "refine_maxiter": 8,
+        "n_perturbations": 2
+      },
+      "completed_at": "2026-02-01T19:25:45.576289",
+      "result": "NEW BEST CONFIRMED! Mean: 1.1405 (\u00b10.0058) @ 42.3 min. +0.60% vs baseline.",
+      "score": 1.1405,
+      "time_min": 42.3,
+      "worker": "W2",
+      "key_finding": "TRUE BASELINE RESET: 1.1337 not 1.173. This config is new best."
+    },
+    {
+      "id": "EXP_VALIDATED_BEST_SCALE_006_001",
+      "name": "validated_best_with_scale_006",
+      "priority": 1,
+      "status": "completed",
+      "family": "combined_validated",
+      "hypothesis": "Combine validated best (sigma 0.18/0.22, fevals 20/44) with optimal scale (0.06).",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 44,
+        "perturbation_scale": 0.06
+      },
+      "created_at": "2026-02-01T19:46:05.002615",
+      "claimed_by": "W1",
+      "claimed_at": "2026-02-01T20:06:54.167348",
+      "completed_at": "2026-02-01T20:46:00.000000",
+      "result": "DISPROVED - sigma 0.18/0.22 (1.1598) beaten by 0.14/0.19 (1.1675) in same run",
+      "score": 1.1675,
+      "time_min": 52.8,
+      "worker": "W1",
+      "key_finding": "CONFIRMED: sigma 0.14/0.19 + scale 0.06 is optimal. sigma 0.18/0.22 loses by 0.0077."
+    },
+    {
+      "id": "EXP_HIGHER_2SRC_FEVALS_48_001",
+      "name": "higher_2src_fevals_48",
+      "priority": 2,
+      "status": "completed",
+      "family": "fevals_tuning_v2",
+      "hypothesis": "Test fevals 20/48 to see if 2-source problems benefit from even more evaluations.",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 48
+      },
+      "created_at": "2026-02-01T19:46:05.002638",
+      "result": "Already tested: fevals 20/48 = 1.1279 < 20/44 (1.1437). FAILED.",
+      "score": 1.1279,
+      "worker": "W2",
+      "completed_at": "2026-02-01T23:20:18.718166"
+    },
+    {
+      "id": "EXP_LOWER_1SRC_FEVALS_18_001",
+      "name": "lower_1src_fevals_18",
+      "priority": 2,
+      "status": "completed",
+      "family": "fevals_tuning_v2",
+      "hypothesis": "Test fevals 18/44 - 1-source may need even fewer evals to preserve diversity.",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "max_fevals_1src": 18,
+        "max_fevals_2src": 44
+      },
+      "created_at": "2026-02-01T19:46:05.002640",
+      "claimed_at": "2026-02-01T20:10:39.838361",
+      "completed_at": "2026-02-01T20:38:43.494799",
+      "result": "FAILED - Lower fevals hurt both diversity and accuracy. 20 is optimal.",
+      "score": 1.1296,
+      "time_min": 43.9
+    },
+    {
+      "id": "EXP_4PERTURB_SCALE_006_001",
+      "name": "4perturb_with_scale_006",
+      "priority": 1,
+      "status": "completed",
+      "family": "combined_4perturb",
+      "hypothesis": "Combine 4 perturbations (new best) with optimal scale 0.06. Both are improvements.",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 44,
+        "n_perturbations": 4,
+        "perturbation_scale": 0.06
+      },
+      "created_at": "2026-02-01T20:15:13.999081",
+      "result": "Already tested: scale 0.06 = 1.1378 < 0.05 (1.1437). FAILED.",
+      "score": 1.1378,
+      "worker": "W2",
+      "completed_at": "2026-02-01T23:20:18.718191"
+    },
+    {
+      "id": "EXP_5PERTURB_TEST_001",
+      "name": "5perturb_test",
+      "priority": 2,
+      "status": "completed",
+      "family": "perturbation_v7",
+      "hypothesis": "If 4 perturbations is better than 2, maybe 5 is even better.",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "n_perturbations": 5
+      },
+      "created_at": "2026-02-01T20:15:13.999104",
+      "result": "Already tested: 5 perturbs = 1.1345 < 4 perturbs (1.1437). FAILED.",
+      "score": 1.1345,
+      "worker": "W2",
+      "completed_at": "2026-02-01T23:20:18.718192"
+    },
+    {
+      "id": "EXP_ASYM_014_4PERTURB_001",
+      "name": "asymmetric_014_019_4perturb",
+      "priority": 2,
+      "status": "completed",
+      "family": "combined_4perturb",
+      "hypothesis": "Combine asymmetric sigma (0.14/0.19) with 4 perturbations. Both are improvements.",
+      "config": {
+        "sigma0_1src": 0.14,
+        "sigma0_2src": 0.19,
+        "n_perturbations": 4
+      },
+      "created_at": "2026-02-01T20:15:13.999111",
+      "claimed_by": "W1",
+      "claimed_at": "2026-02-01T20:50:00.000000",
+      "completed_at": "2026-02-01T21:25:00.000000",
+      "result": "FAILED - 4 perturb exceeds budget (61.3 min). 2 perturb (1.1675 @ 53.4 min) is optimal.",
+      "score": 1.1675,
+      "time_min": 53.4,
+      "worker": "W1",
+      "key_finding": "CONFIRMED: 2 perturbations is optimal for sigma 0.14/0.19. More perturbations exceed budget."
+    },
+    {
+      "id": "EXP_FIVE_PERTURB_001",
+      "name": "five_perturbations_test",
+      "priority": 99,
+      "status": "completed",
+      "family": "perturbation_tuning",
+      "result": "FAILED - 5 perturbs (1.1345) worse than 4 (1.1437)",
+      "score": 1.1345,
+      "worker": "W2",
+      "completed_at": "2026-02-01T21:34:07.578079"
+    },
+    {
+      "id": "EXP_FEVALS_20_46_001",
+      "name": "fevals_20_46_test",
+      "priority": 99,
+      "status": "completed",
+      "family": "fevals_tuning",
+      "result": "FAILED - 46 2src fevals (1.1378) worse than 44 (1.1437)",
+      "score": 1.1378,
+      "worker": "W2",
+      "completed_at": "2026-02-01T21:34:07.578099"
+    },
+    {
+      "id": "EXP_PERTURB_SCALE_001",
+      "name": "perturbation_scale_tuning",
+      "priority": 99,
+      "status": "completed",
+      "family": "perturbation_tuning",
+      "result": "Scale 0.05 is optimal. 0.04 and 0.06 both worse.",
+      "score": 1.1419,
+      "worker": "W2",
+      "completed_at": "2026-02-01T22:40:05.027899"
+    },
+    {
+      "id": "EXP_PERTURB_NM_ITERS_001",
+      "name": "perturb_nm_iters_tuning",
+      "priority": 99,
+      "status": "completed",
+      "family": "nm_tuning",
+      "result": "nm_iters=4 showed promise (1.1499) but high variance. nm_iters=3 remains optimal.",
+      "score": 1.1401,
+      "worker": "W2",
+      "completed_at": "2026-02-01T22:40:05.027928"
+    },
+    {
+      "id": "EXP_REFINE_MAXITER_001",
+      "name": "refine_maxiter_tuning",
+      "priority": 99,
+      "status": "completed",
+      "family": "nm_tuning",
+      "result": "maxiter=6 initial promising (1.1468) but validation shows mean 1.1391. maxiter=8 remains optimal.",
+      "score": 1.1391,
+      "worker": "W2",
+      "completed_at": "2026-02-01T23:19:45.316696"
+    },
+    {
+      "id": "EXP_FINAL_CONFIG_VALIDATION_001",
+      "name": "final_config_5run_validation",
+      "priority": 1,
+      "status": "completed",
+      "family": "validation_final",
+      "hypothesis": "Validate final optimal config (sigma 0.14/0.19, fevals 20/44, 2 perturb) with 5 runs to establish confidence intervals.",
+      "config": {
+        "sigma0_1src": 0.14,
+        "sigma0_2src": 0.19,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 44,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.06,
+        "n_validation_runs": 5
+      },
+      "created_at": "2026-02-01T23:33:57.030184",
+      "worker": "W1",
+      "result": "Queue sync: Experiment was already completed, marking as done"
+    },
+    {
+      "id": "EXP_NM9_TEST_001",
+      "name": "nm9_polish_test",
+      "priority": 2,
+      "status": "completed",
+      "family": "nm_final_tuning",
+      "hypothesis": "Test 9 NM iterations with optimal config. May provide small improvement within budget.",
+      "config": {
+        "sigma0_1src": 0.14,
+        "sigma0_2src": 0.19,
+        "refine_maxiter": 9
+      },
+      "created_at": "2026-02-01T23:33:57.030214",
+      "claimed_at": "2026-02-01T23:48:25.344261",
+      "result": "FAILED - maxiter=9 (1.1384) worse than maxiter=8 (1.1437)",
+      "score": 1.1384,
+      "completed_at": "2026-02-02T00:16:38.042492"
+    },
+    {
+      "id": "EXP_PERTURB_NM4_001",
+      "name": "perturb_nm_4iters",
+      "priority": 2,
+      "status": "completed",
+      "family": "perturb_tuning",
+      "hypothesis": "Test 4 NM iterations per perturbation (vs 3). May improve perturbation refinement.",
+      "config": {
+        "sigma0_1src": 0.14,
+        "sigma0_2src": 0.19,
+        "perturb_nm_iters": 4
+      },
+      "created_at": "2026-02-01T23:33:57.030217",
+      "worker": "W1",
+      "result": "Queue sync: Experiment was already completed, marking as done"
+    },
+    {
+      "id": "EXP_TABU_DIST_004_001",
+      "name": "tabu_distance_0.04",
+      "priority": 3,
+      "status": "completed",
+      "family": "tabu_tuning",
+      "hypothesis": "Test tabu distance 0.04 (vs 0.03). Larger distance may improve diversity.",
+      "config": {
+        "sigma0_1src": 0.14,
+        "sigma0_2src": 0.19,
+        "tabu_distance": 0.04
+      },
+      "created_at": "2026-02-01T23:33:57.030220",
+      "worker": "W1",
+      "result": "Queue sync: Experiment was already completed, marking as done"
+    },
+    {
+      "id": "EXP_TIMESTEP_42PCT_001",
+      "name": "timestep_42pct",
+      "priority": 3,
+      "status": "completed",
+      "family": "temporal_final",
+      "hypothesis": "Test 42% temporal fidelity (vs 40%). Slightly more timesteps may improve accuracy.",
+      "config": {
+        "sigma0_1src": 0.14,
+        "sigma0_2src": 0.19,
+        "timestep_fraction": 0.42
+      },
+      "created_at": "2026-02-01T23:33:57.030221",
+      "worker": "W1",
+      "result": "Queue sync: Experiment was already completed, marking as done"
+    },
+    {
+      "id": "EXP_TABU004_SCALE_SWEEP_001",
+      "priority": 1,
+      "family": "tabu_tuning",
+      "status": "completed",
+      "name": "tabu004_scale_sweep",
+      "description": "With validated tabu_distance=0.04, test perturbation_scale 0.045, 0.055 to find optimal",
+      "hypothesis": "The optimal perturbation_scale may be slightly different with tabu_distance=0.04",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "tabu_distance": 0.04,
+        "perturbation_scale": "[0.045, 0.055]",
+        "n_perturbations": 2
+      },
+      "success_criteria": "Score >= 1.155 (top 10 threshold)",
+      "worker": "W1",
+      "result": "CONFIRMED: scale 0.05 is optimal with tabu 0.04. No change needed.",
+      "score": 1.1476,
+      "time_min": 55.4
+    },
+    {
+      "id": "EXP_TABU004_3PERTURB_001",
+      "priority": 2,
+      "family": "tabu_tuning",
+      "status": "completed",
+      "name": "tabu004_3perturb_test",
+      "description": "Test 3 perturbations with tabu_distance=0.04 (previously failed with tabu=0.03)",
+      "hypothesis": "With improved tabu distance, 3 perturbations might now be beneficial",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "tabu_distance": 0.04,
+        "n_perturbations": 3
+      },
+      "success_criteria": "Score >= 1.155 AND time <= 60 min",
+      "worker": "W1",
+      "result": "Already tested as 3pert_tabu004: 1.1476 @ 60.8 min (marginally over budget)",
+      "score": 1.1476,
+      "time_min": 60.8
+    },
+    {
+      "id": "EXP_PRODUCTION_10RUN_001",
+      "priority": 1,
+      "family": "validation",
+      "status": "available",
+      "name": "production_config_10run_validation",
+      "description": "Validate production config with 10 runs to establish confidence",
+      "hypothesis": "10 runs will provide reliable score estimate for final submission",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "tabu_distance": 0.04,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 44,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "runs": 10
+      },
+      "success_criteria": "Establish validated mean score"
+    },
+    {
+      "id": "EXP_HIGHER_FEVALS_TABU004_001",
+      "priority": 3,
+      "family": "fevals_tuning",
+      "status": "available",
+      "name": "higher_fevals_with_tabu004",
+      "description": "Test 24/48 fevals with tabu_distance=0.04",
+      "hypothesis": "With time budget remaining, more fevals might improve accuracy",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "tabu_distance": 0.04,
+        "max_fevals_1src": 24,
+        "max_fevals_2src": 48
+      },
+      "success_criteria": "Score >= 1.155 AND time <= 60 min"
+    },
+    {
+      "id": "EXP_COMBO_BEST_PARAMS_001",
+      "priority": 2,
+      "family": "combo_tuning",
+      "status": "completed",
+      "name": "combo_best_params",
+      "description": "Combine all validated improvements: tabu=0.04, sigma=0.18/0.22, fevals 20/44",
+      "hypothesis": "Systematic validation of final production config",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "tabu_distance": 0.04,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 44,
+        "n_perturbations": 2,
+        "perturbation_scale": 0.05,
+        "timestep_fraction": 0.4,
+        "refine_maxiter": 8
+      },
+      "success_criteria": "Confirm score >= 1.15",
+      "worker": "W1",
+      "result": "Already tested as 4pert_tabu004_combined: 1.1535 @ 61.3 min (over budget but best score)",
+      "score": 1.1535,
+      "time_min": 61.3
+    },
+    {
+      "id": "EXP_4PERT_TABU04_001",
+      "priority": 99,
+      "family": "combined_improvements",
+      "status": "completed",
+      "result": "PROMISING BUT OVER BUDGET: 1.1535 @ 61.3 min mean. Best run: 1.1585 @ 52.5 min (matches Top 10!)",
+      "score": 1.1535,
+      "time_min": 61.3,
+      "worker": "W1",
+      "name": "4pert_tabu004_combined",
+      "description": "Combined 4 perturbations + tabu_distance=0.04",
+      "finding": "Improvements ARE additive. Score potential is high but budget is exceeded."
+    },
+    {
+      "id": "EXP_3PERT_TABU04_001",
+      "priority": 99,
+      "family": "combined_improvements",
+      "status": "completed",
+      "result": "MARGINALLY OVER BUDGET: 1.1476 @ 60.8 min mean.",
+      "score": 1.1476,
+      "time_min": 60.8,
+      "worker": "W1",
+      "name": "3pert_tabu004",
+      "description": "3 perturbations + tabu_distance=0.04 as compromise",
+      "finding": "Still marginally over budget. 2 perturbations is safer."
+    },
+    {
+      "id": "EXP_FINAL_PROD_VALIDATION_001",
+      "priority": 1,
+      "family": "final_validation",
+      "status": "available",
+      "name": "final_production_10run",
+      "description": "Final 10-run validation of production config (2 pert + tabu 0.04)",
+      "hypothesis": "Confirm 1.1496 score with high confidence",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "tabu_distance": 0.04,
+        "n_perturbations": 2,
+        "runs": 10
+      }
+    },
+    {
+      "id": "EXP_REDUCED_FEVALS_4PERT_001",
+      "priority": 2,
+      "family": "fevals_tuning",
+      "status": "completed",
+      "name": "reduced_fevals_4pert",
+      "description": "Test 18/40 fevals with 4 perturbations to fit budget",
+      "hypothesis": "Fewer fevals might allow 4 perturbations within budget",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "tabu_distance": 0.04,
+        "max_fevals_1src": 18,
+        "max_fevals_2src": 40,
+        "n_perturbations": 4
+      },
+      "worker": "W1",
+      "result": "FAILED: 4 pert + 18/40 fevals still over budget (65.0 min). Cannot fit 4 pert in budget.",
+      "score": 1.1497,
+      "time_min": 65.0
+    },
+    {
+      "id": "EXP_FASTER_NM_4PERT_001",
+      "priority": 2,
+      "family": "nm_tuning",
+      "status": "available",
+      "name": "faster_nm_4pert",
+      "description": "Test 6 NM iterations with 4 perturbations to fit budget",
+      "hypothesis": "Fewer NM iterations might allow 4 perturbations within budget",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "tabu_distance": 0.04,
+        "refine_maxiter": 6,
+        "n_perturbations": 4
+      }
+    },
+    {
+      "id": "EXP_4PERT_NM2_VALIDATION_001",
+      "priority": 1,
+      "family": "validation",
+      "status": "available",
+      "name": "4pert_nm2_5run_validation",
+      "description": "Validate new best config: 4 perturbations + perturb_nm_iters=2",
+      "hypothesis": "Confirm 1.1524 @ 58.3 min with 5 runs to establish confidence",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "max_fevals_1src": 20,
+        "max_fevals_2src": 44,
+        "tabu_distance": 0.04,
+        "n_perturbations": 4,
+        "perturb_nm_iters": 2,
+        "runs": 5
+      },
+      "success_criteria": "Mean >= 1.15 AND 100% in budget"
     }
   ],
   "algorithm_families": {

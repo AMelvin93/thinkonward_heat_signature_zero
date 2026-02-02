@@ -1,0 +1,185 @@
+============================================================
+FINAL CONFIG 5-RUN VALIDATION
+============================================================
+Config: sigma 0.14/0.19, fevals 20/44, 2 perturb, scale 0.06
+Baseline to beat: 1.1464
+
+=== Validation Run 1 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1430, Avg cands=2.73, Time=51.5 min
+  RMSE 1src: 0.1195, RMSE 2src: 0.1760
+
+=== Validation Run 2 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1471, Avg cands=2.80, Time=59.0 min
+  RMSE 1src: 0.1167, RMSE 2src: 0.1898
+
+=== Validation Run 3 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1349, Avg cands=2.71, Time=51.1 min
+  RMSE 1src: 0.1311, RMSE 2src: 0.1852
+
+=== Validation Run 4 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1238, Avg cands=2.69, Time=52.2 min
+  RMSE 1src: 0.1293, RMSE 2src: 0.2101
+
+=== Validation Run 5 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1412, Avg cands=2.74, Time=51.8 min
+  RMSE 1src: 0.1120, RMSE 2src: 0.1908
+
+============================================================
+VALIDATION SUMMARY (5 Runs)
+============================================================
+Baseline: 1.1464 @ 51.2 min
+
+  Run 1: 1.1430 @ 51.5 min (-0.0034) [IN BUDGET]
+  Run 2: 1.1471 @ 59.0 min (+0.0007) [IN BUDGET]
+  Run 3: 1.1349 @ 51.1 min (-0.0115) [IN BUDGET]
+  Run 4: 1.1238 @ 52.2 min (-0.0226) [IN BUDGET]
+  Run 5: 1.1412 @ 51.8 min (-0.0052) [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1380 +/- 0.0081
+  Mean Time:  53.1 +/- 3.0 min
+  Score Range: [1.1238, 1.1471]
+
+CONCLUSION: No improvement (-0.0084 vs baseline)
+
+[
+  {
+    "run": 1,
+    "score": 1.1429738946243435,
+    "avg_n_cands": 2.725,
+    "projected_400_min": 51.45467438300451,
+    "rmse_1src_mean": 0.11952396490766423,
+    "rmse_2src_mean": 0.17601140525156353,
+    "in_budget": true
+  },
+  {
+    "run": 2,
+    "score": 1.1470806954609472,
+    "avg_n_cands": 2.8,
+    "projected_400_min": 59.04967053731283,
+    "rmse_1src_mean": 0.11669442129901857,
+    "rmse_2src_mean": 0.18977257660641375,
+    "in_budget": true
+  },
+  {
+    "run": 3,
+    "score": 1.1348830992082608,
+    "avg_n_cands": 2.7125,
+    "projected_400_min": 51.10919141769409,
+    "rmse_1src_mean": 0.13106402234102962,
+    "rmse_2src_mean": 0.18522204807380974,
+    "in_budget": true
+  },
+  {
+    "run": 4,
+    "score": 1.1237668846869653,
+    "avg_n_cands": 2.6875,
+    "projected_400_min": 52.16359198093414,
+    "rmse_1src_mean": 0.1292965197580543,
+    "rmse_2src_mean": 0.21013374463542686,
+    "in_budget": true
+  },
+  {
+    "run": 5,
+    "score": 1.1412447821994394,
+    "avg_n_cands": 2.7375,
+    "projected_400_min": 51.79755147298177,
+    "rmse_1src_mean": 0.11204507841953973,
+    "rmse_2src_mean": 0.19078222049271765,
+    "in_budget": true
+  }
+]
+
+{
+  "config": {
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 2,
+    "perturb_nm_iters": 3,
+    "perturbation_scale": 0.06,
+    "tabu_distance": 0.03,
+    "max_tabu_attempts": 10
+  },
+  "validation_runs": [
+    {
+      "run": 1,
+      "score": 1.1429738946243435,
+      "avg_n_cands": 2.725,
+      "projected_400_min": 51.45467438300451,
+      "rmse_1src_mean": 0.11952396490766423,
+      "rmse_2src_mean": 0.17601140525156353,
+      "in_budget": true
+    },
+    {
+      "run": 2,
+      "score": 1.1470806954609472,
+      "avg_n_cands": 2.8,
+      "projected_400_min": 59.04967053731283,
+      "rmse_1src_mean": 0.11669442129901857,
+      "rmse_2src_mean": 0.18977257660641375,
+      "in_budget": true
+    },
+    {
+      "run": 3,
+      "score": 1.1348830992082608,
+      "avg_n_cands": 2.7125,
+      "projected_400_min": 51.10919141769409,
+      "rmse_1src_mean": 0.13106402234102962,
+      "rmse_2src_mean": 0.18522204807380974,
+      "in_budget": true
+    },
+    {
+      "run": 4,
+      "score": 1.1237668846869653,
+      "avg_n_cands": 2.6875,
+      "projected_400_min": 52.16359198093414,
+      "rmse_1src_mean": 0.1292965197580543,
+      "rmse_2src_mean": 0.21013374463542686,
+      "in_budget": true
+    },
+    {
+      "run": 5,
+      "score": 1.1412447821994394,
+      "avg_n_cands": 2.7375,
+      "projected_400_min": 51.79755147298177,
+      "rmse_1src_mean": 0.11204507841953973,
+      "rmse_2src_mean": 0.19078222049271765,
+      "in_budget": true
+    }
+  ],
+  "statistics": {
+    "mean_score": 1.137989871235991,
+    "std_score": 0.008124326414057035,
+    "mean_time_min": 53.114935958385466,
+    "std_time_min": 2.988013100015831,
+    "min_score": 1.1237668846869653,
+    "max_score": 1.1470806954609472
+  },
+  "vs_baseline": -0.00841012876400904,
+  "conclusion": "NO_IMPROVEMENT"
+}

@@ -1,0 +1,77 @@
+{
+  "experiment": "tighter_sigma_with_coord",
+  "status": "completed",
+  "claimed_by": "W2",
+  "claimed_at": "2026-02-01T12:00:00Z",
+  "baseline": {
+    "score": 1.1730,
+    "time_min": 10.08,
+    "projected_400_min": 50.4,
+    "config": "sigma 0.15/0.19 with perturbation (tighter_sigma_range experiment)"
+  },
+  "hypothesis": "Coordinate refinement provided +0.0105 on older configs. Combining with the new best sigma 0.15/0.19 could push score even higher.",
+  "target": {
+    "score": ">= 1.180",
+    "time": "<= 60 min projected"
+  },
+  "result": "FAILED",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "sigma_015_019_coord_step001",
+      "params": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "enable_coord_refine": true,
+        "coord_step": 0.01,
+        "refine_maxiter": 8
+      },
+      "score": 1.1556,
+      "time_min": 7.61,
+      "projected_400_min": 38.1,
+      "rmse_1src": 0.141802,
+      "rmse_2src": 0.195845,
+      "note": "WORSE than baseline (no coord) - coord refine hurts with 8 NM"
+    },
+    {
+      "run": 2,
+      "config": "sigma_015_019_no_coord_baseline",
+      "params": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "enable_coord_refine": false,
+        "refine_maxiter": 8
+      },
+      "score": 1.1597,
+      "time_min": 7.36,
+      "projected_400_min": 36.8,
+      "rmse_1src": 0.125462,
+      "rmse_2src": 0.201066,
+      "note": "Better than coord refine! Pure CMA-ES + NM without coord."
+    },
+    {
+      "run": 3,
+      "config": "sigma_015_019_nm6_coord_step001",
+      "params": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "enable_coord_refine": true,
+        "coord_step": 0.01,
+        "refine_maxiter": 6
+      },
+      "score": 1.1602,
+      "time_min": 7.34,
+      "projected_400_min": 36.7,
+      "rmse_1src": 0.128416,
+      "rmse_2src": 0.196662,
+      "note": "Best this experiment but still -0.0128 vs perturbation baseline"
+    }
+  ],
+  "key_findings": [
+    "Coord refinement CANNOT match perturbation: best here 1.1602 vs perturbation 1.1730 (-0.0128)",
+    "Coord refine can actually HURT performance: with 8 NM, coord gives 1.1556 vs no-coord 1.1597",
+    "Perturbation is the superior technique for escaping local minima",
+    "Without perturbation, optimal sigma alone achieves only 1.1597-1.1602"
+  ],
+  "conclusion": "FAILED - Coordinate refinement does not improve over perturbation baseline. Perturbation remains the winning technique. coord_refine_v2 family EXHAUSTED."
+}

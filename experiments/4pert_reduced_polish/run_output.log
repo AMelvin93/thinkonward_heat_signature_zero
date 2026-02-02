@@ -1,0 +1,62 @@
+============================================================
+4 PERTURBATIONS WITH REDUCED NM POLISH (6 iter)
+============================================================
+True Baseline: 1.1337
+4-pert @ 8 NM: 1.1555 @ 61.9 min (OVER BUDGET)
+3-pert @ 8 NM: 1.1478 @ 58.4 min (IN BUDGET)
+Goal: 4-pert with 6 NM polish to fit budget
+
+=== Run 1: 4pert_6nm ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1446, Time=64.2 min, Candidates=2.83
+  RMSE 1src: 0.1256, RMSE 2src: 0.1952
+vs True Baseline (1.1337): +0.0109
+vs 4-pert @ 8 NM (1.1555): -0.0109
+vs 3-pert @ 8 NM (1.1478): -0.0032
+
+=== Run 2: 4pert_6nm ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1467, Time=58.4 min, Candidates=2.80
+  RMSE 1src: 0.1186, RMSE 2src: 0.1848
+vs True Baseline (1.1337): +0.0130
+vs 4-pert @ 8 NM (1.1555): -0.0088
+vs 3-pert @ 8 NM (1.1478): -0.0011
+
+=== Run 3: 4pert_6nm ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1441, Time=51.1 min, Candidates=2.79
+  RMSE 1src: 0.1181, RMSE 2src: 0.1922
+vs True Baseline (1.1337): +0.0104
+vs 4-pert @ 8 NM (1.1555): -0.0114
+vs 3-pert @ 8 NM (1.1478): -0.0037
+
+============================================================
+SUMMARY: 4 Perturbations with Reduced NM (6 iter)
+============================================================
+
+Run Results:
+  Run 1: 1.1446 @ 64.2 min (+0.0109) [OVER BUDGET]
+  Run 2: 1.1467 @ 58.4 min (+0.0130) [IN BUDGET]
+  Run 3: 1.1441 @ 51.1 min (+0.0104) [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1451 +/- 0.0012
+  Mean Time: 57.9 min
+  vs True Baseline: +0.0114
+  vs 4-pert @ 8 NM: -0.0104
+  vs 3-pert @ 8 NM: -0.0027
+
+Budget Status: IN BUDGET
+
+CONCLUSION: IN BUDGET but not better than 3-pert/8NM
+
+Results saved to run_output.json

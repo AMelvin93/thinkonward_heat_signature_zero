@@ -1,0 +1,73 @@
+
+Config: fevals_18_44
+Fevals: 1src=18, 2src=44
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1296, Avg cands: 2.77, Time: 43.9 min
+1-src cands: 2.56, 2-src cands: 2.92
+vs Current Best (1.1437): -0.0141
+
+Config: fevals_16_44
+Fevals: 1src=16, 2src=44
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1326, Avg cands: 2.85, Time: 45.1 min
+1-src cands: 2.66, 2-src cands: 2.98
+vs Current Best (1.1437): -0.0111
+
+Config: fevals_20_44_baseline
+Fevals: 1src=20, 2src=44
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1425, Avg cands: 2.84, Time: 45.2 min
+1-src cands: 2.69, 2-src cands: 2.94
+vs Current Best (1.1437): -0.0012
+
+============================================================
+SUMMARY: Lower 1-src Fevals Tuning
+============================================================
+Current best: 1.1437 @ 42.2 min (fevals 20/44)
+
+  fevals_18_44: 1.1296 @ 43.9 min (-0.0141)
+    1-src cands: 2.56, 2-src cands: 2.92
+  fevals_16_44: 1.1326 @ 45.1 min (-0.0111)
+    1-src cands: 2.66, 2-src cands: 2.98
+  fevals_20_44_baseline: 1.1425 @ 45.2 min (-0.0012)
+    1-src cands: 2.69, 2-src cands: 2.94
+
+Best: fevals_20_44_baseline = 1.1425 @ 45.2 min
+[
+  {
+    "config_name": "fevals_18_44",
+    "score": 1.129618509722651,
+    "avg_n_cands": 2.775,
+    "cands_1src": 2.5625,
+    "cands_2src": 2.9166666666666665,
+    "projected_400_min": 43.90239234765371
+  },
+  {
+    "config_name": "fevals_16_44",
+    "score": 1.132617811777742,
+    "avg_n_cands": 2.85,
+    "cands_1src": 2.65625,
+    "cands_2src": 2.9791666666666665,
+    "projected_400_min": 45.130594650904335
+  },
+  {
+    "config_name": "fevals_20_44_baseline",
+    "score": 1.1424703067227966,
+    "avg_n_cands": 2.8375,
+    "cands_1src": 2.6875,
+    "cands_2src": 2.9375,
+    "projected_400_min": 45.184420585632324
+  }
+]

@@ -1,0 +1,139 @@
+Loading data...
+Loaded 80 samples
+
+BASELINE: sigma 0.15/0.19, scale=0.05, n_perturbations=2 = 1.1730 @ 50.4 min
+Testing perturbation scales to find optimal value...
+
+============================================================
+Config: scale_003
+Sigma: 1src=0.15, 2src=0.19
+Perturbation scale: 0.03
+N perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 3.1 min
+  Progress: 40/80 samples, elapsed: 6.8 min
+  Progress: 60/80 samples, elapsed: 12.3 min
+  Progress: 80/80 samples, elapsed: 18.4 min
+
+--- Results for scale_003 ---
+  RMSE 1-source: 0.119863 (n=32)
+  RMSE 2-source: 0.199926 (n=48)
+  Score:         1.1621
+  Time:          18.44 min
+  Projected 400: 92.2 min
+  Errors:        0
+  In budget:     False (remaining: -32.2 min)
+
+============================================================
+Config: scale_005_baseline
+Sigma: 1src=0.15, 2src=0.19
+Perturbation scale: 0.05
+N perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 3.2 min
+  Progress: 40/80 samples, elapsed: 6.1 min
+  Progress: 60/80 samples, elapsed: 9.4 min
+  Progress: 80/80 samples, elapsed: 12.7 min
+
+--- Results for scale_005_baseline ---
+  RMSE 1-source: 0.119518 (n=32)
+  RMSE 2-source: 0.187657 (n=48)
+  Score:         1.1669
+  Time:          12.74 min
+  Projected 400: 63.7 min
+  Errors:        0
+  In budget:     False (remaining: -3.7 min)
+
+============================================================
+Config: scale_007
+Sigma: 1src=0.15, 2src=0.19
+Perturbation scale: 0.07
+N perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.6 min
+  Progress: 40/80 samples, elapsed: 4.1 min
+  Progress: 60/80 samples, elapsed: 7.3 min
+  Progress: 80/80 samples, elapsed: 10.7 min
+
+--- Results for scale_007 ---
+  RMSE 1-source: 0.121105 (n=32)
+  RMSE 2-source: 0.198278 (n=48)
+  Score:         1.1623
+  Time:          10.72 min
+  Projected 400: 53.6 min
+  Errors:        0
+  In budget:     True (remaining: 6.4 min)
+
+======================================================================
+PHASE 1 RESULTS: PERTURBATION SCALE SWEEP
+======================================================================
+Config                     Scale    Score     Time   Proj 400  In Budget
+----------------------------------------------------------------------
+scale_003                   0.03   1.1621    18.4m      92.2m         NO
+scale_005_baseline          0.05   1.1669    12.7m      63.7m         NO
+scale_007                   0.07   1.1623    10.7m      53.6m        YES
+
+Best in-budget: scale_007 with score 1.1623
+Delta vs baseline (0.05): -0.0046
+Delta vs claimed best (1.1730): -0.0107
+
+Best scale so far: 0.05
+
+PHASE 2: 0.05 is best, testing 0.04 and 0.06...
+
+============================================================
+Config: scale_004
+Sigma: 1src=0.15, 2src=0.19
+Perturbation scale: 0.04
+N perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.4 min
+  Progress: 40/80 samples, elapsed: 3.6 min
+  Progress: 60/80 samples, elapsed: 6.9 min
+  Progress: 80/80 samples, elapsed: 10.4 min
+
+--- Results for scale_004 ---
+  RMSE 1-source: 0.123532 (n=32)
+  RMSE 2-source: 0.191199 (n=48)
+  Score:         1.1640
+  Time:          10.41 min
+  Projected 400: 52.1 min
+  Errors:        0
+  In budget:     True (remaining: 7.9 min)
+
+============================================================
+Config: scale_006
+Sigma: 1src=0.15, 2src=0.19
+Perturbation scale: 0.06
+N perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.6 min
+  Progress: 40/80 samples, elapsed: 3.8 min
+  Progress: 60/80 samples, elapsed: 7.0 min
+  Progress: 80/80 samples, elapsed: 10.3 min
+
+--- Results for scale_006 ---
+  RMSE 1-source: 0.115513 (n=32)
+  RMSE 2-source: 0.181046 (n=48)
+  Score:         1.1709
+  Time:          10.27 min
+  Projected 400: 51.3 min
+  Errors:        0
+  In budget:     True (remaining: 8.7 min)
+
+======================================================================
+FINAL RESULTS
+======================================================================
+Config                     Scale    Score     Time   Proj 400  In Budget
+----------------------------------------------------------------------
+scale_003                   0.03   1.1621    18.4m      92.2m         NO
+scale_004                   0.04   1.1640    10.4m      52.1m        YES
+scale_005_baseline          0.05   1.1669    12.7m      63.7m         NO
+scale_006                   0.06   1.1709    10.3m      51.3m        YES
+scale_007                   0.07   1.1623    10.7m      53.6m        YES
+
+*** BEST IN-BUDGET: scale_006 ***
+    Score: 1.1709
+    Perturbation scale: 0.06
+    Time: 51.3 min projected
+    Delta vs baseline (1.1730): -0.0021

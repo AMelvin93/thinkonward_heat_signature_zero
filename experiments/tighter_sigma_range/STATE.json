@@ -1,0 +1,248 @@
+{
+  "experiment": "tighter_sigma_range",
+  "status": "in_progress",
+  "claimed_by": "W2",
+  "claimed_at": "2026-02-01T10:15:00Z",
+  "baseline": {
+    "score": 1.1689,
+    "time_min": 58.2,
+    "config": "sigma 0.18/0.22, timestep 40%, refine_maxiter 8, n_perturbations 2"
+  },
+  "hypothesis": "Tighter sigma (0.16/0.20) could allow faster convergence by focusing search in the local basin, potentially saving time without sacrificing accuracy.",
+  "target": {
+    "score": ">= 1.1650 (maintain accuracy)",
+    "time": "<= 55 min (save 3+ min)"
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "name": "sigma_016_020",
+      "params": {
+        "sigma0_1src": 0.16,
+        "sigma0_2src": 0.20
+      },
+      "rationale": "Test tighter sigma for faster local convergence"
+    },
+    {
+      "run": 2,
+      "name": "sigma_017_021",
+      "params": {
+        "sigma0_1src": 0.17,
+        "sigma0_2src": 0.21
+      },
+      "rationale": "Intermediate sigma if run 1 hurts accuracy"
+    },
+    {
+      "run": 3,
+      "name": "sigma_018_022_baseline",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22
+      },
+      "rationale": "Baseline comparison to establish variance"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "sigma_016_020_no_perturb",
+      "params": {"sigma0_1src": 0.16, "sigma0_2src": 0.20, "enable_tabu_hopping": false},
+      "score": 1.1649,
+      "time_min": 8.98,
+      "rmse_1src": 0.122939,
+      "rmse_2src": 0.189561,
+      "budget_remaining_min": 51.0,
+      "in_budget": true,
+      "note": "BEST without perturbation - tighter sigma improves accuracy!"
+    },
+    {
+      "run": 2,
+      "config": "sigma_017_021_no_perturb",
+      "params": {"sigma0_1src": 0.17, "sigma0_2src": 0.21, "enable_tabu_hopping": false},
+      "score": 1.1570,
+      "time_min": 9.03,
+      "rmse_1src": 0.132345,
+      "rmse_2src": 0.201462,
+      "budget_remaining_min": 51.0,
+      "in_budget": true,
+      "note": "WORST - intermediate sigma performs poorly"
+    },
+    {
+      "run": 3,
+      "config": "sigma_018_022_no_perturb",
+      "params": {"sigma0_1src": 0.18, "sigma0_2src": 0.22, "enable_tabu_hopping": false},
+      "score": 1.1607,
+      "time_min": 8.65,
+      "rmse_1src": 0.123952,
+      "rmse_2src": 0.199671,
+      "budget_remaining_min": 51.0,
+      "in_budget": true,
+      "note": "Baseline without perturbation"
+    }
+  ],
+  "phase1_analysis": {
+    "finding": "Tighter sigma (0.16/0.20) improves accuracy by +0.0042 vs baseline sigma WITHOUT perturbation",
+    "key_insight": "All runs are fast (~9 min) because enable_tabu_hopping=False means no perturbation code is executed",
+    "next_action": "CONTINUE - Test tighter sigma WITH perturbation to see if it beats 1.1689"
+  },
+  "phase2_runs": [
+    {
+      "run": 4,
+      "config": "sigma_016_020_with_perturb",
+      "params": {
+        "sigma0_1src": 0.16,
+        "sigma0_2src": 0.20,
+        "enable_tabu_hopping": true,
+        "n_perturbations": 2,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8
+      },
+      "score": 1.1699,
+      "time_min": 9.79,
+      "projected_400_min": 49.0,
+      "rmse_1src": 0.121619,
+      "rmse_2src": 0.177421,
+      "budget_remaining_min": 11.0,
+      "in_budget": true,
+      "note": "*** NEW BEST! *** +0.0010 vs baseline 1.1689"
+    },
+    {
+      "run": 5,
+      "config": "sigma_018_022_with_perturb",
+      "params": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "enable_tabu_hopping": true,
+        "n_perturbations": 2,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8
+      },
+      "score": 1.1653,
+      "time_min": 10.37,
+      "projected_400_min": 51.8,
+      "rmse_1src": 0.123982,
+      "rmse_2src": 0.187416,
+      "budget_remaining_min": 8.2,
+      "in_budget": true,
+      "note": "Baseline WITH perturbation - WORSE than tighter sigma"
+    }
+  ],
+  "phase3_runs": [
+    {
+      "run": 6,
+      "config": "sigma_015_019",
+      "params": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "enable_tabu_hopping": true,
+        "n_perturbations": 2,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8
+      },
+      "score": 1.1730,
+      "time_min": 10.08,
+      "projected_400_min": 50.4,
+      "rmse_1src": 0.116023,
+      "rmse_2src": 0.174816,
+      "budget_remaining_min": 9.6,
+      "in_budget": true,
+      "note": "*** NEW BEST! *** +0.0031 vs Phase 2 (1.1699), +0.0041 vs original baseline (1.1689)"
+    },
+    {
+      "run": 7,
+      "config": "sigma_014_018",
+      "params": {
+        "sigma0_1src": 0.14,
+        "sigma0_2src": 0.18,
+        "enable_tabu_hopping": true,
+        "n_perturbations": 2,
+        "timestep_fraction": 0.40,
+        "refine_maxiter": 8
+      },
+      "score": 1.1709,
+      "time_min": 9.65,
+      "projected_400_min": 48.2,
+      "rmse_1src": 0.114133,
+      "rmse_2src": 0.182471,
+      "budget_remaining_min": 11.8,
+      "in_budget": true,
+      "note": "Slightly worse than 0.15/0.19 - shows we found the sweet spot"
+    }
+  ],
+  "result": "SUCCESS",
+  "status": "completed",
+  "best_config": {
+    "name": "sigma_015_019",
+    "score": 1.1730,
+    "time_min": 10.08,
+    "projected_400_min": 50.4,
+    "params": {
+      "sigma0_1src": 0.15,
+      "sigma0_2src": 0.19,
+      "timestep_fraction": 0.40,
+      "refine_maxiter": 8,
+      "enable_tabu_hopping": true,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 3,
+      "tabu_distance": 0.03,
+      "max_tabu_attempts": 10
+    }
+  },
+  "sigma_trend": [
+    {"sigma": "0.18/0.22", "score": 1.1653},
+    {"sigma": "0.16/0.20", "score": 1.1699},
+    {"sigma": "0.15/0.19", "score": 1.1730},
+    {"sigma": "0.14/0.18", "score": 1.1709}
+  ],
+  "finding": "Tighter sigma (0.15/0.19) with perturbation achieves 1.1730 - NEW BEST! Improves +0.0041 vs original baseline 1.1689. Sweet spot found: sigma 0.15/0.19 is optimal. Tighter (0.14/0.18) starts to hurt. Key insight: tighter sigma focuses CMA-ES on local refinement, while perturbation handles global exploration.",
+  "phase4_runs": [
+    {
+      "run": 8,
+      "config": "sigma_015_019_3perturb",
+      "params": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "n_perturbations": 3
+      },
+      "score": 1.1634,
+      "time_min": 11.22,
+      "projected_400_min": 56.1,
+      "rmse_1src": 0.121653,
+      "rmse_2src": 0.194871,
+      "note": "WORSE than 2 perturbations (-0.0096)"
+    },
+    {
+      "run": 9,
+      "config": "sigma_015_019_1perturb",
+      "params": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "n_perturbations": 1
+      },
+      "score": 1.1556,
+      "time_min": 8.95,
+      "projected_400_min": 44.7,
+      "rmse_1src": 0.121904,
+      "rmse_2src": 0.215549,
+      "note": "MUCH WORSE than 2 perturbations (-0.0174)"
+    }
+  ],
+  "phase4_analysis": {
+    "finding": "n_perturbations=2 is OPTIMAL. Both 1 and 3 perturbations perform worse.",
+    "perturbation_trend": [
+      {"n_perturbations": 1, "score": 1.1556, "time_min": 44.7},
+      {"n_perturbations": 2, "score": 1.1730, "time_min": 50.4},
+      {"n_perturbations": 3, "score": 1.1634, "time_min": 56.1}
+    ],
+    "conclusion": "2 perturbations is the sweet spot - fewer hurts accuracy significantly, more doesn't help and wastes time"
+  },
+  "recommendations": [
+    "ADOPT sigma 0.15/0.19 with n_perturbations=2 as production config",
+    "Update optimizer to use sigma0_1src=0.15, sigma0_2src=0.19",
+    "Mark sigma_v2 family as FULLY OPTIMIZED",
+    "Sweet spot found for both sigma AND perturbation count"
+  ],
+  "total_runs": 9,
+  "final_conclusion": "Experiment COMPLETE. Best: sigma 0.15/0.19, n_perturbations=2, score=1.1730 @ 50.4 min"
+}

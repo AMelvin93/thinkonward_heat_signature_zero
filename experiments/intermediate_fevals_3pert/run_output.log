@@ -1,0 +1,55 @@
+============================================================
+INTERMEDIATE FEVALS: 21/46 with 3 perturbations
+============================================================
+20/44 baseline: 1.1475 @ 55.7 min
+22/48 (over budget): 1.1568 @ 63.4 min
+Goal: Find sweet spot in between
+
+=== Run 1: 3pert_fevals_21_46 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1535, Time=57.5 min, Candidates=2.85
+  RMSE 1src: 0.1187, RMSE 2src: 0.1827
+vs 3-pert baseline (1.1475): +0.0060
+
+=== Run 2: 3pert_fevals_21_46 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1387, Time=55.8 min, Candidates=2.75
+  RMSE 1src: 0.1137, RMSE 2src: 0.1989
+vs 3-pert baseline (1.1475): -0.0088
+
+=== Run 3: 3pert_fevals_21_46 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1477, Time=59.0 min, Candidates=2.80
+  RMSE 1src: 0.1187, RMSE 2src: 0.1863
+vs 3-pert baseline (1.1475): +0.0002
+
+============================================================
+SUMMARY: Intermediate Fevals (21/46) with 3 perturbations
+============================================================
+
+Run Results:
+  Run 1: 1.1535 @ 57.5 min (+0.0060) [IN BUDGET]
+  Run 2: 1.1387 @ 55.8 min (-0.0088) [IN BUDGET]
+  Run 3: 1.1477 @ 59.0 min (+0.0002) [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1466 +/- 0.0061
+  Mean Time: 57.4 min
+  vs 20/44 baseline: -0.0009
+  vs 22/48 over budget: -0.0102
+
+  Runs in budget: 3/3
+  Budget Status: IN BUDGET
+
+CONCLUSION: IN BUDGET but no improvement
+
+Results saved to run_output.json

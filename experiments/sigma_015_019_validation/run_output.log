@@ -1,0 +1,71 @@
+
+=== Run 1 ===
+Sigma: 1src=0.15, 2src=0.19
+NM: 8, Perturb: 2
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 1 Result: Score=1.1365, Avg cands=2.77, Time=42.1 min
+
+=== Run 2 ===
+Sigma: 1src=0.15, 2src=0.19
+NM: 8, Perturb: 2
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 2 Result: Score=1.1345, Avg cands=2.79, Time=47.2 min
+
+=== Run 3 ===
+Sigma: 1src=0.15, 2src=0.19
+NM: 8, Perturb: 2
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 3 Result: Score=1.1300, Avg cands=2.71, Time=42.7 min
+
+============================================================
+SUMMARY: 3-Run Validation of Claimed 1.173 Baseline
+============================================================
+Claimed baseline: 1.173 @ 50.4 min
+
+  Run 1: 1.1365 @ 42.1 min (delta: -0.0365)
+  Run 2: 1.1345 @ 47.2 min (delta: -0.0385)
+  Run 3: 1.1300 @ 42.7 min (delta: -0.0430)
+
+Mean score: 1.1337
+Std dev:    0.0027
+Min score:  1.1300
+Max score:  1.1365
+Range:      0.0065
+
+Mean time:  44.0 min
+
+CONCLUSION: Claimed 1.173 is NOT reproducible. Actual baseline is ~1.14
+{
+  "runs": [
+    {
+      "run": 1,
+      "score": 1.1365112241032431,
+      "avg_n_cands": 2.775,
+      "projected_400_min": 42.144575357437134
+    },
+    {
+      "run": 2,
+      "score": 1.1344722566999301,
+      "avg_n_cands": 2.7875,
+      "projected_400_min": 47.19405817985535
+    },
+    {
+      "run": 3,
+      "score": 1.1300009853584474,
+      "avg_n_cands": 2.7125,
+      "projected_400_min": 42.739914198716484
+    }
+  ],
+  "mean_score": 1.1336614887205403,
+  "std_score": 0.0027189226623625345,
+  "mean_time": 44.026182578669655
+}

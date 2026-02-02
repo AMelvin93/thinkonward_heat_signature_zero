@@ -1,0 +1,73 @@
+Loading data...
+Loaded 80 samples
+
+PRIOR BEST: asymmetric_014_019 = 1.1745 @ 50.4 min
+Testing if even tighter 1-source sigma (0.13) improves further...
+
+============================================================
+Config: sigma_014_019
+Sigma: 1src=0.14, 2src=0.19
+Perturbation scale: 0.06
+============================================================
+  Progress: 20/80 samples, elapsed: 1.7 min
+  Progress: 40/80 samples, elapsed: 4.1 min
+  Progress: 60/80 samples, elapsed: 7.3 min
+  Progress: 80/80 samples, elapsed: 10.6 min
+
+--- Results for sigma_014_019 ---
+  RMSE 1-source: 0.121669 (n=32)
+  RMSE 2-source: 0.176386 (n=48)
+  Score:         1.1703
+  Time:          10.56 min
+  Projected 400: 52.8 min
+  In budget:     True (remaining: 7.2 min)
+
+============================================================
+Config: sigma_013_019
+Sigma: 1src=0.13, 2src=0.19
+Perturbation scale: 0.06
+============================================================
+  Progress: 20/80 samples, elapsed: 1.8 min
+  Progress: 40/80 samples, elapsed: 4.4 min
+  Progress: 60/80 samples, elapsed: 7.7 min
+  Progress: 80/80 samples, elapsed: 10.9 min
+
+--- Results for sigma_013_019 ---
+  RMSE 1-source: 0.129783 (n=32)
+  RMSE 2-source: 0.188557 (n=48)
+  Score:         1.1627
+  Time:          10.87 min
+  Projected 400: 54.3 min
+  In budget:     True (remaining: 5.7 min)
+
+============================================================
+Config: sigma_012_019
+Sigma: 1src=0.12, 2src=0.19
+Perturbation scale: 0.06
+============================================================
+  Progress: 20/80 samples, elapsed: 1.8 min
+  Progress: 40/80 samples, elapsed: 4.3 min
+  Progress: 60/80 samples, elapsed: 7.4 min
+  Progress: 80/80 samples, elapsed: 10.8 min
+
+--- Results for sigma_012_019 ---
+  RMSE 1-source: 0.128480 (n=32)
+  RMSE 2-source: 0.186055 (n=48)
+  Score:         1.1641
+  Time:          10.81 min
+  Projected 400: 54.1 min
+  In budget:     True (remaining: 5.9 min)
+
+======================================================================
+EXPERIMENT RESULTS: TIGHTER 1-SOURCE SIGMA
+======================================================================
+Config               Sigma 1src    Score   Proj 400  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+sigma_014_019              0.14   1.1703      52.8m     0.1217     0.1764
+sigma_013_019              0.13   1.1627      54.3m     0.1298     0.1886
+sigma_012_019              0.12   1.1641      54.1m     0.1285     0.1861
+
+*** BEST IN-BUDGET: sigma_014_019 ***
+    Score: 1.1703
+    Sigma 1-src: 0.14
+    Time: 52.8 min

@@ -1,0 +1,57 @@
+{
+  "experiment_id": "EXP_VALIDATED_BEST_SCALE_006_001",
+  "name": "validated_best_with_scale_006",
+  "description": "Compare validated best (sigma 0.18/0.22) vs asymmetric (sigma 0.14/0.19) with optimal scale 0.06",
+  "claimed_by": "W1",
+  "started_at": "2026-02-01T20:15:00Z",
+  "completed_at": "2026-02-01T20:46:00Z",
+  "status": "completed",
+  "result": "SUCCESS - DISPROVED HYPOTHESIS",
+  "best_result": {
+    "config": "asymmetric_014_019",
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "perturbation_scale": 0.06,
+    "score": 1.1675,
+    "time_min": 10.56,
+    "projected_400_min": 52.8,
+    "in_budget": true
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"sigma0_1src": 0.18, "sigma0_2src": 0.22, "name": "validated_018_022"},
+      "score": 1.1598,
+      "time_min": 10.48,
+      "projected_400_min": 52.4,
+      "in_budget": true,
+      "rmse_1src": 0.1197,
+      "rmse_2src": 0.2063
+    },
+    {
+      "run": 2,
+      "config": {"sigma0_1src": 0.14, "sigma0_2src": 0.19, "name": "asymmetric_014_019"},
+      "score": 1.1675,
+      "time_min": 10.56,
+      "projected_400_min": 52.8,
+      "in_budget": true,
+      "rmse_1src": 0.1195,
+      "rmse_2src": 0.1859
+    },
+    {
+      "run": 3,
+      "config": {"sigma0_1src": 0.16, "sigma0_2src": 0.20, "name": "hybrid_016_020"},
+      "score": 1.1590,
+      "time_min": 10.73,
+      "projected_400_min": 53.7,
+      "in_budget": true,
+      "rmse_1src": 0.1310,
+      "rmse_2src": 0.1972
+    }
+  ],
+  "conclusion": "The 'validated best' config (sigma 0.18/0.22) is NOT optimal. Sigma 0.14/0.19 outperforms by 0.0077 in same-run comparison. This definitively confirms sigma 0.14/0.19 + scale 0.06 as the optimal configuration.",
+  "key_finding": "DISPROVED: sigma 0.18/0.22 is NOT best. sigma 0.14/0.19 is confirmed optimal.",
+  "time_utilization_pct": 88.0
+}

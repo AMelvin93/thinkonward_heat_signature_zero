@@ -1,0 +1,29 @@
+{
+  "experiment_id": "EXP_REFINE_MAXITER_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-01T23:40:00Z",
+  "completed_at": "2026-02-02T00:05:00Z",
+  "hypothesis": "Test different refine_maxiter (6, 10) vs baseline 8.",
+  "tuning_runs": [
+    {"maxiter": 6, "score": 1.1468, "time_min": 34.5, "note": "initial promising"},
+    {"maxiter": 10, "score": 1.1389, "time_min": 40.1},
+    {"maxiter": 8, "score": 1.1425, "time_min": 36.1}
+  ],
+  "validation_runs": [
+    {"run": 1, "maxiter": 6, "score": 1.1468, "time_min": 34.5},
+    {"run": 2, "maxiter": 6, "score": 1.1334, "time_min": 40.4},
+    {"run": 3, "maxiter": 6, "score": 1.1370, "time_min": 35.4}
+  ],
+  "validation_stats": {
+    "mean_score": 1.1391,
+    "std_score": 0.0057,
+    "mean_time_min": 36.8
+  },
+  "conclusion": "maxiter=6 initial run was an outlier. Mean (1.1391) is worse than current best (1.1437). maxiter=8 remains optimal.",
+  "key_insights": [
+    "maxiter=6 too few NM iterations - high variance and lower accuracy",
+    "maxiter=10 too many - diminishing returns",
+    "maxiter=8 is the optimal balance"
+  ]
+}

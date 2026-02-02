@@ -1,0 +1,77 @@
+Loading data...
+Loaded 80 samples
+  1-source problems: 32
+  2-source problems: 48
+
+BASELINE: asymmetric_014_019 = 1.1745 @ 50.4 min (perturbation for all)
+Testing if perturbation only for 2-source can save time on 1-source...
+
+============================================================
+Config: perturb_all_baseline
+Sigma: 1src=0.14, 2src=0.19
+Perturbation: ALL
+N perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.8 min
+  Progress: 40/80 samples, elapsed: 4.1 min
+  Progress: 60/80 samples, elapsed: 6.9 min
+  Progress: 80/80 samples, elapsed: 10.2 min
+
+--- Results for perturb_all_baseline ---
+  RMSE 1-source: 0.120273 (n=32)
+  RMSE 2-source: 0.183976 (n=48)
+  Score:         1.1680
+  Time:          10.25 min
+  Projected 400: 51.2 min
+  Errors:        0
+  In budget:     True (remaining: 8.8 min)
+
+============================================================
+Config: perturb_2src_only
+Sigma: 1src=0.14, 2src=0.19
+Perturbation: 2-SOURCE ONLY
+N perturbations: 2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.6 min
+  Progress: 40/80 samples, elapsed: 3.9 min
+  Progress: 60/80 samples, elapsed: 6.9 min
+  Progress: 80/80 samples, elapsed: 10.2 min
+
+--- Results for perturb_2src_only ---
+  RMSE 1-source: 0.129020 (n=32)
+  RMSE 2-source: 0.198941 (n=48)
+  Score:         1.1591
+  Time:          10.16 min
+  Projected 400: 50.8 min
+  Errors:        0
+  In budget:     True (remaining: 9.2 min)
+
+======================================================================
+EXPERIMENT RESULTS: PERTURBATION ONLY FOR 2-SOURCE
+======================================================================
+Config                       Score     Time   Proj 400  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+perturb_all_baseline        1.1680    10.2m      51.2m     0.1203     0.1840
+perturb_2src_only           1.1591    10.2m      50.8m     0.1290     0.1989
+
+======================================================================
+ANALYSIS
+======================================================================
+Baseline (perturb all):     Score 1.1680 @ 51.2 min
+Test (perturb 2-src only):  Score 1.1591 @ 50.8 min
+
+Score delta: -0.0088
+Time delta:  -0.4 min
+
+1-source RMSE:
+  Baseline: 0.1203
+  Test:     0.1290
+  Delta:    +0.0087
+
+2-source RMSE:
+  Baseline: 0.1840
+  Test:     0.1989
+  Delta:    +0.0150
+
+*** RECOMMENDATION: Keep perturbation for all ***
+    Score loss (0.0088) outweighs time savings.

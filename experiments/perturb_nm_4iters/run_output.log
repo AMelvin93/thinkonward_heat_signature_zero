@@ -1,0 +1,79 @@
+
+=== Run1_sigma014_nm4 ===
+  sigma: 0.14/0.19, perturb_nm_iters: 4
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1349, Avg cands=2.79, Time=45.9 min
+vs Baseline (1.1464): -0.0115
+Budget remaining: 14.1 min
+
+=== Run2_sigma018_nm4 ===
+  sigma: 0.18/0.22, perturb_nm_iters: 4
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1427, Avg cands=2.83, Time=46.8 min
+vs Baseline (1.1464): -0.0037
+Budget remaining: 13.2 min
+
+=== Run3_sigma018_nm5 ===
+  sigma: 0.18/0.22, perturb_nm_iters: 5
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1406, Avg cands=2.83, Time=43.5 min
+vs Baseline (1.1464): -0.0058
+Budget remaining: 16.5 min
+
+============================================================
+SUMMARY: Perturbation NM Iterations Tuning
+============================================================
+Baseline (nm_iters=3, sigma 0.18/0.22): 1.1464 @ 51.2 min
+
+  Run1_sigma014_nm4: 1.1349 @ 45.9 min (-0.0115) [IN BUDGET]
+  Run2_sigma018_nm4: 1.1427 @ 46.8 min (-0.0037) [IN BUDGET]
+  Run3_sigma018_nm5: 1.1406 @ 43.5 min (-0.0058) [IN BUDGET]
+
+Best: Run2_sigma018_nm4 = 1.1427 @ 46.8 min
+
+No improvement over baseline (-0.0037)
+
+[
+  {
+    "config_name": "Run1_sigma014_nm4",
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "perturb_nm_iters": 4,
+    "score": 1.134870640756626,
+    "avg_n_cands": 2.7875,
+    "projected_400_min": 45.86388484636942,
+    "budget_remaining_min": 14.136115153630577,
+    "in_budget": true
+  },
+  {
+    "config_name": "Run2_sigma018_nm4",
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "perturb_nm_iters": 4,
+    "score": 1.1426597982631121,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 46.82628095149994,
+    "budget_remaining_min": 13.173719048500061,
+    "in_budget": true
+  },
+  {
+    "config_name": "Run3_sigma018_nm5",
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "perturb_nm_iters": 5,
+    "score": 1.140637460961067,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 43.52041071653366,
+    "budget_remaining_min": 16.47958928346634,
+    "in_budget": true
+  }
+]

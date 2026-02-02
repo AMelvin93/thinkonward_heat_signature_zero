@@ -1,0 +1,100 @@
+
+=== Run1_nm4_nm8 ===
+  1-source: 4 NM iters, 2-source: 8 NM iters
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1422, Avg cands=2.86, Time=43.7 min
+  1-src RMSE: 0.1457, avg time: 20.2s
+  2-src RMSE: 0.1915, avg time: 58.5s
+vs Baseline (1.1464): -0.0042
+Budget remaining: 16.3 min
+
+=== Run2_nm4_nm10 ===
+  1-source: 4 NM iters, 2-source: 10 NM iters
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1322, Avg cands=2.76, Time=45.4 min
+  1-src RMSE: 0.1298, avg time: 22.1s
+  2-src RMSE: 0.2042, avg time: 60.6s
+vs Baseline (1.1464): -0.0142
+Budget remaining: 14.6 min
+
+=== Run3_nm6_nm8 ===
+  1-source: 6 NM iters, 2-source: 8 NM iters
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1291, Avg cands=2.75, Time=40.8 min
+  1-src RMSE: 0.1286, avg time: 23.7s
+  2-src RMSE: 0.2128, avg time: 52.6s
+vs Baseline (1.1464): -0.0173
+Budget remaining: 19.2 min
+
+============================================================
+SUMMARY: Adaptive NM by Source Count
+============================================================
+Baseline (uniform 8 NM): 1.1464 @ 51.2 min
+
+  Run1_nm4_nm8: 1.1422 @ 43.7 min (-0.0042) [IN BUDGET]
+    1-src: RMSE=0.1457, time=20.2s
+    2-src: RMSE=0.1915, time=58.5s
+  Run2_nm4_nm10: 1.1322 @ 45.4 min (-0.0142) [IN BUDGET]
+    1-src: RMSE=0.1298, time=22.1s
+    2-src: RMSE=0.2042, time=60.6s
+  Run3_nm6_nm8: 1.1291 @ 40.8 min (-0.0173) [IN BUDGET]
+    1-src: RMSE=0.1286, time=23.7s
+    2-src: RMSE=0.2128, time=52.6s
+
+Best: Run1_nm4_nm8 = 1.1422 @ 43.7 min
+
+No improvement over baseline (-0.0042)
+
+[
+  {
+    "config_name": "Run1_nm4_nm8",
+    "nm_1src": 4,
+    "nm_2src": 8,
+    "score": 1.1421779260797105,
+    "avg_n_cands": 2.8625,
+    "projected_400_min": 43.67798469463984,
+    "rmse_1src_mean": 0.14570962401627235,
+    "rmse_2src_mean": 0.19153968987544465,
+    "time_1src_mean_s": 20.244982957839966,
+    "time_2src_mean_s": 58.49166051546732,
+    "budget_remaining_min": 16.32201530536016,
+    "in_budget": true
+  },
+  {
+    "config_name": "Run2_nm4_nm10",
+    "nm_1src": 4,
+    "nm_2src": 10,
+    "score": 1.1322469391031613,
+    "avg_n_cands": 2.7625,
+    "projected_400_min": 45.42574032147726,
+    "rmse_1src_mean": 0.12976452535035274,
+    "rmse_2src_mean": 0.20424337453362185,
+    "time_1src_mean_s": 22.138232201337814,
+    "time_2src_mean_s": 60.55125560859839,
+    "budget_remaining_min": 14.574259678522743,
+    "in_budget": true
+  },
+  {
+    "config_name": "Run3_nm6_nm8",
+    "nm_1src": 6,
+    "nm_2src": 8,
+    "score": 1.1290777668322938,
+    "avg_n_cands": 2.75,
+    "projected_400_min": 40.8275873263677,
+    "rmse_1src_mean": 0.12855473592179428,
+    "rmse_2src_mean": 0.21279757007788802,
+    "time_1src_mean_s": 23.73092095553875,
+    "time_2src_mean_s": 52.60042024155458,
+    "budget_remaining_min": 19.1724126736323,
+    "in_budget": true
+  }
+]

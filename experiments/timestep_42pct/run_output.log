@@ -1,0 +1,108 @@
+============================================================
+TEMPORAL FIDELITY TUNING (42%, 44%)
+============================================================
+Baseline: 1.1496 @ 55.4 min (40% temporal, tabu=0.04)
+Hypothesis: More timesteps may improve accuracy
+
+============================================================
+Config: timestep_42pct
+  Timestep fraction: 0.42
+  Sigma: 1src=0.18, 2src=0.22
+  Tabu distance: 0.04
+============================================================
+  Progress: 20/80, elapsed: 1.7 min
+  Progress: 40/80, elapsed: 4.3 min
+  Progress: 60/80, elapsed: 7.9 min
+  Progress: 80/80, elapsed: 11.4 min
+Result: Score=1.1526, Avg cands=2.86, Time=56.8 min
+  RMSE 1src: 0.1255, RMSE 2src: 0.1826
+  In budget: True, remaining: 3.2 min
+
+============================================================
+Config: timestep_44pct
+  Timestep fraction: 0.44
+  Sigma: 1src=0.18, 2src=0.22
+  Tabu distance: 0.04
+============================================================
+  Progress: 20/80, elapsed: 1.9 min
+  Progress: 40/80, elapsed: 4.5 min
+  Progress: 60/80, elapsed: 7.8 min
+  Progress: 80/80, elapsed: 11.4 min
+Result: Score=1.1433, Avg cands=2.79, Time=56.8 min
+  RMSE 1src: 0.1130, RMSE 2src: 0.2009
+  In budget: True, remaining: 3.2 min
+
+============================================================
+Config: baseline_40pct
+  Timestep fraction: 0.4
+  Sigma: 1src=0.18, 2src=0.22
+  Tabu distance: 0.04
+============================================================
+  Progress: 20/80, elapsed: 1.6 min
+  Progress: 40/80, elapsed: 4.0 min
+  Progress: 60/80, elapsed: 7.1 min
+  Progress: 80/80, elapsed: 10.6 min
+Result: Score=1.1488, Avg cands=2.83, Time=52.9 min
+  RMSE 1src: 0.1258, RMSE 2src: 0.1823
+  In budget: True, remaining: 7.1 min
+
+======================================================================
+TEMPORAL FIDELITY TUNING RESULTS
+======================================================================
+Config               Timestep    Score   Proj 400  vs Baseline
+-----------------------------------------------------------------
+timestep_42pct            42%   1.1526      56.8m      +0.0030
+timestep_44pct            44%   1.1433      56.8m      -0.0063
+baseline_40pct            40%   1.1488      52.9m      -0.0008
+
+*** BEST IN-BUDGET: timestep_42pct ***
+    Score: 1.1526 (+0.0030 vs baseline)
+    Timestep fraction: 42%
+    Time: 56.8 min
+
+*** SUCCESS! Better than baseline! ***
+
+[
+  {
+    "config_name": "timestep_42pct",
+    "timestep_fraction": 0.42,
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "tabu_distance": 0.04,
+    "score": 1.1526445569456307,
+    "avg_n_cands": 2.8625,
+    "projected_400_min": 56.83002875248591,
+    "rmse_1src_mean": 0.12547464874932923,
+    "rmse_2src_mean": 0.18255239452304414,
+    "in_budget": true,
+    "budget_remaining": 3.1699712475140913
+  },
+  {
+    "config_name": "timestep_44pct",
+    "timestep_fraction": 0.44,
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "tabu_distance": 0.04,
+    "score": 1.1432899591532002,
+    "avg_n_cands": 2.7875,
+    "projected_400_min": 56.84594549735387,
+    "rmse_1src_mean": 0.11301727093030883,
+    "rmse_2src_mean": 0.2008972499819256,
+    "in_budget": true,
+    "budget_remaining": 3.154054502646133
+  },
+  {
+    "config_name": "baseline_40pct",
+    "timestep_fraction": 0.4,
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "tabu_distance": 0.04,
+    "score": 1.1488451755074731,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 52.880207578341164,
+    "rmse_1src_mean": 0.12583306956518286,
+    "rmse_2src_mean": 0.18234468121085623,
+    "in_budget": true,
+    "budget_remaining": 7.119792421658836
+  }
+]

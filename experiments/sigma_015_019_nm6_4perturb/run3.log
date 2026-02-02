@@ -1,0 +1,17 @@
+
+Config: nm8_perturb3
+Sigma: 1src=0.15, 2src=0.19
+NM: 8, Perturb: 3
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1349, Avg cands: 2.75, Time: 44.7 min
+Baseline: 1.173 @ 50.4 min, Delta: -0.0381
+{
+  "config_name": "nm8_perturb3",
+  "score": 1.134931533873573,
+  "avg_n_cands": 2.75,
+  "projected_400_min": 44.719241420427956
+}

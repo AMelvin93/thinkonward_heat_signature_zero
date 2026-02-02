@@ -1,0 +1,71 @@
+============================================================
+COMBINED CONFIG: 4 Perturbations + tabu_distance=0.04
+============================================================
+True Baseline: 1.1337
+Best with 4 pert (tabu=0.03): 1.1437 @ 42.2 min (+0.0100)
+Best with tabu=0.04 (2 pert): 1.1496 @ 55.4 min (+0.0159)
+Hypothesis: Combining may give additive improvement
+
+=== Run 1: 4pert_tabu004 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1500, Time=62.7 min, Candidates=2.81
+  RMSE 1src: 0.1151, RMSE 2src: 0.1856
+vs True Baseline (1.1337): +0.0163
+
+=== Run 2: 4pert_tabu004 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1586, Time=62.7 min, Candidates=2.86
+  RMSE 1src: 0.1164, RMSE 2src: 0.1753
+vs True Baseline (1.1337): +0.0249
+
+=== Run 3: 4pert_tabu004 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1581, Time=60.3 min, Candidates=2.88
+  RMSE 1src: 0.1129, RMSE 2src: 0.1816
+vs True Baseline (1.1337): +0.0244
+
+============================================================
+SUMMARY: Combined Configuration (4 pert + tabu 0.04)
+============================================================
+
+Run Results:
+  Run 1: 1.1500 @ 62.7 min (+0.0163) [OVER BUDGET]
+  Run 2: 1.1586 @ 62.7 min (+0.0249) [OVER BUDGET]
+  Run 3: 1.1581 @ 60.3 min (+0.0244) [OVER BUDGET]
+
+Statistics:
+  Mean Score: 1.1555 +/- 0.0039
+  Mean Time: 61.9 min
+  vs True Baseline: +0.0218
+  vs 4-pert only: +0.0118
+  vs tabu-0.04 only: +0.0059
+
+Budget Status: OVER BUDGET
+
+CONCLUSION: Combined config EXCEEDS both individual improvements!
+Traceback (most recent call last):
+  File "/workspace/experiments/4pert_tabu004_combined/run.py", line 203, in <module>
+    main()
+  File "/workspace/experiments/4pert_tabu004_combined/run.py", line 190, in main
+    json.dump({
+  File "/usr/lib/python3.11/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/usr/lib/python3.11/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.11/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.11/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/usr/lib/python3.11/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type bool is not JSON serializable

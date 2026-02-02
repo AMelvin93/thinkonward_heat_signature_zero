@@ -1,0 +1,56 @@
+{
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 2,
+    "perturb_nm_iters": 3,
+    "perturbation_scale": 0.05,
+    "tabu_distance": 0.04,
+    "max_tabu_attempts": 10
+  },
+  "validation_runs": [
+    {
+      "run": 1,
+      "score": 1.143081358605964,
+      "avg_n_cands": 2.775,
+      "projected_400_min": 57.29202566544214,
+      "rmse_1src_mean": 0.12650197614184255,
+      "rmse_2src_mean": 0.1871208815454195,
+      "in_budget": true
+    },
+    {
+      "run": 2,
+      "score": 1.1525214306648564,
+      "avg_n_cands": 2.875,
+      "projected_400_min": 55.17648883660634,
+      "rmse_1src_mean": 0.12626243723279018,
+      "rmse_2src_mean": 0.1841838212516286,
+      "in_budget": true
+    },
+    {
+      "run": 3,
+      "score": 1.1533035824147735,
+      "avg_n_cands": 2.8375,
+      "projected_400_min": 53.821865499019616,
+      "rmse_1src_mean": 0.1194235233708347,
+      "rmse_2src_mean": 0.1793372546920082,
+      "in_budget": true
+    }
+  ],
+  "statistics": {
+    "mean_score": 1.1496354572285312,
+    "std_score": 0.004645434813213794,
+    "mean_time_min": 55.4301266670227,
+    "std_time_min": 1.4279943993634656,
+    "min_score": 1.143081358605964,
+    "max_score": 1.1533035824147735
+  },
+  "vs_baseline": 0.0032354572285311356,
+  "vs_prior_finding": -0.0038645427714687486,
+  "conclusion": "VALIDATED"
+}

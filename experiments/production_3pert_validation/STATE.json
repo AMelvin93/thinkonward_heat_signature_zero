@@ -1,0 +1,41 @@
+{
+  "experiment": "production_3pert_validation",
+  "status": "COMPLETED",
+  "claimed_by": "W2",
+  "started_at": "2026-02-02T07:18:00Z",
+  "completed_at": "2026-02-02T12:00:00Z",
+  "result": "VALIDATED - 1.1475 +/- 0.0031 @ 55.7 min (100% in budget)",
+  "hypothesis": "Validate optimal 3-pert + tabu 0.04 config with 5 runs for high confidence",
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.40,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 3,
+    "perturb_nm_iters": 3,
+    "perturbation_scale": 0.05,
+    "tabu_distance": 0.04,
+    "max_tabu_attempts": 10
+  },
+  "best_result": {
+    "mean_score": 1.1475,
+    "std_score": 0.0031,
+    "min_score": 1.1429,
+    "max_score": 1.1523,
+    "mean_time_min": 55.7,
+    "runs_in_budget": 5,
+    "total_runs": 5
+  },
+  "runs": [
+    {"run": 1, "score": 1.1523, "time_min": 49.8, "in_budget": true},
+    {"run": 2, "score": 1.1429, "time_min": 51.8, "in_budget": true},
+    {"run": 3, "score": 1.1458, "time_min": 58.0, "in_budget": true},
+    {"run": 4, "score": 1.1487, "time_min": 59.6, "in_budget": true},
+    {"run": 5, "score": 1.1479, "time_min": 59.2, "in_budget": true}
+  ],
+  "key_finding": "3-pert + tabu 0.04 PRODUCTION READY: 1.1475 @ 55.7 min, 100% in budget",
+  "gap_to_top10": 0.0110
+}

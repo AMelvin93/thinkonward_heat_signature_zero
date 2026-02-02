@@ -1,0 +1,79 @@
+Loading data...
+Loaded 80 samples
+
+============================================================
+Config: fevals_20_36_baseline
+Parameters: max_fevals_1src=20
+            max_fevals_2src=36
+            refine_maxiter=8
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.6 min
+  Progress: 40/80 samples, elapsed: 3.8 min
+  Progress: 60/80 samples, elapsed: 7.0 min
+  Progress: 80/80 samples, elapsed: 10.3 min
+
+--- Results for fevals_20_36_baseline ---
+  RMSE 1-source: 0.118235 (n=32)
+  RMSE 2-source: 0.197406 (n=48)
+  Overall RMSE:  0.157821
+  Score:         1.1637
+  Time:          10.30 min
+  Errors:        0
+
+============================================================
+Config: fevals_22_40_sweetspot
+Parameters: max_fevals_1src=22
+            max_fevals_2src=40
+            refine_maxiter=8
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.7 min
+  Progress: 40/80 samples, elapsed: 4.0 min
+  Progress: 60/80 samples, elapsed: 6.7 min
+  Progress: 80/80 samples, elapsed: 10.2 min
+
+--- Results for fevals_22_40_sweetspot ---
+  RMSE 1-source: 0.125634 (n=32)
+  RMSE 2-source: 0.186952 (n=48)
+  Overall RMSE:  0.156293
+  Score:         1.1648
+  Time:          10.24 min
+  Errors:        0
+
+============================================================
+Config: fevals_24_44_higher
+Parameters: max_fevals_1src=24
+            max_fevals_2src=44
+            refine_maxiter=8
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.8 min
+  Progress: 40/80 samples, elapsed: 4.4 min
+  Progress: 60/80 samples, elapsed: 7.4 min
+  Progress: 80/80 samples, elapsed: 11.1 min
+
+--- Results for fevals_24_44_higher ---
+  RMSE 1-source: 0.121023 (n=32)
+  RMSE 2-source: 0.200143 (n=48)
+  Overall RMSE:  0.160583
+  Score:         1.1616
+  Time:          11.07 min
+  Errors:        0
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                            Score     Time  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+fevals_20_36_baseline            1.1637    10.3m   0.118235   0.197406
+fevals_22_40_sweetspot           1.1648    10.2m   0.125634   0.186952
+fevals_24_44_higher              1.1616    11.1m   0.121023   0.200143
+
+----------------------------------------------------------------------
+Projected times for 400 samples:
+  fevals_20_36_baseline            51.5 min (IN budget)
+  fevals_22_40_sweetspot           51.2 min (IN budget)
+  fevals_24_44_higher              55.4 min (IN budget)
+
+Best in-budget config: fevals_22_40_sweetspot with score 1.1648 @ 51.2 min projected

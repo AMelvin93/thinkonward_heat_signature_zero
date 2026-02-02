@@ -1,0 +1,57 @@
+============================================================
+VALIDATION: 4pert_nm2 + scale=0.06 (NEW BEST CANDIDATE)
+============================================================
+Initial result: 1.1563 @ 52.2 min
+Prior validated: 1.1482 @ 51.7 min
+Top 10 threshold: 1.1585
+Gap to top 10: +0.0022
+Goal: 3-run validation
+
+=== Validation Run 1: 4pert_nm2_scale06 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1549, Time=52.5 min, Candidates=2.86
+  RMSE 1src: 0.1198, RMSE 2src: 0.1815
+  Budget: IN BUDGET
+
+=== Validation Run 2: 4pert_nm2_scale06 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1428, Time=54.7 min, Candidates=2.86
+  RMSE 1src: 0.1207, RMSE 2src: 0.2133
+  Budget: IN BUDGET
+
+=== Validation Run 3: 4pert_nm2_scale06 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1485, Time=54.2 min, Candidates=2.83
+  RMSE 1src: 0.1145, RMSE 2src: 0.1917
+  Budget: IN BUDGET
+
+============================================================
+VALIDATION SUMMARY: 4pert_nm2 + scale=0.06 (3 runs)
+============================================================
+
+Run Results:
+  Run 1: 1.1549 @ 52.5 min (+0.0067) [IN BUDGET]
+  Run 2: 1.1428 @ 54.7 min (-0.0054) [IN BUDGET]
+  Run 3: 1.1485 @ 54.2 min (+0.0003) [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1487 +/- 0.0049
+  Score Range: [1.1428, 1.1549]
+  Mean Time: 53.8 min
+  vs Prior validated (1.1482): +0.0005
+  Runs in budget: 3/3 (100%)
+
+  Gap to Top 10 (1.1585): +0.0098
+
+*** MARGINAL IMPROVEMENT. Consider for production. ***
+
+Results saved to run_output.json

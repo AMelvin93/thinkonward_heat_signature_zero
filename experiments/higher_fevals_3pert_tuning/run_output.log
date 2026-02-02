@@ -1,0 +1,58 @@
+============================================================
+HIGHER FEVALS TUNING: 3-pert + tabu 0.04
+============================================================
+Validated baseline: 1.1475 @ 55.7 min (fevals 20/44)
+Time budget available: ~4.3 min
+Testing: fevals 22/46, 24/48
+
+=== Run 1: fevals_20_44_baseline ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1502, Time=111.2 min, Candidates=2.84
+  RMSE 1src: 0.1176, RMSE 2src: 0.1900
+  Fevals: 20/44
+vs Validated Baseline (1.1475): +0.0027
+
+[WARNING] Config fevals_20_44_baseline OVER BUDGET (111.2 min)
+Remaining configs may also be over budget. Continuing anyway...
+
+=== Run 2: fevals_22_46 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1498, Time=76.7 min, Candidates=2.80
+  RMSE 1src: 0.1079, RMSE 2src: 0.1878
+  Fevals: 22/46
+vs Validated Baseline (1.1475): +0.0023
+
+[WARNING] Config fevals_22_46 OVER BUDGET (76.7 min)
+Remaining configs may also be over budget. Continuing anyway...
+
+=== Run 3: fevals_24_48 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1370, Time=65.8 min, Candidates=2.70
+  RMSE 1src: 0.1225, RMSE 2src: 0.1847
+  Fevals: 24/48
+vs Validated Baseline (1.1475): -0.0105
+
+[WARNING] Config fevals_24_48 OVER BUDGET (65.8 min)
+Remaining configs may also be over budget. Continuing anyway...
+
+============================================================
+FEVALS TUNING SUMMARY
+============================================================
+
+Results:
+  fevals_20_44_baseline: 1.1502 @ 111.2 min (+0.0027) [OVER BUDGET]
+  fevals_22_46: 1.1498 @ 76.7 min (+0.0023) [OVER BUDGET]
+  fevals_24_48: 1.1370 @ 65.8 min (-0.0105) [OVER BUDGET]
+
+[WARNING] No configs within budget!
+
+Results saved to run_output.json

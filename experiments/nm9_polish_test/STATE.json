@@ -1,0 +1,24 @@
+{
+  "experiment_id": "EXP_NM9_POLISH_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-02T00:40:00Z",
+  "completed_at": "2026-02-02T01:05:00Z",
+  "hypothesis": "Test 9 NM iterations - middle ground between 8 and 10.",
+  "tuning_runs": [
+    {"run": 1, "maxiter": 9, "score": 1.1425, "time_min": 43.3},
+    {"run": 2, "maxiter": 9, "score": 1.1307, "time_min": 46.7},
+    {"run": 3, "maxiter": 9, "score": 1.1421, "time_min": 45.4}
+  ],
+  "statistics": {
+    "mean_score": 1.1384,
+    "std_score": 0.0054,
+    "mean_time_min": 45.1
+  },
+  "conclusion": "FAILED - maxiter=9 (1.1384) is worse than maxiter=8 (1.1437). 8 is the optimal number of NM iterations.",
+  "key_insights": [
+    "8 NM iterations is the sweet spot",
+    "More iterations (9, 10) show diminishing returns",
+    "Fewer iterations (6, 7) don't polish solutions enough"
+  ]
+}

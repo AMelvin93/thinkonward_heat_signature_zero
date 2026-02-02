@@ -1,0 +1,73 @@
+Loading data...
+Loaded 80 samples
+
+============================================================
+Config: sigma_018_022_baseline
+Parameters: sigma0_1src=0.18
+            sigma0_2src=0.22
+            refine_maxiter=7
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.4 min
+  Progress: 40/80 samples, elapsed: 3.9 min
+  Progress: 60/80 samples, elapsed: 7.2 min
+  Progress: 80/80 samples, elapsed: 10.5 min
+
+--- Results for sigma_018_022_baseline ---
+  RMSE 1-source: 0.116682 (n=32)
+  RMSE 2-source: 0.198200 (n=48)
+  Overall RMSE:  0.157441
+  Score:         1.1640
+  Time:          10.45 min
+  Errors:        0
+
+============================================================
+Config: sigma_020_025_looser
+Parameters: sigma0_1src=0.2
+            sigma0_2src=0.25
+            refine_maxiter=7
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.7 min
+  Progress: 40/80 samples, elapsed: 4.0 min
+  Progress: 60/80 samples, elapsed: 7.1 min
+  Progress: 80/80 samples, elapsed: 10.4 min
+
+--- Results for sigma_020_025_looser ---
+  RMSE 1-source: 0.120555 (n=32)
+  RMSE 2-source: 0.212820 (n=48)
+  Overall RMSE:  0.166688
+  Score:         1.1571
+  Time:          10.43 min
+  Errors:        0
+
+============================================================
+Config: sigma_022_028_even_looser
+Parameters: sigma0_1src=0.22
+            sigma0_2src=0.28
+            refine_maxiter=7
+            n_perturbations=2
+============================================================
+  Progress: 20/80 samples, elapsed: 1.6 min
+  Progress: 40/80 samples, elapsed: 4.1 min
+  Progress: 60/80 samples, elapsed: 7.0 min
+  Progress: 80/80 samples, elapsed: 10.0 min
+
+--- Results for sigma_022_028_even_looser ---
+  RMSE 1-source: 0.123801 (n=32)
+  RMSE 2-source: 0.192632 (n=48)
+  Overall RMSE:  0.158217
+  Score:         1.1634
+  Time:          9.99 min
+  Errors:        0
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                            Score     Time  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+sigma_018_022_baseline           1.1640    10.5m   0.116682   0.198200
+sigma_020_025_looser             1.1571    10.4m   0.120555   0.212820
+sigma_022_028_even_looser        1.1634    10.0m   0.123801   0.192632
+
+Best in-budget config: sigma_018_022_baseline with score 1.1640 @ 10.5 min

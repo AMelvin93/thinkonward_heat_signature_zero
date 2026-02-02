@@ -1,0 +1,75 @@
+{
+  "experiment_id": "EXP_TABU_DIST_004_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-02T01:45:00Z",
+  "completed_at": "2026-02-02T02:30:00Z",
+  "hypothesis": "Test larger tabu distance (0.04, 0.05) vs baseline 0.03. Larger distance may improve diversity.",
+  "baseline_to_beat": {
+    "score": 1.1464,
+    "time_min": 51.2
+  },
+  "result": "PARTIAL SUCCESS - tabu_distance=0.04 with sigma 0.18/0.22 beats baseline (+0.0071)",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config_name": "tabu_004_sigma_014_019",
+      "config": {"sigma0_1src": 0.14, "sigma0_2src": 0.19, "tabu_distance": 0.04},
+      "score": 1.1389,
+      "time_min": 50.7,
+      "budget_remaining": 9.3,
+      "vs_baseline": -0.0075,
+      "decision": "CONTINUE - test better sigma"
+    },
+    {
+      "run": 2,
+      "config_name": "tabu_004_sigma_018_022",
+      "config": {"sigma0_1src": 0.18, "sigma0_2src": 0.22, "tabu_distance": 0.04},
+      "score": 1.1535,
+      "time_min": 53.1,
+      "budget_remaining": 6.9,
+      "vs_baseline": "+0.0071",
+      "decision": "SUCCESS - beats baseline, explore larger distance"
+    },
+    {
+      "run": 3,
+      "config_name": "tabu_005_sigma_018_022",
+      "config": {"sigma0_1src": 0.18, "sigma0_2src": 0.22, "tabu_distance": 0.05},
+      "score": 1.1435,
+      "time_min": 53.0,
+      "budget_remaining": 7.0,
+      "vs_baseline": -0.0029,
+      "decision": "ACCEPT - 0.04 is optimal"
+    }
+  ],
+  "best_result": {
+    "config_name": "tabu_004_sigma_018_022",
+    "config": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "tabu_distance": 0.04,
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 44,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05
+    },
+    "score": 1.1535,
+    "time_min": 53.1,
+    "vs_baseline": "+0.0071",
+    "rmse_1src": 0.1223,
+    "rmse_2src": 0.1849,
+    "avg_candidates": 2.86
+  },
+  "key_findings": [
+    "tabu_distance=0.04 with sigma 0.18/0.22 beats baseline (+0.0071)",
+    "sigma 0.14/0.19 continues to underperform (-0.0075)",
+    "tabu_distance=0.05 is too large (-0.0029)",
+    "Optimal tabu distance is 0.04, not 0.03 or 0.05"
+  ],
+  "recommendation": "NEEDS VALIDATION - Run 3-5 more tests to confirm tabu_distance=0.04 improvement is reproducible",
+  "tuning_efficiency": {
+    "runs_executed": 3,
+    "time_utilization_pct": 88.5,
+    "parameter_space_explored": ["tabu_distance in [0.04, 0.05]", "sigma in [0.14/0.19, 0.18/0.22]"]
+  }
+}

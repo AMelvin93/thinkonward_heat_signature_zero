@@ -1,0 +1,64 @@
+{
+  "experiment_id": "EXP_4PERTURB_SCALE_006_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-02-01T23:10:00Z",
+  "completed_at": "2026-02-01T23:45:00Z",
+  "hypothesis": "Combine 4 perturbations with scale 0.06. Test if different scale changes behavior.",
+  "prior_evidence": {
+    "perturbation_scale_tuning": {
+      "scale_004": "1.1389 @ 45.2 min",
+      "scale_005": "1.1419 @ 38.3 min",
+      "scale_006": "1.1378 @ 43.8 min",
+      "conclusion": "0.05 is optimal, 0.06 is worse"
+    }
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"perturbation_scale": 0.06},
+      "score": 1.1234,
+      "time_min": 44.9,
+      "budget_remaining_min": 15.1,
+      "in_budget": true,
+      "vs_baseline": -0.023
+    },
+    {
+      "run": 2,
+      "config": {"perturbation_scale": 0.055},
+      "score": 1.1315,
+      "time_min": 44.5,
+      "budget_remaining_min": 15.5,
+      "in_budget": true,
+      "vs_baseline": -0.0149
+    },
+    {
+      "run": 3,
+      "config": {"perturbation_scale": 0.07},
+      "score": 1.1344,
+      "time_min": 44.3,
+      "budget_remaining_min": 15.7,
+      "in_budget": true,
+      "vs_baseline": -0.012
+    }
+  ],
+  "best_result": {
+    "config": {"perturbation_scale": 0.07},
+    "score": 1.1344,
+    "time_min": 44.3,
+    "vs_baseline": -0.012
+  },
+  "conclusion": "FAILED - All scales > 0.05 underperform. Scale 0.05 confirmed as optimal.",
+  "tuning_efficiency": {
+    "runs_executed": 3,
+    "time_utilization_pct": 74,
+    "parameter_space_explored": ["scale 0.055", "scale 0.06", "scale 0.07"],
+    "budget_remaining_analysis": "15+ min remaining but no productive direction to explore"
+  },
+  "key_insights": [
+    "Scale 0.05 is optimal (confirmed)",
+    "Larger scales (0.055-0.07) all underperform",
+    "No clear trend - 0.07 slightly better than 0.06",
+    "Prior perturbation_scale_tuning findings validated"
+  ]
+}

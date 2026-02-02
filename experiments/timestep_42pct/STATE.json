@@ -1,0 +1,53 @@
+{
+  "experiment_id": "EXP_TIMESTEP_42PCT_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-02T03:40:00Z",
+  "completed_at": "2026-02-02T04:20:00Z",
+  "hypothesis": "Test higher temporal fidelity (42%, 44%) vs 40% baseline with validated config.",
+  "baseline_to_beat": {
+    "score": 1.1496,
+    "time_min": 55.4,
+    "config": "tabu_004_validated (sigma 0.18/0.22, tabu=0.04, 40% temporal)"
+  },
+  "result": "MARGINAL - 42% shows tiny improvement (+0.0030), 44% is worse",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config_name": "timestep_42pct",
+      "config": {"timestep_fraction": 0.42},
+      "score": 1.1526,
+      "time_min": 56.8,
+      "budget_remaining": 3.2,
+      "vs_baseline": "+0.0030",
+      "decision": "MARGINAL - improvement within noise"
+    },
+    {
+      "run": 2,
+      "config_name": "timestep_44pct",
+      "config": {"timestep_fraction": 0.44},
+      "score": 1.1433,
+      "time_min": 56.8,
+      "budget_remaining": 3.2,
+      "vs_baseline": "-0.0063",
+      "decision": "WORSE - too much temporal fidelity hurts"
+    },
+    {
+      "run": 3,
+      "config_name": "baseline_40pct",
+      "config": {"timestep_fraction": 0.40},
+      "score": 1.1488,
+      "time_min": 52.9,
+      "budget_remaining": 7.1,
+      "vs_baseline": "-0.0008",
+      "decision": "BASELINE - confirms prior validation"
+    }
+  ],
+  "key_findings": [
+    "42% shows small improvement (+0.0030) but within noise",
+    "44% is WORSE (-0.0063) - too much temporal fidelity",
+    "40% remains optimal for time/accuracy trade-off",
+    "Improvement doesn't justify tighter time budget"
+  ],
+  "recommendation": "KEEP 40% temporal fidelity - marginal improvement not worth risk"
+}

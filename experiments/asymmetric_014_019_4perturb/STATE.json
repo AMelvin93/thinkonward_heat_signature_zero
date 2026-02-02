@@ -1,0 +1,56 @@
+{
+  "experiment_id": "EXP_ASYM_014_4PERTURB_001",
+  "name": "asymmetric_014_019_4perturb",
+  "description": "Test 4 perturbations with optimal sigma 0.14/0.19",
+  "claimed_by": "W1",
+  "started_at": "2026-02-01T20:50:00Z",
+  "completed_at": "2026-02-01T21:25:00Z",
+  "status": "completed",
+  "result": "FAILED - 4 perturb exceeds budget, 2 perturb is optimal",
+  "best_result": {
+    "config": "baseline_2perturb",
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "n_perturbations": 2,
+    "perturbation_scale": 0.06,
+    "score": 1.1675,
+    "time_min": 10.68,
+    "projected_400_min": 53.4,
+    "in_budget": true
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"n_perturbations": 2, "name": "baseline_2perturb"},
+      "score": 1.1675,
+      "time_min": 10.68,
+      "projected_400_min": 53.4,
+      "in_budget": true,
+      "rmse_1src": 0.1286,
+      "rmse_2src": 0.1770
+    },
+    {
+      "run": 2,
+      "config": {"n_perturbations": 4, "name": "test_4perturb"},
+      "score": 1.1684,
+      "time_min": 12.26,
+      "projected_400_min": 61.3,
+      "in_budget": false,
+      "rmse_1src": 0.1155,
+      "rmse_2src": 0.1875
+    },
+    {
+      "run": 3,
+      "config": {"n_perturbations": 3, "name": "test_3perturb"},
+      "score": 1.1671,
+      "time_min": 11.38,
+      "projected_400_min": 56.9,
+      "in_budget": true,
+      "rmse_1src": 0.1307,
+      "rmse_2src": 0.1759
+    }
+  ],
+  "conclusion": "4 perturbations exceeds budget (61.3 min). 3 perturbations has no benefit. 2 perturbations is optimal with sigma 0.14/0.19.",
+  "key_finding": "CONFIRMED: 2 perturbations is optimal for sigma 0.14/0.19 + scale 0.06 config.",
+  "time_utilization_pct": 89.0
+}

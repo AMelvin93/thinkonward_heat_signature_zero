@@ -1,0 +1,31 @@
+{
+  "experiment": "optimal_sigma_higher_fevals",
+  "status": "completed",
+  "completed_by": "W1",
+  "completed_at": "2026-02-01T09:15:00Z",
+  "result": "PARTIAL SUCCESS - Higher fevals improve 2-source RMSE by 10%",
+  "best_config": {
+    "name": "sigma015_fevals_24_44",
+    "score": 1.1694,
+    "time_min": 57.2,
+    "projected_400_min": 57.2,
+    "rmse_1src": 0.1207,
+    "rmse_2src": 0.1797
+  },
+  "baseline_comparison": {
+    "claimed_best_score": 1.1730,
+    "this_run_baseline_score": 1.1611,
+    "best_this_run_score": 1.1694,
+    "delta_vs_claimed": -0.0036,
+    "delta_vs_this_run_baseline": 0.0083
+  },
+  "hypothesis": "Combining optimal sigma (0.15/0.19) with higher fevals (24/44) may improve 2-source RMSE while staying in budget.",
+  "finding": "Higher fevals (24/44) significantly improves 2-source RMSE from 0.1995 to 0.1797 (-10%). Best in-run score is 1.1694 @ 57.2 min. Run-to-run variance makes definitive comparison difficult.",
+  "tuning_runs": [
+    {"run": 1, "config": "baseline_20_36", "score": 1.1611, "time_min": 56.0, "rmse_2src": 0.1995, "in_budget": true},
+    {"run": 2, "config": "sigma015_fevals_22_40", "score": 1.1618, "time_min": 54.6, "rmse_2src": 0.1999, "in_budget": true},
+    {"run": 3, "config": "sigma015_fevals_24_44", "score": 1.1694, "time_min": 57.2, "rmse_2src": 0.1797, "in_budget": true},
+    {"run": 4, "config": "sigma015_fevals_24_44_nm6", "score": 1.1594, "time_min": 53.4, "rmse_2src": 0.2100, "in_budget": true}
+  ],
+  "key_insight": "2-source problems benefit significantly from more fevals (24/44 vs 20/36), improving RMSE by 10%. This is the main lever for further accuracy gains."
+}

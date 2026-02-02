@@ -1,0 +1,30 @@
+[
+  {
+    "config": "perturb_all_baseline",
+    "score": 1.1679615513278618,
+    "time_min": 10.246717607975006,
+    "projected_400_min": 51.23358803987503,
+    "rmse_1src": 0.1202734573535948,
+    "rmse_2src": 0.18397607644231484,
+    "n_1src": 32,
+    "n_2src": 48,
+    "perturb_only_2src": false,
+    "in_budget": true,
+    "budget_remaining": 8.76641196012497,
+    "errors": 0
+  },
+  {
+    "config": "perturb_2src_only",
+    "score": 1.1591208383750724,
+    "time_min": 10.164435974756877,
+    "projected_400_min": 50.822179873784386,
+    "rmse_1src": 0.1290199191799504,
+    "rmse_2src": 0.1989413066038037,
+    "n_1src": 32,
+    "n_2src": 48,
+    "perturb_only_2src": true,
+    "in_budget": true,
+    "budget_remaining": 9.177820126215614,
+    "errors": 0
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "experiment_id": "EXP_PERTURBATION_SCALE_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-01T22:35:00Z",
+  "completed_at": "2026-02-01T23:00:00Z",
+  "hypothesis": "Test different perturbation scales (0.04, 0.06) vs baseline 0.05.",
+  "tuning_runs": [
+    {"scale": 0.04, "score": 1.1389, "time_min": 45.2},
+    {"scale": 0.06, "score": 1.1378, "time_min": 43.8},
+    {"scale": 0.05, "score": 1.1419, "time_min": 38.3}
+  ],
+  "conclusion": "Scale 0.05 is optimal. Both smaller (0.04) and larger (0.06) scales perform worse.",
+  "key_insights": [
+    "0.04 scale: too small perturbations don't explore enough",
+    "0.06 scale: too large perturbations overshoot good solutions",
+    "0.05 is the sweet spot"
+  ]
+}

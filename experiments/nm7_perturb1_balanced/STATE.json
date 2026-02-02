@@ -1,0 +1,24 @@
+{
+  "experiment_id": "EXP_NM7_PERTURB1_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-02T00:10:00Z",
+  "completed_at": "2026-02-02T00:35:00Z",
+  "hypothesis": "7 NM + 1 perturbation may be more robust across machines.",
+  "tuning_runs": [
+    {"run": 1, "score": 1.1383, "time_min": 43.4},
+    {"run": 2, "score": 1.1392, "time_min": 44.0},
+    {"run": 3, "score": 1.1259, "time_min": 44.6}
+  ],
+  "statistics": {
+    "mean_score": 1.1345,
+    "std_score": 0.0061,
+    "mean_time_min": 44.0
+  },
+  "conclusion": "FAILED - 7 NM + 1 perturbation (1.1345) is 0.8% worse than 8 NM + 4 perturbations (1.1437). Multiple perturbations are essential for finding good solutions.",
+  "key_insights": [
+    "4 perturbations cannot be replaced by more NM polish",
+    "Perturbations explore different basins, NM only refines within a basin",
+    "Current best (8 NM + 4 perturb) remains optimal"
+  ]
+}

@@ -1,0 +1,66 @@
+============================================================
+VALIDATING NEW BEST: sigma 0.20/0.25
+============================================================
+Initial result: 1.1474 @ 42.2 min
+Baseline to beat: 1.1433 @ 46.5 min
+
+=== Validation Run 1 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1473, Avg cands=2.89, Time=46.2 min
+
+=== Validation Run 2 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1388, Avg cands=2.84, Time=44.7 min
+
+=== Validation Run 3 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1391, Avg cands=2.81, Time=46.6 min
+
+============================================================
+VALIDATION SUMMARY (4 Total Runs)
+============================================================
+Baseline: 1.1433 @ 46.5 min
+
+  Initial run: 1.1474 @ 42.2 min
+  Run 1: 1.1473 @ 46.2 min
+  Run 2: 1.1388 @ 44.7 min
+  Run 3: 1.1391 @ 46.6 min
+
+Statistics (4 runs):
+  Mean Score: 1.1431 +/- 0.0042
+  Score Range: [1.1388, 1.1474]
+
+Improvement NOT validated (-0.0002)
+
+[
+  {
+    "run": 1,
+    "score": 1.147280908462669,
+    "avg_n_cands": 2.8875,
+    "projected_400_min": 46.22348940372467,
+    "in_budget": true
+  },
+  {
+    "run": 2,
+    "score": 1.138780975647005,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 44.693213760852814,
+    "in_budget": true
+  },
+  {
+    "run": 3,
+    "score": 1.1391230730996864,
+    "avg_n_cands": 2.8125,
+    "projected_400_min": 46.57947087287903,
+    "in_budget": true
+  }
+]

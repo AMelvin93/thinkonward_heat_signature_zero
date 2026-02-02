@@ -1,0 +1,48 @@
+{
+  "experiment_id": "EXP_PERTURB_NM4_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-02-02T00:30:00Z",
+  "completed_at": "2026-02-02T01:00:00Z",
+  "hypothesis": "Test 4+ NM iterations per perturbation (vs 3). May improve perturbation refinement.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"sigma0_1src": 0.14, "sigma0_2src": 0.19, "perturb_nm_iters": 4},
+      "score": 1.1349,
+      "time_min": 45.9,
+      "vs_baseline": -0.0115
+    },
+    {
+      "run": 2,
+      "config": {"sigma0_1src": 0.18, "sigma0_2src": 0.22, "perturb_nm_iters": 4},
+      "score": 1.1427,
+      "time_min": 46.8,
+      "vs_baseline": -0.0037
+    },
+    {
+      "run": 3,
+      "config": {"sigma0_1src": 0.18, "sigma0_2src": 0.22, "perturb_nm_iters": 5},
+      "score": 1.1406,
+      "time_min": 43.5,
+      "vs_baseline": -0.0058
+    }
+  ],
+  "best_result": {
+    "config": {"sigma0_1src": 0.18, "sigma0_2src": 0.22, "perturb_nm_iters": 4},
+    "score": 1.1427,
+    "time_min": 46.8,
+    "vs_baseline": -0.0037
+  },
+  "conclusion": "FAILED - More NM iterations per perturbation does not help. 3 iterations is optimal.",
+  "tuning_efficiency": {
+    "runs_executed": 3,
+    "time_utilization_pct": 78,
+    "parameter_space_explored": ["nm_iters 4 with sigma 0.14/0.19", "nm_iters 4 with sigma 0.18/0.22", "nm_iters 5"]
+  },
+  "key_insights": [
+    "perturb_nm_iters=3 (baseline) > 4 > 5",
+    "sigma 0.18/0.22 > 0.14/0.19 (confirmed again)",
+    "More NM iterations add time without improving score"
+  ]
+}

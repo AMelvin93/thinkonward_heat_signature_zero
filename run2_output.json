@@ -1,0 +1,22 @@
+{
+  "config_name": "fevals_22_40_3perturb",
+  "config": {
+    "sigma0_1src": 0.15,
+    "sigma0_2src": 0.19,
+    "max_fevals_1src": 22,
+    "max_fevals_2src": 40,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": false,
+    "n_perturbations": 3,
+    "perturbation_scale": 0.05,
+    "perturb_nm_iters": 3
+  },
+  "score": 1.135760806777268,
+  "avg_n_candidates": 2.7625,
+  "rmse_1src": 0.12810341757466334,
+  "rmse_2src": 0.19818888758299144,
+  "time_min": 8.973286624749502,
+  "projected_400_min": 44.866433123747505,
+  "in_budget": true
+}

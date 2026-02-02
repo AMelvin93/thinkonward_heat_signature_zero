@@ -1,0 +1,77 @@
+============================================================
+2-SOURCE HIGHER FEVALS TEST
+============================================================
+Baseline: fevals 20/44, score ~1.143
+Goal: Improve 2-src RMSE (currently ~0.19)
+
+=== fevals_44 ===
+  fevals 1src/2src: 20/44
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1363, Time=46.6 min
+  RMSE 1src: 0.1276, RMSE 2src: 0.2049
+vs Baseline (1.143): -0.0067
+
+=== fevals_52 ===
+  fevals 1src/2src: 20/52
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1346, Time=49.8 min
+  RMSE 1src: 0.1359, RMSE 2src: 0.1952
+vs Baseline (1.143): -0.0084
+
+=== fevals_60 ===
+  fevals 1src/2src: 20/60
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1400, Time=46.3 min
+  RMSE 1src: 0.1274, RMSE 2src: 0.2022
+vs Baseline (1.143): -0.0030
+
+============================================================
+SUMMARY: 2-Source Higher Fevals
+============================================================
+  fevals=44: 1.1363 @ 46.6 min
+    RMSE 1src: 0.1276, 2src: 0.2049 (-0.0067) [IN BUDGET]
+  fevals=52: 1.1346 @ 49.8 min
+    RMSE 1src: 0.1359, 2src: 0.1952 (-0.0084) [IN BUDGET]
+  fevals=60: 1.1400 @ 46.3 min
+    RMSE 1src: 0.1274, 2src: 0.2022 (-0.0030) [IN BUDGET]
+
+Best: fevals=60 = 1.1400
+
+[
+  {
+    "config_name": "fevals_44",
+    "max_fevals_2src": 44,
+    "score": 1.1363093829653734,
+    "rmse_1src": 0.12755781405076755,
+    "rmse_2src": 0.20491482176269046,
+    "projected_400_min": 46.58848146597544,
+    "in_budget": true
+  },
+  {
+    "config_name": "fevals_52",
+    "max_fevals_2src": 52,
+    "score": 1.134626150445694,
+    "rmse_1src": 0.13591335083594447,
+    "rmse_2src": 0.1952222826304988,
+    "projected_400_min": 49.80786854028702,
+    "in_budget": true
+  },
+  {
+    "config_name": "fevals_60",
+    "max_fevals_2src": 60,
+    "score": 1.1400121248276442,
+    "rmse_1src": 0.12740929324296157,
+    "rmse_2src": 0.2022447047790302,
+    "projected_400_min": 46.317145903905235,
+    "in_budget": true
+  }
+]

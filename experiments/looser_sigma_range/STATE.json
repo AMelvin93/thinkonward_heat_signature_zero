@@ -1,0 +1,63 @@
+{
+  "experiment": "looser_sigma_range",
+  "status": "completed",
+  "completed_at": "2026-02-01T06:00:00Z",
+  "result": "FAILED",
+  "finding": "Looser sigma values (0.20/0.25, 0.22/0.28) do NOT improve over baseline (0.18/0.22). Sigma 0.18/0.22 is confirmed optimal. sigma_v2 family EXHAUSTED.",
+  "claimed_by": "W1",
+  "claimed_at": "2026-02-01T05:00:00Z",
+  "baseline": {
+    "score": 1.1689,
+    "time_min": 58.2,
+    "config": "hopping_with_tabu_memory no_tabu (sigma 0.18/0.22, refine_maxiter=8)"
+  },
+  "hypothesis": "Larger sigma values (0.20/0.25 or 0.22/0.28) may explore more broadly and find better basins. Prior experiments established 0.18/0.22 as optimal within a narrow search, but we haven't tested significantly larger sigma values.",
+  "planned_configs": [
+    {"run": 1, "description": "sigma 0.18/0.22 (baseline)", "params": {"sigma0_1src": 0.18, "sigma0_2src": 0.22}},
+    {"run": 2, "description": "sigma 0.20/0.25 (looser)", "params": {"sigma0_1src": 0.20, "sigma0_2src": 0.25}},
+    {"run": 3, "description": "sigma 0.22/0.28 (even looser)", "params": {"sigma0_1src": 0.22, "sigma0_2src": 0.28}}
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "sigma_018_022_baseline",
+      "params": {"sigma0_1src": 0.18, "sigma0_2src": 0.22},
+      "score": 1.1640,
+      "time_min": 10.45,
+      "projected_400_min": 52.25,
+      "in_budget": true,
+      "rmse_1src": 0.116682,
+      "rmse_2src": 0.198200
+    },
+    {
+      "run": 2,
+      "config": "sigma_020_025_looser",
+      "params": {"sigma0_1src": 0.20, "sigma0_2src": 0.25},
+      "score": 1.1571,
+      "time_min": 10.43,
+      "projected_400_min": 52.15,
+      "in_budget": true,
+      "rmse_1src": 0.120555,
+      "rmse_2src": 0.212820,
+      "delta_vs_baseline": "-0.0069 score (WORSE)"
+    },
+    {
+      "run": 3,
+      "config": "sigma_022_028_even_looser",
+      "params": {"sigma0_1src": 0.22, "sigma0_2src": 0.28},
+      "score": 1.1634,
+      "time_min": 9.99,
+      "projected_400_min": 49.95,
+      "in_budget": true,
+      "rmse_1src": 0.123801,
+      "rmse_2src": 0.192632,
+      "delta_vs_baseline": "-0.0006 score (EQUAL)",
+      "note": "Interesting: 2-src RMSE better (0.193 vs 0.198) but 1-src worse (0.124 vs 0.117)"
+    }
+  ],
+  "time_budget_analysis": {
+    "target_min": 60,
+    "using_nm_iters": 7,
+    "note": "Using 7 NM iterations instead of 8 to ensure budget compliance"
+  }
+}

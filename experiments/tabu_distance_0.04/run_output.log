@@ -1,0 +1,103 @@
+============================================================
+TABU DISTANCE TUNING EXPERIMENT
+============================================================
+Baseline: 1.1464 @ 51.2 min (tabu_distance=0.03)
+Hypothesis: Larger tabu distance may improve diversity
+
+============================================================
+Config: tabu_004_sigma_014_019
+  Sigma: 1src=0.14, 2src=0.19
+  Tabu distance: 0.04
+============================================================
+  Progress: 20/80, elapsed: 1.4 min
+  Progress: 40/80, elapsed: 3.6 min
+  Progress: 60/80, elapsed: 6.7 min
+  Progress: 80/80, elapsed: 10.1 min
+Result: Score=1.1389, Avg cands=2.73, Time=50.7 min
+  RMSE 1src: 0.1138, RMSE 2src: 0.1920
+  In budget: True, remaining: 9.3 min
+
+============================================================
+Config: tabu_004_sigma_018_022
+  Sigma: 1src=0.18, 2src=0.22
+  Tabu distance: 0.04
+============================================================
+  Progress: 20/80, elapsed: 1.6 min
+  Progress: 40/80, elapsed: 4.0 min
+  Progress: 60/80, elapsed: 7.2 min
+  Progress: 80/80, elapsed: 10.6 min
+Result: Score=1.1535, Avg cands=2.86, Time=53.1 min
+  RMSE 1src: 0.1223, RMSE 2src: 0.1849
+  In budget: True, remaining: 6.9 min
+
+============================================================
+Config: tabu_005_sigma_018_022
+  Sigma: 1src=0.18, 2src=0.22
+  Tabu distance: 0.05
+============================================================
+  Progress: 20/80, elapsed: 1.5 min
+  Progress: 40/80, elapsed: 4.0 min
+  Progress: 60/80, elapsed: 7.3 min
+  Progress: 80/80, elapsed: 10.6 min
+Result: Score=1.1435, Avg cands=2.84, Time=53.0 min
+  RMSE 1src: 0.1172, RMSE 2src: 0.2084
+  In budget: True, remaining: 7.0 min
+
+======================================================================
+TABU DISTANCE TUNING RESULTS
+======================================================================
+Config                         Sigma   Tabu    Score   Proj 400  vs Base
+---------------------------------------------------------------------------
+tabu_004_sigma_014_019     0.14/0.19   0.04   1.1389      50.7m  -0.0075
+tabu_004_sigma_018_022     0.18/0.22   0.04   1.1535      53.1m  +0.0071
+tabu_005_sigma_018_022     0.18/0.22   0.05   1.1435      53.0m  -0.0029
+
+*** BEST IN-BUDGET: tabu_004_sigma_018_022 ***
+    Score: 1.1535 (+0.0071 vs baseline)
+    Sigma: 0.18/0.22
+    Tabu distance: 0.04
+    Time: 53.1 min
+
+*** SUCCESS! Better than baseline! ***
+
+[
+  {
+    "config_name": "tabu_004_sigma_014_019",
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "tabu_distance": 0.04,
+    "score": 1.1388977634234922,
+    "avg_n_cands": 2.725,
+    "projected_400_min": 50.674318293730416,
+    "rmse_1src_mean": 0.11383499894968102,
+    "rmse_2src_mean": 0.19198862139259684,
+    "in_budget": true,
+    "budget_remaining": 9.325681706269584
+  },
+  {
+    "config_name": "tabu_004_sigma_018_022",
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "tabu_distance": 0.04,
+    "score": 1.1534737443882839,
+    "avg_n_cands": 2.8625,
+    "projected_400_min": 53.126690566539764,
+    "rmse_1src_mean": 0.12227749334255195,
+    "rmse_2src_mean": 0.18491744335701985,
+    "in_budget": true,
+    "budget_remaining": 6.873309433460236
+  },
+  {
+    "config_name": "tabu_005_sigma_018_022",
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "tabu_distance": 0.05,
+    "score": 1.1434589919571372,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 52.99525169531504,
+    "rmse_1src_mean": 0.11716473549839784,
+    "rmse_2src_mean": 0.2084318642242291,
+    "in_budget": true,
+    "budget_remaining": 7.004748304684959
+  }
+]

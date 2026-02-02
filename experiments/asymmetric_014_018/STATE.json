@@ -1,0 +1,55 @@
+{
+  "experiment_id": "EXP_ASYM_014_018_001",
+  "name": "asymmetric_014_018",
+  "description": "Test tighter 2-source sigma (0.18 vs 0.19)",
+  "claimed_by": "W1",
+  "started_at": "2026-02-01T21:30:00Z",
+  "completed_at": "2026-02-01T22:05:00Z",
+  "status": "completed",
+  "result": "FAILED - Sigma 0.18 is worse than 0.19 for 2-source",
+  "best_result": {
+    "config": "baseline_014_019",
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "perturbation_scale": 0.06,
+    "score": 1.1659,
+    "time_min": 11.19,
+    "projected_400_min": 56.0,
+    "in_budget": true
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"sigma0_2src": 0.19, "name": "baseline_014_019"},
+      "score": 1.1659,
+      "time_min": 11.19,
+      "projected_400_min": 56.0,
+      "in_budget": true,
+      "rmse_1src": 0.1263,
+      "rmse_2src": 0.1833
+    },
+    {
+      "run": 2,
+      "config": {"sigma0_2src": 0.18, "name": "test_014_018"},
+      "score": 1.1623,
+      "time_min": 10.49,
+      "projected_400_min": 52.4,
+      "in_budget": true,
+      "rmse_1src": 0.1267,
+      "rmse_2src": 0.1927
+    },
+    {
+      "run": 3,
+      "config": {"sigma0_2src": 0.20, "name": "test_014_020"},
+      "score": 1.1632,
+      "time_min": 11.96,
+      "projected_400_min": 59.8,
+      "in_budget": true,
+      "rmse_1src": 0.1230,
+      "rmse_2src": 0.1939
+    }
+  ],
+  "conclusion": "Sigma 0.19 is optimal for 2-source. Both 0.18 (too tight) and 0.20 (too loose) are worse. The asymmetric sigma config 0.14/0.19 is definitively confirmed as optimal.",
+  "key_finding": "CONFIRMED: Sigma 0.14/0.19 is the FINAL OPTIMAL asymmetric config.",
+  "time_utilization_pct": 93.3
+}

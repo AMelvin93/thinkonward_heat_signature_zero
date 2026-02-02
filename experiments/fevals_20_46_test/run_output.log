@@ -1,0 +1,61 @@
+
+=== Run 1: fevals 20/46 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1462, Avg cands=2.84, Time=50.1 min
+vs Current Best (1.1437): +0.0025
+
+=== Run 2: fevals 20/46 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1358, Avg cands=2.80, Time=40.5 min
+vs Current Best (1.1437): -0.0079
+
+=== Run 3: fevals 20/46 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1315, Avg cands=2.75, Time=44.0 min
+vs Current Best (1.1437): -0.0122
+
+============================================================
+SUMMARY: Fevals 20/46 Test
+============================================================
+Current best (fevals 20/44): 1.1437 @ 42.2 min
+
+  Run 1: 1.1462 @ 50.1 min (+0.0025)
+  Run 2: 1.1358 @ 40.5 min (-0.0079)
+  Run 3: 1.1315 @ 44.0 min (-0.0122)
+
+Mean score: 1.1378 (±0.0062)
+Mean time:  44.9 min
+
+Fevals 20/46 did not improve on 20/44
+[
+  {
+    "run": 1,
+    "fevals": "20/46",
+    "score": 1.1461541907017403,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 50.14542831977209
+  },
+  {
+    "run": 2,
+    "fevals": "20/46",
+    "score": 1.1358229958180428,
+    "avg_n_cands": 2.8,
+    "projected_400_min": 40.49595365921656
+  },
+  {
+    "run": 3,
+    "fevals": "20/46",
+    "score": 1.1314862272287551,
+    "avg_n_cands": 2.75,
+    "projected_400_min": 44.00608770052592
+  }
+]

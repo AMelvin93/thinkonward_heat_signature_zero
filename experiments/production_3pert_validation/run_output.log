@@ -1,0 +1,76 @@
+============================================================
+PRODUCTION CONFIG VALIDATION: 3-pert + tabu 0.04
+============================================================
+Baseline: 1.1337
+Prior mean: 1.1478 @ 58.4 min (3 runs)
+Goal: 5-run validation for high confidence
+
+=== Run 1: 3pert_tabu004_prod ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1502, Time=59.9 min, Candidates=2.83
+  RMSE 1src: 0.1202, RMSE 2src: 0.1837
+vs Baseline (1.1337): +0.0165
+
+=== Run 2: 3pert_tabu004_prod ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1497, Time=60.6 min, Candidates=2.84
+  RMSE 1src: 0.1240, RMSE 2src: 0.1847
+vs Baseline (1.1337): +0.0160
+
+=== Run 3: 3pert_tabu004_prod ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1451, Time=61.3 min, Candidates=2.80
+  RMSE 1src: 0.1199, RMSE 2src: 0.1911
+vs Baseline (1.1337): +0.0114
+
+=== Run 4: 3pert_tabu004_prod ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1492, Time=74.4 min, Candidates=2.84
+  RMSE 1src: 0.1251, RMSE 2src: 0.1862
+vs Baseline (1.1337): +0.0155
+
+=== Run 5: 3pert_tabu004_prod ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1506, Time=111.6 min, Candidates=2.84
+  RMSE 1src: 0.1189, RMSE 2src: 0.1889
+vs Baseline (1.1337): +0.0169
+
+============================================================
+VALIDATION SUMMARY: 3-pert + tabu 0.04 (5 runs)
+============================================================
+
+Run Results:
+  Run 1: 1.1502 @ 59.9 min (+0.0165) [IN BUDGET]
+  Run 2: 1.1497 @ 60.6 min (+0.0160) [OVER BUDGET]
+  Run 3: 1.1451 @ 61.3 min (+0.0114) [OVER BUDGET]
+  Run 4: 1.1492 @ 74.4 min (+0.0155) [OVER BUDGET]
+  Run 5: 1.1506 @ 111.6 min (+0.0169) [OVER BUDGET]
+
+Statistics:
+  Mean Score: 1.1490 +/- 0.0020
+  Score Range: [1.1451, 1.1506]
+  Mean Time: 73.6 min
+  vs Baseline: +0.0153
+
+  Runs in budget: 1/5 (20%)
+
+  Budget Status: OVER BUDGET
+
+  Gap to Top 10 (1.1585): +0.0095
+
+Results saved to run_output.json

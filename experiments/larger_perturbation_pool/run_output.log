@@ -1,0 +1,64 @@
+
+Config: 3_perturbations
+Sigma: 1src=0.18, 2src=0.22
+Perturb: 3, NM: 8
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1378, Avg cands: 2.80, Time: 38.7 min
+vs New Best (1.1405): -0.0027
+
+Config: 4_perturbations
+Sigma: 1src=0.18, 2src=0.22
+Perturb: 4, NM: 8
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1436, Avg cands: 2.86, Time: 43.3 min
+vs New Best (1.1405): +0.0031
+
+Config: 2_perturbations_baseline
+Sigma: 1src=0.18, 2src=0.22
+Perturb: 2, NM: 8
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1398, Avg cands: 2.83, Time: 43.9 min
+vs New Best (1.1405): -0.0007
+
+============================================================
+SUMMARY: Perturbation Count Tuning
+============================================================
+New best baseline: 1.1405 @ 42.3 min
+
+  3_perturbations: 1.1378 @ 38.7 min (-0.0027) [IN BUDGET]
+  4_perturbations: 1.1436 @ 43.3 min (+0.0031) [IN BUDGET]
+  2_perturbations_baseline: 1.1398 @ 43.9 min (-0.0007) [IN BUDGET]
+
+Best in-budget: 4_perturbations = 1.1436 @ 43.3 min
+[
+  {
+    "config_name": "3_perturbations",
+    "score": 1.1378080947924452,
+    "avg_n_cands": 2.8,
+    "projected_400_min": 38.694364170233406
+  },
+  {
+    "config_name": "4_perturbations",
+    "score": 1.1435557711644502,
+    "avg_n_cands": 2.8625,
+    "projected_400_min": 43.252793967723846
+  },
+  {
+    "config_name": "2_perturbations_baseline",
+    "score": 1.1398018322282266,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 43.92442115147909
+  }
+]

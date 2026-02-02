@@ -1,0 +1,21 @@
+
+======================================================================
+Config: sigma_016_020_fevals_22_40
+Sigma: 1src=0.16, 2src=0.2
+Fevals: 1src=22, 2src=40
+======================================================================
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1281, Avg cands: 2.79, Time: 45.3 min
+Baseline: 1.173 @ 50.4 min, Delta: -0.0449 score
+{
+  "config_name": "sigma_016_020_fevals_22_40",
+  "score": 1.128075242943694,
+  "avg_n_candidates": 2.7875,
+  "time_min": 9.069007535775503,
+  "projected_400_min": 45.34503767887751,
+  "in_budget": true
+}

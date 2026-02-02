@@ -1,0 +1,55 @@
+{
+  "experiment_id": "EXP_SIGMA_018_022_FEVALS_20_44_VALIDATION_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-01T19:30:00Z",
+  "completed_at": "2026-02-01T20:05:00Z",
+  "hypothesis": "Validate sigma 0.18/0.22 + fevals 20/44 as new best configuration.",
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "refine_maxiter": 8,
+    "n_perturbations": 2
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "score": 1.1340,
+      "avg_n_cands": 2.78,
+      "time_min": 42.8,
+      "vs_baseline": "+0.0003"
+    },
+    {
+      "run": 2,
+      "score": 1.1481,
+      "avg_n_cands": 2.86,
+      "time_min": 43.0,
+      "vs_baseline": "+0.0144"
+    },
+    {
+      "run": 3,
+      "score": 1.1393,
+      "avg_n_cands": 2.84,
+      "time_min": 41.0,
+      "vs_baseline": "+0.0056"
+    }
+  ],
+  "statistics": {
+    "mean_score": 1.1405,
+    "std_score": 0.0058,
+    "min_score": 1.1340,
+    "max_score": 1.1481,
+    "mean_time_min": 42.3,
+    "vs_baseline": "+0.0068",
+    "improvement_pct": 0.60
+  },
+  "conclusion": "CONFIRMED: New best configuration! Sigma 0.18/0.22 + fevals 20/44 scores 1.1405 (±0.0058), which is 0.60% better than true baseline (1.1337).",
+  "key_insights": [
+    "New best config: sigma 0.18/0.22 with fevals 20/44",
+    "Mean improvement: +0.0068 (0.60% better than baseline)",
+    "Higher variance than baseline (0.0058 vs 0.0027) but still consistent improvement",
+    "All 3 runs beat or matched baseline"
+  ]
+}

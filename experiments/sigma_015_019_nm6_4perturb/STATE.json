@@ -1,0 +1,41 @@
+{
+  "experiment_id": "EXP_SIGMA_015_019_NM6_4PERTURB_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-01T10:30:00Z",
+  "completed_at": "2026-02-01T11:00:00Z",
+  "hypothesis": "Trade 2 NM iterations for 2 more perturbations. May catch more local minima.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "6 NM, 4 perturbations",
+      "score": 1.1307,
+      "avg_n_cands": 2.75,
+      "time_min": 41.7,
+      "decision": "FAILED - worse than baseline"
+    },
+    {
+      "run": 2,
+      "config": "8 NM, 2 perturbations (baseline verify)",
+      "score": 1.1404,
+      "avg_n_cands": 2.80,
+      "time_min": 42.9,
+      "decision": "BEST of session - but far from claimed 1.173"
+    },
+    {
+      "run": 3,
+      "config": "8 NM, 3 perturbations",
+      "score": 1.1349,
+      "avg_n_cands": 2.75,
+      "time_min": 44.7,
+      "decision": "FAILED - more perturbations don't help"
+    }
+  ],
+  "conclusion": "FAILED - Trading NM polish for perturbations does NOT help. Baseline (8 NM, 2 perturb) remains optimal. IMPORTANT: High variance observed - claimed 1.173 baseline could not be reproduced (got 1.1404).",
+  "key_insights": [
+    "More perturbations don't compensate for less NM polish",
+    "8 NM + 2 perturbations is the optimal configuration",
+    "HIGH VARIANCE: Claimed baseline 1.173 may be an outlier - actual is ~1.14",
+    "Score variance of ~0.01-0.03 between runs is expected"
+  ]
+}

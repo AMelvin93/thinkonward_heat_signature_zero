@@ -1,0 +1,55 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_NM_BY_SOURCE_001",
+  "worker": "W1",
+  "status": "completed",
+  "started_at": "2026-02-02T01:05:00Z",
+  "completed_at": "2026-02-02T01:35:00Z",
+  "hypothesis": "Use different NM iterations based on source count. 2-source may need more polish.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"nm_1src": 4, "nm_2src": 8},
+      "score": 1.1422,
+      "time_min": 43.7,
+      "rmse_1src": 0.1457,
+      "rmse_2src": 0.1915,
+      "vs_baseline": -0.0042
+    },
+    {
+      "run": 2,
+      "config": {"nm_1src": 4, "nm_2src": 10},
+      "score": 1.1322,
+      "time_min": 45.4,
+      "rmse_1src": 0.1298,
+      "rmse_2src": 0.2042,
+      "vs_baseline": -0.0142
+    },
+    {
+      "run": 3,
+      "config": {"nm_1src": 6, "nm_2src": 8},
+      "score": 1.1291,
+      "time_min": 40.8,
+      "rmse_1src": 0.1286,
+      "rmse_2src": 0.2128,
+      "vs_baseline": -0.0173
+    }
+  ],
+  "best_result": {
+    "config": {"nm_1src": 4, "nm_2src": 8},
+    "score": 1.1422,
+    "time_min": 43.7,
+    "vs_baseline": -0.0042
+  },
+  "conclusion": "FAILED - Adaptive NM does not help. Uniform 8 NM for both sources is optimal.",
+  "tuning_efficiency": {
+    "runs_executed": 3,
+    "time_utilization_pct": 73,
+    "parameter_space_explored": ["nm_1src in [4,6]", "nm_2src in [8,10]"]
+  },
+  "key_insights": [
+    "Uniform 8 NM is better than asymmetric allocation",
+    "More NM for 2-src (10 vs 8) hurts score",
+    "Less NM for 1-src (4 vs 8) also hurts score",
+    "Both source types need similar polish levels"
+  ]
+}

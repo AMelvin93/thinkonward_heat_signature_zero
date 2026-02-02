@@ -1,0 +1,48 @@
+{
+  "experiment_id": "EXP_PERTURB_ONLY_2SRC_001",
+  "name": "perturbation_only_2source",
+  "description": "Test if perturbation only helps 2-source problems. Save time on 1-source.",
+  "claimed_by": "W1",
+  "started_at": "2026-02-01T19:00:00Z",
+  "completed_at": "2026-02-01T19:25:00Z",
+  "status": "completed",
+  "result": "FAILED - Hypothesis Disproved",
+  "baseline": {
+    "score": 1.1745,
+    "time_min": 50.4,
+    "config": "asymmetric_014_019 (sigma 0.14/0.19, perturbation for all)"
+  },
+  "best_result": {
+    "config": "perturb_all_baseline",
+    "score": 1.1680,
+    "time_min": 10.25,
+    "projected_400_min": 51.2,
+    "in_budget": true,
+    "perturb_only_2src": false
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"perturb_only_2src": false},
+      "score": 1.1680,
+      "time_min": 10.25,
+      "projected_400_min": 51.2,
+      "in_budget": true,
+      "rmse_1src": 0.1203,
+      "rmse_2src": 0.1840
+    },
+    {
+      "run": 2,
+      "config": {"perturb_only_2src": true},
+      "score": 1.1591,
+      "time_min": 10.16,
+      "projected_400_min": 50.8,
+      "in_budget": true,
+      "rmse_1src": 0.1290,
+      "rmse_2src": 0.1989,
+      "delta_vs_baseline": -0.0088
+    }
+  ],
+  "conclusion": "Perturbation benefits ALL problems, not just 2-source. Skipping 1-source perturbation hurts score by 0.0088 for only 0.4 min savings. Keep perturbation for all.",
+  "time_utilization_pct": 85.3
+}

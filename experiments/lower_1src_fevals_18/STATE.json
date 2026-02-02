@@ -1,0 +1,43 @@
+{
+  "experiment_id": "EXP_LOWER_1SRC_FEVALS_18_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-01T20:55:00Z",
+  "completed_at": "2026-02-01T21:20:00Z",
+  "hypothesis": "Test fevals 18/44 - 1-source may need even fewer evals to preserve diversity.",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "fevals 18/44",
+      "score": 1.1296,
+      "avg_n_cands": 2.78,
+      "cands_1src": 2.56,
+      "time_min": 43.9,
+      "decision": "FAILED - 1.2% worse than baseline"
+    },
+    {
+      "run": 2,
+      "config": "fevals 16/44",
+      "score": 1.1326,
+      "avg_n_cands": 2.85,
+      "cands_1src": 2.66,
+      "time_min": 45.1,
+      "decision": "FAILED - 1.0% worse than baseline"
+    },
+    {
+      "run": 3,
+      "config": "fevals 20/44 (baseline)",
+      "score": 1.1425,
+      "avg_n_cands": 2.84,
+      "cands_1src": 2.69,
+      "time_min": 45.2,
+      "decision": "BEST - confirms 20 is optimal"
+    }
+  ],
+  "conclusion": "FAILED - Lower 1src fevals hurts accuracy more than it helps diversity. 20 is the optimal 1src fevals.",
+  "key_insights": [
+    "Lower fevals reduces diversity AND accuracy (worse RMSE)",
+    "20 fevals is the optimal balance for 1-source problems",
+    "fevals 16 slightly better than 18 (more diversity helps some samples)"
+  ]
+}

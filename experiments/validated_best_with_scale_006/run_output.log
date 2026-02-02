@@ -1,0 +1,82 @@
+Loading data...
+Loaded 80 samples
+
+Hypothesis: Validate best config (sigma 0.18/0.22, fevals 20/44) + scale 0.06
+Comparison: Prior asymmetric_014_019 achieved 1.1703-1.1745 with sigma 0.14/0.19
+
+============================================================
+Config: validated_018_022
+Sigma: 1src=0.18, 2src=0.22
+Fevals: 1src=20, 2src=44
+Perturbation scale: 0.06
+============================================================
+  Progress: 20/80 samples, elapsed: 1.4 min
+  Progress: 40/80 samples, elapsed: 3.7 min
+  Progress: 60/80 samples, elapsed: 6.9 min
+  Progress: 80/80 samples, elapsed: 10.5 min
+
+--- Results for validated_018_022 ---
+  RMSE 1-source: 0.119688 (n=32)
+  RMSE 2-source: 0.206335 (n=48)
+  Score:         1.1598
+  Time:          10.48 min
+  Projected 400: 52.4 min
+  In budget:     True (remaining: 7.6 min)
+
+============================================================
+Config: asymmetric_014_019
+Sigma: 1src=0.14, 2src=0.19
+Fevals: 1src=20, 2src=44
+Perturbation scale: 0.06
+============================================================
+  Progress: 20/80 samples, elapsed: 1.6 min
+  Progress: 40/80 samples, elapsed: 4.0 min
+  Progress: 60/80 samples, elapsed: 7.1 min
+  Progress: 80/80 samples, elapsed: 10.6 min
+
+--- Results for asymmetric_014_019 ---
+  RMSE 1-source: 0.119519 (n=32)
+  RMSE 2-source: 0.185890 (n=48)
+  Score:         1.1675
+  Time:          10.56 min
+  Projected 400: 52.8 min
+  In budget:     True (remaining: 7.2 min)
+
+============================================================
+Config: hybrid_016_020
+Sigma: 1src=0.16, 2src=0.2
+Fevals: 1src=20, 2src=44
+Perturbation scale: 0.06
+============================================================
+  Progress: 20/80 samples, elapsed: 1.7 min
+  Progress: 40/80 samples, elapsed: 4.1 min
+  Progress: 60/80 samples, elapsed: 7.4 min
+  Progress: 80/80 samples, elapsed: 10.7 min
+
+--- Results for hybrid_016_020 ---
+  RMSE 1-source: 0.130971 (n=32)
+  RMSE 2-source: 0.197248 (n=48)
+  Score:         1.1590
+  Time:          10.73 min
+  Projected 400: 53.7 min
+  In budget:     True (remaining: 6.3 min)
+
+================================================================================
+EXPERIMENT RESULTS: VALIDATED BEST + SCALE 0.06
+================================================================================
+Config                      Sigma     Fevals    Score   Proj 400  RMSE 1src  RMSE 2src
+--------------------------------------------------------------------------------
+validated_018_022       0.18/0.22      20/44   1.1598      52.4m     0.1197     0.2063
+asymmetric_014_019      0.14/0.19      20/44   1.1675      52.8m     0.1195     0.1859
+hybrid_016_020           0.16/0.2      20/44   1.1590      53.7m     0.1310     0.1972
+
+*** BEST IN-BUDGET: asymmetric_014_019 ***
+    Score: 1.1675
+    Sigma: 0.14/0.19
+    Fevals: 20/44
+    Scale: 0.06
+    Time: 52.8 min
+
+--- CONFIG COMPARISON ---
+validated_018_022 vs asymmetric_014_019: -0.0077
+  → 0.14/0.19 sigma is BETTER

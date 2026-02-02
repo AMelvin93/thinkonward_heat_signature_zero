@@ -1,0 +1,49 @@
+Previous Run 1: Score=1.1499
+
+=== Validation Run 2: perturb_nm_iters=4 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 2: Score=1.1332, Avg cands=2.79, Time=37.8 min
+
+=== Validation Run 3: perturb_nm_iters=4 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Run 3: Score=1.1371, Avg cands=2.84, Time=37.6 min
+
+============================================================
+SUMMARY: Perturb NM Iters=4 Validation
+============================================================
+Previous best (nm_iters=3): 1.1437 @ 42.2 min
+
+  Run 1: 1.1499 @ 36.5 min (+0.0062)
+  Run 2: 1.1332 @ 37.8 min (-0.0105)
+  Run 3: 1.1371 @ 37.6 min (-0.0066)
+
+Mean score: 1.1401 (±0.0071)
+Mean time:  37.3 min
+
+Did not improve over baseline
+[
+  {
+    "run": 1,
+    "score": 1.1499,
+    "avg_n_cands": 2.85,
+    "projected_400_min": 36.5
+  },
+  {
+    "run": 2,
+    "score": 1.1331780922292913,
+    "avg_n_cands": 2.7875,
+    "projected_400_min": 37.84823485215505
+  },
+  {
+    "run": 3,
+    "score": 1.1371418237007997,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 37.56214636564255
+  }
+]

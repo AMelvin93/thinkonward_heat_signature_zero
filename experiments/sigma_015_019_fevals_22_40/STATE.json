@@ -1,0 +1,53 @@
+{
+  "experiment_id": "EXP_SIGMA_015_019_FEVALS_22_40_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-01T09:00:00Z",
+  "completed_at": "2026-02-01T10:00:00Z",
+  "hypothesis": "Combine optimal sigma (0.15/0.19) with sweet spot fevals (22/40). Prior tighter_sigma_range used 20/36 fevals.",
+  "baseline_comparison": {
+    "baseline": "tighter_sigma_range (1.173 @ 50.4 min with sigma 0.15/0.19, 20/36 fevals)",
+    "difference": "Increase fevals from 20/36 to 22/40"
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "max_fevals_1src": 22,
+        "max_fevals_2src": 40,
+        "refine_maxiter": 8,
+        "n_perturbations": 2
+      },
+      "score": 1.1268,
+      "avg_n_candidates": 2.26,
+      "time_min": 41.3,
+      "in_budget": true,
+      "decision": "FAILED - score dropped significantly, diversity hurt"
+    },
+    {
+      "run": 2,
+      "config": {
+        "sigma0_1src": 0.15,
+        "sigma0_2src": 0.19,
+        "max_fevals_1src": 22,
+        "max_fevals_2src": 40,
+        "refine_maxiter": 8,
+        "n_perturbations": 3
+      },
+      "score": 1.1358,
+      "avg_n_candidates": 2.76,
+      "time_min": 44.9,
+      "in_budget": true,
+      "decision": "FAILED - more perturbations helped diversity but score still much worse than baseline"
+    }
+  ],
+  "conclusion": "FAILED - Higher fevals (22/40) does NOT combine well with tighter sigma (0.15/0.19). The 'sweet spot' fevals depends on sigma value. For sigma 0.15/0.19, the optimal fevals is still 20/36.",
+  "key_insights": [
+    "Sigma and fevals are interdependent parameters - cannot optimize independently",
+    "Higher fevals with tighter sigma leads to over-convergence in single basin",
+    "This reduces diversity which hurts the scoring formula",
+    "tighter_sigma_range (sigma 0.15/0.19, fevals 20/36) remains the best config"
+  ]
+}

@@ -1,0 +1,17 @@
+
+Config: baseline_verify
+Sigma: 1src=0.15, 2src=0.19
+NM: 8, Perturb: 2
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+
+Score: 1.1404, Avg cands: 2.80, Time: 42.9 min
+Expected: 1.173 @ 50.4 min, Delta: -0.0326
+{
+  "config_name": "baseline_verify",
+  "score": 1.1403855440537747,
+  "avg_n_cands": 2.8,
+  "projected_400_min": 42.93181490898132
+}

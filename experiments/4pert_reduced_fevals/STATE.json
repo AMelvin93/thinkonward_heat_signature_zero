@@ -1,0 +1,29 @@
+{
+  "experiment_id": "EXP_4PERT_REDUCED_FEVALS_001",
+  "name": "4pert_reduced_fevals",
+  "description": "Test if reduced fevals allows 4 perturbations to fit budget",
+  "claimed_by": "W2",
+  "started_at": "2026-02-02T06:45:00Z",
+  "completed_at": "2026-02-02T08:00:00Z",
+  "status": "completed",
+  "result": "FAILED - Reduced fevals made timing and accuracy WORSE",
+  "hypothesis": "4 pert @ fevals 20/44 runs 1.9 min over budget. Reducing fevals to 18/40 might save enough time.",
+  "prior_findings": {
+    "4pert_fevals_20_44": {"score": 1.1555, "time_min": 61.9, "status": "over_budget"},
+    "3pert_fevals_20_44": {"score": 1.1478, "time_min": 58.4, "status": "in_budget"}
+  },
+  "best_result": {
+    "config": "4pert_fevals_18_40",
+    "mean_score": 1.1465,
+    "mean_time_min": 66.7,
+    "in_budget": false,
+    "note": "COUNTERINTUITIVE: Lower fevals caused HIGHER time and LOWER score"
+  },
+  "runs": [
+    {"run": 1, "score": 1.1458, "time_min": 70.0, "in_budget": false},
+    {"run": 2, "score": 1.1461, "time_min": 64.3, "in_budget": false},
+    {"run": 3, "score": 1.1477, "time_min": 65.9, "in_budget": false}
+  ],
+  "key_finding": "Reducing fevals does NOT save time - CMA-ES fevals are efficiently spent. Do NOT reduce fevals.",
+  "conclusion": "FAILED: 3-pert + tabu 0.04 remains optimal in-budget config (1.1478 @ 58.4 min)"
+}

@@ -1,0 +1,29 @@
+{
+  "experiment": "nm4_perturb1_fevals_22_40",
+  "status": "completed",
+  "completed_by": "W1",
+  "completed_at": "2026-02-01T08:15:00Z",
+  "result": "FAILED - Below current best 1.1730",
+  "best_config": {
+    "name": "nm4_p1_fevals_24_44",
+    "score": 1.1639,
+    "time_min": 43.1,
+    "projected_400_min": 43.1
+  },
+  "baseline": {
+    "current_best_score": 1.1730,
+    "current_best_config": "tighter_sigma_range (sigma 0.15/0.19 + 2 perturb)",
+    "current_best_time": 50.4
+  },
+  "hypothesis": "Combining nm4_perturb1 (4 NM + 1 perturbation) with sweet spot fevals (22/40) could improve accuracy while staying within budget.",
+  "finding": "This config achieves 1.1639 @ 43.1 min, which is WORSE than the current best 1.1730 @ 50.4 min because it used old sigma values (0.18/0.22) instead of optimal sigma (0.15/0.19).",
+  "informed_by": [
+    "nm4_plus_perturb1: 1.1585 @ 54.9 min (5 min buffer)",
+    "higher_fevals_test: fevals 22/40 gave +0.0055 improvement"
+  ],
+  "tuning_runs": [
+    {"run": 1, "config": "nm4_p1_fevals_20_36", "score": 1.1553, "time_min": 38.9, "in_budget": true},
+    {"run": 2, "config": "nm4_p1_fevals_22_40", "score": 1.1599, "time_min": 46.1, "in_budget": true},
+    {"run": 3, "config": "nm4_p1_fevals_24_44", "score": 1.1639, "time_min": 43.1, "in_budget": true}
+  ]
+}

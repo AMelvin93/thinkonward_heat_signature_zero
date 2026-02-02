@@ -1,0 +1,93 @@
+Loading data...
+Loaded 80 samples
+Hypothesis: 2-source needs looser sigma, 1-source can use tighter
+
+============================================================
+Config: symmetric_015_019
+Sigma: 1src=0.15, 2src=0.19
+Fevals: 1src=24, 2src=44
+============================================================
+  Progress: 20/80 samples, elapsed: 1.9 min
+  Progress: 40/80 samples, elapsed: 4.5 min
+  Progress: 60/80 samples, elapsed: 7.6 min
+  Progress: 80/80 samples, elapsed: 10.8 min
+
+--- Results for symmetric_015_019 ---
+  RMSE 1-source: 0.124425 (n=32)
+  RMSE 2-source: 0.187789 (n=48)
+  Overall RMSE:  0.156107
+  Score:         1.1650
+  Time:          10.85 min
+  Projected 400: 54.2 min
+  Errors:        0
+
+============================================================
+Config: asymmetric_014_019
+Sigma: 1src=0.14, 2src=0.19
+Fevals: 1src=24, 2src=44
+============================================================
+  Progress: 20/80 samples, elapsed: 1.5 min
+  Progress: 40/80 samples, elapsed: 3.7 min
+  Progress: 60/80 samples, elapsed: 6.8 min
+  Progress: 80/80 samples, elapsed: 10.1 min
+
+--- Results for asymmetric_014_019 ---
+  RMSE 1-source: 0.119417 (n=32)
+  RMSE 2-source: 0.167580 (n=48)
+  Overall RMSE:  0.143498
+  Score:         1.1745
+  Time:          10.08 min
+  Projected 400: 50.4 min
+  Errors:        0
+
+============================================================
+Config: asymmetric_015_022
+Sigma: 1src=0.15, 2src=0.22
+Fevals: 1src=24, 2src=44
+============================================================
+  Progress: 20/80 samples, elapsed: 1.6 min
+  Progress: 40/80 samples, elapsed: 3.9 min
+  Progress: 60/80 samples, elapsed: 7.3 min
+  Progress: 80/80 samples, elapsed: 12.4 min
+
+--- Results for asymmetric_015_022 ---
+  RMSE 1-source: 0.123771 (n=32)
+  RMSE 2-source: 0.190366 (n=48)
+  Overall RMSE:  0.157069
+  Score:         1.1643
+  Time:          12.45 min
+  Projected 400: 62.2 min
+  Errors:        0
+
+============================================================
+Config: asymmetric_014_022
+Sigma: 1src=0.14, 2src=0.22
+Fevals: 1src=24, 2src=44
+============================================================
+  Progress: 20/80 samples, elapsed: 3.8 min
+  Progress: 40/80 samples, elapsed: 8.3 min
+  Progress: 60/80 samples, elapsed: 13.9 min
+  Progress: 80/80 samples, elapsed: 19.4 min
+
+--- Results for asymmetric_014_022 ---
+  RMSE 1-source: 0.117033 (n=32)
+  RMSE 2-source: 0.198537 (n=48)
+  Overall RMSE:  0.157785
+  Score:         1.1637
+  Time:          19.38 min
+  Projected 400: 96.9 min
+  Errors:        0
+
+======================================================================
+EXPERIMENT SUMMARY
+======================================================================
+Config                       Score     Time  RMSE 1src  RMSE 2src
+----------------------------------------------------------------------
+symmetric_015_019           1.1650   54.2m   0.124425   0.187789 (IN)
+asymmetric_014_019          1.1745   50.4m   0.119417   0.167580 (IN)
+asymmetric_015_022          1.1643   62.2m   0.123771   0.190366 (OVER)
+asymmetric_014_022          1.1637   96.9m   0.117033   0.198537 (OVER)
+----------------------------------------------------------------------
+Best in-budget: asymmetric_014_019 with score 1.1745 @ 50.4 min
+
+Saved results to experiments/asymmetric_sigma_by_source/run_output.json

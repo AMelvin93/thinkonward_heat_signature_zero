@@ -1,0 +1,53 @@
+============================================================
+PERTURBATION SCALE TUNING: 4pert_nm2
+============================================================
+Baseline: 1.1482 @ 51.7 min (scale 0.05)
+Testing scales: 0.045, 0.05, 0.06
+
+=== Run 1: scale_0.045 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1429, Time=51.8 min, Candidates=2.77
+  RMSE 1src: 0.1236, RMSE 2src: 0.1866
+  Scale: 0.045
+  Budget: IN BUDGET
+vs 4pert_nm2 baseline (1.1482): -0.0053
+
+=== Run 2: scale_0.05 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1472, Time=52.0 min, Candidates=2.81
+  RMSE 1src: 0.1247, RMSE 2src: 0.1851
+  Scale: 0.05
+  Budget: IN BUDGET
+vs 4pert_nm2 baseline (1.1482): -0.0010
+
+=== Run 3: scale_0.06 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1563, Time=52.2 min, Candidates=2.84
+  RMSE 1src: 0.1156, RMSE 2src: 0.1755
+  Scale: 0.06
+  Budget: IN BUDGET
+vs 4pert_nm2 baseline (1.1482): +0.0081
+
+============================================================
+SCALE TUNING SUMMARY
+============================================================
+
+Results:
+  scale_0.045: 1.1429 @ 51.8 min (-0.0053) [IN BUDGET]
+  scale_0.05: 1.1472 @ 52.0 min (-0.0010) [IN BUDGET]
+  scale_0.06: 1.1563 @ 52.2 min (+0.0081) [IN BUDGET]
+
+Best in-budget: scale_0.06 (1.1563 @ 52.2 min)
+Improvement over baseline: +0.0081
+*** Consider updating production config ***
+
+Results saved to run_output.json

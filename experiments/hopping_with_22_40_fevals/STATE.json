@@ -1,0 +1,67 @@
+{
+  "experiment": "hopping_with_22_40_fevals",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-02-01T06:30:00Z",
+  "baseline": {
+    "hopping_no_tabu_score": 1.1689,
+    "hopping_no_tabu_time": 58.2,
+    "note": "Current best config"
+  },
+  "hypothesis": "The sweet spot fevals (22/40) discovered in higher_fevals_test could improve the hopping_no_tabu config accuracy while staying within budget.",
+  "informed_by": [
+    "hopping_with_tabu_memory: best score 1.1689 @ 58.2 min",
+    "higher_fevals_test: fevals 22/40 gave 1.1640 @ 57.1 min on nm4_perturb1"
+  ],
+  "planned_configs": [
+    {"run": 1, "description": "fevals 20/36 (baseline)", "params": {"max_fevals_1src": 20, "max_fevals_2src": 36}},
+    {"run": 2, "description": "fevals 22/40 (sweet spot)", "params": {"max_fevals_1src": 22, "max_fevals_2src": 40}},
+    {"run": 3, "description": "fevals 24/44 (higher)", "params": {"max_fevals_1src": 24, "max_fevals_2src": 44}}
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": "fevals_20_36_baseline",
+      "params": {"max_fevals_1src": 20, "max_fevals_2src": 36},
+      "score": 1.1637,
+      "time_min": 10.30,
+      "projected_400_min": 51.5,
+      "in_budget": true,
+      "rmse_1src": 0.118235,
+      "rmse_2src": 0.197406
+    },
+    {
+      "run": 2,
+      "config": "fevals_22_40_sweetspot",
+      "params": {"max_fevals_1src": 22, "max_fevals_2src": 40},
+      "score": 1.1648,
+      "time_min": 10.24,
+      "projected_400_min": 51.2,
+      "in_budget": true,
+      "rmse_1src": 0.125634,
+      "rmse_2src": 0.186952,
+      "delta_vs_baseline": "+0.0011 score (marginal improvement)"
+    },
+    {
+      "run": 3,
+      "config": "fevals_24_44_higher",
+      "params": {"max_fevals_1src": 24, "max_fevals_2src": 44},
+      "score": 1.1616,
+      "time_min": 11.07,
+      "projected_400_min": 55.4,
+      "in_budget": true,
+      "rmse_1src": 0.121023,
+      "rmse_2src": 0.200143,
+      "delta_vs_baseline": "-0.0021 score (worse)"
+    }
+  ],
+  "result": "MARGINAL_IMPROVEMENT",
+  "best_in_budget": {
+    "config": "fevals_22_40_sweetspot",
+    "score": 1.1648,
+    "time_min": 10.24,
+    "projected_400_min": 51.2
+  },
+  "finding": "Sweet spot fevals 22/40 gives marginal improvement (+0.0011) over baseline. Higher fevals (24/44) are worse. All configs score lower than claimed baseline of 1.1689 - run-to-run variance is significant.",
+  "completed_at": "2026-02-01T07:30:00Z"
+}

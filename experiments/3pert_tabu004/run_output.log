@@ -1,0 +1,51 @@
+============================================================
+3 PERTURBATIONS + TABU_DISTANCE=0.04
+============================================================
+Baseline: 1.1337
+4pert+tabu04 (over budget): 1.1535 @ 61.3 min
+Expected: ~1.15 @ ~55 min
+
+=== Run 1: 3pert_tabu004 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1471, Time=56.6 min, Candidates=2.79
+  RMSE 1src: 0.1197, RMSE 2src: 0.1828
+vs Baseline: +0.0134
+
+=== Run 2: 3pert_tabu004 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1434, Time=61.1 min, Candidates=2.80
+  RMSE 1src: 0.1149, RMSE 2src: 0.1985
+vs Baseline: +0.0097
+
+=== Run 3: 3pert_tabu004 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1524, Time=64.9 min, Candidates=2.84
+  RMSE 1src: 0.1133, RMSE 2src: 0.1868
+vs Baseline: +0.0187
+
+============================================================
+SUMMARY: 3 Perturbations + tabu 0.04
+============================================================
+
+Run Results:
+  Run 1: 1.1471 @ 56.6 min (+0.0134) [IN BUDGET]
+  Run 2: 1.1434 @ 61.1 min (+0.0097) [OVER BUDGET]
+  Run 3: 1.1524 @ 64.9 min (+0.0187) [OVER BUDGET]
+
+Statistics:
+  Mean Score: 1.1476 +/- 0.0037
+  Mean Time: 60.8 min
+  vs Baseline: +0.0139
+  vs 4pert+tabu04: -0.0059
+
+Budget Status: OVER BUDGET
+  Runs in budget: 1/3

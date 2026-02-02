@@ -1,0 +1,73 @@
+
+=== sigma_020_025 ===
+  sigma: 0.2/0.25
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1474, Avg cands=2.90, Time=42.2 min
+vs Validated Baseline (1.1433): +0.0041
+Budget remaining: 17.8 min
+
+=== sigma_022_026 ===
+  sigma: 0.22/0.26
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1393, Avg cands=2.84, Time=46.6 min
+vs Validated Baseline (1.1433): -0.0040
+Budget remaining: 13.4 min
+
+=== sigma_016_020 ===
+  sigma: 0.16/0.2
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1364, Avg cands=2.77, Time=46.6 min
+vs Validated Baseline (1.1433): -0.0069
+Budget remaining: 13.4 min
+
+============================================================
+SIGMA EXPLORATION SUMMARY
+============================================================
+Validated baseline (0.18/0.22): 1.1433 @ 46.5 min
+
+  sigma 0.2/0.25: 1.1474 @ 42.2 min (+0.0041) [IN BUDGET]
+  sigma 0.22/0.26: 1.1393 @ 46.6 min (-0.0040) [IN BUDGET]
+  sigma 0.16/0.2: 1.1364 @ 46.6 min (-0.0069) [IN BUDGET]
+
+Best: sigma 0.2/0.25 = 1.1474 @ 42.2 min
+
+IMPROVEMENT FOUND! +0.0041
+
+[
+  {
+    "config_name": "sigma_020_025",
+    "sigma0_1src": 0.2,
+    "sigma0_2src": 0.25,
+    "score": 1.1473530739586875,
+    "avg_n_cands": 2.9,
+    "projected_400_min": 42.173903822898865,
+    "in_budget": true
+  },
+  {
+    "config_name": "sigma_022_026",
+    "sigma0_1src": 0.22,
+    "sigma0_2src": 0.26,
+    "score": 1.1392807196576602,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 46.618435402711235,
+    "in_budget": true
+  },
+  {
+    "config_name": "sigma_016_020",
+    "sigma0_1src": 0.16,
+    "sigma0_2src": 0.2,
+    "score": 1.1363804940482443,
+    "avg_n_cands": 2.775,
+    "projected_400_min": 46.61334643761317,
+    "in_budget": true
+  }
+]

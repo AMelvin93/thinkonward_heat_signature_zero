@@ -1,0 +1,61 @@
+
+=== Run 1: 5 perturbations ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1363, Avg cands=2.83, Time=41.0 min
+vs Current Best (1.1437): -0.0074
+
+=== Run 2: 5 perturbations ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1290, Avg cands=2.83, Time=43.7 min
+vs Current Best (1.1437): -0.0147
+
+=== Run 3: 5 perturbations ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1381, Avg cands=2.81, Time=44.3 min
+vs Current Best (1.1437): -0.0056
+
+============================================================
+SUMMARY: 5 Perturbations Test
+============================================================
+Current best (4 perturb): 1.1437 @ 42.2 min
+
+  Run 1: 1.1363 @ 41.0 min (-0.0074) [IN BUDGET]
+  Run 2: 1.1290 @ 43.7 min (-0.0147) [IN BUDGET]
+  Run 3: 1.1381 @ 44.3 min (-0.0056) [IN BUDGET]
+
+Mean score: 1.1345 (±0.0039)
+Mean time:  43.0 min
+
+5 perturbations did not improve on 4
+[
+  {
+    "run": 1,
+    "n_perturbations": 5,
+    "score": 1.136343336285366,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 40.986577332019806
+  },
+  {
+    "run": 2,
+    "n_perturbations": 5,
+    "score": 1.1290137853759334,
+    "avg_n_cands": 2.825,
+    "projected_400_min": 43.694301744302116
+  },
+  {
+    "run": 3,
+    "n_perturbations": 5,
+    "score": 1.1381131305193632,
+    "avg_n_cands": 2.8125,
+    "projected_400_min": 44.32901422182719
+  }
+]

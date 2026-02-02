@@ -1,0 +1,53 @@
+{
+  "experiment_id": "EXP_ADAPTIVE_NM_BY_SOURCE_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-02T04:30:00Z",
+  "completed_at": "2026-02-02T05:15:00Z",
+  "hypothesis": "Adaptive NM iterations based on source count: 1-source needs less polish, 2-source needs more.",
+  "baseline_to_beat": {
+    "score": 1.1496,
+    "time_min": 55.4,
+    "config": "NM=8 for all (tabu=0.04 validated)"
+  },
+  "result": "FAILED - Fixed NM=8 is optimal, adaptive doesn't help",
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config_name": "adaptive_4_10",
+      "config": {"nm_1src": 4, "nm_2src": 10},
+      "score": 1.1472,
+      "time_min": 51.6,
+      "budget_remaining": 8.4,
+      "vs_baseline": "-0.0024",
+      "decision": "CONTINUE - faster but worse"
+    },
+    {
+      "run": 2,
+      "config_name": "adaptive_6_10",
+      "config": {"nm_1src": 6, "nm_2src": 10},
+      "score": 1.1433,
+      "time_min": 56.5,
+      "budget_remaining": 3.5,
+      "vs_baseline": "-0.0063",
+      "decision": "WORSE - adaptive doesn't help"
+    },
+    {
+      "run": 3,
+      "config_name": "baseline_8_8",
+      "config": {"nm_1src": 8, "nm_2src": 8},
+      "score": 1.1504,
+      "time_min": 53.1,
+      "budget_remaining": 6.9,
+      "vs_baseline": "+0.0008",
+      "decision": "BEST - fixed NM=8 is optimal"
+    }
+  ],
+  "key_findings": [
+    "Fixed NM=8 for all sources is BEST (1.1504)",
+    "Reducing NM for 1-source HURTS accuracy",
+    "More NM for 2-source (10) doesn't help",
+    "Adaptive approach provides no benefit"
+  ],
+  "recommendation": "KEEP NM=8 for all sources (refine_maxiter=8)"
+}

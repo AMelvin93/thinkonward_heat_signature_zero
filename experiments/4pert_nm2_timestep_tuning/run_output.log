@@ -1,0 +1,52 @@
+============================================================
+TIMESTEP FRACTION TUNING: 4pert_nm2
+============================================================
+Baseline: 1.1482 @ 51.7 min (timestep_fraction 0.40)
+Testing: 0.35, 0.40, 0.45
+
+=== Run 1: timestep_0.35 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1469, Time=49.0 min, Candidates=2.84
+  RMSE 1src: 0.1306, RMSE 2src: 0.1903
+  timestep_fraction: 0.35
+  Budget: IN BUDGET
+vs baseline (1.1482): -0.0013
+
+=== Run 2: timestep_0.40 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1483, Time=53.1 min, Candidates=2.88
+  RMSE 1src: 0.1264, RMSE 2src: 0.1953
+  timestep_fraction: 0.4
+  Budget: IN BUDGET
+vs baseline (1.1482): +0.0001
+
+=== Run 3: timestep_0.45 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1414, Time=55.6 min, Candidates=2.79
+  RMSE 1src: 0.1286, RMSE 2src: 0.1906
+  timestep_fraction: 0.45
+  Budget: IN BUDGET
+vs baseline (1.1482): -0.0068
+
+============================================================
+TIMESTEP TUNING SUMMARY
+============================================================
+
+Results:
+  timestep_0.35: 1.1469 @ 49.0 min (-0.0013) [IN BUDGET]
+  timestep_0.40: 1.1483 @ 53.1 min (+0.0001) [IN BUDGET]
+  timestep_0.45: 1.1414 @ 55.6 min (-0.0068) [IN BUDGET]
+
+Best in-budget: timestep_0.40 (1.1483 @ 53.1 min)
+Improvement over baseline: +0.0001
+
+Results saved to run_output.json

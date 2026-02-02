@@ -1,0 +1,48 @@
+{
+  "experiment_id": "EXP_TABU_004_VALIDATION",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-02T02:40:00Z",
+  "completed_at": "2026-02-02T03:30:00Z",
+  "hypothesis": "Validate that tabu_distance=0.04 with sigma 0.18/0.22 consistently beats baseline.",
+  "prior_finding": {
+    "score": 1.1535,
+    "time_min": 53.1,
+    "vs_baseline": "+0.0071"
+  },
+  "baseline_to_beat": {
+    "score": 1.1464,
+    "time_min": 51.2
+  },
+  "result": "VALIDATED - tabu_distance=0.04 beats baseline (+0.0032 mean)",
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "tabu_distance": 0.04,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "n_perturbations": 2,
+    "perturbation_scale": 0.05
+  },
+  "validation_runs": [
+    {"run": 1, "score": 1.1431, "time_min": 57.3, "vs_baseline": -0.0033, "in_budget": true},
+    {"run": 2, "score": 1.1525, "time_min": 55.2, "vs_baseline": "+0.0061", "in_budget": true},
+    {"run": 3, "score": 1.1533, "time_min": 53.8, "vs_baseline": "+0.0069", "in_budget": true}
+  ],
+  "statistics": {
+    "mean_score": 1.1496,
+    "std_score": 0.0046,
+    "mean_time_min": 55.4,
+    "std_time_min": 1.4,
+    "min_score": 1.1431,
+    "max_score": 1.1533,
+    "runs_above_baseline": "2 out of 3 (67%)"
+  },
+  "key_findings": [
+    "VALIDATED: Mean 1.1496 > baseline 1.1464 (+0.0032)",
+    "2 out of 3 runs exceeded baseline",
+    "Improvement smaller than prior finding (1.1535 was likely lucky)",
+    "Time increased from 51.2 to 55.4 min but within budget"
+  ],
+  "recommendation": "ADOPT tabu_distance=0.04 for production"
+}

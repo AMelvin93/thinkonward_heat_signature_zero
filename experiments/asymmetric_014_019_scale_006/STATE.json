@@ -1,0 +1,55 @@
+{
+  "experiment_id": "EXP_ASYM_014_019_SCALE_006_001",
+  "name": "asymmetric_014_019_scale_006",
+  "description": "Combine asymmetric sigma (0.14/0.19) with optimal perturbation scale (0.06)",
+  "claimed_by": "W1",
+  "started_at": "2026-02-01T19:30:00Z",
+  "completed_at": "2026-02-01T20:05:00Z",
+  "status": "completed",
+  "result": "PARTIAL SUCCESS",
+  "best_result": {
+    "config": "asym_scale_006_combined",
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "perturbation_scale": 0.06,
+    "score": 1.1657,
+    "time_min": 10.64,
+    "projected_400_min": 53.2,
+    "in_budget": true
+  },
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config": {"perturbation_scale": 0.05},
+      "score": 1.1596,
+      "time_min": 11.49,
+      "projected_400_min": 57.5,
+      "in_budget": true,
+      "rmse_1src": 0.1273,
+      "rmse_2src": 0.1995
+    },
+    {
+      "run": 2,
+      "config": {"perturbation_scale": 0.06},
+      "score": 1.1657,
+      "time_min": 10.64,
+      "projected_400_min": 53.2,
+      "in_budget": true,
+      "rmse_1src": 0.1182,
+      "rmse_2src": 0.1920
+    },
+    {
+      "run": 3,
+      "config": {"perturbation_scale": 0.07},
+      "score": 1.1637,
+      "time_min": 10.74,
+      "projected_400_min": 53.7,
+      "in_budget": true,
+      "rmse_1src": 0.1263,
+      "rmse_2src": 0.1894
+    }
+  ],
+  "conclusion": "Scale 0.06 confirmed as optimal (+0.0061 vs 0.05 within this run). Did not beat prior claimed best (1.1745) due to run-to-run variance (~0.01-0.015). Recommended production config: sigma 0.14/0.19 + scale 0.06.",
+  "variance_observation": "Run-to-run variance is ~0.01-0.015. Multiple validation runs needed for reliable comparisons.",
+  "time_utilization_pct": 88.7
+}

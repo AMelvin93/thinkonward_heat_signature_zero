@@ -1,0 +1,54 @@
+{
+  "experiment_id": "EXP_FINAL_CONFIG_VALIDATION_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-02T00:30:00Z",
+  "completed_at": "2026-02-02T01:30:00Z",
+  "hypothesis": "Validate final optimal config (sigma 0.14/0.19, fevals 20/44, 2 perturb) with 5 runs to establish confidence intervals.",
+  "config": {
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "n_perturbations": 2,
+    "perturbation_scale": 0.06,
+    "timestep_fraction": 0.40,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "tabu_distance": 0.03
+  },
+  "bug_fix": {
+    "issue": "W1's run.py had enable_tabu_hopping=False, disabling perturbations",
+    "previous_results": "1.1267-1.1358 (all BELOW baseline 1.1464)",
+    "fix": "Set enable_tabu_hopping=True",
+    "fixed_by": "W2",
+    "fixed_at": "2026-02-02T00:30:00Z"
+  },
+  "result": "FAILED - Config does NOT reliably beat baseline",
+  "results_summary": {
+    "runs": [
+      {"run": 1, "score": 1.1430, "time_min": 51.5, "rmse_1src": 0.1195, "rmse_2src": 0.1760},
+      {"run": 2, "score": 1.1471, "time_min": 59.0, "rmse_1src": 0.1167, "rmse_2src": 0.1898},
+      {"run": 3, "score": 1.1349, "time_min": 51.1, "rmse_1src": 0.1311, "rmse_2src": 0.1852},
+      {"run": 4, "score": 1.1238, "time_min": 52.2, "rmse_1src": 0.1293, "rmse_2src": 0.2101},
+      {"run": 5, "score": 1.1412, "time_min": 51.8, "rmse_1src": 0.1120, "rmse_2src": 0.1908}
+    ],
+    "statistics": {
+      "mean_score": 1.1380,
+      "std_score": 0.0081,
+      "mean_time_min": 53.1,
+      "std_time_min": 3.0,
+      "min_score": 1.1238,
+      "max_score": 1.1471
+    },
+    "vs_baseline": -0.0084,
+    "runs_above_baseline": "1 out of 5 (20%)"
+  },
+  "key_findings": [
+    "Only 20% of runs beat baseline - config NOT reliable",
+    "High variance (std=0.0081) makes single-run comparisons unreliable",
+    "Asymmetric sigma 0.14/0.19 does NOT provide consistent improvement",
+    "Prior claims of 1.17+ were likely lucky runs"
+  ],
+  "recommendation": "REVERT to baseline sigma 0.18/0.22 config"
+}

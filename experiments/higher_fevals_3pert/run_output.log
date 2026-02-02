@@ -1,0 +1,53 @@
+============================================================
+HIGHER FEVALS: 22/48 with 3 perturbations
+============================================================
+3-pert baseline: 1.1475 @ 55.7 min
+Budget remaining: ~4.3 min
+Goal: Use remaining budget for higher fevals
+
+=== Run 1: 3pert_fevals_22_48 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1512, Time=63.5 min, Candidates=2.79
+  RMSE 1src: 0.1144, RMSE 2src: 0.1768
+vs 3-pert baseline (1.1475): +0.0037
+
+=== Run 2: 3pert_fevals_22_48 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1610, Time=63.4 min, Candidates=2.83
+  RMSE 1src: 0.1079, RMSE 2src: 0.1642
+vs 3-pert baseline (1.1475): +0.0135
+
+=== Run 3: 3pert_fevals_22_48 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1582, Time=63.3 min, Candidates=2.84
+  RMSE 1src: 0.1123, RMSE 2src: 0.1721
+vs 3-pert baseline (1.1475): +0.0107
+
+============================================================
+SUMMARY: Higher Fevals (22/48) with 3 perturbations
+============================================================
+
+Run Results:
+  Run 1: 1.1512 @ 63.5 min (+0.0037) [OVER BUDGET]
+  Run 2: 1.1610 @ 63.4 min (+0.0135) [OVER BUDGET]
+  Run 3: 1.1582 @ 63.3 min (+0.0107) [OVER BUDGET]
+
+Statistics:
+  Mean Score: 1.1568 +/- 0.0041
+  Mean Time: 63.4 min
+  vs 3-pert baseline: +0.0093
+
+Budget Status: OVER BUDGET
+
+CONCLUSION: OVER BUDGET
+
+Results saved to run_output.json

@@ -1,0 +1,24 @@
+{
+  "experiment_id": "EXP_FEVALS_20_46_TEST_001",
+  "worker": "W2",
+  "status": "completed",
+  "started_at": "2026-02-01T22:00:00Z",
+  "completed_at": "2026-02-01T22:30:00Z",
+  "hypothesis": "Test fevals 20/46 - maybe there's a sweet spot between 44 and 48.",
+  "tuning_runs": [
+    {"run": 1, "score": 1.1462, "time_min": 50.1},
+    {"run": 2, "score": 1.1358, "time_min": 40.5},
+    {"run": 3, "score": 1.1315, "time_min": 44.0}
+  ],
+  "statistics": {
+    "mean_score": 1.1378,
+    "std_score": 0.0062,
+    "mean_time_min": 44.9
+  },
+  "conclusion": "FAILED - Fevals 20/46 (1.1378) is worse than 20/44 (1.1437). Higher 2src fevals beyond 44 causes too much convergence.",
+  "key_insights": [
+    "44 2src fevals is the optimal sweet spot",
+    "Higher fevals (46, 48) cause too much convergence to single basin",
+    "Lower fevals (36) don't explore enough"
+  ]
+}

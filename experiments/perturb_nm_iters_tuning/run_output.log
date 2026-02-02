@@ -1,0 +1,58 @@
+
+Config: nm_iters_2 (perturb_nm_iters=2)
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1375, Avg cands=2.77, Time=37.0 min
+vs Current Best (1.1437): -0.0062
+
+Config: nm_iters_4 (perturb_nm_iters=4)
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1499, Avg cands=2.85, Time=36.5 min
+vs Current Best (1.1437): +0.0062
+
+Config: nm_iters_3 (perturb_nm_iters=3)
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1428, Avg cands=2.84, Time=36.9 min
+vs Current Best (1.1437): -0.0009
+
+============================================================
+SUMMARY: Perturb NM Iters Tuning
+============================================================
+Current best (perturb_nm_iters=3): 1.1437 @ 42.2 min
+
+  nm_iters=2: 1.1375 @ 37.0 min (-0.0062)
+  nm_iters=4: 1.1499 @ 36.5 min (+0.0062)
+  nm_iters=3: 1.1428 @ 36.9 min (-0.0009)
+
+Best: nm_iters=4 = 1.1499
+[
+  {
+    "config_name": "nm_iters_2",
+    "perturb_nm_iters": 2,
+    "score": 1.1375440721359766,
+    "avg_n_cands": 2.775,
+    "projected_400_min": 36.97031692663828
+  },
+  {
+    "config_name": "nm_iters_4",
+    "perturb_nm_iters": 4,
+    "score": 1.1498846282474713,
+    "avg_n_cands": 2.85,
+    "projected_400_min": 36.51525296767553
+  },
+  {
+    "config_name": "nm_iters_3",
+    "perturb_nm_iters": 3,
+    "score": 1.1428242896776397,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 36.88632760445277
+  }
+]

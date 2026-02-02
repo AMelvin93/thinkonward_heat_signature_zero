@@ -1,0 +1,105 @@
+============================================================
+ADAPTIVE NM BY SOURCE COUNT
+============================================================
+Baseline: 1.1496 @ 55.4 min (NM=8 for all)
+Hypothesis: 1-source needs less polish, 2-source needs more
+
+============================================================
+Config: adaptive_4_10
+  NM iterations: 1-source=4, 2-source=10
+============================================================
+  Progress: 20/80, elapsed: 1.5 min
+  Progress: 40/80, elapsed: 3.8 min
+  Progress: 60/80, elapsed: 6.7 min
+  Progress: 80/80, elapsed: 10.3 min
+Result: Score=1.1472, Avg cands=2.84, Time=51.6 min
+  RMSE 1src: 0.1273 (n=32)
+  RMSE 2src: 0.1870 (n=48)
+  In budget: True, remaining: 8.4 min
+
+============================================================
+Config: adaptive_6_10
+  NM iterations: 1-source=6, 2-source=10
+============================================================
+  Progress: 20/80, elapsed: 1.5 min
+  Progress: 40/80, elapsed: 4.2 min
+  Progress: 60/80, elapsed: 7.7 min
+  Progress: 80/80, elapsed: 11.3 min
+Result: Score=1.1433, Avg cands=2.84, Time=56.5 min
+  RMSE 1src: 0.1313 (n=32)
+  RMSE 2src: 0.1997 (n=48)
+  In budget: True, remaining: 3.5 min
+
+============================================================
+Config: baseline_8_8
+  NM iterations: 1-source=8, 2-source=8
+============================================================
+  Progress: 20/80, elapsed: 1.7 min
+  Progress: 40/80, elapsed: 4.0 min
+  Progress: 60/80, elapsed: 7.3 min
+  Progress: 80/80, elapsed: 10.6 min
+Result: Score=1.1504, Avg cands=2.84, Time=53.1 min
+  RMSE 1src: 0.1169 (n=32)
+  RMSE 2src: 0.1900 (n=48)
+  In budget: True, remaining: 6.9 min
+
+======================================================================
+ADAPTIVE NM RESULTS
+======================================================================
+Config                NM 1src  NM 2src    Score   Proj 400  vs Baseline
+---------------------------------------------------------------------------
+adaptive_4_10               4       10   1.1472      51.6m      -0.0024
+adaptive_6_10               6       10   1.1433      56.5m      -0.0063
+baseline_8_8                8        8   1.1504      53.1m      +0.0008
+
+*** BEST IN-BUDGET: baseline_8_8 ***
+    Score: 1.1504 (+0.0008 vs baseline)
+    NM iterations: 1-src=8, 2-src=8
+    Time: 53.1 min
+
+*** SUCCESS! Better than baseline! ***
+
+[
+  {
+    "config_name": "adaptive_4_10",
+    "nm_1src": 4,
+    "nm_2src": 10,
+    "score": 1.147248657658538,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 51.56847594181696,
+    "rmse_1src_mean": 0.1272738023235639,
+    "rmse_2src_mean": 0.18703047156616784,
+    "n_1src": 32,
+    "n_2src": 48,
+    "in_budget": true,
+    "budget_remaining": 8.431524058183037
+  },
+  {
+    "config_name": "adaptive_6_10",
+    "nm_1src": 6,
+    "nm_2src": 10,
+    "score": 1.1433229711300834,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 56.49961898724238,
+    "rmse_1src_mean": 0.1313051392361493,
+    "rmse_2src_mean": 0.19970238821188732,
+    "n_1src": 32,
+    "n_2src": 48,
+    "in_budget": true,
+    "budget_remaining": 3.5003810127576216
+  },
+  {
+    "config_name": "baseline_8_8",
+    "nm_1src": 8,
+    "nm_2src": 8,
+    "score": 1.1503803127635568,
+    "avg_n_cands": 2.8375,
+    "projected_400_min": 53.11637181043625,
+    "rmse_1src_mean": 0.1168920139955914,
+    "rmse_2src_mean": 0.18997647788681205,
+    "n_1src": 32,
+    "n_2src": 48,
+    "in_budget": true,
+    "budget_remaining": 6.883628189563751
+  }
+]

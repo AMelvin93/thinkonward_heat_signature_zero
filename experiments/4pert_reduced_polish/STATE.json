@@ -1,0 +1,30 @@
+{
+  "experiment_id": "EXP_4PERT_REDUCED_POLISH_001",
+  "name": "4pert_reduced_polish",
+  "description": "Test if reduced NM polish (8 -> 6) allows 4 perturbations to fit budget",
+  "claimed_by": "W2",
+  "started_at": "2026-02-02T08:15:00Z",
+  "completed_at": "2026-02-02T09:45:00Z",
+  "status": "completed",
+  "result": "FAILED - In budget but worse than 3-pert @ 8 NM",
+  "hypothesis": "4 pert @ 8 NM runs 1.9 min over budget. Reducing NM polish to 6 might save enough time without hurting accuracy much.",
+  "prior_findings": {
+    "4pert_8nm": {"score": 1.1555, "time_min": 61.9, "status": "over_budget"},
+    "3pert_8nm": {"score": 1.1478, "time_min": 58.4, "status": "in_budget"},
+    "4pert_reduced_fevals": {"score": 1.1465, "time_min": 66.7, "note": "FAILED - reducing fevals made things worse"}
+  },
+  "best_result": {
+    "config": "4pert_6nm",
+    "mean_score": 1.1451,
+    "mean_time_min": 57.9,
+    "in_budget": true,
+    "note": "Worse than 3-pert @ 8 NM (1.1478)"
+  },
+  "runs": [
+    {"run": 1, "score": 1.1446, "time_min": 64.2, "in_budget": false},
+    {"run": 2, "score": 1.1467, "time_min": 58.4, "in_budget": true},
+    {"run": 3, "score": 1.1441, "time_min": 51.1, "in_budget": true}
+  ],
+  "key_finding": "8 NM polish iterations are crucial for accuracy. Do NOT reduce them.",
+  "conclusion": "FAILED: 3-pert + 8 NM + tabu 0.04 remains optimal in-budget config (1.1478 @ 58.4 min)"
+}

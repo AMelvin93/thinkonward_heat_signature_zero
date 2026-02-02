@@ -1,0 +1,19 @@
+{
+  "experiment": "asymmetric_sigma_by_source",
+  "status": "in_progress",
+  "claimed_by": "W1",
+  "claimed_at": "2026-02-01T09:30:00Z",
+  "hypothesis": "2-source problems are harder (4D vs 3D). They may benefit from looser sigma while 1-source can use tighter sigma for faster convergence.",
+  "informed_by": [
+    "optimal_sigma_higher_fevals: 24/44 fevals improved 2-source RMSE by 10%",
+    "tighter_sigma_range: sigma 0.14/0.18 was worse than 0.15/0.19 overall, but maybe 1-src could benefit from 0.14",
+    "2-source problems contribute 60% of samples and most of the RMSE"
+  ],
+  "planned_configs": [
+    {"run": 1, "description": "Symmetric baseline (0.15/0.19)", "params": "Current optimal"},
+    {"run": 2, "description": "Asymmetric (0.14/0.19)", "params": "Tighter 1-src, same 2-src"},
+    {"run": 3, "description": "Asymmetric (0.15/0.22)", "params": "Same 1-src, looser 2-src"},
+    {"run": 4, "description": "Asymmetric (0.14/0.22)", "params": "Most asymmetric"}
+  ],
+  "tuning_runs": []
+}

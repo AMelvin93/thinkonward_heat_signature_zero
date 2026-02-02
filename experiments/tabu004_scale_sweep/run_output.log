@@ -1,0 +1,49 @@
+============================================================
+PERTURBATION SCALE SWEEP WITH TABU_DISTANCE=0.04
+============================================================
+Baseline: 1.1496 @ 55.4 min (scale=0.05, tabu=0.04)
+Testing: scales 0.045, 0.05, 0.055
+
+=== scale_0.045 ===
+  perturbation_scale: 0.045
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1419, Time=51.0 min
+  RMSE 1src: 0.1252, RMSE 2src: 0.1953
+vs Baseline (1.1496): -0.0077
+
+=== scale_0.05 ===
+  perturbation_scale: 0.05
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1476, Time=55.4 min
+  RMSE 1src: 0.1210, RMSE 2src: 0.1843
+vs Baseline (1.1496): -0.0020
+
+=== scale_0.055 ===
+  perturbation_scale: 0.055
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1415, Time=53.8 min
+  RMSE 1src: 0.1319, RMSE 2src: 0.1954
+vs Baseline (1.1496): -0.0081
+
+============================================================
+SUMMARY: Perturbation Scale Sweep
+============================================================
+
+Baseline: 1.1496 @ 55.4 min (scale=0.05)
+
+  scale=0.045: 1.1419 @ 51.0 min (-0.0077) [IN BUDGET]
+  scale=0.05: 1.1476 @ 55.4 min (-0.0020) [IN BUDGET]
+  scale=0.055: 1.1415 @ 53.8 min (-0.0081) [IN BUDGET]
+
+Best: scale=0.05 with score 1.1476
+
+0.05 CONFIRMED as optimal scale
