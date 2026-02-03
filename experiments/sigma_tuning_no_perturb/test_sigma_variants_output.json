@@ -1,0 +1,16 @@
+{
+  "results": [
+    {
+      "config_name": "2pert_sigma_014_018",
+      "score": 1.1453567081211364,
+      "projected_400_min": 50.10628600915273,
+      "in_budget": true
+    },
+    {
+      "config_name": "2pert_sigma_016_020",
+      "score": 1.1394716523706534,
+      "projected_400_min": 50.1950723528862,
+      "in_budget": true
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+============================================================
+EXPERIMENT: Higher fevals with 4pert_nm2
+============================================================
+Baseline (20/44 fevals): 1.1482 @ 51.7 min
+Budget remaining: 8.3 min
+
+=== Testing: 22/48 fevals ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1547, Time=84.2 min, Candidates=2.80
+  RMSE 1src: 0.1119, RMSE 2src: 0.1717
+  Budget: OVER BUDGET
+
+============================================================
+SUMMARY
+============================================================
+
+| Config | Score | Time | vs Baseline | Budget |
+|--------|-------|------|-------------|--------|
+| baseline (20/44) | 1.1482 | 51.7 | -- | IN |
+| 22/48 fevals | 1.1547 | 84.2 | +0.0065 | OVER |
+
+Results saved to run_output.json

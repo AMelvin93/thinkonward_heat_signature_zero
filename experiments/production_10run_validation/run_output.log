@@ -1,0 +1,19 @@
+======================================================================
+10-RUN PRODUCTION VALIDATION
+======================================================================
+Config: 4-pert + perturb_nm_iters=2 + sigma 0.18/0.22
+Previous 3-run result: 1.1482 +/- 0.0030 @ 51.7 min
+Top 10 threshold: 1.1585
+Goal: Establish high-confidence performance for final submission
+
+=== Validation Run 1: production ===
+  Progress: 20/80 (268s)
+  Progress: 40/80 (709s)
+  Progress: 60/80 (1243s)
+  Progress: 80/80 (1863s)
+Result: Score=1.1464, Time=155.3 min, Candidates=2.81
+  RMSE 1src: 0.1151, RMSE 2src: 0.1932
+  Budget: OVER BUDGET
+  Interim mean after run 1: 1.1464 +/- 0.0000
+
+=== Validation Run 2: production ===

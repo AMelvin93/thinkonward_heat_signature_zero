@@ -1,0 +1,48 @@
+============================================================
+EXPERIMENT: Asymmetric Budget Allocation for 2-Source
+============================================================
+Baseline (20/44 fevals): 1.1482 @ 51.7 min
+Budget remaining: 8.3 min
+
+=== Testing: 16/48 (redistribute) ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1495, Time=73.7 min, Candidates=2.81
+  RMSE 1src: 0.1192, RMSE 2src: 0.1825
+  Time 1src: 44.12s, Time 2src: 94.82s
+  Budget: OVER BUDGET
+
+=== Testing: 18/46 (slight shift) ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1498, Time=77.0 min, Candidates=2.85
+  RMSE 1src: 0.1250, RMSE 2src: 0.1922
+  Time 1src: 42.43s, Time 2src: 101.22s
+  Budget: OVER BUDGET
+
+=== Testing: 20/48 (use buffer) ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1526, Time=80.3 min, Candidates=2.85
+  RMSE 1src: 0.1226, RMSE 2src: 0.1805
+  Time 1src: 41.25s, Time 2src: 108.07s
+  Budget: OVER BUDGET
+
+============================================================
+SUMMARY
+============================================================
+
+| Config | Score | Time | vs Baseline | Budget |
+|--------|-------|------|-------------|--------|
+| baseline (20/44) | 1.1482 | 51.7 | -- | IN |
+| 16/48 (redistribute) | 1.1495 | 73.7 | +0.0013 | OVER |
+| 18/46 (slight shift) | 1.1498 | 77.0 | +0.0016 | OVER |
+| 20/48 (use buffer) | 1.1526 | 80.3 | +0.0044 | OVER |
+
+Results saved to run_output.json

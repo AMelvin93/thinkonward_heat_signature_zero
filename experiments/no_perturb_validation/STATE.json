@@ -1,0 +1,18 @@
+{
+  "experiment": "no_perturb_validation",
+  "status": "completed",
+  "claimed_by": "W1",
+  "completed_at": "2026-02-02T16:30:00Z",
+  "result": "VALIDATED - 100% runs in budget",
+  "findings": {
+    "mean_score": 1.1386,
+    "std_score": 0.0067,
+    "mean_time_min": 49.3,
+    "std_time_min": 7.0,
+    "runs_in_budget": "3/3 (100%)",
+    "best_run_score": 1.1469,
+    "gap_to_top10": -0.0199
+  },
+  "runs": 3,
+  "recommendation": "SAFE CHOICE for final submission"
+}

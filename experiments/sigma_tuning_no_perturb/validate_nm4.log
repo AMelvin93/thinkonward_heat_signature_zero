@@ -1,0 +1,53 @@
+======================================================================
+CRITICAL VALIDATION: nm4_scale05 (3 runs)
+======================================================================
+Config: 2 perturbations, nm_iters=4, scale=0.05
+Single run result: 1.1568 @ 52.1 min
+ONLY 0.0017 FROM TOP 10 (1.1585)!!!
+
+=== Validation Run 1 ===
+  Progress: 20/80 (101s)
+  Progress: 40/80 (234s)
+  Progress: 60/80 (430s)
+  Progress: 80/80 (629s)
+  Result: Score=1.1519, Time=52.4 min
+
+=== Validation Run 2 ===
+  Progress: 20/80 (108s)
+  Progress: 40/80 (247s)
+  Progress: 60/80 (433s)
+  Progress: 80/80 (637s)
+  Result: Score=1.1525, Time=53.1 min
+
+=== Validation Run 3 ===
+  Progress: 20/80 (108s)
+  Progress: 40/80 (261s)
+  Progress: 60/80 (470s)
+  Progress: 80/80 (685s)
+  Result: Score=1.1417, Time=57.1 min
+
+======================================================================
+VALIDATION SUMMARY: nm4_scale05 (3 runs)
+======================================================================
+
+Run Results:
+  Run 1: Score=1.1519 (gap to Top 10: 0.0066), Time=52.4 min [IN BUDGET]
+  Run 2: Score=1.1525 (gap to Top 10: 0.0060), Time=53.1 min [IN BUDGET]
+  Run 3: Score=1.1417 (gap to Top 10: 0.0168), Time=57.1 min [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1487 +/- 0.0050
+  Mean Time: 54.2 +/- 2.1 min
+  Runs in budget: 3/3 (100%)
+
+Top 10 Analysis:
+  Top 10 threshold: 1.1585
+  Our mean: 1.1487
+  Gap to Top 10: 0.0098
+
+  Best single run: 1.1525
+  Best run gap to Top 10: 0.0060
+
+*** Improvement over previous best (1.1425): +0.0062 ***
+
+Results saved to validate_nm4_output.json

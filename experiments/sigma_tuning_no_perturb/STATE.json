@@ -1,0 +1,20 @@
+{
+  "experiment": "sigma_tuning_no_perturb",
+  "status": "completed",
+  "claimed_by": "W1",
+  "completed_at": "2026-02-02T18:30:00Z",
+  "result": "SUCCESS - NEW BEST CONFIG FOUND",
+  "findings": {
+    "best_config": "2perturb_018_022",
+    "mean_score": 1.1425,
+    "std_score": 0.0065,
+    "mean_time_min": 51.3,
+    "std_time_min": 1.0,
+    "runs_in_budget": "3/3 (100%)",
+    "best_run_score": 1.1516,
+    "improvement_vs_baseline": 0.0039,
+    "gap_to_top10": 0.0160
+  },
+  "runs": 3,
+  "recommendation": "ADOPT 2perturb_018_022 as new production config"
+}

@@ -1,0 +1,30 @@
+{
+  "config": "nm4_scale05",
+  "mean_score": 1.1487077606091207,
+  "std_score": 0.004957702509831413,
+  "mean_time": 54.18817643986808,
+  "std_time": 2.069223482517008,
+  "runs_in_budget": 3,
+  "gap_to_top10": 0.009792239390879365,
+  "best_run": 1.152540525578108,
+  "runs": [
+    {
+      "run": 1,
+      "score": 1.1518757321429227,
+      "projected_400_min": 52.40370204051336,
+      "in_budget": true
+    },
+    {
+      "run": 2,
+      "score": 1.152540525578108,
+      "projected_400_min": 53.071865141391754,
+      "in_budget": true
+    },
+    {
+      "run": 3,
+      "score": 1.1417070241063312,
+      "projected_400_min": 57.08896213769913,
+      "in_budget": true
+    }
+  ]
+}

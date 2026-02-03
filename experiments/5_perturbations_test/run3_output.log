@@ -1,0 +1,27 @@
+============================================================
+EXPERIMENT: Reduced fevals (15/35) + 5 perturbations
+============================================================
+Baseline (4pert_nm2): 1.1482 @ 51.7 min (fevals 20/44)
+Testing: fevals 15/35 + 5 pert + nm_iters=1
+
+=== Run 1: reduced_fevals_5pert ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1567, Time=80.1 min, Candidates=2.81
+  RMSE 1src: 0.1137, RMSE 2src: 0.1697
+  Budget: OVER BUDGET
+
+============================================================
+RESULT
+============================================================
+
+Score: 1.1567 (vs baseline: +0.0085)
+Time: 80.1 min (vs baseline: +28.4 min)
+Budget: OVER
+Candidates: 2.81
+
+*** OVER BUDGET. ***
+
+Results saved to run3_output.json

@@ -1,0 +1,30 @@
+{
+  "config": "2pert_sigma_014_018",
+  "mean_score": 1.1395498073498642,
+  "std_score": 0.0033233413620133313,
+  "mean_time": 51.29295195473565,
+  "std_time": 1.0023994487107315,
+  "runs_in_budget": 3,
+  "improvement_vs_018_022": -0.002950192650135852,
+  "gap_to_top10": 0.018950192650135866,
+  "runs": [
+    {
+      "run": 1,
+      "score": 1.1404814758645103,
+      "projected_400_min": 51.08008919159571,
+      "in_budget": true
+    },
+    {
+      "run": 2,
+      "score": 1.1350945004398192,
+      "projected_400_min": 52.61314775546392,
+      "in_budget": true
+    },
+    {
+      "run": 3,
+      "score": 1.143073445745263,
+      "projected_400_min": 50.185618917147316,
+      "in_budget": true
+    }
+  ]
+}

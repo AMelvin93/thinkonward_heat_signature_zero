@@ -1,0 +1,18 @@
+{
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": false
+  },
+  "score": 1.1367497020328103,
+  "elapsed_sec": 675.9427030086517,
+  "projected_400_min": 56.32855858405431,
+  "rmse_1src_mean": 0.13136070829170454,
+  "rmse_2src_mean": 0.20260515746068908,
+  "avg_candidates": 2.8,
+  "in_budget": true
+}

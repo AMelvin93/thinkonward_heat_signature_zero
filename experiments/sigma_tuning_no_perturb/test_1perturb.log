@@ -1,0 +1,18 @@
+======================================================================
+TEST: sigma_015_019 with 1 perturbation
+======================================================================
+Expected from faster system: 1.1556 @ 44.7 min
+Our no_perturb baseline: 1.1386 @ 49.3 min
+Our sigma_015_019 no_perturb: 1.1321 @ 42.0 min
+
+=== Run 1 ===
+  Progress: 20/80 (86s)
+  Progress: 40/80 (207s)
+  Progress: 60/80 (374s)
+  Progress: 80/80 (545s)
+  Result: Score=1.1312, Time=45.4 min
+
+*** RESULT: Score=1.1312, Time=45.4 min [IN BUDGET] ***
+
+Improvement vs no_perturb baseline: -0.0074
+Gap to Top 10 (1.1585): 0.0273

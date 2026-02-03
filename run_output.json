@@ -1,41 +1,17 @@
 {
-  "mean_score": 1.1466489827617206,
-  "std_score": 0.0060933341112363575,
-  "mean_time": 57.44939954413308,
-  "vs_baseline": -0.0008510172382794057,
-  "vs_higher": -0.010151017238279492,
-  "in_budget": true,
-  "runs_in_budget": 3,
-  "runs": [
+  "baseline": {
+    "score": 1.1482,
+    "time_min": 51.7
+  },
+  "results": [
     {
-      "run": 1,
-      "config_name": "3pert_fevals_21_46",
-      "score": 1.153513286547622,
-      "rmse_1src": 0.11868306712130576,
-      "rmse_2src": 0.18270657741412002,
-      "avg_candidates": 2.85,
-      "projected_400_min": 57.53052339951197,
-      "in_budget": true
-    },
-    {
-      "run": 2,
-      "config_name": "3pert_fevals_21_46",
-      "score": 1.138705281130833,
-      "rmse_1src": 0.11371489302662097,
-      "rmse_2src": 0.19886381803793848,
-      "avg_candidates": 2.75,
-      "projected_400_min": 55.78345435857772,
-      "in_budget": true
-    },
-    {
-      "run": 3,
-      "config_name": "3pert_fevals_21_46",
-      "score": 1.1477283806067067,
-      "rmse_1src": 0.11874065022841268,
-      "rmse_2src": 0.18634496375064266,
+      "config": "22/48 fevals",
+      "score": 1.1547446839131519,
+      "rmse_1src": 0.11194022959698638,
+      "rmse_2src": 0.1717368478907436,
       "avg_candidates": 2.8,
-      "projected_400_min": 59.03422087430954,
-      "in_budget": true
+      "projected_400_min": 84.23387732108434,
+      "in_budget": false
     }
   ]
 }

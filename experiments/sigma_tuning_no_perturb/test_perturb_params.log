@@ -1,0 +1,32 @@
+======================================================================
+TEST: Perturbation parameter variations
+======================================================================
+Current best (nm3_scale05): 1.1425 @ 51.3 min
+
+=== Testing: nm4_scale05 ===
+  Progress: 20/80 (99s)
+  Progress: 40/80 (235s)
+  Progress: 60/80 (426s)
+  Progress: 80/80 (625s)
+  Result: Score=1.1568, Time=52.1 min
+
+=== Testing: nm3_scale06 ===
+  Progress: 20/80 (97s)
+  Progress: 40/80 (239s)
+  Progress: 60/80 (426s)
+  Progress: 80/80 (618s)
+  Result: Score=1.1494, Time=51.5 min
+
+======================================================================
+SUMMARY
+======================================================================
+Config                  Score    Delta       Time   Status
+----------------------------------------------------------------------
+nm3_scale05 (best)     1.1425      ---   51.3 min       IN
+----------------------------------------------------------------------
+nm4_scale05            1.1568  +0.0143     52.1 m       IN
+nm3_scale06            1.1494  +0.0069     51.5 m       IN
+
+*** POTENTIAL NEW BEST: nm4_scale05 ***
+    Score: 1.1568 (+0.0143)
+    Needs validation with 3 runs!

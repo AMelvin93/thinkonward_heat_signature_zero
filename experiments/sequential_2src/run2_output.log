@@ -1,0 +1,119 @@
+
+Sequential 2-Source Optimizer
+============================================================
+Samples: 80
+Workers: 7
+Fevals: 20/44
+Early fraction: 30%
+Shuffle: True
+Seed: 42
+============================================================
+[  1/80] Sample  31: 1-src RMSE=0.1000 cands=2 sims= 26 time=32.3s [OK]
+[  2/80] Sample  28: 1-src RMSE=1.2921 cands=2 sims= 26 time=32.1s [OK]
+[  3/80] Sample   0: 1-src RMSE=0.1087 cands=2 sims= 26 time=36.0s [OK]
+[  4/80] Sample  30: 1-src RMSE=0.1773 cands=2 sims= 26 time=39.2s [OK]
+[  5/80] Sample  22: 1-src RMSE=0.7023 cands=1 sims= 26 time=44.5s [OK]
+[  6/80] Sample  10: 1-src RMSE=0.1517 cands=2 sims= 26 time=47.0s [OK]
+[  7/80] Sample  18: 1-src RMSE=0.2072 cands=1 sims= 26 time=47.9s [OK]
+[  8/80] Sample   4: 1-src RMSE=0.1508 cands=1 sims= 26 time=30.8s [OK]
+[  9/80] Sample  12: 1-src RMSE=0.1986 cands=2 sims= 26 time=30.3s [OK]
+[ 10/80] Sample  70: 2-src RMSE=0.1409 cands=3 sims=102 time=128.8s [OK]
+[ 11/80] Sample  49: 2-src RMSE=0.1660 cands=3 sims=102 time=132.7s [OK]
+[ 12/80] Sample  33: 2-src RMSE=0.1602 cands=3 sims=102 time=128.7s [OK]
+[ 13/80] Sample  35: 2-src RMSE=0.1373 cands=3 sims=102 time=136.1s [OK]
+[ 14/80] Sample  68: 2-src RMSE=0.1511 cands=2 sims=102 time=136.5s [OK]
+[ 15/80] Sample  45: 2-src RMSE=0.4333 cands=3 sims=102 time=140.7s [OK]
+[ 16/80] Sample   9: 1-src RMSE=0.1932 cands=2 sims= 26 time=44.1s [OK]
+[ 17/80] Sample  67: 2-src RMSE=0.7882 cands=3 sims=102 time=210.4s [OK]
+[ 18/80] Sample   5: 1-src RMSE=0.1741 cands=1 sims= 26 time=42.1s [OK]
+[ 19/80] Sample  55: 2-src RMSE=0.1878 cands=3 sims=102 time=135.6s [OK]
+[ 20/80] Sample  61: 2-src RMSE=0.2656 cands=2 sims=102 time=143.2s [OK]
+[ 21/80] Sample  40: 2-src RMSE=0.3156 cands=2 sims=102 time=150.9s [OK]
+[ 22/80] Sample  73: 2-src RMSE=0.2749 cands=3 sims=102 time=177.3s [OK]
+[ 23/80] Sample  64: 2-src RMSE=0.1295 cands=3 sims=102 time=150.7s [OK]
+[ 24/80] Sample  16: 1-src RMSE=0.1673 cands=1 sims= 26 time=41.9s [OK]
+[ 25/80] Sample  47: 2-src RMSE=0.1661 cands=2 sims=102 time=145.7s [OK]
+[ 26/80] Sample  34: 2-src RMSE=0.3589 cands=2 sims=102 time=183.0s [OK]
+[ 27/80] Sample  54: 2-src RMSE=0.1408 cands=3 sims=102 time=139.4s [OK]
+[ 28/80] Sample  39: 2-src RMSE=0.1413 cands=1 sims=102 time=142.0s [OK]
+[ 29/80] Sample   7: 1-src RMSE=0.4417 cands=2 sims= 26 time=53.2s [OK]
+[ 30/80] Sample  62: 2-src RMSE=0.1879 cands=2 sims=102 time=235.1s [OK]
+[ 31/80] Sample  19: 1-src RMSE=0.1093 cands=2 sims= 26 time=55.1s [OK]
+[ 32/80] Sample  42: 2-src RMSE=0.5285 cands=3 sims=102 time=264.7s [OK]
+[ 33/80] Sample  79: 2-src RMSE=0.2113 cands=3 sims=102 time=189.5s [OK]
+[ 34/80] Sample  25: 1-src RMSE=0.6872 cands=2 sims= 26 time=34.9s [OK]
+[ 35/80] Sample  50: 2-src RMSE=0.2187 cands=3 sims=102 time=154.2s [OK]
+[ 36/80] Sample  56: 2-src RMSE=0.1187 cands=1 sims=102 time=256.9s [OK]
+[ 37/80] Sample  53: 2-src RMSE=0.1705 cands=2 sims=102 time=138.9s [OK]
+[ 38/80] Sample  13: 1-src RMSE=0.1579 cands=1 sims= 26 time=56.3s [OK]
+[ 39/80] Sample   3: 1-src RMSE=0.2336 cands=2 sims= 26 time=41.3s [OK]
+[ 40/80] Sample   8: 1-src RMSE=0.1082 cands=2 sims= 26 time=35.2s [OK]
+[ 41/80] Sample  17: 1-src RMSE=0.1041 cands=1 sims= 26 time=53.3s [OK]
+[ 42/80] Sample  66: 2-src RMSE=0.1161 cands=3 sims=102 time=148.3s [OK]
+[ 43/80] Sample  44: 2-src RMSE=0.2359 cands=1 sims=102 time=134.5s [OK]
+[ 44/80] Sample   6: 1-src RMSE=0.4824 cands=2 sims= 26 time=39.1s [OK]
+[ 45/80] Sample  76: 2-src RMSE=0.1303 cands=3 sims=102 time=204.4s [OK]
+[ 46/80] Sample  72: 2-src RMSE=0.2224 cands=3 sims=102 time=135.3s [OK]
+[ 47/80] Sample  38: 2-src RMSE=0.1548 cands=3 sims=102 time=192.5s [OK]
+[ 48/80] Sample  65: 2-src RMSE=0.1738 cands=3 sims=102 time=197.6s [OK]
+[ 49/80] Sample  15: 1-src RMSE=0.3162 cands=2 sims= 26 time=48.5s [OK]
+[ 50/80] Sample  27: 1-src RMSE=0.1611 cands=2 sims= 26 time=51.7s [OK]
+[ 51/80] Sample  36: 2-src RMSE=0.1259 cands=1 sims=102 time=192.3s [OK]
+[ 52/80] Sample  58: 2-src RMSE=0.1018 cands=3 sims=102 time=189.3s [OK]
+[ 53/80] Sample  26: 1-src RMSE=0.1548 cands=2 sims= 26 time=28.3s [OK]
+[ 54/80] Sample  24: 1-src RMSE=0.2497 cands=1 sims= 26 time=26.5s [OK]
+[ 55/80] Sample  46: 2-src RMSE=0.1158 cands=3 sims=102 time=190.9s [OK]
+[ 56/80] Sample  11: 1-src RMSE=0.0876 cands=2 sims= 26 time=50.4s [OK]
+[ 57/80] Sample  41: 2-src RMSE=0.4055 cands=2 sims=102 time=126.8s [OK]
+[ 58/80] Sample  48: 2-src RMSE=0.6769 cands=3 sims=102 time=126.0s [OK]
+[ 59/80] Sample  78: 2-src RMSE=0.1825 cands=2 sims=102 time=198.2s [OK]
+[ 60/80] Sample  77: 2-src RMSE=0.1995 cands=3 sims=102 time=136.1s [OK]
+[ 61/80] Sample  43: 2-src RMSE=0.1683 cands=2 sims=102 time=140.5s [OK]
+[ 62/80] Sample  57: 2-src RMSE=0.6959 cands=2 sims=102 time=164.0s [OK]
+[ 63/80] Sample  29: 1-src RMSE=0.1114 cands=2 sims= 26 time=45.0s [OK]
+[ 64/80] Sample  32: 2-src RMSE=0.0169 cands=3 sims=102 time=168.8s [OK]
+[ 65/80] Sample  59: 2-src RMSE=0.1436 cands=2 sims=102 time=128.4s [OK]
+[ 66/80] Sample  63: 2-src RMSE=0.2725 cands=2 sims=102 time=128.7s [OK]
+[ 67/80] Sample   1: 1-src RMSE=0.2038 cands=2 sims= 26 time=32.8s [OK]
+[ 68/80] Sample  75: 2-src RMSE=0.1323 cands=3 sims=102 time=168.2s [OK]
+[ 69/80] Sample  21: 1-src RMSE=0.2380 cands=1 sims= 26 time=35.0s [OK]
+[ 70/80] Sample   2: 1-src RMSE=0.0188 cands=1 sims= 26 time=34.2s [OK]
+[ 71/80] Sample  37: 2-src RMSE=0.1537 cands=3 sims=102 time=134.1s [OK]
+[ 72/80] Sample  23: 1-src RMSE=0.1017 cands=2 sims= 26 time=49.7s [OK]
+[ 73/80] Sample  20: 1-src RMSE=0.0113 cands=1 sims= 26 time=32.8s [OK]
+[ 74/80] Sample  69: 2-src RMSE=0.1295 cands=2 sims=102 time=190.5s [OK]
+[ 75/80] Sample  14: 1-src RMSE=0.1693 cands=1 sims= 26 time=38.1s [OK]
+[ 76/80] Sample  74: 2-src RMSE=0.3044 cands=3 sims=102 time=109.8s [OK]
+[ 77/80] Sample  60: 2-src RMSE=0.1543 cands=2 sims=102 time=108.8s [OK]
+[ 78/80] Sample  71: 2-src RMSE=0.2018 cands=3 sims=102 time=111.6s [OK]
+[ 79/80] Sample  51: 2-src RMSE=0.2072 cands=3 sims=102 time=102.9s [OK]
+[ 80/80] Sample  52: 2-src RMSE=0.2042 cands=2 sims=102 time=174.7s [OK]
+
+============================================================
+RESULTS
+============================================================
+RMSE:             0.234878 +/- 0.197199
+Submission Score: 1.0401
+Projected (400):  109.0 min
+
+  1-source: RMSE=0.2429 +/- 0.2460 (n=32)
+  2-source: RMSE=0.2296 +/- 0.1562 (n=48)
+
+  Avg candidates: 2.1
+  Avg sims/sample: 71.6
+  Total time: 1308.4s (21.8 min)
+
+Init type distribution:
+  smart: 67 (39.0%)
+  triangulation: 62 (36.0%)
+  joint: 43 (25.0%)
+
+Baseline: 1.0822 @ 57.3 min
+This run: 1.0401 @ 109.0 min
+Delta:    -0.0421 score, +51.7 min
+❌ OVER BUDGET
+============================================================
+
+/workspace/.venv/lib/python3.11/site-packages/mlflow/tracking/_tracking_service/utils.py:177: FutureWarning: The filesystem tracking backend (e.g., './mlruns') will be deprecated in February 2026. Consider transitioning to a database backend (e.g., 'sqlite:///mlflow.db') to take advantage of the latest MLflow features. See https://github.com/mlflow/mlflow/issues/18534 for more details and migration guidance.
+  return FileStore(store_uri, store_uri)
+Logged to MLflow: seq2src_20_44_20260202_135634

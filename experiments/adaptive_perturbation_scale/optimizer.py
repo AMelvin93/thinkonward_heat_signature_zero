@@ -22,6 +22,7 @@ _project_root = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, _project_root)
 
 from src.triangulation import triangulation_init
+from src.seeded_cmaes import derive_cmaes_seed
 
 sys.path.insert(0, os.path.join(_project_root, 'data', 'Heat_Signature_zero-starter_notebook'))
 from simulator import Heat2D
@@ -329,13 +330,18 @@ class AdaptivePerturbationOptimizer:
 
         all_solutions = []
 
-        for init_params, init_type in initializations:
+        # Get base seed from numpy's current random state (seeded per-sample in worker)
+        base_seed = np.random.randint(0, 2**31)
+
+        for init_idx, (init_params, init_type) in enumerate(initializations):
             opts = cma.CMAOptions()
             opts['maxfevals'] = fevals_per_init
             opts['bounds'] = [lb, ub]
             opts['verbose'] = -9
             opts['tolfun'] = 1e-6
             opts['tolx'] = 1e-6
+            # SEED CMA-ES for reproducibility
+            opts['seed'] = derive_cmaes_seed(base_seed, init_idx)
 
             es = cma.CMAEvolutionStrategy(init_params.tolist(), sigma0, opts)
 

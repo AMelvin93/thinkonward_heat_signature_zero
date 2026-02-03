@@ -1,0 +1,57 @@
+======================================================================
+VALIDATION: nm5_scale05 (3 runs)
+======================================================================
+Config: 2 perturbations, nm_iters=5, scale=0.05
+Single run result: 1.1547 @ 58.1 min
+Gap to Top 10: only 0.0038!
+
+WARNING: Timing is tight (58.1 min vs 60 min budget)
+
+=== Validation Run 1 ===
+  Progress: 20/80 (108s)
+  Progress: 40/80 (265s)
+  Progress: 60/80 (466s)
+  Progress: 80/80 (680s)
+  Result: Score=1.1479, Time=56.6 min
+
+=== Validation Run 2 ===
+  Progress: 20/80 (104s)
+  Progress: 40/80 (274s)
+  Progress: 60/80 (486s)
+  Progress: 80/80 (695s)
+  Result: Score=1.1503, Time=57.9 min
+
+=== Validation Run 3 ===
+  Progress: 20/80 (112s)
+  Progress: 40/80 (273s)
+  Progress: 60/80 (491s)
+  Progress: 80/80 (713s)
+  Result: Score=1.1456, Time=59.4 min
+
+======================================================================
+VALIDATION SUMMARY: nm5_scale05 (3 runs)
+======================================================================
+
+Run Results:
+  Run 1: Score=1.1479 (gap: 0.0106), Time=56.6 min [IN BUDGET]
+  Run 2: Score=1.1503 (gap: 0.0082), Time=57.9 min [IN BUDGET]
+  Run 3: Score=1.1456 (gap: 0.0129), Time=59.4 min [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1479 +/- 0.0019
+  Mean Time: 58.0 +/- 1.1 min
+  Runs in budget: 3/3 (100%)
+
+Comparison:
+  vs nm4_scale05 (1.1487): -0.0008
+  Gap to Top 10: 0.0106
+
+  Best single run: 1.1503 (gap: 0.0082)
+
+Timing Analysis:
+  Max time: 59.4 min
+  Buffer from 60 min: 0.6 min
+
+*** nm5_scale05 validated but not better than nm4 ***
+
+Results saved to validate_nm5_output.json

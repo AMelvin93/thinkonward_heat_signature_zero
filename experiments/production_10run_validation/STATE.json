@@ -1,0 +1,20 @@
+{
+  "experiment": "production_10run_validation",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-02-02T13:17:00Z",
+  "completed_at": "2026-02-02T14:45:00Z",
+  "result": "CRITICAL FINDING - System timing 37% slower than expected",
+  "findings": {
+    "timing_discrepancy": "Original 51.7 min projected → 70.9 min on this system (37% slower)",
+    "configs_tested": [
+      {"name": "4-pert nm2", "score": 1.1546, "time": 70.9, "budget": "OVER"},
+      {"name": "2-pert nm2", "score": 1.1452, "time": 67.4, "budget": "OVER"},
+      {"name": "1-pert", "score": 1.1447, "time": 65.9, "budget": "OVER"},
+      {"name": "no perturb", "score": 1.1367, "time": 56.3, "budget": "IN"}
+    ],
+    "only_in_budget_config": "no perturb @ 56.3 min (score 1.1367)",
+    "recommendation": "Use no-perturb for safety OR take risk with 4-pert on faster hardware"
+  },
+  "runs": 4
+}

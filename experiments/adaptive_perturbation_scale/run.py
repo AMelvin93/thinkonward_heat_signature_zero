@@ -1,5 +1,7 @@
 """
 Run adaptive_perturbation_scale experiment.
+
+Now with proper seeding for reproducibility.
 """
 
 import os
@@ -17,11 +19,15 @@ import numpy as np
 project_root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(project_root))
 
+from src.seed_manager import SeedManager
 from optimizer import AdaptivePerturbationOptimizer
 
 
 def process_single_sample(args):
-    idx, sample, meta, config = args
+    idx, sample, meta, config, sample_seed = args
+
+    # CRITICAL: Seed the worker at the very start for reproducibility
+    np.random.seed(sample_seed)
 
     optimizer = AdaptivePerturbationOptimizer(
         enable_perturbation=config['enable_perturbation'],
@@ -60,6 +66,7 @@ def process_single_sample(args):
             'n_sims': n_sims,
             'elapsed': elapsed,
             'n_perturbed_selected': n_perturbed,
+            'sample_seed': sample_seed,  # Store seed for reproducibility
             'success': True,
         }
     except Exception as e:
@@ -73,6 +80,7 @@ def process_single_sample(args):
             'n_sims': 0,
             'elapsed': time.time() - start,
             'n_perturbed_selected': 0,
+            'sample_seed': sample_seed,
             'success': False,
             'error': str(e),
         }
@@ -103,6 +111,8 @@ def main():
     samples = test_data['samples']
     meta = test_data['meta']
 
+    # Initialize seed manager for reproducible per-sample seeding
+    seed_manager = SeedManager(master_seed=args.seed)
     np.random.seed(args.seed)
     n_samples = len(samples)
 
@@ -143,7 +153,11 @@ def main():
     start_time = time.time()
     results = []
 
-    work_items = [(i, samples[i], meta, config) for i in range(n_samples)]
+    # Create work items WITH per-sample seeds for reproducibility
+    work_items = [
+        (i, samples[i], meta, config, seed_manager.get_sample_seed(i))
+        for i in range(n_samples)
+    ]
 
     with ProcessPoolExecutor(max_workers=args.workers) as executor:
         futures = {executor.submit(process_single_sample, item): item[0] for item in work_items}
@@ -226,6 +240,11 @@ def main():
         'n_perturbed_selected': n_perturbed,
         'n_samples_with_perturbed': n_samples_with_perturbed,
         'timestamp': datetime.now().isoformat(),
+        # SEED INFO FOR REPRODUCIBILITY
+        'seed_info': {
+            'master_seed': args.seed,
+            'sample_seeds': {r['idx']: r['sample_seed'] for r in results},
+        },
     })
 
     with open(state_path, 'w') as f:

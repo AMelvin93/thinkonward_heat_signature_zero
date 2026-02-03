@@ -1,0 +1,36 @@
+======================================================================
+FINAL TUNING: Closing the gap to Top 10
+======================================================================
+Current best (nm4_scale05): Mean=1.1487, Best=1.1525
+Top 10 threshold: 1.1585
+Gap: 0.0098 mean, 0.0060 best
+
+=== Testing: nm5_scale05 ===
+  Progress: 20/80 (107s)
+  Progress: 40/80 (265s)
+  Progress: 60/80 (481s)
+  Progress: 80/80 (697s)
+  Result: Score=1.1547, Time=58.1 min
+
+=== Testing: nm4_scale06 ===
+  Progress: 20/80 (108s)
+  Progress: 40/80 (251s)
+  Progress: 60/80 (462s)
+  Progress: 80/80 (687s)
+  Result: Score=1.1444, Time=57.2 min
+
+======================================================================
+SUMMARY
+======================================================================
+Config                  Score    Delta       Time   Status
+----------------------------------------------------------------------
+nm4_scale05 (best)     1.1487      ---   54.2 min       IN
+----------------------------------------------------------------------
+nm5_scale05            1.1547  +0.0060     58.1 m       IN (gap: 0.0038)
+nm4_scale06            1.1444  -0.0043     57.2 m       IN (gap: 0.0141)
+
+*** NEW BEST: nm5_scale05 ***
+    Score: 1.1547
+    Improvement: +0.0060
+    Gap to Top 10: 0.0038
+    NEEDS VALIDATION!

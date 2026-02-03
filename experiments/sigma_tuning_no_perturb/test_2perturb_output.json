@@ -1,0 +1,16 @@
+{
+  "results": [
+    {
+      "config_name": "2perturb_018_022",
+      "score": 1.1427274531526068,
+      "projected_400_min": 52.047931432724,
+      "in_budget": true
+    },
+    {
+      "config_name": "2perturb_015_019",
+      "score": 1.13937321675357,
+      "projected_400_min": 51.975525895754494,
+      "in_budget": true
+    }
+  ]
+}

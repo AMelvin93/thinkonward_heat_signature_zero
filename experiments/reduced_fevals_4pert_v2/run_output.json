@@ -1,0 +1,22 @@
+{
+  "results": [
+    {
+      "config_name": "fevals_16_32_4pert",
+      "score": 1.1573686790790703,
+      "projected_400_min": 78.00483808914821,
+      "elapsed_sec": 936.0580570697784,
+      "rmse_1src": 0.12386262765089365,
+      "rmse_2src": 0.1731406502159097,
+      "in_budget": false
+    },
+    {
+      "config_name": "fevals_14_28_4pert",
+      "score": 1.1467013829308363,
+      "projected_400_min": 73.96546006202698,
+      "elapsed_sec": 887.5855207443237,
+      "rmse_1src": 0.12240732844109134,
+      "rmse_2src": 0.1889187514566019,
+      "in_budget": false
+    }
+  ]
+}

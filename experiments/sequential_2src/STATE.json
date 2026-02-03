@@ -1,0 +1,48 @@
+{
+  "experiment": "sequential_2src",
+  "status": "completed",
+  "result": "FAILED",
+  "claimed_by": "W2",
+  "claimed_at": "2026-02-02T13:30:00Z",
+  "completed_at": "2026-02-02T14:10:00Z",
+  "hypothesis": "Sequential 2D+2D optimization using heat equation linearity may improve 2-source RMSE",
+  "baseline": {
+    "config": "4pert_nm2",
+    "score": 1.1482,
+    "time_min": 51.7,
+    "rmse_2src": 0.19
+  },
+  "results": [
+    {
+      "run": 1,
+      "config": {"max_fevals_1src": 15, "max_fevals_2src": 22, "early_fraction": 0.3},
+      "score": 1.0214,
+      "time_min": 74.2,
+      "rmse_2src": 0.3071,
+      "in_budget": false,
+      "decision": "PIVOT - over budget, try higher fevals to validate concept"
+    },
+    {
+      "run": 2,
+      "config": {"max_fevals_1src": 20, "max_fevals_2src": 44, "early_fraction": 0.3},
+      "score": 1.0401,
+      "time_min": 109.0,
+      "rmse_2src": 0.2296,
+      "in_budget": false,
+      "decision": "PIVOT - massively over budget (1.8x), try minimal fevals"
+    },
+    {
+      "run": 3,
+      "config": {"max_fevals_1src": 10, "max_fevals_2src": 15, "early_fraction": 0.3},
+      "score": 1.0157,
+      "time_min": 42.5,
+      "rmse_2src": 0.3078,
+      "in_budget": true,
+      "decision": "CONCLUDE - in budget but score is 0.13 worse than baseline"
+    }
+  ],
+  "conclusion": "FAILED - Sequential 2D+2D optimization introduces compounding errors. Cannot achieve competitive accuracy at any budget.",
+  "key_finding": "Joint 4D CMA-ES with covariance adaptation is fundamentally superior to sequential decomposition",
+  "tuning_runs": 3,
+  "time_utilization_pct": "N/A - approach fundamentally flawed"
+}

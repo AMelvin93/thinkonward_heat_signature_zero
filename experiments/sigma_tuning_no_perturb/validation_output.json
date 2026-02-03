@@ -1,0 +1,30 @@
+{
+  "config": "sigma_015_019_no_perturb",
+  "mean_score": 1.1321256348392192,
+  "std_score": 0.0058800079314224,
+  "mean_time": 42.02957128153907,
+  "std_time": 1.0736459573203383,
+  "runs_in_budget": 3,
+  "improvement_vs_baseline": -0.006474365160780815,
+  "gap_to_top10": 0.026374365160780844,
+  "runs": [
+    {
+      "run": 1,
+      "score": 1.1365218155801469,
+      "projected_400_min": 42.9361043771108,
+      "in_budget": true
+    },
+    {
+      "run": 2,
+      "score": 1.136040394547091,
+      "projected_400_min": 40.52144845326742,
+      "in_budget": true
+    },
+    {
+      "run": 3,
+      "score": 1.1238146943904197,
+      "projected_400_min": 42.63116101423899,
+      "in_budget": true
+    }
+  ]
+}

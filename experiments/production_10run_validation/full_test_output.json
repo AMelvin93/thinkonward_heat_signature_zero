@@ -1,0 +1,25 @@
+{
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 4,
+    "perturb_nm_iters": 2,
+    "perturbation_scale": 0.05,
+    "tabu_distance": 0.04,
+    "max_tabu_attempts": 10
+  },
+  "score": 1.1545846648114408,
+  "elapsed_sec": 850.3241696357727,
+  "projected_400_min": 70.86034746964772,
+  "rmse_1src_mean": 0.12713759254801002,
+  "rmse_2src_mean": 0.18554160130299355,
+  "time_1src_mean": 37.98366831988096,
+  "time_2src_mean": 94.52370221416156,
+  "avg_candidates": 2.8875,
+  "in_budget": false
+}

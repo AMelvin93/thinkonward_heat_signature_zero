@@ -1,0 +1,31 @@
+{
+  "results": [
+    {
+      "config_name": "sigma_016_020",
+      "score": 1.1379396896768972,
+      "projected_400_min": 42.66257337729136,
+      "elapsed_sec": 511.95088052749634,
+      "rmse_1src": 0.12079501705830015,
+      "rmse_2src": 0.20705127759372524,
+      "in_budget": true
+    },
+    {
+      "config_name": "sigma_015_019",
+      "score": 1.1405422029575305,
+      "projected_400_min": 43.34555170933405,
+      "elapsed_sec": 520.1466205120087,
+      "rmse_1src": 0.1348587443677454,
+      "rmse_2src": 0.1890167358249852,
+      "in_budget": true
+    },
+    {
+      "config_name": "sigma_017_021",
+      "score": 1.131477806908893,
+      "projected_400_min": 43.7730441292127,
+      "elapsed_sec": 525.2765295505524,
+      "rmse_1src": 0.12942650967172295,
+      "rmse_2src": 0.227156733472531,
+      "in_budget": true
+    }
+  ]
+}

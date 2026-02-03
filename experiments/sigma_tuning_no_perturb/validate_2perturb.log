@@ -1,0 +1,52 @@
+======================================================================
+VALIDATION: 2perturb_018_022 (3 runs)
+======================================================================
+Config: sigma 0.18/0.22, 2 perturbations, nm_iters=3
+Single run result: 1.1427 @ 52.0 min
+Baseline (no_perturb): 1.1386 @ 49.3 min
+
+=== Validation Run 1 ===
+  Progress: 20/80 (96s)
+  Progress: 40/80 (243s)
+  Progress: 60/80 (416s)
+  Progress: 80/80 (611s)
+  Result: Score=1.1390, Time=50.9 min
+
+=== Validation Run 2 ===
+  Progress: 20/80 (93s)
+  Progress: 40/80 (232s)
+  Progress: 60/80 (418s)
+  Progress: 80/80 (632s)
+  Result: Score=1.1516, Time=52.7 min
+
+=== Validation Run 3 ===
+  Progress: 20/80 (98s)
+  Progress: 40/80 (233s)
+  Progress: 60/80 (414s)
+  Progress: 80/80 (603s)
+  Result: Score=1.1369, Time=50.2 min
+
+======================================================================
+VALIDATION SUMMARY: 2perturb_018_022 (3 runs)
+======================================================================
+
+Run Results:
+  Run 1: Score=1.1390, Time=50.9 min [IN BUDGET]
+  Run 2: Score=1.1516, Time=52.7 min [IN BUDGET]
+  Run 3: Score=1.1369, Time=50.2 min [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1425 +/- 0.0065
+  Mean Time: 51.3 +/- 1.0 min
+  Runs in budget: 3/3 (100%)
+
+Comparison:
+  vs no_perturb baseline (1.1386): +0.0039
+  Gap to Top 10 (1.1585): 0.0160
+
+  Best single run: 1.1516 (gap to Top 10: 0.0069)
+
+*** VALIDATED: IMPROVEMENT over baseline! ***
+*** Recommend 2perturb_018_022 for submission ***
+
+Results saved to validate_2perturb_output.json

@@ -1,0 +1,29 @@
+======================================================================
+TEST: 2 perturbations timing
+======================================================================
+Baseline: no_perturb 1.1386 @ 49.3 min
+Target: Find if any 2-perturb config fits in 60 min budget
+
+=== Testing: 2perturb_018_022 ===
+  Progress: 20/80 (101s)
+  Progress: 40/80 (251s)
+  Progress: 60/80 (434s)
+  Progress: 80/80 (625s)
+  Result: Score=1.1427, Time=52.0 min
+
+*** 2perturb_018_022: IN BUDGET ***
+
+=== Testing: 2perturb_015_019 ===
+  Progress: 20/80 (101s)
+  Progress: 40/80 (236s)
+  Progress: 60/80 (417s)
+  Progress: 80/80 (624s)
+  Result: Score=1.1394, Time=52.0 min
+
+*** 2perturb_015_019: IN BUDGET ***
+
+======================================================================
+SUMMARY
+======================================================================
+2perturb_018_022          Score=1.1427 (+0.0041) Time=52.0 min [IN]
+2perturb_015_019          Score=1.1394 (+0.0008) Time=52.0 min [IN]

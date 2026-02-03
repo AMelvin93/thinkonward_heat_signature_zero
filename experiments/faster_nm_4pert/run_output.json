@@ -1,0 +1,39 @@
+{
+  "baseline_4pert_nm2": {
+    "score": 1.1546,
+    "time": 70.9
+  },
+  "safe_no_perturb": {
+    "score": 1.1367,
+    "time": 56.3
+  },
+  "results": [
+    {
+      "config_name": "nm6_4pert",
+      "score": 1.149062637197087,
+      "projected_400_min": 69.8656547665596,
+      "elapsed_sec": 838.3878571987152,
+      "rmse_1src": 0.11423210898226577,
+      "rmse_2src": 0.1804340646046234,
+      "in_budget": false
+    },
+    {
+      "config_name": "nm4_4pert",
+      "score": 1.1586883065070168,
+      "projected_400_min": 74.03071661790212,
+      "elapsed_sec": 888.3685994148254,
+      "rmse_1src": 0.12340090717910214,
+      "rmse_2src": 0.17254438539333758,
+      "in_budget": false
+    },
+    {
+      "config_name": "nm6_4pert_nm1",
+      "score": 1.1528090382775038,
+      "projected_400_min": 69.22449588775635,
+      "elapsed_sec": 830.6939506530762,
+      "rmse_1src": 0.11627018796654917,
+      "rmse_2src": 0.17513781908546786,
+      "in_budget": false
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+======================================================================
+VALIDATION: 2pert_sigma_014_018 (3 runs)
+======================================================================
+Config: sigma 0.14/0.18, 2 perturbations, nm_iters=3
+Single run result: 1.1454 @ 50.1 min
+Current best (2pert_018_022): 1.1425 @ 51.3 min
+
+=== Validation Run 1 ===
+  Progress: 20/80 (99s)
+  Progress: 40/80 (241s)
+  Progress: 60/80 (420s)
+  Progress: 80/80 (613s)
+  Result: Score=1.1405, Time=51.1 min
+
+=== Validation Run 2 ===
+  Progress: 20/80 (97s)
+  Progress: 40/80 (231s)
+  Progress: 60/80 (412s)
+  Progress: 80/80 (631s)
+  Result: Score=1.1351, Time=52.6 min
+
+=== Validation Run 3 ===
+  Progress: 20/80 (96s)
+  Progress: 40/80 (228s)
+  Progress: 60/80 (413s)
+  Progress: 80/80 (602s)
+  Result: Score=1.1431, Time=50.2 min
+
+======================================================================
+VALIDATION SUMMARY: 2pert_sigma_014_018 (3 runs)
+======================================================================
+
+Run Results:
+  Run 1: Score=1.1405, Time=51.1 min [IN BUDGET]
+  Run 2: Score=1.1351, Time=52.6 min [IN BUDGET]
+  Run 3: Score=1.1431, Time=50.2 min [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1395 +/- 0.0033
+  Mean Time: 51.3 +/- 1.0 min
+  Runs in budget: 3/3 (100%)
+
+Comparison:
+  vs 2pert_018_022 (1.1425): -0.0030
+  Gap to Top 10 (1.1585): 0.0190
+
+  Best single run: 1.1431 (gap to Top 10: 0.0154)
+
+*** No significant improvement over 2pert_018_022 ***
+
+Results saved to validate_sigma_014_018_output.json

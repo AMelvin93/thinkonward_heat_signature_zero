@@ -1,0 +1,18 @@
+{
+  "experiment": "faster_nm_4pert",
+  "status": "completed",
+  "claimed_by": "W1",
+  "claimed_at": "2026-02-02T15:05:27+00:00",
+  "completed_at": "2026-02-02T15:22:00Z",
+  "result": "FAILED - All 4-pert configs over budget",
+  "findings": {
+    "configs_tested": [
+      {"name": "nm6_4pert", "score": 1.1491, "time": 69.9, "budget": "OVER"},
+      {"name": "nm4_4pert", "score": 1.1587, "time": 74.0, "budget": "OVER"},
+      {"name": "nm6_4pert_nm1", "score": 1.1528, "time": 69.2, "budget": "OVER"}
+    ],
+    "baseline_comparison": "All worse or equal timing to nm8 baseline (70.9 min)",
+    "conclusion": "Cannot fit 4 perturbations in budget via NM reduction alone"
+  },
+  "runs": 3
+}

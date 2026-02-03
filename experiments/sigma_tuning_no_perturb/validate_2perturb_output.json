@@ -1,0 +1,30 @@
+{
+  "config": "2perturb_018_022",
+  "mean_score": 1.1424784043273888,
+  "std_score": 0.006525809562004172,
+  "mean_time": 51.273430181874176,
+  "std_time": 1.0330085729232585,
+  "runs_in_budget": 3,
+  "improvement_vs_baseline": 0.003878404327388729,
+  "gap_to_top10": 0.0160215956726113,
+  "runs": [
+    {
+      "run": 1,
+      "score": 1.1389508145060578,
+      "projected_400_min": 50.93609096606573,
+      "in_budget": true
+    },
+    {
+      "run": 2,
+      "score": 1.1516277505511687,
+      "projected_400_min": 52.673079788684845,
+      "in_budget": true
+    },
+    {
+      "run": 3,
+      "score": 1.1368566479249393,
+      "projected_400_min": 50.21111979087194,
+      "in_budget": true
+    }
+  ]
+}

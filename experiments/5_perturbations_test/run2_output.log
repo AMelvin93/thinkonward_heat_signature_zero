@@ -1,0 +1,28 @@
+============================================================
+EXPERIMENT: 5 Perturbations + perturb_nm_iters=1
+============================================================
+Baseline (4pert_nm2): 1.1482 @ 51.7 min
+5pert_nm2: 1.1534 @ 76.0 min (over budget)
+Testing: 5pert + perturb_nm_iters=1
+
+=== Run 1: 5pert_nm1 ===
+  Progress: 20/80
+  Progress: 40/80
+  Progress: 60/80
+  Progress: 80/80
+Result: Score=1.1533, Time=76.1 min, Candidates=2.81
+  RMSE 1src: 0.1185, RMSE 2src: 0.1753
+  Budget: OVER BUDGET
+
+============================================================
+RESULT
+============================================================
+
+Score: 1.1533 (vs baseline: +0.0051)
+Time: 76.1 min (vs baseline: +24.4 min)
+Budget: OVER
+Candidates: 2.81
+
+*** OVER BUDGET - Still doesn't fit. ***
+
+Results saved to run2_output.json

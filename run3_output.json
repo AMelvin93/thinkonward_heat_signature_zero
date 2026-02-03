@@ -1,0 +1,12 @@
+{
+  "config": "reduced_fevals_5pert",
+  "fevals": "15/35",
+  "n_perturbations": 5,
+  "score": 1.156742731655476,
+  "time_min": 80.09382265806198,
+  "delta_score": 0.00854273165547581,
+  "delta_time": 28.39382265806198,
+  "in_budget": false,
+  "avg_candidates": 2.8125,
+  "decision": "OVER_BUDGET"
+}

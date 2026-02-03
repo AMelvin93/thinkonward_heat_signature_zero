@@ -1,0 +1,16 @@
+{
+  "results": [
+    {
+      "config_name": "nm5_scale05",
+      "score": 1.1546829546700086,
+      "projected_400_min": 58.06916803121567,
+      "in_budget": true
+    },
+    {
+      "config_name": "nm4_scale06",
+      "score": 1.1444263702013469,
+      "projected_400_min": 57.215749800205224,
+      "in_budget": true
+    }
+  ]
+}

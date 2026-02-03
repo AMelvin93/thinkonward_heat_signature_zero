@@ -1,0 +1,51 @@
+======================================================================
+SIGMA_015_019 VALIDATION (3 runs)
+======================================================================
+Config: sigma 0.15/0.19 no_perturb
+Previous single run: 1.1405 @ 43.3 min
+Baseline (0.18/0.22): 1.1386 @ 49.3 min
+
+=== Validation Run 1 ===
+  Progress: 20/80 (81s)
+  Progress: 40/80 (191s)
+  Progress: 60/80 (334s)
+  Progress: 80/80 (515s)
+  Result: Score=1.1365, Time=42.9 min
+
+=== Validation Run 2 ===
+  Progress: 20/80 (75s)
+  Progress: 40/80 (182s)
+  Progress: 60/80 (329s)
+  Progress: 80/80 (486s)
+  Result: Score=1.1360, Time=40.5 min
+
+=== Validation Run 3 ===
+  Progress: 20/80 (83s)
+  Progress: 40/80 (199s)
+  Progress: 60/80 (343s)
+  Progress: 80/80 (512s)
+  Result: Score=1.1238, Time=42.6 min
+
+======================================================================
+VALIDATION SUMMARY: sigma_015_019 (3 runs)
+======================================================================
+
+Run Results:
+  Run 1: Score=1.1365, Time=42.9 min [IN BUDGET]
+  Run 2: Score=1.1360, Time=40.5 min [IN BUDGET]
+  Run 3: Score=1.1238, Time=42.6 min [IN BUDGET]
+
+Statistics:
+  Mean Score: 1.1321 +/- 0.0059
+  Mean Time: 42.0 +/- 1.1 min
+  Runs in budget: 3/3 (100%)
+
+Comparison:
+  vs baseline (0.18/0.22): -0.0065
+  Gap to Top 10 (1.1585): 0.0264
+
+  Best single run: 1.1365 (gap to Top 10: 0.0220)
+
+*** VALIDATED: All runs in budget (but no improvement) ***
+
+Results saved to validation_output.json

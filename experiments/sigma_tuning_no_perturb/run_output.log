@@ -1,0 +1,48 @@
+======================================================================
+EXPERIMENT: sigma_tuning_no_perturb
+======================================================================
+Testing tighter sigma values WITHOUT perturbation
+
+Baseline: sigma 0.18/0.22 no_perturb = 1.1386 @ 49.3 min
+
+--- Testing: sigma_016_020 ---
+    sigma0_1src=0.16, sigma0_2src=0.2
+    Progress: 20/80 (79s)
+    Progress: 40/80 (196s)
+    Progress: 60/80 (358s)
+    Progress: 80/80 (512s)
+    Result: Score=1.1379 (-0.0007), Time=42.7 min [IN BUDGET]
+
+--- Testing: sigma_015_019 ---
+    sigma0_1src=0.15, sigma0_2src=0.19
+    Progress: 20/80 (80s)
+    Progress: 40/80 (197s)
+    Progress: 60/80 (360s)
+    Progress: 80/80 (520s)
+    Result: Score=1.1405 (+0.0019), Time=43.3 min [IN BUDGET]
+
+--- Testing: sigma_017_021 ---
+    sigma0_1src=0.17, sigma0_2src=0.21
+    Progress: 20/80 (77s)
+    Progress: 40/80 (196s)
+    Progress: 60/80 (344s)
+    Progress: 80/80 (525s)
+    Result: Score=1.1315 (-0.0071), Time=43.8 min [IN BUDGET]
+
+======================================================================
+SUMMARY
+======================================================================
+Config                  Score    Delta       Time     Status
+----------------------------------------------------------------------
+baseline (0.18/0.22)   1.1386      ---   49.3 min         IN
+----------------------------------------------------------------------
+sigma_016_020          1.1379  -0.0007     42.7 m         IN
+sigma_015_019          1.1405  +0.0019     43.3 m         IN
+sigma_017_021          1.1315  -0.0071     43.8 m         IN
+
+*** BEST IN-BUDGET: sigma_015_019 ***
+    Score: 1.1405, Time: 43.3 min
+    Improvement over baseline: +0.0019
+    Gap to Top 10 (1.1585): 0.0180
+
+Results saved to run_output.json
