@@ -1,0 +1,54 @@
+======================================================================
+TEST: 3pert_nm3 (reduced iterations for timing)
+======================================================================
+Config: 3 perturbations, nm_iters=3 (was 4), scale=0.05
+
+Previous 3pert nm4 result:
+  Mean: 1.1515 @ 59.3 min
+  2/3 runs in budget
+
+Expectation: ~3-4 min faster with nm3 instead of nm4
+======================================================================
+
+=== Run 1 ===
+  Progress: 20/80 (103s)
+  Progress: 40/80 (242s)
+  Progress: 60/80 (413s)
+  Progress: 80/80 (629s)
+  Result: Score=1.1513, Time=52.4 min
+
+=== Run 2 ===
+  Progress: 20/80 (105s)
+  Progress: 40/80 (249s)
+  Progress: 60/80 (444s)
+  Progress: 80/80 (650s)
+  Result: Score=1.1498, Time=54.2 min
+
+=== Run 3 ===
+  Progress: 20/80 (106s)
+  Progress: 40/80 (251s)
+  Progress: 60/80 (449s)
+  Progress: 80/80 (657s)
+  Result: Score=1.1466, Time=54.7 min
+
+======================================================================
+VALIDATION SUMMARY: 3pert_nm3 (3 runs)
+======================================================================
+  Run 1: Score=1.1513 (gap: 0.0072), Time=52.4 min [IN]
+  Run 2: Score=1.1498 (gap: 0.0087), Time=54.2 min [IN]
+  Run 3: Score=1.1466 (gap: 0.0119), Time=54.7 min [IN]
+
+Statistics:
+  Mean Score: 1.1492 +/- 0.0020
+  Mean Time: 53.8 +/- 1.0 min
+  Runs in budget: 3/3
+
+Comparison:
+  vs 2pert nm4 (1.1487): +0.0005
+  vs 3pert nm4 (1.1515): -0.0023
+  Gap to Top 10: 0.0093
+
+  Best run: 1.1513 (gap: 0.0072)
+  Max time: 54.7 min
+
+Results saved to test_3pert_nm3_output.json

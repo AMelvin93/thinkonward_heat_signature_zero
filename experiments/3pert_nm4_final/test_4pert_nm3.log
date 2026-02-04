@@ -1,0 +1,56 @@
+======================================================================
+TEST: 4pert_nm3 scale06
+======================================================================
+Config: 4 perturbations, nm_iters=3, scale=0.06
+
+Previous 4pert nm2 scale06 result:
+  Mean: 1.1549 @ 57.5 min
+  Best: 1.1612 (BEATS TOP 10!)
+
+Hypothesis: More refinement with nm3 might help
+======================================================================
+
+=== Run 1 ===
+  Progress: 20/80 (115s)
+  Progress: 40/80 (272s)
+  Progress: 60/80 (488s)
+  Progress: 80/80 (712s)
+  Result: Score=1.1436, Time=59.3 min
+
+======================================================================
+INITIAL RESULT
+======================================================================
+Score: 1.1436 (gap to Top 10: 0.0149)
+Time: 59.3 min [IN BUDGET]
+
+*** IN BUDGET! Running 2 more validation runs... ***
+
+=== Run 2 ===
+  Progress: 20/80 (112s)
+  Progress: 40/80 (271s)
+  Progress: 60/80 (479s)
+  Progress: 80/80 (693s)
+  Result: Score=1.1510, Time=57.8 min
+
+=== Run 3 ===
+  Progress: 20/80 (98s)
+  Progress: 40/80 (248s)
+  Progress: 60/80 (471s)
+  Progress: 80/80 (699s)
+  Result: Score=1.1595, Time=58.3 min
+
+======================================================================
+VALIDATION SUMMARY (3 runs)
+======================================================================
+  Run 1: Score=1.1436 (gap: 0.0149), Time=59.3 min [IN]
+  Run 2: Score=1.1510 (gap: 0.0075), Time=57.8 min [IN]
+  Run 3: Score=1.1595 (gap: -0.0010), Time=58.3 min [IN]
+
+Mean: 1.1514 +/- 0.0065
+Time: 58.5 min
+Runs in budget: 3/3
+
+Delta vs 4pert nm2 (1.1549): -0.0035
+Gap to Top 10: 0.0071
+
+Results saved to test_4pert_nm3_output.json

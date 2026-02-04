@@ -1,0 +1,10 @@
+{
+  "config": "5pert_nm1_scale06",
+  "result": "WORSE THAN BEST",
+  "run": {
+    "run": 1,
+    "score": 1.152998850459359,
+    "projected_400_min": 59.15271451075872,
+    "in_budget": true
+  }
+}

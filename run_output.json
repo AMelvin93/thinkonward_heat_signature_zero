@@ -1,17 +1,15 @@
 {
-  "baseline": {
-    "score": 1.1482,
-    "time_min": 51.7
+  "config": "3pert_nm4_scale05",
+  "result": {
+    "run": 1,
+    "score": 1.1552388758016399,
+    "projected_400_min": 55.75860317548116,
+    "in_budget": true,
+    "one_src_rmse": 0.1168511488746086,
+    "two_src_rmse": 0.18004303999835358,
+    "one_src_time": 32.20239817351103,
+    "two_src_time": 70.91875564555328
   },
-  "results": [
-    {
-      "config": "22/48 fevals",
-      "score": 1.1547446839131519,
-      "rmse_1src": 0.11194022959698638,
-      "rmse_2src": 0.1717368478907436,
-      "avg_candidates": 2.8,
-      "projected_400_min": 84.23387732108434,
-      "in_budget": false
-    }
-  ]
+  "delta_vs_baseline": 0.00653887580163981,
+  "gap_to_top10": 0.0032611241983602213
 }

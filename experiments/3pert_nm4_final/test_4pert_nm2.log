@@ -1,0 +1,54 @@
+======================================================================
+TEST: 4pert_nm2 scale06
+======================================================================
+Config: 4 perturbations, nm_iters=2, scale=0.06
+
+Previous 3pert nm3 scale06 result:
+  Mean: 1.1506 @ 55.9 min
+  Best: 1.1581 (gap: 0.0004)
+
+Hypothesis: More exploration opportunities with 4 perturbations
+======================================================================
+
+=== Run 1 ===
+  Progress: 20/80 (107s)
+  Progress: 40/80 (258s)
+  Progress: 60/80 (461s)
+  Progress: 80/80 (693s)
+  Result: Score=1.1561, Time=57.7 min
+
+=== Run 2 ===
+  Progress: 20/80 (107s)
+  Progress: 40/80 (273s)
+  Progress: 60/80 (481s)
+  Progress: 80/80 (708s)
+  Result: Score=1.1473, Time=59.0 min
+
+=== Run 3 ===
+  Progress: 20/80 (95s)
+  Progress: 40/80 (237s)
+  Progress: 60/80 (445s)
+  Progress: 80/80 (669s)
+  Result: Score=1.1612, Time=55.8 min
+
+======================================================================
+VALIDATION SUMMARY: 4pert_nm2 scale06 (3 runs)
+======================================================================
+  Run 1: Score=1.1561 (gap: 0.0024), Time=57.7 min [IN]
+  Run 2: Score=1.1473 (gap: 0.0112), Time=59.0 min [IN]
+  Run 3: Score=1.1612 (gap: -0.0027), Time=55.8 min [IN]
+
+Statistics:
+  Mean Score: 1.1549 +/- 0.0058
+  Mean Time: 57.5 +/- 1.3 min
+  Runs in budget: 3/3
+
+Comparison:
+  vs 3pert nm3 scale06 (1.1506): +0.0043
+  vs 2pert nm4 (1.1487): +0.0062
+  Gap to Top 10: 0.0036
+
+  Best run: 1.1612 (gap: -0.0027)
+  Max time: 59.0 min
+
+Results saved to test_4pert_nm2_output.json

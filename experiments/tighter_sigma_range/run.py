@@ -10,13 +10,17 @@ import sys
 import pickle
 import time
 import json
+import argparse
 from datetime import datetime
 from concurrent.futures import ProcessPoolExecutor, as_completed
+
+import numpy as np
 
 _project_root = os.path.join(os.path.dirname(__file__), '..', '..')
 sys.path.insert(0, _project_root)
 
 from optimizer import TabuBasinHoppingOptimizer
+from src.seed_manager import SeedManager
 
 DATA_PATH = '/workspace/data/heat-signature-zero-test-data.pkl'
 MAX_WORKERS = 7
@@ -28,8 +32,12 @@ def load_data():
 
 
 def process_sample(args):
-    sample_idx, sample, meta, config = args
-    optimizer = TabuBasinHoppingOptimizer(**config)
+    sample_idx, sample, meta, config, sample_seed = args
+    # Seed worker for reproducibility
+    np.random.seed(sample_seed)
+    # Pass seed to optimizer
+    config_with_seed = {**config, 'seed': sample_seed}
+    optimizer = TabuBasinHoppingOptimizer(**config_with_seed)
     try:
         candidates, best_rmse, results, n_sims = optimizer.estimate_sources(
             sample, meta, q_range=(0.5, 2.0), verbose=False
@@ -39,7 +47,7 @@ def process_sample(args):
         return sample_idx, float('inf'), 0, str(e)
 
 
-def run_experiment(config, config_name, data):
+def run_experiment(config, config_name, data, seed_manager):
     samples = data['samples']
     meta = data['meta']
     n_samples = len(samples)
@@ -47,9 +55,14 @@ def run_experiment(config, config_name, data):
     print(f"\n{'='*60}")
     print(f"Config: {config_name}")
     print(f"Sigma: 1src={config.get('sigma0_1src')}, 2src={config.get('sigma0_2src')}")
+    print(f"Seed: {seed_manager.master_seed}")
     print(f"{'='*60}")
 
-    args_list = [(i, samples[i], meta, config) for i in range(n_samples)]
+    # Create work items with per-sample seeds for reproducibility
+    args_list = [
+        (i, samples[i], meta, config, seed_manager.get_sample_seed(i))
+        for i in range(n_samples)
+    ]
 
     start_time = time.time()
     rmses = {}
@@ -102,6 +115,7 @@ def run_experiment(config, config_name, data):
     return {
         'config': config_name,
         'params': config,
+        'seed': seed_manager.master_seed,
         'score': score,
         'rmse_1src': avg_rmse_1src,
         'rmse_2src': avg_rmse_2src,
@@ -114,6 +128,16 @@ def run_experiment(config, config_name, data):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Tighter sigma range experiment')
+    parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
+    parser.add_argument('--workers', type=int, default=MAX_WORKERS, help='Number of parallel workers')
+    args = parser.parse_args()
+
+    # Initialize seed manager for reproducibility
+    seed_manager = SeedManager(master_seed=args.seed)
+    np.random.seed(args.seed)
+
+    print(f"Seed: {args.seed}")
     print("Loading data...")
     data = load_data()
     print(f"Loaded {len(data['samples'])} samples")
@@ -142,7 +166,7 @@ def main():
 
     results = []
     for config, name in zip(configs, config_names):
-        result = run_experiment(config, name, data)
+        result = run_experiment(config, name, data, seed_manager)
         results.append(result)
 
         # Save intermediate results

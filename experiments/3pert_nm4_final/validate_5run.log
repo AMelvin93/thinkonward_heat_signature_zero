@@ -1,0 +1,94 @@
+======================================================================
+5-RUN VALIDATION: 4pert nm2 scale06 (BEST CONFIG)
+======================================================================
+
+Config:
+  n_perturbations: 4
+  perturb_nm_iters: 2
+  perturbation_scale: 0.06
+
+Previous 3-run validation:
+  Mean: 1.1549 +/- 0.0058
+  Best: 1.1612 (BEATS TOP 10!)
+
+Top 10 threshold: 1.1585
+======================================================================
+
+=== Validation Run 1 ===
+  Progress: 20/80 (112s)
+  Progress: 40/80 (277s)
+  Progress: 60/80 (486s)
+  Progress: 80/80 (704s)
+  Result: Score=1.1532, Time=58.7 min
+  1-src RMSE: 0.1157, 2-src RMSE: 0.1871
+
+=== Validation Run 2 ===
+  Progress: 20/80 (109s)
+  Progress: 40/80 (262s)
+  Progress: 60/80 (468s)
+  Progress: 80/80 (699s)
+  Result: Score=1.1497, Time=58.2 min
+  1-src RMSE: 0.1213, 2-src RMSE: 0.1893
+
+=== Validation Run 3 ===
+  Progress: 20/80 (118s)
+  Progress: 40/80 (277s)
+  Progress: 60/80 (502s)
+  Progress: 80/80 (732s)
+  Result: Score=1.1538, Time=61.0 min
+  1-src RMSE: 0.1190, 2-src RMSE: 0.1847
+
+=== Validation Run 4 ===
+  Progress: 20/80 (101s)
+  Progress: 40/80 (262s)
+  Progress: 60/80 (591s)
+  Progress: 80/80 (1300s)
+  Result: Score=1.1513, Time=108.4 min
+  1-src RMSE: 0.1187, 2-src RMSE: 0.1840
+
+=== Validation Run 5 ===
+  Progress: 20/80 (287s)
+  Progress: 40/80 (637s)
+  Progress: 60/80 (970s)
+  Progress: 80/80 (1390s)
+  Result: Score=1.1524, Time=115.8 min
+  1-src RMSE: 0.1379, 2-src RMSE: 0.1753
+
+======================================================================
+5-RUN VALIDATION SUMMARY
+======================================================================
+
+Run Results:
+  Run 1: Score=1.1532 (gap: 0.0053), Time=58.7 min [IN]
+  Run 2: Score=1.1497 (gap: 0.0088), Time=58.2 min [IN]
+  Run 3: Score=1.1538 (gap: 0.0047), Time=61.0 min [OVER]
+  Run 4: Score=1.1513 (gap: 0.0072), Time=108.4 min [OVER]
+  Run 5: Score=1.1524 (gap: 0.0061), Time=115.8 min [OVER]
+
+----------------------------------------
+STATISTICS:
+  Mean Score: 1.1521 +/- 0.0014
+  Min Score: 1.1497
+  Max Score: 1.1538
+  Mean Time: 80.4 +/- 26.0 min
+  Runs in budget: 2/5 (40%)
+  Runs beating Top 10: 0/5 (0%)
+
+----------------------------------------
+TOP 10 ANALYSIS:
+  Top 10 threshold: 1.1585
+  Our mean: 1.1521
+  Gap to Top 10: 0.0064
+  Best run: 1.1538 (-0.0047 vs Top 10)
+
+  95% CI: [1.1508, 1.1534]
+
+----------------------------------------
+RMSE BREAKDOWN:
+  Avg 1-source RMSE: 0.1226
+  Avg 2-source RMSE: 0.1841
+
+======================================================================
+======================================================================
+
+Results saved to validate_5run_output.json

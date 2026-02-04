@@ -1,0 +1,30 @@
+{
+  "config": "3pert_nm3_scale06",
+  "mean_score": 1.1506064516768129,
+  "std_score": 0.005703197860353416,
+  "mean_time": 55.923301729891044,
+  "std_time": 0.9836053792137405,
+  "runs_in_budget": 3,
+  "best_run": 1.1581173234675244,
+  "gap_to_top10": 0.007893548323187227,
+  "runs": [
+    {
+      "run": 1,
+      "score": 1.1493965613927408,
+      "projected_400_min": 54.54725444316864,
+      "in_budget": true
+    },
+    {
+      "run": 2,
+      "score": 1.1443054701701727,
+      "projected_400_min": 56.435002624988556,
+      "in_budget": true
+    },
+    {
+      "run": 3,
+      "score": 1.1581173234675244,
+      "projected_400_min": 56.787648121515915,
+      "in_budget": true
+    }
+  ]
+}

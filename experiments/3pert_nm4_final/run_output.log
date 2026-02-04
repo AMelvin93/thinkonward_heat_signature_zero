@@ -1,0 +1,64 @@
+======================================================================
+EXPERIMENT: 3pert_nm4_final
+======================================================================
+Config: 3 perturbations, nm_iters=4, scale=0.05
+
+Baseline (2pert nm4):
+  Mean: 1.1487 @ 54.2 min
+  Best: 1.1525
+  Gap to Top 10: 0.0098
+
+Hypothesis: 3rd perturbation adds ~3-4 min, fits in budget, improves score
+======================================================================
+
+=== Run 1 ===
+  Progress: 20/80 (109s)
+  Progress: 40/80 (254s)
+  Progress: 60/80 (458s)
+  Progress: 80/80 (669s)
+  Result: Score=1.1552, Time=55.8 min
+  1-src: RMSE=0.1169, avg_time=32.2s (n=32)
+  2-src: RMSE=0.1800, avg_time=70.9s (n=48)
+
+======================================================================
+INITIAL RESULT
+======================================================================
+Score: 1.1552 (gap to Top 10: 0.0033)
+Time: 55.8 min [IN BUDGET]
+Delta vs 2pert nm4 baseline (1.1487): +0.0065
+
+*** PROMISING! Running 2 more validation runs... ***
+
+=== Run 2 ===
+  Progress: 20/80 (111s)
+  Progress: 40/80 (259s)
+  Progress: 60/80 (470s)
+  Progress: 80/80 (684s)
+  Result: Score=1.1465, Time=57.0 min
+  1-src: RMSE=0.1228, avg_time=32.2s (n=32)
+  2-src: RMSE=0.2006, avg_time=74.1s (n=48)
+
+=== Run 3 ===
+  Progress: 20/80 (107s)
+  Progress: 40/80 (267s)
+  Progress: 60/80 (467s)
+  Progress: 80/80 (781s)
+  Result: Score=1.1527, Time=65.1 min
+  1-src: RMSE=0.1219, avg_time=31.7s (n=32)
+  2-src: RMSE=0.1795, avg_time=76.9s (n=48)
+
+======================================================================
+VALIDATION SUMMARY (3 runs)
+======================================================================
+  Run 1: Score=1.1552, Time=55.8 min [IN]
+  Run 2: Score=1.1465, Time=57.0 min [IN]
+  Run 3: Score=1.1527, Time=65.1 min [OVER]
+
+Mean: 1.1515 +/- 0.0037
+Time: 59.3 min
+Runs in budget: 2/3
+
+Delta vs 2pert nm4 (1.1487): +0.0028
+Gap to Top 10: 0.0070
+
+Results saved to run_output.json

@@ -1,14 +1,17 @@
 """
-Basin Hopping with Tabu Memory Optimizer
+Basin Hopping with Tabu Memory Optimizer - Multi-Basin + Quality Gating
 
-Standard basin hopping can revisit the same basins. Adding tabu memory
-prevents wasted exploration of already-explored regions.
+Fork of tighter_sigma_range/optimizer.py with two additions:
+1. Multi-basin hopping: Distribute perturbations across top-K solutions
+   instead of only perturbing from the best solution.
+2. Quality gating: Drop candidates whose inclusion would lower the
+   competition score for the sample.
 
-Key features:
-1. Maintain list of explored positions
-2. When perturbing, ensure new position is far enough from all remembered positions
-3. Use distance threshold to define "already explored"
-4. Guide exploration toward unexplored regions
+Key parameters:
+  - n_perturb_bases (int): Number of base solutions to perturb from.
+    When 1, behavior is identical to the original optimizer.
+  - quality_gate_enabled (bool): When True, incrementally add candidates
+    only if they improve the competition formula score.
 """
 
 import os
@@ -161,7 +164,7 @@ class TabuMemory:
 
 class TabuBasinHoppingOptimizer:
     """
-    Optimizer with tabu memory to avoid revisiting explored regions.
+    Optimizer with tabu memory, multi-basin hopping, and quality gating.
     """
 
     def __init__(
@@ -186,13 +189,17 @@ class TabuBasinHoppingOptimizer:
         timestep_fraction: float = 0.40,
         # Tabu perturbation parameters
         enable_tabu_hopping: bool = True,
-        n_perturbations: int = 2,  # Perturbations to try
+        n_perturbations: int = 2,
         perturbation_scale: float = 0.05,
         perturb_nm_iters: int = 3,
-        tabu_distance: float = 0.03,  # Min distance from explored positions
-        max_tabu_attempts: int = 10,  # Max attempts to find non-tabu perturbation
+        tabu_distance: float = 0.03,
+        max_tabu_attempts: int = 10,
+        # Multi-basin hopping
+        n_perturb_bases: int = 1,
+        # Quality gating
+        quality_gate_enabled: bool = False,
         # Reproducibility
-        seed: int = None,  # Random seed for reproducibility
+        seed: int = None,
     ):
         self.Lx = Lx
         self.Ly = Ly
@@ -219,6 +226,10 @@ class TabuBasinHoppingOptimizer:
         self.perturb_nm_iters = perturb_nm_iters
         self.tabu_distance = tabu_distance
         self.max_tabu_attempts = max_tabu_attempts
+        # Multi-basin hopping
+        self.n_perturb_bases = n_perturb_bases
+        # Quality gating
+        self.quality_gate_enabled = quality_gate_enabled
         # Reproducibility
         self.seed = seed
         if seed is not None:
@@ -315,12 +326,12 @@ class TabuBasinHoppingOptimizer:
             if not tabu_memory.is_tabu(perturbed):
                 return perturbed
 
-        # If we couldn't find a non-tabu perturbation, return a random valid one
+        # If we couldn't find a non-tabu perturbation, return last attempt
         return perturbed
 
     def _run_single_optimization(self, sample, meta, q_range, solver_coarse, solver_fine,
                                   initializations, n_sources, nt_reduced):
-        """Run CMA-ES + NM + tabu basin hopping."""
+        """Run CMA-ES + NM + tabu basin hopping (with multi-basin support)."""
         sensors_xy = np.array(sample['sensors_xy'])
         Y_observed = sample['Y_noisy']
         dt = meta['dt']
@@ -401,49 +412,63 @@ class TabuBasinHoppingOptimizer:
         for pos_params, rmse_coarse, init_type in all_solutions[self.refine_top_n:self.candidate_pool_size]:
             refined_solutions.append((pos_params, rmse_coarse, init_type))
 
-        # === TABU BASIN HOPPING ===
+        # === TABU BASIN HOPPING (with multi-basin support) ===
         if self.enable_tabu_hopping:
             refined_solutions.sort(key=lambda x: x[1])
 
-            # Initialize tabu memory with best solution
+            # Initialize tabu memory
             tabu_memory = TabuMemory(tabu_distance=self.tabu_distance)
-            best_pos, best_rmse, best_init_type = refined_solutions[0]
-            tabu_memory.add(best_pos)
+
+            # Determine how many bases to use
+            n_bases = min(self.n_perturb_bases, len(refined_solutions))
+            perturbations_per_base = max(1, self.n_perturbations // n_bases)
+            extra = self.n_perturbations - (perturbations_per_base * n_bases)
+
+            # Track global best across all bases
+            global_best_pos = refined_solutions[0][0]
+            global_best_rmse = refined_solutions[0][1]
 
             new_candidates = []
 
-            # Generate perturbations using tabu-aware approach
-            for _ in range(self.n_perturbations):
-                # Generate perturbation avoiding tabu regions
-                perturbed = self._generate_tabu_aware_perturbation(best_pos, lb, ub, tabu_memory)
+            for base_idx in range(n_bases):
+                base_pos, base_rmse, _ = refined_solutions[base_idx]
+                tabu_memory.add(base_pos)
 
-                # Add to tabu memory before polishing
-                tabu_memory.add(perturbed)
+                # Distribute perturbations: first bases get extra if not evenly divisible
+                n_perts = perturbations_per_base + (1 if base_idx < extra else 0)
 
-                # Run NM polish from perturbed position
-                result = minimize(
-                    objective_coarse,
-                    perturbed,
-                    method='Nelder-Mead',
-                    options={
-                        'maxiter': self.perturb_nm_iters,
-                        'xatol': 0.01,
-                        'fatol': 0.001,
-                    }
-                )
+                for _ in range(n_perts):
+                    # Generate perturbation avoiding tabu regions
+                    perturbed = self._generate_tabu_aware_perturbation(
+                        base_pos, lb, ub, tabu_memory
+                    )
 
-                # Add result to tabu memory
-                tabu_memory.add(result.x)
+                    # Add to tabu memory before polishing
+                    tabu_memory.add(perturbed)
 
-                if result.fun < best_rmse:
-                    new_candidates.append((result.x, result.fun, 'tabu_improved'))
-                    # Update best for next perturbation
-                    best_pos = result.x
-                    best_rmse = result.fun
-                else:
-                    new_candidates.append((result.x, result.fun, 'tabu_explored'))
+                    # Run NM polish from perturbed position
+                    result = minimize(
+                        objective_coarse,
+                        perturbed,
+                        method='Nelder-Mead',
+                        options={
+                            'maxiter': self.perturb_nm_iters,
+                            'xatol': 0.01,
+                            'fatol': 0.001,
+                        }
+                    )
 
-            # Add improved candidates
+                    # Add result to tabu memory
+                    tabu_memory.add(result.x)
+
+                    if result.fun < global_best_rmse:
+                        new_candidates.append((result.x, result.fun, 'tabu_improved'))
+                        global_best_pos = result.x
+                        global_best_rmse = result.fun
+                    else:
+                        new_candidates.append((result.x, result.fun, 'tabu_explored'))
+
+            # Add all candidates from basin hopping
             refined_solutions.extend(new_candidates)
 
         # Convert to full candidates (with intensities) on FINE grid
@@ -483,6 +508,8 @@ class TabuBasinHoppingOptimizer:
         if verbose:
             print(f"  Using {nt_reduced}/{nt_full} timesteps ({self.timestep_fraction*100:.0f}%) for CMA-ES")
             print(f"  Tabu hopping: {'ENABLED' if self.enable_tabu_hopping else 'DISABLED'}")
+            print(f"  Multi-basin bases: {self.n_perturb_bases}")
+            print(f"  Quality gating: {'ENABLED' if self.quality_gate_enabled else 'DISABLED'}")
 
         # Primary initializations
         primary_inits = []
@@ -519,6 +546,23 @@ class TabuBasinHoppingOptimizer:
 
         # Dissimilarity filtering
         filtered = filter_dissimilar([(c[0], c[2]) for c in candidates_raw], tau=TAU)
+
+        # === QUALITY GATING ===
+        if self.quality_gate_enabled and len(filtered) > 1:
+            gated = [filtered[0]]  # always keep best
+            # Score with just the best candidate
+            best_score = 1.0 / (1.0 + filtered[0][1]) + 0.3 * (1.0 / 3.0)
+            for sources, rmse in filtered[1:]:
+                # Test what score would be if we add this candidate
+                test_rmses = [r for _, r in gated] + [rmse]
+                n = len(test_rmses)
+                acc = sum(1.0 / (1.0 + r) for r in test_rmses) / n
+                div = 0.3 * (n / 3.0)
+                candidate_score = acc + div
+                if candidate_score > best_score:
+                    gated.append((sources, rmse))
+                    best_score = candidate_score
+            filtered = gated
 
         final_candidates = []
         for sources, rmse in filtered:

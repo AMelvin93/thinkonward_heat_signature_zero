@@ -1,0 +1,28 @@
+{
+  "seed": 42,
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 4,
+    "perturb_nm_iters": 2,
+    "perturbation_scale": 0.06,
+    "tabu_distance": 0.04,
+    "max_tabu_attempts": 10
+  },
+  "n_samples": 2,
+  "n_workers": 2,
+  "total_time_s": 35.59766626358032,
+  "projected_400_min": 118.65888754526775,
+  "submission_score": 1.1803917897728118,
+  "rmse_1src": 0.1366956679745385,
+  "rmse_2src": null,
+  "n_successful": 2,
+  "n_failed": 0,
+  "output_file": "submissions/test_format.npz",
+  "timestamp": "2026-02-02T21:32:57.753710"
+}

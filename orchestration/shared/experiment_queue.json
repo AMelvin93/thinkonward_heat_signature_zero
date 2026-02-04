@@ -1,7 +1,7 @@
 {
-  "version": "25.6",
-  "last_updated": "2026-02-02T09:56:56.567585",
-  "notes": "V25.6: W1 Comprehensive Session Complete.\n\nFINAL VALIDATED PRODUCTION CONFIG:\n- 2 perturbations + tabu_distance=0.04\n- Expected: 1.1496 @ 55.4 min\n\nKEY FINDINGS:\n1. 4 pert + tabu 0.04 gives best score (1.1535) but CANNOT fit in budget\n2. Reducing fevals doesn't help (still 65+ min)\n3. Scale 0.05 confirmed optimal\n4. 2 pert + tabu 0.04 is the optimal in-budget configuration\n\nBEST SINGLE RUN: 1.1585 @ 52.5 min (matches Top 10!)",
+  "version": "26.0",
+  "last_updated": "2026-02-03T00:33:54.676064",
+  "notes": "V26.0: W0 Research Cycle - Added 5 new experiments from literature review.\n\nNEW EXPERIMENTS:\n1. weighted_centroid_nm - Research-backed NM improvement for heat source problems\n2. 2source_specialized_tuning - Address the main accuracy bottleneck (2-source RMSE)\n3. adaptive_nm_step_size - Accelerated NM convergence\n4. large_population_selection - Better exploration via larger initial population\n5. quasi_gradient_nm - Gradient-guided NM\n\nKEY INSIGHT: 2-source problems have 58% higher RMSE than 1-source.\nTargeting 2-source specifically could close gap to Top 10.\n\nCURRENT BEST: 1.1487 mean, 1.1525 best (gap to Top 10: 0.006)",
   "queue_status": "HEALTHY",
   "experiment_queue": [
     {
@@ -4767,6 +4767,71 @@
         "runs": 5
       },
       "success_criteria": "Mean >= 1.15 AND 100% in budget"
+    },
+    {
+      "id": "EXP_2SRC_SPECIALIZED_001",
+      "priority": 1,
+      "family": "source_specific",
+      "status": "available",
+      "name": "2source_specialized_tuning",
+      "description": "The main accuracy bottleneck is 2-source problems (RMSE ~0.19 vs 0.12 for 1-source). Apply more aggressive optimization specifically for 2-source samples.",
+      "hypothesis": "2-source problems need different parameters than 1-source: more fevals, more perturbations, or different sigma.",
+      "implementation": [
+        "For 2-source: Increase fevals from 44 to 48, add extra perturbation",
+        "For 1-source: Keep current config (already good at 0.12 RMSE)",
+        "Budget rebalancing: use time saved from fast 1-source to help 2-source"
+      ],
+      "success_criteria": "2-source RMSE <= 0.17 without exceeding total budget",
+      "research_source": "Internal analysis: 2-source RMSE is 58% higher than 1-source"
+    },
+    {
+      "id": "EXP_ADAPTIVE_NM_STEP_001",
+      "priority": 2,
+      "family": "nm_improvement",
+      "status": "available",
+      "name": "adaptive_nm_step_size",
+      "description": "Use adaptive/exponentially decaying step sizes in NM based on centrifugal force concept to accelerate convergence.",
+      "hypothesis": "Larger initial NM steps followed by rapid decay could find better solutions faster than fixed-step NM.",
+      "implementation": [
+        "Start NM with larger initial simplex (1.5x normal)",
+        "Apply exponential decay factor each iteration",
+        "Use inertia term based on simplex size"
+      ],
+      "success_criteria": "Same or better score with fewer NM iterations",
+      "research_source": "Auburn ETD: Improved Nelder-Mead Simplex with centrifugal force extension"
+    },
+    {
+      "id": "EXP_LARGE_POP_SELECT_001",
+      "priority": 2,
+      "family": "cmaes_strategy",
+      "status": "available",
+      "name": "large_population_selection",
+      "description": "Start CMA-ES with 2x population size for first half of fevals to explore more, then contract to best individuals.",
+      "hypothesis": "Better initial exploration may find superior basins that current smaller population misses.",
+      "implementation": [
+        "First 50% fevals: population = 2 * default",
+        "Track best individuals during exploration phase",
+        "Second 50% fevals: reinitialize with top 50% of best individuals found",
+        "Apply perturbation to final result"
+      ],
+      "success_criteria": "Score >= 1.15 within 60 min budget",
+      "research_source": "Wikipedia CMA-ES: Large population with restart strategy improves global search"
+    },
+    {
+      "id": "EXP_QUASI_GRADIENT_NM_001",
+      "priority": 3,
+      "family": "nm_improvement",
+      "status": "available",
+      "name": "quasi_gradient_nm",
+      "description": "Incorporate quasi-gradient approximation into NM to accelerate convergence near solution.",
+      "hypothesis": "Numerical gradient estimates can guide NM in more promising directions than pure simplex operations.",
+      "implementation": [
+        "After each NM iteration, compute finite difference gradient estimate",
+        "Use gradient to bias expansion/contraction direction",
+        "Fall back to standard NM if gradient unreliable"
+      ],
+      "success_criteria": "Faster convergence - same score with fewer iterations",
+      "research_source": "Auburn ETD: Quasi-gradient method improves NM convergence rate"
     }
   ],
   "algorithm_families": {

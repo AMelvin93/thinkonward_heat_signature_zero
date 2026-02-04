@@ -1,0 +1,28 @@
+{
+  "config": "4pert_nm3_scale06",
+  "mean_score": 1.1513969548169027,
+  "std_score": 0.006496082112885614,
+  "mean_time": 58.451989233493805,
+  "runs_in_budget": 3,
+  "best_run": 1.159527969091758,
+  "runs": [
+    {
+      "run": 1,
+      "score": 1.1436282626486396,
+      "projected_400_min": 59.33606584866842,
+      "in_budget": true
+    },
+    {
+      "run": 2,
+      "score": 1.1510346327103107,
+      "projected_400_min": 57.75310538212459,
+      "in_budget": true
+    },
+    {
+      "run": 3,
+      "score": 1.159527969091758,
+      "projected_400_min": 58.266796469688416,
+      "in_budget": true
+    }
+  ]
+}

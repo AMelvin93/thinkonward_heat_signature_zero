@@ -1,0 +1,40 @@
+{
+  "config": "3pert_nm4_scale05",
+  "mean_score": 1.151475420688801,
+  "std_score": 0.0036764378196256354,
+  "mean_time": 59.27677097585467,
+  "runs_in_budget": 2,
+  "best_run": 1.1552388758016399,
+  "runs": [
+    {
+      "run": 1,
+      "score": 1.1552388758016399,
+      "projected_400_min": 55.75860317548116,
+      "in_budget": true,
+      "one_src_rmse": 0.1168511488746086,
+      "two_src_rmse": 0.18004303999835358,
+      "one_src_time": 32.20239817351103,
+      "two_src_time": 70.91875564555328
+    },
+    {
+      "run": 2,
+      "score": 1.1464869912199678,
+      "projected_400_min": 56.97020387649536,
+      "in_budget": true,
+      "one_src_rmse": 0.1227654356007506,
+      "two_src_rmse": 0.20055651004461797,
+      "one_src_time": 32.1886106133461,
+      "two_src_time": 74.06344323853652
+    },
+    {
+      "run": 3,
+      "score": 1.1527003950447956,
+      "projected_400_min": 65.10150587558746,
+      "in_budget": false,
+      "one_src_rmse": 0.12187752263817067,
+      "two_src_rmse": 0.17949280589327823,
+      "one_src_time": 31.695549495518208,
+      "two_src_time": 76.85258137186368
+    }
+  ]
+}

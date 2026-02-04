@@ -1,0 +1,28 @@
+======================================================================
+TEST: 5pert_nm1 scale06
+======================================================================
+Config: 5 perturbations, nm_iters=1, scale=0.06
+
+Previous 4pert nm2 scale06 result:
+  Mean: 1.1549 @ 57.5 min
+  Best: 1.1612 (BEATS TOP 10!)
+
+Hypothesis: More exploration with 5 perturbations
+======================================================================
+
+=== Run 1 ===
+  Progress: 20/80 (106s)
+  Progress: 40/80 (263s)
+  Progress: 60/80 (484s)
+  Progress: 80/80 (710s)
+  Result: Score=1.1530, Time=59.2 min
+
+======================================================================
+INITIAL RESULT
+======================================================================
+Score: 1.1530 (gap to Top 10: 0.0055)
+Time: 59.2 min [IN BUDGET]
+
+*** Score worse than 4pert nm2 - not worth validating ***
+
+Results saved to test_5pert_nm1_output.json

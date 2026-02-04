@@ -1,0 +1,54 @@
+======================================================================
+TEST: 3pert_nm3_scale06 (increased scale)
+======================================================================
+Config: 3 perturbations, nm_iters=3, scale=0.06
+
+Previous 3pert nm3 (scale=0.05) result:
+  Mean: 1.1492 @ 53.8 min
+  3/3 runs in budget (100%)
+
+Expectation: Similar timing, potentially better exploration
+======================================================================
+
+=== Run 1 ===
+  Progress: 20/80 (104s)
+  Progress: 40/80 (251s)
+  Progress: 60/80 (446s)
+  Progress: 80/80 (655s)
+  Result: Score=1.1494, Time=54.5 min
+
+=== Run 2 ===
+  Progress: 20/80 (99s)
+  Progress: 40/80 (245s)
+  Progress: 60/80 (446s)
+  Progress: 80/80 (677s)
+  Result: Score=1.1443, Time=56.4 min
+
+=== Run 3 ===
+  Progress: 20/80 (101s)
+  Progress: 40/80 (259s)
+  Progress: 60/80 (456s)
+  Progress: 80/80 (681s)
+  Result: Score=1.1581, Time=56.8 min
+
+======================================================================
+VALIDATION SUMMARY: 3pert_nm3_scale06 (3 runs)
+======================================================================
+  Run 1: Score=1.1494 (gap: 0.0091), Time=54.5 min [IN]
+  Run 2: Score=1.1443 (gap: 0.0142), Time=56.4 min [IN]
+  Run 3: Score=1.1581 (gap: 0.0004), Time=56.8 min [IN]
+
+Statistics:
+  Mean Score: 1.1506 +/- 0.0057
+  Mean Time: 55.9 +/- 1.0 min
+  Runs in budget: 3/3
+
+Comparison:
+  vs 3pert nm3 scale=0.05 (1.1492): +0.0014
+  vs 2pert nm4 (1.1487): +0.0019
+  Gap to Top 10: 0.0079
+
+  Best run: 1.1581 (gap: 0.0004)
+  Max time: 56.8 min
+
+Results saved to test_3pert_nm3_scale06_output.json

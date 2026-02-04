@@ -1,0 +1,30 @@
+{
+  "name": "sigma_014_019_seed99",
+  "description": "Variance check: same as #1 with seed=99",
+  "seed": 99,
+  "original_score": null,
+  "config": {
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "max_fevals_1src": 24,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 2,
+    "perturbation_scale": 0.06,
+    "perturb_nm_iters": 3,
+    "tabu_distance": 0.03,
+    "max_tabu_attempts": 10
+  },
+  "n_samples": 80,
+  "n_workers": 32,
+  "total_time_s": 307.9726140499115,
+  "projected_400_min": 25.66438450415929,
+  "submission_score": 1.0749883947330514,
+  "avg_candidates": 2.6375,
+  "rmse_1src_mean": 0.11511030147991591,
+  "rmse_2src_mean": 0.18058223850348956,
+  "n_successful": 80,
+  "timestamp": "2026-02-02T23:12:28.552318"
+}

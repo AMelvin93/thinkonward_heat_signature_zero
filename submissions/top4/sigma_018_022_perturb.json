@@ -1,0 +1,28 @@
+{
+  "name": "sigma_018_022_perturb",
+  "description": "Third: sigma 0.18/0.22, scale 0.05",
+  "seed": 42,
+  "original_score": 1.1653,
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 2,
+    "perturbation_scale": 0.05,
+    "perturb_nm_iters": 3,
+    "tabu_distance": 0.03,
+    "max_tabu_attempts": 10
+  },
+  "n_samples": 80,
+  "n_workers": 32,
+  "total_time_s": 299.6043770313263,
+  "projected_400_min": 24.96703141927719,
+  "submission_score": 1.078077400979648,
+  "avg_candidates": 2.875,
+  "rmse_1src_mean": 0.12170257213080386,
+  "rmse_2src_mean": 0.17098723114589606,
+  "n_successful": 80,
+  "timestamp": "2026-02-02T23:07:20.577186"
+}

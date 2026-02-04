@@ -1,0 +1,206 @@
+{
+  "experiment": "W2_budget_optimization",
+  "status": "completed",
+  "completed_at": "2026-02-03T02:45:00Z",
+  "conclusion": "SUCCESS - Found new best config 3pert_nm3_refine10 with validated mean 1.1490 @ 55.4 min",
+  "best_in_budget": {
+    "config": "3pert_nm3_refine10",
+    "mean_score": 1.1490,
+    "best_score": 1.1525,
+    "mean_time": 55.4,
+    "gap_to_top10": 0.0095
+  },
+  "claimed_by": "W2",
+  "claimed_at": "2026-02-03",
+  "hypothesis": "Current best config uses 54.2 min. With ~6 min remaining budget, we can try: more perturb_nm_iters (5-6), more refine_maxiter (10), or 3 perturbations with nm_iters=3. Goal: maximize score while staying under 60 min.",
+  "baseline": {
+    "score": 1.1487,
+    "time_min": 54.2,
+    "config": {
+      "sigma0_1src": 0.18,
+      "sigma0_2src": 0.22,
+      "max_fevals_1src": 20,
+      "max_fevals_2src": 44,
+      "timestep_fraction": 0.4,
+      "refine_maxiter": 8,
+      "n_perturbations": 2,
+      "perturbation_scale": 0.05,
+      "perturb_nm_iters": 4,
+      "tabu_distance": 0.04
+    }
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "desc": "nm5 - more polish per perturbation",
+      "change": "perturb_nm_iters: 4 -> 5"
+    },
+    {
+      "run": 2,
+      "desc": "nm6 - even more polish per perturbation",
+      "change": "perturb_nm_iters: 4 -> 6"
+    },
+    {
+      "run": 3,
+      "desc": "refine10 - more final polish",
+      "change": "refine_maxiter: 8 -> 10"
+    },
+    {
+      "run": 4,
+      "desc": "3pert_nm3 - more perturbations, less polish each",
+      "change": "n_perturbations: 2->3, perturb_nm_iters: 4->3"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config_name": "nm5",
+      "config": {
+        "refine_maxiter": 8,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 5
+      },
+      "score": 1.149361374388079,
+      "time_min": 51.37304645776749,
+      "in_budget": true,
+      "delta_vs_baseline": 0.0006613743880790057,
+      "timestamp": "2026-02-03T00:44:23.688447"
+    },
+    {
+      "run": 2,
+      "config_name": "nm6",
+      "config": {
+        "refine_maxiter": 8,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 6
+      },
+      "score": 1.1440433916137907,
+      "time_min": 52.74450651804606,
+      "in_budget": true,
+      "delta_vs_baseline": -0.004656608386209404,
+      "timestamp": "2026-02-03T00:54:56.625245"
+    },
+    {
+      "run": 3,
+      "config_name": "refine10",
+      "config": {
+        "refine_maxiter": 10,
+        "n_perturbations": 2,
+        "perturb_nm_iters": 4
+      },
+      "score": 1.1417404696151472,
+      "time_min": 52.140598237514496,
+      "in_budget": true,
+      "delta_vs_baseline": -0.006959530384852863,
+      "timestamp": "2026-02-03T01:05:22.315078"
+    },
+    {
+      "run": 4,
+      "config_name": "3pert_nm3",
+      "config": {
+        "refine_maxiter": 8,
+        "n_perturbations": 3,
+        "perturb_nm_iters": 3
+      },
+      "score": 1.1499314149231812,
+      "time_min": 52.50928795337677,
+      "in_budget": true,
+      "delta_vs_baseline": 0.0012314149231811289,
+      "timestamp": "2026-02-03T01:15:52.429254"
+    },
+    {
+      "run": 5,
+      "config_name": "3pert_nm4",
+      "config": {
+        "refine_maxiter": 8,
+        "n_perturbations": 3,
+        "perturb_nm_iters": 4
+      },
+      "score": 1.1441837189585697,
+      "time_min": 57.53164688746134,
+      "in_budget": true,
+      "delta_vs_3pert_nm3": -0.005716281041430182,
+      "timestamp": "2026-02-03T01:30:40.727205"
+    },
+    {
+      "run": 6,
+      "config_name": "3pert_nm3_refine10",
+      "config": {
+        "refine_maxiter": 10,
+        "n_perturbations": 3,
+        "perturb_nm_iters": 3
+      },
+      "score": 1.1571078309176401,
+      "time_min": 56.710118929545075,
+      "in_budget": true,
+      "delta_vs_3pert_nm3": 0.007207830917640212,
+      "timestamp": "2026-02-03T01:42:01.251111"
+    },
+    {
+      "run": 7,
+      "config_name": "4pert_nm2",
+      "config": {
+        "refine_maxiter": 8,
+        "n_perturbations": 4,
+        "perturb_nm_iters": 2
+      },
+      "score": 1.1487399237629368,
+      "time_min": 55.56117461125056,
+      "in_budget": true,
+      "delta_vs_3pert_nm3": -0.0011600762370631568,
+      "timestamp": "2026-02-03T01:53:07.988829"
+    },
+    {
+      "run": 8,
+      "config_name": "validation_run1",
+      "config": {
+        "n_perturbations": 3,
+        "perturb_nm_iters": 3,
+        "refine_maxiter": 10
+      },
+      "score": 1.1498063896230994,
+      "time_min": 54.734763026237495,
+      "in_budget": true,
+      "timestamp": "2026-02-03T02:08:07.516414"
+    },
+    {
+      "run": 9,
+      "config_name": "validation_run2",
+      "config": {
+        "n_perturbations": 3,
+        "perturb_nm_iters": 3,
+        "refine_maxiter": 10
+      },
+      "score": 1.1525053428342535,
+      "time_min": 56.13814667860667,
+      "in_budget": true,
+      "timestamp": "2026-02-03T02:19:21.185781"
+    },
+    {
+      "run": 10,
+      "config_name": "validation_run3",
+      "config": {
+        "n_perturbations": 3,
+        "perturb_nm_iters": 3,
+        "refine_maxiter": 10
+      },
+      "score": 1.1445441908617648,
+      "time_min": 55.327989538510636,
+      "in_budget": true,
+      "timestamp": "2026-02-03T02:30:25.124418"
+    },
+    {
+      "run": 11,
+      "config_name": "3pert_nm3_refine12",
+      "config": {
+        "n_perturbations": 3,
+        "perturb_nm_iters": 3,
+        "refine_maxiter": 12
+      },
+      "score": 1.157123873676588,
+      "time_min": 57.43930353720983,
+      "in_budget": true,
+      "timestamp": "2026-02-03T02:41:54.398924"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+======================================================================
+5-RUN VALIDATION: 4pert nm2 scale06 (BEST CONFIG)
+======================================================================
+
+Config:
+  n_perturbations: 4
+  perturb_nm_iters: 2
+  perturbation_scale: 0.06
+
+Previous 3-run validation:
+  Mean: 1.1549 +/- 0.0058
+  Best: 1.1612 (BEATS TOP 10!)
+
+Top 10 threshold: 1.1585
+======================================================================
+
+=== Validation Run 1 ===
+  Progress: 20/80 (237s)
+  Progress: 40/80 (717s)
+  Progress: 60/80 (1241s)
+  Progress: 80/80 (1674s)
+  Result: Score=1.1479, Time=139.5 min
+  1-src RMSE: 0.1145, 2-src RMSE: 0.1826
+
+=== Validation Run 2 ===
+  Progress: 20/80 (212s)
+  Progress: 40/80 (499s)
+  Progress: 60/80 (729s)

@@ -1,0 +1,30 @@
+{
+  "name": "sigma_014_019",
+  "description": "Best scorer: asymmetric sigma 0.14/0.19, fevals 24/44, scale 0.06",
+  "seed": 42,
+  "original_score": 1.1703,
+  "config": {
+    "sigma0_1src": 0.14,
+    "sigma0_2src": 0.19,
+    "max_fevals_1src": 24,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 2,
+    "perturbation_scale": 0.06,
+    "perturb_nm_iters": 3,
+    "tabu_distance": 0.03,
+    "max_tabu_attempts": 10
+  },
+  "n_samples": 80,
+  "n_workers": 32,
+  "total_time_s": 314.15454030036926,
+  "projected_400_min": 26.179545025030773,
+  "submission_score": 1.070697631639439,
+  "avg_candidates": 2.625,
+  "rmse_1src_mean": 0.12307516127160889,
+  "rmse_2src_mean": 0.18636738136111655,
+  "n_successful": 80,
+  "timestamp": "2026-02-02T22:57:14.936053"
+}

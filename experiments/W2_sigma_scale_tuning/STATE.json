@@ -1,0 +1,185 @@
+{
+  "experiment": "W2_sigma_scale_tuning",
+  "status": "in_progress",
+  "claimed_by": "W2",
+  "claimed_at": "2026-02-03T02:50:00Z",
+  "hypothesis": "The new 3pert_nm3_refine10 config might benefit from different sigma values or perturbation scales. Testing sigma 0.16/0.20 and 0.20/0.24, and perturbation scales 0.04 and 0.06.",
+  "baseline": {
+    "config": "3pert_nm3_refine10",
+    "score": 1.149,
+    "time_min": 55.4,
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "perturbation_scale": 0.05
+  },
+  "planned_configs": [
+    {
+      "run": 1,
+      "desc": "Lower sigma (0.16/0.20)",
+      "change": "sigma: 0.18/0.22 -> 0.16/0.20"
+    },
+    {
+      "run": 2,
+      "desc": "Higher sigma (0.20/0.24)",
+      "change": "sigma: 0.18/0.22 -> 0.20/0.24"
+    },
+    {
+      "run": 3,
+      "desc": "Smaller perturbation (0.04)",
+      "change": "perturbation_scale: 0.05 -> 0.04"
+    },
+    {
+      "run": 4,
+      "desc": "Larger perturbation (0.06)",
+      "change": "perturbation_scale: 0.05 -> 0.06"
+    }
+  ],
+  "tuning_runs": [
+    {
+      "run": 1,
+      "config_name": "sigma_016_020",
+      "config": {
+        "sigma0_1src": 0.16,
+        "sigma0_2src": 0.2,
+        "perturbation_scale": 0.05
+      },
+      "score": 1.152221865534073,
+      "time_min": 54.43885741631189,
+      "in_budget": true,
+      "delta_vs_baseline": 0.0032218655340729985,
+      "timestamp": "2026-02-03T02:57:35.246786"
+    },
+    {
+      "run": 2,
+      "config_name": "sigma_020_024",
+      "config": {
+        "sigma0_1src": 0.2,
+        "sigma0_2src": 0.24,
+        "perturbation_scale": 0.05
+      },
+      "score": 1.1525942815025914,
+      "time_min": 56.42043823003769,
+      "in_budget": true,
+      "delta_vs_baseline": 0.0035942815025913344,
+      "timestamp": "2026-02-03T03:08:52.297448"
+    },
+    {
+      "run": 3,
+      "config_name": "scale_004",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "perturbation_scale": 0.04
+      },
+      "score": 1.1472671042969556,
+      "time_min": 56.219134072462715,
+      "in_budget": true,
+      "delta_vs_baseline": -0.001732895703044468,
+      "timestamp": "2026-02-03T03:20:06.929661"
+    },
+    {
+      "run": 4,
+      "config_name": "scale_006",
+      "config": {
+        "sigma0_1src": 0.18,
+        "sigma0_2src": 0.22,
+        "perturbation_scale": 0.06
+      },
+      "score": 1.1421329117783952,
+      "time_min": 56.990015129248306,
+      "in_budget": true,
+      "delta_vs_baseline": -0.006867088221604867,
+      "timestamp": "2026-02-03T03:31:30.812338"
+    },
+    {
+      "run": 5,
+      "config_name": "sigma_020_024_validation_run1",
+      "config": {
+        "sigma0_1src": 0.2,
+        "sigma0_2src": 0.24
+      },
+      "score": 1.14933795336616,
+      "time_min": 55.700449109077454,
+      "in_budget": true,
+      "timestamp": "2026-02-03T03:46:05.958611"
+    },
+    {
+      "run": 6,
+      "config_name": "sigma_020_024_validation_run2",
+      "config": {
+        "sigma0_1src": 0.2,
+        "sigma0_2src": 0.24
+      },
+      "score": 1.1520641209780884,
+      "time_min": 58.04529271523158,
+      "in_budget": true,
+      "timestamp": "2026-02-03T03:57:42.504414"
+    },
+    {
+      "run": 7,
+      "config_name": "sigma_020_024_validation_run3",
+      "config": {
+        "sigma0_1src": 0.2,
+        "sigma0_2src": 0.24
+      },
+      "score": 1.1518254507477537,
+      "time_min": 57.70667419830958,
+      "in_budget": true,
+      "timestamp": "2026-02-03T04:09:14.986858"
+    },
+    {
+      "run": 8,
+      "config_name": "sigma_022_026",
+      "config": {
+        "sigma0_1src": 0.22,
+        "sigma0_2src": 0.26
+      },
+      "score": 1.155681284771262,
+      "time_min": 60.41966158151626,
+      "in_budget": false,
+      "timestamp": "2026-02-03T04:21:20.025929"
+    },
+    {
+      "run": 9,
+      "config_name": "sigma_022_026_refine8",
+      "config": {
+        "sigma0_1src": 0.22,
+        "sigma0_2src": 0.26,
+        "refine_maxiter": 8
+      },
+      "score": 1.1594633873285507,
+      "time_min": 62.487750907739006,
+      "in_budget": false,
+      "delta_vs_validated": 0.008363387328550687,
+      "timestamp": "2026-02-03T04:35:22.774696"
+    },
+    {
+      "run": 10,
+      "config_name": "sigma_021_025_refine10",
+      "config": {
+        "sigma0_1src": 0.21,
+        "sigma0_2src": 0.25,
+        "refine_maxiter": 10
+      },
+      "score": 1.1572757231044712,
+      "time_min": 86.00960991779964,
+      "in_budget": false,
+      "delta_vs_validated": 0.006175723104471231,
+      "timestamp": "2026-02-03T04:52:34.892576"
+    },
+    {
+      "run": 11,
+      "config_name": "sigma_020_024_refine12",
+      "config": {
+        "sigma0_1src": 0.2,
+        "sigma0_2src": 0.24,
+        "refine_maxiter": 12
+      },
+      "score": 1.1506890711096414,
+      "time_min": 62.93684281905492,
+      "in_budget": false,
+      "delta_vs_validated": -0.00041092889035865277,
+      "timestamp": "2026-02-03T05:05:10.137372"
+    }
+  ]
+}

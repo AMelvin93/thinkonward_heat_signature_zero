@@ -1,0 +1,28 @@
+{
+  "seed": 42,
+  "config": {
+    "sigma0_1src": 0.18,
+    "sigma0_2src": 0.22,
+    "max_fevals_1src": 20,
+    "max_fevals_2src": 44,
+    "timestep_fraction": 0.4,
+    "refine_maxiter": 8,
+    "enable_tabu_hopping": true,
+    "n_perturbations": 4,
+    "perturb_nm_iters": 2,
+    "perturbation_scale": 0.06,
+    "tabu_distance": 0.04,
+    "max_tabu_attempts": 10
+  },
+  "n_samples": 80,
+  "n_workers": 7,
+  "total_time_s": 955.1664428710938,
+  "projected_400_min": 79.59720357259114,
+  "submission_score": 1.1638456299654951,
+  "rmse_1src": 0.12300804954964381,
+  "rmse_2src": 0.16497322639438236,
+  "n_successful": 80,
+  "n_failed": 0,
+  "output_file": "submissions/best_4pert_nm2_scale06.npz",
+  "timestamp": "2026-02-02T21:51:40.621429"
+}
